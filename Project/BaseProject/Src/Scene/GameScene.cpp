@@ -1,4 +1,5 @@
 #include <DxLib.h>
+#include "../Application.h"
 #include "../Manager/SceneManager.h"
 #include "../Manager/InputManager.h"
 #include "../Manager/Camera.h"
@@ -75,6 +76,8 @@ void GameScene::Update(void)
 	skyDome_->Update();//スカイドーム更新
 	player_->Update();
 	enemyManager_->Update();
+
+
 	
 }
 
@@ -87,6 +90,118 @@ void GameScene::Draw(void)
 	player_->Draw();	//プレイヤー描画
 
 	enemyManager_->Draw();
+
+	// 黒を描画（少し透過）
+	SetDrawBlendMode(DX_BLENDMODE_ALPHA, 128);
+	DrawBox(0, 0, Application::SCREEN_SIZE_X, Application::SCREEN_SIZE_Y, GetColor(0, 0, 0), true);
+	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
+
+	static int currentActionCount = 0;
+	static int time = 0;
+	if (time % 30 == 0) currentActionCount++;
+	time++;
+
+	unsigned int color = 0;
+	short cnt = 0;
+	
+	// 総行動回数
+	int playerTotalActionCount = PLAYER_FIELD_CELL_X * PLAYER_FIELD_CELL_Y;
+	int enemyTotalActionCount = ENEMY_FIELD_CELL_X * ENEMY_FIELD_CELL_Y;
+	int totalActionCount = playerTotalActionCount + enemyTotalActionCount;
+
+	bool isFill = false;
+
+	// プレイヤーと敵のセルを交互に描画
+	int maxCells = (playerTotalActionCount > enemyTotalActionCount) ? playerTotalActionCount : enemyTotalActionCount;
+
+	for (int i = 0; i < maxCells; i++)
+	{
+		if (currentActionCount >= totalActionCount)
+		{
+			currentActionCount = 0; // 行動回数が総行動回数を超えたらリセット
+		}
+		else if (currentActionCount == cnt)
+		{
+			isFill = true;
+		}
+		else
+		{
+			isFill = false;
+		}
+
+		// プレイヤーのセル
+		if (i < playerTotalActionCount)
+		{
+			int y = i / PLAYER_FIELD_CELL_X;
+			int x = i % PLAYER_FIELD_CELL_X;
+
+			switch (playerField_[y][x])
+			{
+			case CELL_TYPE::NONE:
+				color = GetColor(255, 255, 255);
+				break;
+			case CELL_TYPE::ATTACK:
+				color = GetColor(255, 0, 0);
+				break;
+			case CELL_TYPE::DEFENSE:
+				color = GetColor(0, 0, 255);
+				break;
+			case CELL_TYPE::BUFF:
+				color = GetColor(0, 255, 0);
+				break;
+			case CELL_TYPE::DEBUFF:
+				color = GetColor(255, 255, 0);
+				break;
+			}
+			cnt++;
+			// 仮でフィールドを正方形で前面に枠のみ描画
+			DrawBox(x * PLAYER_FIELD_CELL_X * PLAYER_FIELD_CELL_SIZE, y * PLAYER_FIELD_CELL_Y * PLAYER_FIELD_CELL_SIZE, (x + 1) * PLAYER_FIELD_CELL_X * PLAYER_FIELD_CELL_SIZE, (y + 1) * PLAYER_FIELD_CELL_Y * PLAYER_FIELD_CELL_SIZE, color, isFill);
+			DrawFormatString(x * PLAYER_FIELD_CELL_X * PLAYER_FIELD_CELL_SIZE + 10, y * PLAYER_FIELD_CELL_Y * PLAYER_FIELD_CELL_SIZE + 10, color, "%d", cnt);
+		}
+
+		if (currentActionCount >= totalActionCount)
+		{
+			currentActionCount = 0; // 行動回数が総行動回数を超えたらリセット
+		}
+		else if (currentActionCount == cnt)
+		{
+			isFill = true;
+		}
+		else
+		{
+			isFill = false;
+		}
+
+		// 敵のセル
+		if (i < enemyTotalActionCount)
+		{
+			int y = i / ENEMY_FIELD_CELL_X;
+			int x = i % ENEMY_FIELD_CELL_X;
+
+			switch (enemyField_[y][x])
+			{
+			case CELL_TYPE::NONE:
+				color = GetColor(255, 255, 255);
+				break;
+			case CELL_TYPE::ATTACK:
+				color = GetColor(255, 0, 0);
+				break;
+			case CELL_TYPE::DEFENSE:
+				color = GetColor(0, 0, 255);
+				break;
+			case CELL_TYPE::BUFF:
+				color = GetColor(0, 255, 0);
+				break;
+			case CELL_TYPE::DEBUFF:
+				color = GetColor(255, 255, 0);
+				break;
+			}
+			cnt++;
+			// 仮でフィールドを正方形で前面に枠のみ描画
+			DrawBox(x * ENEMY_FIELD_CELL_X * ENEMY_FIELD_CELL_SIZE + Application::SCREEN_SIZE_X / 2, y * ENEMY_FIELD_CELL_Y * ENEMY_FIELD_CELL_SIZE, (x + 1) * ENEMY_FIELD_CELL_X * ENEMY_FIELD_CELL_SIZE + Application::SCREEN_SIZE_X / 2, (y + 1) * ENEMY_FIELD_CELL_Y * ENEMY_FIELD_CELL_SIZE, color, isFill);
+			DrawFormatString(x * ENEMY_FIELD_CELL_X * ENEMY_FIELD_CELL_SIZE + Application::SCREEN_SIZE_X / 2 + 10, y * ENEMY_FIELD_CELL_Y * ENEMY_FIELD_CELL_SIZE + 10, color, "%d", cnt);
+		}
+	}
 }
 
 void GameScene::Release(void)

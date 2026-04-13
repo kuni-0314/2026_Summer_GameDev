@@ -35,4 +35,28 @@ private:
 	Player* player_;
 	EnemyManager* enemyManager_;
 
+	static constexpr int PLAYER_FIELD_CELL_Y = 3;	// フィールドのセル高さ
+	static constexpr int PLAYER_FIELD_CELL_X = 3;	// フィールドのセル幅
+	static constexpr int PLAYER_FIELD_CELL_SIZE = 30;	// フィールドのセルサイズ
+	static constexpr int ENEMY_FIELD_CELL_Y = 3;	// フィールドのセル高さ
+	static constexpr int ENEMY_FIELD_CELL_X = 3;	// フィールドのセル幅
+	static constexpr int ENEMY_FIELD_CELL_SIZE = 30;	// フィールドのセルサイズ
+
+	enum class CELL_TYPE
+	{
+		NONE = 0,
+		ATTACK,
+		DEFENSE,
+		BUFF,
+		DEBUFF,
+	};
+	CELL_TYPE playerField_[PLAYER_FIELD_CELL_Y][PLAYER_FIELD_CELL_X] = {
+		{ CELL_TYPE::ATTACK, CELL_TYPE::DEFENSE, },
+		{ CELL_TYPE::BUFF, CELL_TYPE::DEBUFF, },
+	};
+	CELL_TYPE enemyField_[ENEMY_FIELD_CELL_Y][ENEMY_FIELD_CELL_X] = {
+		{ CELL_TYPE::ATTACK, CELL_TYPE::DEFENSE, },
+		{ CELL_TYPE::BUFF, CELL_TYPE::DEBUFF, },
+	};
+
 };
