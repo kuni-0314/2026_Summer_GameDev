@@ -12,8 +12,8 @@ public:
 
 
 	// スクリーンサイズ
-	static constexpr int SCREEN_SIZE_X = 1280;
-	static constexpr int SCREEN_SIZE_Y = 720;
+	static constexpr int SCREEN_SIZE_X = 1920;
+	static constexpr int SCREEN_SIZE_Y = 1080;
 
 	// 重力
 	static constexpr float GRAVITY = 9.81f * 100.0f;

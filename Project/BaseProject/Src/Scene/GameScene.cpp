@@ -155,8 +155,21 @@ void GameScene::Draw(void)
 			}
 			cnt++;
 			// 仮でフィールドを正方形で前面に枠のみ描画
-			DrawBox(x * PLAYER_FIELD_CELL_X * PLAYER_FIELD_CELL_SIZE, y * PLAYER_FIELD_CELL_Y * PLAYER_FIELD_CELL_SIZE, (x + 1) * PLAYER_FIELD_CELL_X * PLAYER_FIELD_CELL_SIZE, (y + 1) * PLAYER_FIELD_CELL_Y * PLAYER_FIELD_CELL_SIZE, color, isFill);
-			DrawFormatString(x * PLAYER_FIELD_CELL_X * PLAYER_FIELD_CELL_SIZE + 10, y * PLAYER_FIELD_CELL_Y * PLAYER_FIELD_CELL_SIZE + 10, color, "%d", cnt);
+			DrawBox(
+				x * PLAYER_FIELD_CELL_SIZE,
+				y * PLAYER_FIELD_CELL_SIZE,
+				(x + 1) * PLAYER_FIELD_CELL_SIZE,
+				(y + 1) * PLAYER_FIELD_CELL_SIZE,
+				color,
+				isFill
+			);
+			DrawFormatString(
+				x * PLAYER_FIELD_CELL_SIZE + 10,
+				y * PLAYER_FIELD_CELL_SIZE + 10,
+				color,
+				"%d",
+				cnt
+			);
 		}
 
 		if (currentActionCount >= totalActionCount)
@@ -198,8 +211,64 @@ void GameScene::Draw(void)
 			}
 			cnt++;
 			// 仮でフィールドを正方形で前面に枠のみ描画
-			DrawBox(x * ENEMY_FIELD_CELL_X * ENEMY_FIELD_CELL_SIZE + Application::SCREEN_SIZE_X / 2, y * ENEMY_FIELD_CELL_Y * ENEMY_FIELD_CELL_SIZE, (x + 1) * ENEMY_FIELD_CELL_X * ENEMY_FIELD_CELL_SIZE + Application::SCREEN_SIZE_X / 2, (y + 1) * ENEMY_FIELD_CELL_Y * ENEMY_FIELD_CELL_SIZE, color, isFill);
-			DrawFormatString(x * ENEMY_FIELD_CELL_X * ENEMY_FIELD_CELL_SIZE + Application::SCREEN_SIZE_X / 2 + 10, y * ENEMY_FIELD_CELL_Y * ENEMY_FIELD_CELL_SIZE + 10, color, "%d", cnt);
+			DrawBox(
+				x * ENEMY_FIELD_CELL_SIZE + Application::SCREEN_SIZE_X / 2,
+				y * ENEMY_FIELD_CELL_SIZE,
+				(x + 1) * ENEMY_FIELD_CELL_SIZE + Application::SCREEN_SIZE_X / 2,
+				(y + 1) * ENEMY_FIELD_CELL_SIZE,
+				color,
+				isFill
+			);
+			DrawFormatString(
+				x * ENEMY_FIELD_CELL_SIZE + Application::SCREEN_SIZE_X / 2 + 10,
+				y * ENEMY_FIELD_CELL_SIZE + 10,
+				color,
+				"%d",
+				cnt
+			);
+		}
+	}
+
+	cnt = 0;
+	for (int y = 0; y < SELECT_FIELD_CELL_Y; y++)
+	{
+		for (int x = 0; x < SELECT_FIELD_CELL_X; x++)
+		{
+			switch (selectField_[y][x])
+			{
+			case CELL_TYPE::NONE:
+				color = GetColor(255, 255, 255);
+				break;
+			case CELL_TYPE::ATTACK:
+				color = GetColor(255, 0, 0);
+				break;
+			case CELL_TYPE::DEFENSE:
+				color = GetColor(0, 0, 255);
+				break;
+			case CELL_TYPE::BUFF:
+				color = GetColor(0, 255, 0);
+				break;
+			case CELL_TYPE::DEBUFF:
+				color = GetColor(255, 255, 0);
+				break;
+			}
+			// 仮でフィールドを正方形で前面に枠のみ描画（下側に配置）
+			cnt++;
+			DrawBox(
+				x * SELECT_FIELD_CELL_SIZE,
+				y * SELECT_FIELD_CELL_SIZE + Application::SCREEN_SIZE_Y - SELECT_FIELD_CELL_Y * SELECT_FIELD_CELL_SIZE,
+				(x + 1) * SELECT_FIELD_CELL_SIZE,
+				(y + 1) * SELECT_FIELD_CELL_SIZE + Application::SCREEN_SIZE_Y - SELECT_FIELD_CELL_Y * SELECT_FIELD_CELL_SIZE,
+				color,
+				false
+			);
+			DrawFormatString(
+				x * SELECT_FIELD_CELL_SIZE + 10,
+				y * SELECT_FIELD_CELL_SIZE + 10 + Application::SCREEN_SIZE_Y - SELECT_FIELD_CELL_Y * SELECT_FIELD_CELL_SIZE,
+				color,
+				"%d",
+				cnt
+			);
 		}
 	}
 }
