@@ -19,6 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Src\Object\CellBase.cpp" />
     <ClCompile Include="Src\Object\Charactor\Enemy\Robot\EnemyRobot.cpp" />
     <ClCompile Include="Src\Scene\DebugScene.cpp" />
     <ClCompile Include="Src\Object\Charactor\Enemy\EnemyManger.cpp" />
@@ -55,6 +56,7 @@
     <ClCompile Include="Src\Object\Actor\UI\UIBase.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Src\Object\CellBase.h" />
     <ClInclude Include="Src\Object\Charactor\Enemy\Robot\EnemyRobot.h" />
     <ClInclude Include="Src\Scene\DebugScene.h" />
     <ClInclude Include="Src\Object\Charactor\Enemy\EnemyManger.h" />

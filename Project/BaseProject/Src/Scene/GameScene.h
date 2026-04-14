@@ -1,9 +1,12 @@
 #pragma once
+#include <memory>
+#include <vector>
 #include "SceneBase.h"
 class Stage;
 class SkyDome;
 class Player;
 class EnemyManager;
+class CellBase;
 
 class GameScene : public SceneBase
 {
@@ -34,6 +37,9 @@ private:
 	SkyDome* skyDome_;
 	Player* player_;
 	EnemyManager* enemyManager_;
+	std::vector<std::shared_ptr<CellBase>> playerCells_;	// tmp
+	std::vector<std::shared_ptr<CellBase>> enemyCells_;	// tmp
+	std::vector<std::shared_ptr<CellBase>> selectCells_;	// tmp
 
 	static constexpr int PLAYER_FIELD_CELL_Y = 5;	// フィールドのセル高さ
 	static constexpr int PLAYER_FIELD_CELL_X = 5;	// フィールドのセル幅
@@ -44,7 +50,6 @@ private:
 	static constexpr int SELECT_FIELD_CELL_Y = 7;	// フィールドのセル高さ
 	static constexpr int SELECT_FIELD_CELL_X = 48;	// フィールドのセル幅
 	static constexpr int SELECT_FIELD_CELL_SIZE = 40;	// フィールドのセルサイズ
-
 
 	enum class CELL_TYPE
 	{
