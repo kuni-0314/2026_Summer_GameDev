@@ -1,12 +1,26 @@
 #include <DxLib.h>
 #include "CellBase.h"
 
-CellBase::CellBase(const CELL_TYPE type, const Vector2& pos, const int size)
-	: type_(type), pos_(pos), CELL_SIZE(size)
+CellBase::CellBase(CELL_TYPE type, Vector2 pos, int size)
+	:
+	type_(type),
+	pos_(pos),
+	size_(size),
+	actionCount_(0),
+	color_(0),
+	isActive_(false)
 {
-	isActive_ = false;
-	actionCount_ = 0;
-	color_ = CELL_NONE_COLOR;
+}
+
+CellBase::CellBase(CELL_TYPE type, Vector2 pos, int size, int actionCount)
+	:
+	type_(type),
+	pos_(pos),
+	size_(size),
+	actionCount_(actionCount),
+	color_(0),
+	isActive_(false)
+{
 }
 
 CellBase::~CellBase(void)
@@ -33,7 +47,6 @@ void CellBase::Init(void)
 		color_ = CELL_DEBUFF_COLOR;
 		break;
 	}
-
 }
 
 void CellBase::Update(void)
@@ -45,8 +58,8 @@ void CellBase::Draw(void)
 	DrawBox(
 		pos_.x,
 		pos_.y,
-		pos_.x + CELL_SIZE,
-		pos_.y + CELL_SIZE,
+		pos_.x + size_,
+		pos_.y + size_,
 		color_,
 		isActive_
 	);

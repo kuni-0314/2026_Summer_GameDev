@@ -41,15 +41,20 @@ private:
 	std::vector<std::shared_ptr<CellBase>> enemyCells_;	// tmp
 	std::vector<std::shared_ptr<CellBase>> selectCells_;	// tmp
 
-	static constexpr int PLAYER_FIELD_CELL_Y = 5;	// フィールドのセル高さ
-	static constexpr int PLAYER_FIELD_CELL_X = 5;	// フィールドのセル幅
-	static constexpr int PLAYER_FIELD_CELL_SIZE = 50;	// フィールドのセルサイズ
-	static constexpr int ENEMY_FIELD_CELL_Y = 4;	// フィールドのセル高さ
-	static constexpr int ENEMY_FIELD_CELL_X = 4;	// フィールドのセル幅
-	static constexpr int ENEMY_FIELD_CELL_SIZE = 50;	// フィールドのセルサイズ
-	static constexpr int SELECT_FIELD_CELL_Y = 7;	// フィールドのセル高さ
-	static constexpr int SELECT_FIELD_CELL_X = 48;	// フィールドのセル幅
-	static constexpr int SELECT_FIELD_CELL_SIZE = 40;	// フィールドのセルサイズ
+	static constexpr int PLAYER_FIELD_CELL_Y = 5;												// プレイヤーフィールドのセル高さ
+	static constexpr int PLAYER_FIELD_CELL_X = 5;												// プレイヤーフィールドのセル幅
+	static constexpr int PLAYER_FIELD_CELL_TOTAL = PLAYER_FIELD_CELL_Y * PLAYER_FIELD_CELL_X;	// プレイヤーフィールドのセル総数
+	static constexpr int PLAYER_FIELD_CELL_SIZE = 50;											// プレイヤーフィールドのセルサイズ
+	static constexpr int ENEMY_FIELD_CELL_Y = 4;												// エネミーフィールドのセル高さ
+	static constexpr int ENEMY_FIELD_CELL_X = 4;												// エネミーフィールドのセル幅
+	static constexpr int ENEMY_FIELD_CELL_TOTAL = ENEMY_FIELD_CELL_Y * ENEMY_FIELD_CELL_X;		// エネミーフィールドのセル総数
+	static constexpr int ENEMY_FIELD_CELL_SIZE = 50;											// エネミーフィールドのセルサイズ
+	static constexpr int SELECT_FIELD_CELL_Y = 7;												// セレクトフィールドのセル高さ
+	static constexpr int SELECT_FIELD_CELL_X = 48;												// セレクトフィールドのセル幅
+	static constexpr int SELECT_FIELD_CELL_TOTAL = SELECT_FIELD_CELL_Y * SELECT_FIELD_CELL_X;	// セレクトフィールドのセル総数
+	static constexpr int SELECT_FIELD_CELL_SIZE = 40;											// セレクトフィールドのセルサイズ
+	static constexpr int MAX_ACTION_COUNT = PLAYER_FIELD_CELL_TOTAL + ENEMY_FIELD_CELL_TOTAL;	// 最大行動回数
+	int currentActionCount_;	// 現在の行動回数
 
 	enum class CELL_TYPE
 	{

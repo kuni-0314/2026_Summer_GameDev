@@ -187,8 +187,8 @@ SceneManager::SCENE_ID SceneManager::GetSceneID(void)
 
 float SceneManager::GetDeltaTime(void) const
 {
-	return 1.0f / 60.0f;
-	//return deltaTime_;
+	//return 1.0f / 60.0f;
+	return deltaTime_;
 }
 
 Camera* SceneManager::GetCamera(void) const

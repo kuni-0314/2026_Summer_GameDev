@@ -14,7 +14,8 @@ public:
 		DEBUFF,
 	};
 
-	CellBase(const CELL_TYPE type = CELL_TYPE::NONE, const Vector2& pos = Vector2(0, 0), const int size = 50);
+	CellBase(CELL_TYPE type, Vector2 pos, int size);
+	CellBase(CELL_TYPE type, Vector2 pos, int size, int actionCount);
 	~CellBase(void);
 
 	void Init(void);
@@ -40,11 +41,11 @@ public:
 	static constexpr unsigned int CELL_DEBUFF_COLOR = 0xFFFF00;
 
 protected:
+	CELL_TYPE type_;
 	Vector2 pos_;
-	const CELL_TYPE type_;
-	const int CELL_SIZE;
-	bool isActive_;
+	int size_;
 	int actionCount_;
 	unsigned int color_;
+	bool isActive_;
 };
 

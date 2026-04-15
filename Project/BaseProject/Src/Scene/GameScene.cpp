@@ -120,8 +120,48 @@ void GameScene::Update(void)
 	player_->Update();
 	enemyManager_->Update();
 
+	// セルの行動タイミングを設定
+	int maxCells = max(PLAYER_FIELD_CELL_TOTAL, ENEMY_FIELD_CELL_TOTAL);
+	short cnt = 0;
+	for (int i = 0; i < maxCells; i++)
+	{
+		if (i < PLAYER_FIELD_CELL_TOTAL)
+		{
+			playerCells_[i]->SetActionCount(++cnt);
+		}
+		if (i < ENEMY_FIELD_CELL_TOTAL)
+		{
+			enemyCells_[i]->SetActionCount(++cnt);
+		}
+	}
 
-	
+	// 現在の行動回数に応じてセルをアクティブにする
+
+	const float ACTION_INTERVAL_TIME = 0.25f;	// 行動間隔時間（秒）
+	static float actionTimer_ = 0.0f;	// 行動タイマー
+	actionTimer_ += sceMng_.GetDeltaTime();
+	if (actionTimer_ >= ACTION_INTERVAL_TIME)
+	{
+		currentActionCount_++;
+		if (currentActionCount_ >= MAX_ACTION_COUNT)
+		{
+			currentActionCount_ = 0;
+		}
+		actionTimer_ -= ACTION_INTERVAL_TIME;
+	}
+
+	for (auto& cell : playerCells_)
+	{
+		cell->SetActive(cell->GetActionCount() == currentActionCount_);
+	}
+	for (auto& cell : enemyCells_)
+	{
+		cell->SetActive(cell->GetActionCount() == currentActionCount_);
+	}
+	if (currentActionCount_ >= MAX_ACTION_COUNT)
+	{
+		currentActionCount_ = 0;
+	}
 }
 
 void GameScene::Draw(void)
@@ -139,80 +179,35 @@ void GameScene::Draw(void)
 	DrawBox(0, 0, Application::SCREEN_SIZE_X, Application::SCREEN_SIZE_Y, GetColor(0, 0, 0), true);
 	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
 
-	static int currentActionCount = 0;
-	static int time = 0;
-	if (time % 30 == 0) currentActionCount++;
-	time++;
 
 	unsigned int color = 0;
 	short cnt = 0;
 	
 	// 総行動回数
-	int playerTotalActionCount = PLAYER_FIELD_CELL_X * PLAYER_FIELD_CELL_Y;
-	int enemyTotalActionCount = ENEMY_FIELD_CELL_X * ENEMY_FIELD_CELL_Y;
-	int totalActionCount = playerTotalActionCount + enemyTotalActionCount;
-
-	bool isFill = false;
+	int totalActionCount = PLAYER_FIELD_CELL_TOTAL + ENEMY_FIELD_CELL_TOTAL;
 
 	// プレイヤーと敵のセルを交互に描画
-	int maxCells = (playerTotalActionCount > enemyTotalActionCount) ? playerTotalActionCount : enemyTotalActionCount;
+	int maxCells = (PLAYER_FIELD_CELL_TOTAL > ENEMY_FIELD_CELL_TOTAL) ? PLAYER_FIELD_CELL_TOTAL : ENEMY_FIELD_CELL_TOTAL;
 
 	for (int i = 0; i < maxCells; i++)
 	{
-		if (currentActionCount >= totalActionCount)
-		{
-			currentActionCount = 0; // 行動回数が総行動回数を超えたらリセット
-		}
-		else if (currentActionCount == cnt)
-		{
-			isFill = true;
-		}
-		else
-		{
-			isFill = false;
-		}
-
 		// プレイヤーのセル
-		if (i < playerTotalActionCount)
+		if (i < PLAYER_FIELD_CELL_TOTAL)
 		{
-			cnt++;
-			playerCells_[i]->SetActive(isFill);
-			playerCells_[i]->SetActionCount(cnt);
 			playerCells_[i]->Draw();
 		}
-
-		if (currentActionCount >= totalActionCount)
-		{
-			currentActionCount = 0; // 行動回数が総行動回数を超えたらリセット
-		}
-		else if (currentActionCount == cnt)
-		{
-			isFill = true;
-		}
-		else
-		{
-			isFill = false;
-		}
-
 		// 敵のセル
-		if (i < enemyTotalActionCount)
+		if (i < ENEMY_FIELD_CELL_TOTAL)
 		{
-			cnt++;
-			enemyCells_[i]->SetActive(isFill);
-			enemyCells_[i]->SetActionCount(cnt);
 			enemyCells_[i]->Draw();
 		}
 	}
 
-	cnt = 0;
 	for (int y = 0; y < SELECT_FIELD_CELL_Y; y++)
 	{
 		for (int x = 0; x < SELECT_FIELD_CELL_X; x++)
 		{
 			// 仮でフィールドを正方形で前面に枠のみ描画（下側に配置）
-			cnt++;
-			selectCells_[y * SELECT_FIELD_CELL_X + x]->SetActive(isFill);
-			selectCells_[y * SELECT_FIELD_CELL_X + x]->SetActionCount(cnt);
 			selectCells_[y * SELECT_FIELD_CELL_X + x]->Draw();
 		}
 	}
