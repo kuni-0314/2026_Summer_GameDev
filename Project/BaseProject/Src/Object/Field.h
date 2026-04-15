@@ -1,13 +1,14 @@
 #pragma once
 #include <vector>
 #include <memory>
+#include "../Common/Vector2.h"
 class CellBase;
 
-class FieldBase
+class Field
 {
 public:
-	FieldBase(void);
-	~FieldBase(void);
+	Field(void);
+	~Field(void);
 
 	void Init(void);
 	void Update(void);
@@ -15,6 +16,13 @@ public:
 	void Release(void);
 
 protected:
+	//std::vector<std::shared_ptr<CellBase>> cells_;
+	//const int CELL_X;		// セル幅
+	//const int CELL_Y;		// セル高さ
+	//const int CELL_TOTAL;	// セル総数
+	//const int CELL_SIZE;	// セルサイズ
+	//Vector2 pos_;			// 描画位置
+
 	std::vector<std::shared_ptr<CellBase>> playerCells_;	// tmp
 	std::vector<std::shared_ptr<CellBase>> enemyCells_;		// tmp
 	std::vector<std::shared_ptr<CellBase>> selectCells_;	// tmp

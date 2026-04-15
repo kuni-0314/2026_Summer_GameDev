@@ -1,17 +1,17 @@
 #include "../Application.h"
 #include "../Manager/SceneManager.h"
 #include "../Object/CellBase.h"
-#include "FieldBase.h"
+#include "Field.h"
 
-FieldBase::FieldBase(void)
+Field::Field(void)
 {
 }
 
-FieldBase::~FieldBase(void)
+Field::~Field(void)
 {
 }
 
-void FieldBase::Init(void)
+void Field::Init(void)
 {
 	for (int y = 0; y < PLAYER_FIELD_CELL_Y; y++)
 	{
@@ -55,7 +55,7 @@ void FieldBase::Init(void)
 	}
 }
 
-void FieldBase::Update(void)
+void Field::Update(void)
 {
 	// セルの行動タイミングを設定
 	int maxCells = max(PLAYER_FIELD_CELL_TOTAL, ENEMY_FIELD_CELL_TOTAL);
@@ -101,7 +101,7 @@ void FieldBase::Update(void)
 	}
 }
 
-void FieldBase::Draw(void)
+void Field::Draw(void)
 {
 	unsigned int color = 0;
 	short cnt = 0;
@@ -136,6 +136,6 @@ void FieldBase::Draw(void)
 	}
 }
 
-void FieldBase::Release(void)
+void Field::Release(void)
 {
 }

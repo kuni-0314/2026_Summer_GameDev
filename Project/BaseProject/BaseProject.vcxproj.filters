@@ -162,7 +162,7 @@
     <ClCompile Include="Src\Object\CellBase.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="Src\Object\FieldBase.cpp">
+    <ClCompile Include="Src\Object\Field.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
     <ClCompile Include="Src\Object\CellAttack.cpp">
@@ -287,7 +287,7 @@
     <ClInclude Include="Src\Object\CellBase.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="Src\Object\FieldBase.h">
+    <ClInclude Include="Src\Object\Field.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
     <ClInclude Include="Src\Object\CellAttack.h">

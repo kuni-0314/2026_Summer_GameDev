@@ -7,7 +7,7 @@
 #include "../Object/Actor/SkyDome/SkyDome.h"
 #include "../Object/Charactor/Player/Player.h"
 #include "../Object/Charactor/Enemy/EnemyManger.h"
-#include "../Object/FieldBase.h"
+#include "../Object/Field.h"
 #include "GameScene.h"
 
 GameScene::GameScene(void)
@@ -63,8 +63,8 @@ void GameScene::Init(void)
 	camera->AddHitCollider(stageCollider);
 
 	// フィールドベース
-	fieldBase_ = new FieldBase();
-	fieldBase_->Init();
+	field_ = new Field();
+	field_->Init();
 }
 
 void GameScene::Update(void)
@@ -82,7 +82,7 @@ void GameScene::Update(void)
 	player_->Update();
 	enemyManager_->Update();
 
-	fieldBase_->Update();
+	field_->Update();
 }
 
 void GameScene::Draw(void)
@@ -100,7 +100,7 @@ void GameScene::Draw(void)
 	DrawBox(0, 0, Application::SCREEN_SIZE_X, Application::SCREEN_SIZE_Y, GetColor(0, 0, 0), true);
 	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
 
-	fieldBase_->Draw();
+	field_->Draw();
 }
 
 void GameScene::Release(void)

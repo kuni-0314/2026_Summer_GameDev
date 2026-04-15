@@ -24,7 +24,7 @@
     <ClCompile Include="Src\Object\CellDebuff.cpp" />
     <ClCompile Include="Src\Object\CellDefense.cpp" />
     <ClCompile Include="Src\Object\CellNone.cpp" />
-    <ClCompile Include="Src\Object\FieldBase.cpp" />
+    <ClCompile Include="Src\Object\Field.cpp" />
     <ClCompile Include="Src\Object\CellBase.cpp" />
     <ClCompile Include="Src\Object\Charactor\Enemy\Robot\EnemyRobot.cpp" />
     <ClCompile Include="Src\Scene\DebugScene.cpp" />
@@ -67,7 +67,7 @@
     <ClInclude Include="Src\Object\CellDebuff.h" />
     <ClInclude Include="Src\Object\CellDefense.h" />
     <ClInclude Include="Src\Object\CellNone.h" />
-    <ClInclude Include="Src\Object\FieldBase.h" />
+    <ClInclude Include="Src\Object\Field.h" />
     <ClInclude Include="Src\Object\CellBase.h" />
     <ClInclude Include="Src\Object\Charactor\Enemy\Robot\EnemyRobot.h" />
     <ClInclude Include="Src\Scene\DebugScene.h" />
