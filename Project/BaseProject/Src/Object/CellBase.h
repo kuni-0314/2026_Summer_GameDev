@@ -16,12 +16,12 @@ public:
 
 	CellBase(CELL_TYPE type, Vector2 pos, int size);
 	CellBase(CELL_TYPE type, Vector2 pos, int size, int actionCount);
-	~CellBase(void);
+	virtual ~CellBase(void);
 
-	void Init(void);
-	void Update(void);
-	void Draw(void);
-	void Release(void);
+	virtual void Init(void);
+	virtual void Update(void);
+	virtual void Draw(void);
+	virtual void Release(void);
 
 	const Vector2& GetPos(void) const { return pos_; }
 	void SetPos(const Vector2& pos) { pos_ = pos; }
