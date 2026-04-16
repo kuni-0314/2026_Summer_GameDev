@@ -7,7 +7,7 @@
 #include "../Object/Actor/SkyDome/SkyDome.h"
 #include "../Object/Charactor/Player/Player.h"
 #include "../Object/Charactor/Enemy/EnemyManger.h"
-#include "../Object/Field.h"
+#include "../Object/FieldManager.h"
 #include "GameScene.h"
 
 GameScene::GameScene(void)
@@ -30,8 +30,6 @@ void GameScene::Init(void)
 	stage_ = new Stage();
 	stage_->Init();
 
-
-
 	//プレイヤー
 	player_ = new Player();
 	player_->Init();
@@ -51,25 +49,23 @@ void GameScene::Init(void)
 	enemyManager_->AddHitCollider(
 		player_->GetOwnCollider(static_cast<int>(CharactorBase::COLLIDER_TYPE::CAPSULE)));
 	
-
 	//スカイドーム
 	skyDome_ = new SkyDome(player_->GetTransform());
 	skyDome_->Init();
 
+	// フィールド
+	fieldManager_ = new FieldManager(this);
+	fieldManager_->Init();
+
 	//追従カメラ
 	Camera* camera = sceMng_.GetCamera();
-	camera->SetFollow(&player_->GetTransform());//参照型でプレイヤ-のポインタを持ってくる
+	camera->SetFollow(&player_->GetTransform());
 	sceMng_.GetCamera()->ChangeMode(Camera::MODE::FOLLOW);
 	camera->AddHitCollider(stageCollider);
-
-	// フィールドベース
-	field_ = new Field();
-	field_->Init();
 }
 
 void GameScene::Update(void)
 {
-
 	// シーン遷移
 	auto const& ins = InputManager::GetInstance();
 	if (ins.IsTrgDown(KEY_INPUT_SPACE))
@@ -81,8 +77,7 @@ void GameScene::Update(void)
 	skyDome_->Update();//スカイドーム更新
 	player_->Update();
 	enemyManager_->Update();
-
-	field_->Update();
+	fieldManager_->Update();
 }
 
 void GameScene::Draw(void)
@@ -95,17 +90,21 @@ void GameScene::Draw(void)
 
 	enemyManager_->Draw();
 
+
 	// 黒を描画（少し透過）
 	SetDrawBlendMode(DX_BLENDMODE_ALPHA, 128);
 	DrawBox(0, 0, Application::SCREEN_SIZE_X, Application::SCREEN_SIZE_Y, GetColor(0, 0, 0), true);
 	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
 
-	field_->Draw();
+	fieldManager_->Draw();
 }
 
 void GameScene::Release(void)
 {
-	//解放処理
+	// フィールド解放
+	fieldManager_->Release();
+	delete fieldManager_;
+	// ステージ解放
 	stage_->Release();
 	delete stage_;
 	//スカイドーム解放

@@ -1,12 +1,10 @@
 #pragma once
-#include <memory>
-#include <vector>
 #include "SceneBase.h"
 class Stage;
 class SkyDome;
 class Player;
 class EnemyManager;
-class Field;
+class FieldManager;
 
 class GameScene : public SceneBase
 {
@@ -32,10 +30,9 @@ public:
 	void Release(void) override;
 
 private:
-
 	Stage* stage_;
 	SkyDome* skyDome_;
 	Player* player_;
 	EnemyManager* enemyManager_;
-	Field* field_;
+	FieldManager* fieldManager_;
 };

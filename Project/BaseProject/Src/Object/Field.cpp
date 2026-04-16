@@ -1,9 +1,18 @@
 #include "../Application.h"
 #include "../Manager/SceneManager.h"
-#include "../Object/CellBase.h"
+#include "../Scene/GameScene.h"
+#include "../Object/FieldManager.h"
+#include "../Object/Cell/CellBase.h"
 #include "Field.h"
 
-Field::Field(void)
+Field::Field(FieldManager* fieldManager, int CELL_NUM_X, int CELL_NUM_Y, int CELL_SIZE, Vector2& pos)
+	:
+	fieldManager_(fieldManager),
+	CELL_NUM_X(CELL_NUM_X),
+	CELL_NUM_Y(CELL_NUM_Y),
+	CELL_TOTAL(CELL_NUM_X * CELL_NUM_Y),
+	CELL_SIZE(CELL_SIZE),
+	pos_(pos)
 {
 }
 
@@ -13,7 +22,22 @@ Field::~Field(void)
 
 void Field::Init(void)
 {
-	for (int y = 0; y < PLAYER_FIELD_CELL_Y; y++)
+	for (int y = 0;y < CELL_SIZE; y++)
+	{
+		for (int x = 0; x < CELL_NUM_X; x++)
+		{
+			std::shared_ptr<CellBase> cell = std::make_shared<CellBase>(
+				static_cast<CellBase::CELL_TYPE>(0),
+				Vector2(x * CELL_SIZE + pos_.x, y * CELL_SIZE + pos_.y),
+				CELL_SIZE
+			);
+			cell->Init();
+			cells_.push_back(cell);
+		}
+	}
+
+
+	/*for (int y = 0; y < PLAYER_FIELD_CELL_Y; y++)
 	{
 		for (int x = 0; x < PLAYER_FIELD_CELL_X; x++)
 		{
@@ -52,52 +76,14 @@ void Field::Init(void)
 			cell->Init();
 			selectCells_.push_back(cell);
 		}
-	}
+	}*/
 }
 
 void Field::Update(void)
 {
-	// セルの行動タイミングを設定
-	int maxCells = max(PLAYER_FIELD_CELL_TOTAL, ENEMY_FIELD_CELL_TOTAL);
-	short cnt = 0;
-	for (int i = 0; i < maxCells; i++)
+	for (auto& cell : cells_)
 	{
-		if (i < PLAYER_FIELD_CELL_TOTAL)
-		{
-			playerCells_[i]->SetActionCount(++cnt);
-		}
-		if (i < ENEMY_FIELD_CELL_TOTAL)
-		{
-			enemyCells_[i]->SetActionCount(++cnt);
-		}
-	}
-
-	// 現在の行動回数に応じてセルをアクティブにする
-
-	const float ACTION_INTERVAL_TIME = 0.25f;	// 行動間隔時間（秒）
-	static float actionTimer_ = 0.0f;	// 行動タイマー
-	actionTimer_ += SceneManager::GetInstance().GetDeltaTime();
-	if (actionTimer_ >= ACTION_INTERVAL_TIME)
-	{
-		currentActionCount_++;
-		if (currentActionCount_ >= MAX_ACTION_COUNT)
-		{
-			currentActionCount_ = 0;
-		}
-		actionTimer_ -= ACTION_INTERVAL_TIME;
-	}
-
-	for (auto& cell : playerCells_)
-	{
-		cell->SetActive(cell->GetActionCount() == currentActionCount_);
-	}
-	for (auto& cell : enemyCells_)
-	{
-		cell->SetActive(cell->GetActionCount() == currentActionCount_);
-	}
-	if (currentActionCount_ >= MAX_ACTION_COUNT)
-	{
-		currentActionCount_ = 0;
+		cell->SetActive(cell->GetActionCount() == fieldManager_->GetCurrentActionCount());
 	}
 }
 
@@ -106,36 +92,26 @@ void Field::Draw(void)
 	unsigned int color = 0;
 	short cnt = 0;
 
-	// 総行動回数
-	int totalActionCount = PLAYER_FIELD_CELL_TOTAL + ENEMY_FIELD_CELL_TOTAL;
-
-	// プレイヤーと敵のセルを交互に描画
-	int maxCells = (PLAYER_FIELD_CELL_TOTAL > ENEMY_FIELD_CELL_TOTAL) ? PLAYER_FIELD_CELL_TOTAL : ENEMY_FIELD_CELL_TOTAL;
-
-	for (int i = 0; i < maxCells; i++)
+	for (int i = 0; i < CELL_TOTAL; i++)
 	{
-		// プレイヤーのセル
-		if (i < PLAYER_FIELD_CELL_TOTAL)
-		{
-			playerCells_[i]->Draw();
-		}
-		// 敵のセル
-		if (i < ENEMY_FIELD_CELL_TOTAL)
-		{
-			enemyCells_[i]->Draw();
-		}
+		cells_[i]->Draw();
 	}
 
-	for (int y = 0; y < SELECT_FIELD_CELL_Y; y++)
-	{
-		for (int x = 0; x < SELECT_FIELD_CELL_X; x++)
-		{
-			// 仮でフィールドを正方形で前面に枠のみ描画（下側に配置）
-			selectCells_[y * SELECT_FIELD_CELL_X + x]->Draw();
-		}
-	}
+	//for (int y = 0; y < SELECT_FIELD_CELL_Y; y++)
+	//{
+	//	for (int x = 0; x < SELECT_FIELD_CELL_X; x++)
+	//	{
+	//		// 仮でフィールドを正方形で前面に枠のみ描画（下側に配置）
+	//		selectCells_[y * SELECT_FIELD_CELL_X + x]->Draw();
+	//	}
+	//}
 }
 
 void Field::Release(void)
 {
+}
+
+void Field::SetActionCount(const int index, const int actionCount)
+{
+	cells_[index]->SetActionCount(actionCount);
 }
