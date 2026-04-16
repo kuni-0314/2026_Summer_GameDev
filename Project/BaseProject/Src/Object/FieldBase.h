@@ -5,16 +5,16 @@
 class FieldManager;
 class CellBase;
 
-class Field
+class FieldBase
 {
 public:
-	Field(FieldManager* fieldManager, int CELL_NUM_X, int CELL_NUM_Y, int CELL_SIZE, Vector2& pos);
-	~Field(void);
+	FieldBase(FieldManager* fieldManager, int CELL_NUM_X, int CELL_NUM_Y, int CELL_SIZE, Vector2& pos);
+	virtual ~FieldBase(void);
 
-	void Init(void);
-	void Update(void);
-	void Draw(void);
-	void Release(void);
+	virtual void Init(void);
+	virtual void Update(void);
+	virtual void Draw(void);
+	virtual void Release(void);
 
 	void SetActionCount(const int index, const int actionCount);	// ƒZƒ‹‚Ìs“®‰ñ”‚ğİ’è
 
@@ -28,4 +28,3 @@ protected:
 
 	FieldManager* fieldManager_;
 };
-

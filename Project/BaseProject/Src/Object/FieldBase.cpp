@@ -3,9 +3,9 @@
 #include "../Scene/GameScene.h"
 #include "../Object/FieldManager.h"
 #include "../Object/Cell/CellBase.h"
-#include "Field.h"
+#include "FieldBase.h"
 
-Field::Field(FieldManager* fieldManager, int CELL_NUM_X, int CELL_NUM_Y, int CELL_SIZE, Vector2& pos)
+FieldBase::FieldBase(FieldManager* fieldManager, int CELL_NUM_X, int CELL_NUM_Y, int CELL_SIZE, Vector2& pos)
 	:
 	fieldManager_(fieldManager),
 	CELL_NUM_X(CELL_NUM_X),
@@ -16,13 +16,13 @@ Field::Field(FieldManager* fieldManager, int CELL_NUM_X, int CELL_NUM_Y, int CEL
 {
 }
 
-Field::~Field(void)
+FieldBase::~FieldBase(void)
 {
 }
 
-void Field::Init(void)
+void FieldBase::Init(void)
 {
-	for (int y = 0;y < CELL_SIZE; y++)
+	for (int y = 0; y < CELL_NUM_Y; y++)
 	{
 		for (int x = 0; x < CELL_NUM_X; x++)
 		{
@@ -37,7 +37,7 @@ void Field::Init(void)
 	}
 }
 
-void Field::Update(void)
+void FieldBase::Update(void)
 {
 	for (auto& cell : cells_)
 	{
@@ -46,23 +46,20 @@ void Field::Update(void)
 	}
 }
 
-void Field::Draw(void)
+void FieldBase::Draw(void)
 {
-	unsigned int color = 0;
-	short cnt = 0;
-
 	for (int i = 0; i < CELL_TOTAL; i++)
 	{
 		cells_[i]->Draw();
 	}
 }
 
-void Field::Release(void)
+void FieldBase::Release(void)
 {
 	cells_.clear();
 }
 
-void Field::SetActionCount(const int index, const int actionCount)
+void FieldBase::SetActionCount(const int index, const int actionCount)
 {
 	cells_[index]->SetActionCount(actionCount);
 }
