@@ -43,6 +43,7 @@ void EnemyManager::Release(void)
 	{
 		enemy->Release();
 		delete enemy;
+		enemy = nullptr;
 	}
 }
 void EnemyManager::AddHitCollider(const ColliderBase* hitCollider)

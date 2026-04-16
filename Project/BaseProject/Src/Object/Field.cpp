@@ -35,55 +35,14 @@ void Field::Init(void)
 			cells_.push_back(cell);
 		}
 	}
-
-
-	/*for (int y = 0; y < PLAYER_FIELD_CELL_Y; y++)
-	{
-		for (int x = 0; x < PLAYER_FIELD_CELL_X; x++)
-		{
-			std::shared_ptr<CellBase> cell = std::make_shared<CellBase>(
-				static_cast<CellBase::CELL_TYPE>(playerField_[y][x]),
-				Vector2(x * PLAYER_FIELD_CELL_SIZE, y * PLAYER_FIELD_CELL_SIZE),
-				PLAYER_FIELD_CELL_SIZE
-			);
-			cell->Init();
-
-			playerCells_.push_back(cell);
-		}
-	}
-	for (int y = 0; y < ENEMY_FIELD_CELL_Y; y++)
-	{
-		for (int x = 0; x < ENEMY_FIELD_CELL_X; x++)
-		{
-			std::shared_ptr<CellBase> cell = std::make_shared<CellBase>(
-				static_cast<CellBase::CELL_TYPE>(enemyField_[y][x]),
-				Vector2(x * ENEMY_FIELD_CELL_SIZE + Application::SCREEN_SIZE_X / 2, y * ENEMY_FIELD_CELL_SIZE),
-				ENEMY_FIELD_CELL_SIZE
-			);
-			cell->Init();
-			enemyCells_.push_back(cell);
-		}
-	}
-	for (int y = 0; y < SELECT_FIELD_CELL_Y; y++)
-	{
-		for (int x = 0; x < SELECT_FIELD_CELL_X; x++)
-		{
-			std::shared_ptr<CellBase> cell = std::make_shared<CellBase>(
-				static_cast<CellBase::CELL_TYPE>(selectField_[y][x]),
-				Vector2(x * SELECT_FIELD_CELL_SIZE, y * SELECT_FIELD_CELL_SIZE + Application::SCREEN_SIZE_Y - SELECT_FIELD_CELL_Y * SELECT_FIELD_CELL_SIZE),
-				SELECT_FIELD_CELL_SIZE
-			);
-			cell->Init();
-			selectCells_.push_back(cell);
-		}
-	}*/
 }
 
 void Field::Update(void)
 {
 	for (auto& cell : cells_)
 	{
-		cell->SetActive(cell->GetActionCount() == fieldManager_->GetCurrentActionCount());
+		cell->Update();
+		//cell->SetActive(cell->GetActionCount() == fieldManager_->GetCurrentActionCount());
 	}
 }
 
@@ -96,19 +55,11 @@ void Field::Draw(void)
 	{
 		cells_[i]->Draw();
 	}
-
-	//for (int y = 0; y < SELECT_FIELD_CELL_Y; y++)
-	//{
-	//	for (int x = 0; x < SELECT_FIELD_CELL_X; x++)
-	//	{
-	//		// 仮でフィールドを正方形で前面に枠のみ描画（下側に配置）
-	//		selectCells_[y * SELECT_FIELD_CELL_X + x]->Draw();
-	//	}
-	//}
 }
 
 void Field::Release(void)
 {
+	cells_.clear();
 }
 
 void Field::SetActionCount(const int index, const int actionCount)

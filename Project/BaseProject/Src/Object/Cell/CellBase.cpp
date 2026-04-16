@@ -51,6 +51,18 @@ void CellBase::Init(void)
 
 void CellBase::Update(void)
 {
+	// セル内にマウスカーソルがあるかどうか
+	int mouseX, mouseY;
+	GetMousePoint(&mouseX, &mouseY);
+	if (mouseX >= pos_.x && mouseX < pos_.x + size_ &&
+		mouseY >= pos_.y && mouseY < pos_.y + size_)
+	{
+		SetActive(true);
+	}
+	else
+	{
+		SetActive(false);
+	}
 }
 
 void CellBase::Draw(void)

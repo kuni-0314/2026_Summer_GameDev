@@ -152,18 +152,22 @@ void SceneManager::Destroy(void)
 	// シーンの解放
 	if (scene_ != nullptr)
 	{
+		scene_->Release();
 		delete scene_;
+		scene_ = nullptr;
 	}
 
 	// フェード機能の解放
 	delete fader_;
+	fader_ = nullptr;
 
 	camera_->Release();
 	delete camera_;
-
+	camera_ = nullptr;
 
 	// インスタンスのメモリ解放
 	delete instance_;
+	instance_ = nullptr;
 
 }
 
@@ -186,7 +190,7 @@ SceneManager::SCENE_ID SceneManager::GetSceneID(void)
 }
 
 float SceneManager::GetDeltaTime(void) const
-{
+{	
 	//return 1.0f / 60.0f;
 	return deltaTime_;
 }

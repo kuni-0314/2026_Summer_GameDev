@@ -77,6 +77,22 @@ void Camera::DrawDebug(void)
 
 void Camera::Release(void)
 {
+	// コライダの解放
+	for (auto& pair : ownColliders_)
+	{
+		if (pair.second != nullptr)
+		{
+			delete pair.second;
+			pair.second = nullptr;
+		}
+	}
+	ownColliders_.clear();
+
+	// 追従対象の参照をクリア
+	followTransform_ = nullptr;
+
+	// 衝突対象のコライダリストをクリア
+	hitColliders_.clear();
 }
 
 void Camera::SetFollow(const Transform* follow)

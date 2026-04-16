@@ -64,6 +64,7 @@ void FieldManager::Update(void)
 
 	playerField_->Update();
 	enemyField_->Update();
+	selectField_->Update();
 
 	if (currentActionCount_ >= MAX_ACTION_COUNT)
 	{
@@ -81,8 +82,13 @@ void FieldManager::Draw(void)
 void FieldManager::Release(void)
 {
 	selectField_->Release();
+	selectField_.reset();
+	
 	enemyField_->Release();
+	enemyField_.reset();
+	
 	playerField_->Release();
+	playerField_.reset();
 }
 
 int FieldManager::GetMaxFieldCell(void) const

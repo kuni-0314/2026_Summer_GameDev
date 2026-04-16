@@ -93,6 +93,7 @@ void ResourceManager::Destroy(void)
 	}
 	resourcesMap_.clear();
 	delete instance_;
+	instance_ = nullptr;
 }
 
 const Resource& ResourceManager::Load(SRC src)

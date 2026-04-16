@@ -16,7 +16,7 @@ public:
 	void Draw(void);
 	void Release(void);
 
-	void SetActionCount(const int index, const int actionCount);	// 
+	void SetActionCount(const int index, const int actionCount);	// ƒZƒ‹‚Ìs“®‰ñ”‚ğİ’è
 
 protected:
 	std::vector<std::shared_ptr<CellBase>> cells_;
@@ -27,6 +27,5 @@ protected:
 	Vector2 pos_;			// •`‰æˆÊ’u
 
 	FieldManager* fieldManager_;
-
 };
 

@@ -1,3 +1,5 @@
+#define _CRTDBG_MAP_ALLOC
+#include <crtdbg.h>
 #include <DxLib.h>
 #include <EffekseerForDXLib.h>
 #include "Manager/InputManager.h"
@@ -5,6 +7,10 @@
 #include "Manager/SceneManager.h"
 #include "Application.h"
 #include "Common/FpsController.h"
+
+#ifdef _DEBUG
+#define new new(_NORMAL_BLOCK, __FILE__, __LINE__)
+#endif
 
 Application* Application::instance_ = nullptr;
 
@@ -30,6 +36,18 @@ Application& Application::GetInstance(void)
 
 void Application::Init(void)
 {
+	// メモリリーク検出
+	_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
+
+#ifdef _DEBUG
+	// 出力ウィンドウにメモリリーク情報を詳細表示
+	_CrtSetReportMode(_CRT_WARN, _CRTDBG_MODE_DEBUG);
+
+	// 特定のメモリ割り当て番号でブレークする場合（出力ウィンドウに表示される番号を使用）
+	// 例: {123} のようなメモリ割り当て番号が表示されたら、その番号を設定
+	// _CrtSetBreakAlloc(123);
+	//_CrtSetBreakAlloc(17282);
+#endif
 
 	// アプリケーションの初期設定
 	SetWindowText("3DAction");
@@ -109,6 +127,7 @@ void Application::Destroy(void)
 {
 	// FPS制御メモリ解放
 	delete fpsController_;
+	fpsController_ = nullptr;
 
 	InputManager::GetInstance().Destroy();
 	ResourceManager::GetInstance().Destroy();
@@ -127,7 +146,12 @@ void Application::Destroy(void)
 
 	// インスタンスのメモリ解放
 	delete instance_;
+	instance_ = nullptr;
 
+	#ifdef _DEBUG
+	// プログラム終了直前にメモリリークレポートを出力
+	_CrtDumpMemoryLeaks();
+	#endif
 }
 
 bool Application::IsInitFail(void) const

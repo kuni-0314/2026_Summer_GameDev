@@ -104,13 +104,13 @@ void InputManager::Update(void)
 void InputManager::Destroy(void)
 {
 
-	// キー情報のクリア
+	// キー類のクリア
 	keyInfos_.clear();
 	mouseInfos_.clear();
 
 	// インスタンスのメモリ解放
 	delete instance_;
-
+	instance_ = nullptr;
 }
 
 void InputManager::Add(int key)
