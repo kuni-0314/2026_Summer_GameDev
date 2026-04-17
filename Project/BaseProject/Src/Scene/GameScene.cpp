@@ -90,7 +90,6 @@ void GameScene::Draw(void)
 
 	enemyManager_->Draw();
 
-
 	// çïÇï`âÊÅiè≠ÇµìßâﬂÅj
 	SetDrawBlendMode(DX_BLENDMODE_ALPHA, 128);
 	DrawBox(0, 0, Application::SCREEN_SIZE_X, Application::SCREEN_SIZE_Y, GetColor(0, 0, 0), true);
