@@ -19,8 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Src\Object\FieldBase.cpp" />
-    <ClCompile Include="Src\Object\FieldEnemy.cpp" />
+    <ClCompile Include="Src\Object\Field.cpp" />
     <ClCompile Include="Src\Object\FieldManager.cpp" />
     <ClCompile Include="Src\Object\Cell\CellAttack.cpp" />
     <ClCompile Include="Src\Object\Cell\CellBuff.cpp" />
@@ -29,8 +28,6 @@
     <ClCompile Include="Src\Object\Cell\CellNone.cpp" />
     <ClCompile Include="Src\Object\Cell\CellBase.cpp" />
     <ClCompile Include="Src\Object\Charactor\Enemy\Robot\EnemyRobot.cpp" />
-    <ClCompile Include="Src\Object\FieldPlayer.cpp" />
-    <ClCompile Include="Src\Object\FieldSelect.cpp" />
     <ClCompile Include="Src\Scene\DebugScene.cpp" />
     <ClCompile Include="Src\Object\Charactor\Enemy\EnemyManger.cpp" />
     <ClCompile Include="Src\Object\Charactor\Enemy\Rat\EnemyRat.cpp" />
@@ -66,8 +63,7 @@
     <ClCompile Include="Src\Object\Actor\UI\UIBase.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Src\Object\FieldBase.h" />
-    <ClInclude Include="Src\Object\FieldEnemy.h" />
+    <ClInclude Include="Src\Object\Field.h" />
     <ClInclude Include="Src\Object\FieldManager.h" />
     <ClInclude Include="Src\Object\Cell\CellAttack.h" />
     <ClInclude Include="Src\Object\Cell\CellBuff.h" />
@@ -76,8 +72,6 @@
     <ClInclude Include="Src\Object\Cell\CellNone.h" />
     <ClInclude Include="Src\Object\Cell\CellBase.h" />
     <ClInclude Include="Src\Object\Charactor\Enemy\Robot\EnemyRobot.h" />
-    <ClInclude Include="Src\Object\FieldPlayer.h" />
-    <ClInclude Include="Src\Object\FieldSelect.h" />
     <ClInclude Include="Src\Scene\DebugScene.h" />
     <ClInclude Include="Src\Object\Charactor\Enemy\EnemyManger.h" />
     <ClInclude Include="Src\Object\Charactor\Enemy\Rat\EnemyRat.h" />

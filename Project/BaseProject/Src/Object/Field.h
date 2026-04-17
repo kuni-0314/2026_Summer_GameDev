@@ -5,11 +5,19 @@
 class FieldManager;
 class CellBase;
 
-class FieldBase
+class Field
 {
 public:
-	FieldBase(FieldManager* fieldManager, int CELL_NUM_X, int CELL_NUM_Y, int CELL_SIZE, Vector2& pos);
-	virtual ~FieldBase(void);
+	enum class FIELD_TYPE
+	{
+		NONE = 0,
+		PLAYER,
+		ENEMY,
+		SELECT,
+	};
+
+	Field(FieldManager* fieldManager, FIELD_TYPE fieldType, int CELL_NUM_X, int CELL_NUM_Y, int CELL_SIZE, Vector2& pos);
+	virtual ~Field(void);
 
 	virtual void Init(void);
 	virtual void Update(void);
@@ -19,7 +27,9 @@ public:
 	void SetActionCount(const int index, const int actionCount);	// セルの行動回数を設定
 
 protected:
-	std::vector<std::shared_ptr<CellBase>> cells_;
+
+	std::vector<std::unique_ptr<CellBase>> cells_;	// セルの配列
+	FIELD_TYPE fieldType_;	// フィールドタイプ
 	const int CELL_NUM_X;	// セル幅
 	const int CELL_NUM_Y;	// セル高さ
 	const int CELL_TOTAL;	// セル総数
@@ -27,4 +37,7 @@ protected:
 	Vector2 pos_;			// 描画位置
 
 	FieldManager* fieldManager_;
+
+	// 完成時には使わなくなる予定
+	void LoadFieldData(void);	// フィールドデータを読み込む
 };

@@ -4,7 +4,6 @@
 class CellBase
 {
 public:
-
 	enum class CELL_TYPE
 	{
 		NONE = 0,
