@@ -1,4 +1,5 @@
 #include <DxLib.h>
+#include "../../Manager/InputManager.h"
 #include "CellBase.h"
 
 CellBase::CellBase(CELL_TYPE type, Vector2 pos, int size)
@@ -55,7 +56,8 @@ void CellBase::Update(void)
 	int mouseX, mouseY;
 	GetMousePoint(&mouseX, &mouseY);
 	if (mouseX >= pos_.x && mouseX < pos_.x + size_ &&
-		mouseY >= pos_.y && mouseY < pos_.y + size_)
+		mouseY >= pos_.y && mouseY < pos_.y + size_ &&
+		InputManager::GetInstance().IsClickMouseLeft())
 	{
 		SetActive(true);
 	}
