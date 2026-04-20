@@ -1,12 +1,12 @@
 #include "CellDefense.h"
 
-CellDefense::CellDefense(Vector2 pos, int size)
-	: CellBase(CELL_TYPE::DEFENSE, pos, size)
+CellDefense::CellDefense(Field* field, Vector2 pos, int size)
+	: CellBase(field, CELL_TYPE::DEFENSE, pos, size)
 {
 }
 
-CellDefense::CellDefense(Vector2 pos, int size, int actionCount)
-	: CellBase(CELL_TYPE::DEFENSE, pos, size, actionCount)
+CellDefense::CellDefense(Field* field, Vector2 pos, int size, int actionCount)
+	: CellBase(field, CELL_TYPE::DEFENSE, pos, size, actionCount)
 {
 }
 

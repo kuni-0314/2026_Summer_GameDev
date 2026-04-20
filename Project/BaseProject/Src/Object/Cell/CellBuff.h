@@ -4,8 +4,8 @@
 class CellBuff : public CellBase
 {
 public:
-	CellBuff(Vector2 pos, int size);
-	CellBuff(Vector2 pos, int size, int actionCount);
+	CellBuff(Field* field, Vector2 pos, int size);
+	CellBuff(Field* field, Vector2 pos, int size, int actionCount);
 	~CellBuff(void);
 
 	void Init(void) override;

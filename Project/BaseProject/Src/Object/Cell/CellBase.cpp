@@ -1,9 +1,11 @@
 #include <DxLib.h>
 #include "../../Manager/InputManager.h"
+#include "../Field.h"
 #include "CellBase.h"
 
-CellBase::CellBase(CELL_TYPE type, Vector2 pos, int size)
+CellBase::CellBase(Field* field, CELL_TYPE type, Vector2 pos, int size)
 	:
+	field_(field),
 	type_(type),
 	pos_(pos),
 	size_(size),
@@ -13,8 +15,9 @@ CellBase::CellBase(CELL_TYPE type, Vector2 pos, int size)
 {
 }
 
-CellBase::CellBase(CELL_TYPE type, Vector2 pos, int size, int actionCount)
+CellBase::CellBase(Field* field, CELL_TYPE type, Vector2 pos, int size, int actionCount)
 	:
+	field_(field),
 	type_(type),
 	pos_(pos),
 	size_(size),
@@ -57,13 +60,20 @@ void CellBase::Update(void)
 	GetMousePoint(&mouseX, &mouseY);
 	if (mouseX >= pos_.x && mouseX < pos_.x + size_ &&
 		mouseY >= pos_.y && mouseY < pos_.y + size_ &&
-		InputManager::GetInstance().IsClickMouseLeft())
+		InputManager::GetInstance().IsTrgMouseLeft())
 	{
-		SetActive(true);
+		isActive_ = true;
+		field_->SetHoldingCellType(type_);
 	}
 	else
 	{
-		SetActive(false);
+		isActive_ = false;
+	}
+
+	// マウス左ボタンが離されたらHoldingCellTypeをNONEにリセット
+	if (!InputManager::GetInstance().IsClickMouseLeft())
+	{
+		field_->SetHoldingCellType(CellBase::CELL_TYPE::NONE);
 	}
 }
 
@@ -75,7 +85,7 @@ void CellBase::Draw(void)
 		pos_.x + size_,
 		pos_.y + size_,
 		color_,
-		isActive_
+		true
 	);
 
 	DrawFormatString(
@@ -89,4 +99,19 @@ void CellBase::Draw(void)
 
 void CellBase::Release(void)
 {
+}
+
+void CellBase::SetType(CELL_TYPE type)
+{
+	type_ = type;
+	// タイプが変更されたら色も更新
+	Init();
+}
+
+bool CellBase::IsMouseOver(void) const
+{
+	int mouseX, mouseY;
+	GetMousePoint(&mouseX, &mouseY);
+	return (mouseX >= pos_.x && mouseX < pos_.x + size_ &&
+		mouseY >= pos_.y && mouseY < pos_.y + size_);
 }

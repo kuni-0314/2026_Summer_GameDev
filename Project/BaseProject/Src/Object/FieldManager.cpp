@@ -1,5 +1,6 @@
 #include "../Application.h"
 #include "../Manager/SceneManager.h"
+#include "../Manager/InputManager.h"
 #include "../Scene/GameScene.h"
 #include "FieldManager.h"
 #include "Field.h"
@@ -63,6 +64,40 @@ void FieldManager::Update(void)
 		actionTimer_ -= ACTION_INTERVAL_TIME;
 	}
 
+	// ƒ}ƒEƒX‚ð—£‚µ‚½‚©
+	if (InputManager::GetInstance().IsTrgUpMouseLeft())
+	{
+		CellBase::CELL_TYPE cellType = CellBase::CELL_TYPE::NONE;
+		if (playerField_->GetHoldingCellType() != CellBase::CELL_TYPE::NONE)
+		{
+			cellType = playerField_->GetHoldingCellType();
+		}
+		else if (enemyField_->GetHoldingCellType() != CellBase::CELL_TYPE::NONE)
+		{
+			cellType = enemyField_->GetHoldingCellType();
+		}
+		else if (selectField_->GetHoldingCellType() != CellBase::CELL_TYPE::NONE)
+		{
+			cellType = selectField_->GetHoldingCellType();
+		}
+
+		if (cellType != CellBase::CELL_TYPE::NONE)
+		{
+			if (playerField_->IsInFieldMouse())
+			{
+				playerField_->SetCellType(cellType);
+			}
+			else if (enemyField_->IsInFieldMouse())
+			{
+				enemyField_->SetCellType(cellType);
+			}
+			else if (selectField_->IsInFieldMouse())
+			{
+				selectField_->SetCellType(cellType);
+			}
+		}
+	}
+
 	playerField_->Update();
 	enemyField_->Update();
 	selectField_->Update();
@@ -71,6 +106,8 @@ void FieldManager::Update(void)
 	{
 		currentActionCount_ = 0;
 	}
+
+
 }
 
 void FieldManager::Draw(void)

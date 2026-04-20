@@ -4,8 +4,8 @@
 class CellAttack : public CellBase
 {
 public:
-	CellAttack(Vector2 pos, int size);
-	CellAttack(Vector2 pos, int size, int actionCount);
+	CellAttack(Field* field, Vector2 pos, int size);
+	CellAttack(Field* field, Vector2 pos, int size, int actionCount);
 	~CellAttack(void);
 
 	void Init(void) override;

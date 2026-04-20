@@ -1,12 +1,12 @@
 #include "CellNone.h"
 
-CellNone::CellNone(Vector2 pos, int size)
-	: CellBase(CELL_TYPE::NONE, pos, size)
+CellNone::CellNone(Field* field, Vector2 pos, int size)
+	: CellBase(field, CELL_TYPE::NONE, pos, size)
 {
 }
 
-CellNone::CellNone(Vector2 pos, int size, int actionCount)
-	: CellBase(CELL_TYPE::NONE, pos, size, actionCount)
+CellNone::CellNone(Field* field, Vector2 pos, int size, int actionCount)
+	: CellBase(field, CELL_TYPE::NONE, pos, size, actionCount)
 {
 }
 

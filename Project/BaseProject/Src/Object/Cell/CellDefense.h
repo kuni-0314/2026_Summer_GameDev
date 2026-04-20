@@ -4,8 +4,8 @@
 class CellDefense : public CellBase
 {
 public:
-	CellDefense(Vector2 pos, int size);
-	CellDefense(Vector2 pos, int size, int actionCount);
+	CellDefense(Field* field, Vector2 pos, int size);
+	CellDefense(Field* field, Vector2 pos, int size, int actionCount);
 	~CellDefense(void);
 
 	void Init(void) override;
