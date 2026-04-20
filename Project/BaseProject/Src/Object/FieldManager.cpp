@@ -15,7 +15,7 @@ FieldManager::~FieldManager(void)
 
 void FieldManager::Init(void)
 {
-	Vector2 fieldPos(0, 0);
+	Vector2 fieldPos(100, 300);
 	playerField_ = std::make_unique<Field>(this, Field::FIELD_TYPE::PLAYER,
 		PLAYER_FIELD_CELL_X, PLAYER_FIELD_CELL_Y, PLAYER_FIELD_CELL_SIZE,
 		fieldPos);

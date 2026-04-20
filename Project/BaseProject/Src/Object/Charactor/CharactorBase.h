@@ -16,6 +16,20 @@ public:
 		MAX,
 	};
 
+	// ステータス
+	struct Status
+	{
+		int level;		// レベル
+		int hp;			// 体力
+		int mp;			// 魔力
+		int physAtk;	// 物理攻撃力
+		int physDef;	// 物理防御力
+		int magicAtk;	// 魔法攻撃力
+		int magicDef;	// 魔法防御力
+		int wisdom;		// 賢さ
+		int luck;		// 運
+	};
+
 	// コンストラクタ
 	CharactorBase(void);
 	// デストラクタ

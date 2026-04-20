@@ -20,9 +20,11 @@ public:
 	//デストラクタ
 	~Player(void) override;
 
-	//void Update()override;
+	void Update()override;
 
 	
+
+	void Draw(void) override;
 
 protected:
 
@@ -90,6 +92,8 @@ private:
 	// 衝突判定用カプセル球体半径
 	static constexpr float COL_CAPSULE_RADIUS = 20.0f;
 
+	void GrantStatus(int index);
+	void RevokeStatus(int index);
 
 	// 操作
 	void ProcessMove(void);
@@ -98,5 +102,21 @@ private:
 
 	// 衝突判定
 	void CollisionReserve(void) override;
+
+	Status status_;
+	int pendingPoints_;
+	int currentGrantStatusIndex_;
+	static constexpr int MAX_STATUS_INDEX = 9;
+
+	// 初期ステータス（後々csvにでも）4
+	static constexpr int DEFAULT_LEVEL = 1;	// 最初だからあたりまえではある
+	static constexpr int DEFAULT_HP = 25;
+	static constexpr int DEFAULT_MP = 5;
+	static constexpr int DEFAULT_PHYS_ATK = 5;
+	static constexpr int DEFAULT_PHYS_DEF = 5;
+	static constexpr int DEFAULT_MAGIC_ATK = 5;
+	static constexpr int DEFAULT_MAGIC_DEF = 5;
+	static constexpr int DEFAULT_WISDOM = 5;
+	static constexpr int DEFAULT_LUCK = 5;
 };
 

@@ -432,36 +432,36 @@ void Camera::RotKeyboard(bool isLimit)
 	const auto& ins = InputManager::GetInstance();
 
 	// ƒJƒƒ‰‰ñ“]
-	if (ins.IsNew(KEY_INPUT_RIGHT))
-	{
-		// ‰E‰ñ“]
-		angles_.y += ROT_POW_RAD;
-	}
-	if (ins.IsNew(KEY_INPUT_LEFT))
-	{
-		// ¶‰ñ“]
-		angles_.y -= ROT_POW_RAD;
-	}
+	//if (ins.IsNew(KEY_INPUT_RIGHT))
+	//{
+	//	// ‰E‰ñ“]
+	//	angles_.y += ROT_POW_RAD;
+	//}
+	//if (ins.IsNew(KEY_INPUT_LEFT))
+	//{
+	//	// ¶‰ñ“]
+	//	angles_.y -= ROT_POW_RAD;
+	//}
 
-	// ã‰ñ“]
-	if (ins.IsNew(KEY_INPUT_UP))
-	{
-		angles_.x += ROT_POW_RAD;
-		if (isLimit && angles_.x > LIMIT_X_UP_RAD)
-		{
-			angles_.x = LIMIT_X_UP_RAD;
-		}
-	}
+	//// ã‰ñ“]
+	//if (ins.IsNew(KEY_INPUT_UP))
+	//{
+	//	angles_.x += ROT_POW_RAD;
+	//	if (isLimit && angles_.x > LIMIT_X_UP_RAD)
+	//	{
+	//		angles_.x = LIMIT_X_UP_RAD;
+	//	}
+	//}
 
-	// ‰º‰ñ“]
-	if (ins.IsNew(KEY_INPUT_DOWN))
-	{
-		angles_.x -= ROT_POW_RAD;
-		if (isLimit && angles_.x < -LIMIT_X_DW_RAD)
-		{
-			angles_.x = -LIMIT_X_DW_RAD;
-		}
-	}
+	//// ‰º‰ñ“]
+	//if (ins.IsNew(KEY_INPUT_DOWN))
+	//{
+	//	angles_.x -= ROT_POW_RAD;
+	//	if (isLimit && angles_.x < -LIMIT_X_DW_RAD)
+	//	{
+	//		angles_.x = -LIMIT_X_DW_RAD;
+	//	}
+	//}
 
 }
 

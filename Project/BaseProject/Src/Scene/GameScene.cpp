@@ -93,7 +93,7 @@ void GameScene::Draw(void)
 
 	// •‚ð•`‰æi­‚µ“§‰ßj
 	SetDrawBlendMode(DX_BLENDMODE_ALPHA, 128);
-	DrawBox(0, 0, Application::SCREEN_SIZE_X, Application::SCREEN_SIZE_Y, GetColor(0, 0, 0), true);
+	//DrawBox(0, 0, Application::SCREEN_SIZE_X, Application::SCREEN_SIZE_Y, GetColor(0, 0, 0), true);
 	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
 
 	fieldManager_->Draw();
