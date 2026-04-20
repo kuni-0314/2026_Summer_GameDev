@@ -9,6 +9,14 @@ class TitleScene : public SceneBase
 {
 
 public:
+
+	enum class SELECT
+	{
+		GAME,
+		TUTORIAL,
+		OPTION,
+		EXIT
+	};
 	//タイトル画像のY座標
 	static constexpr int IMG_TITLE_POS_Y = 150;
 	//push画像Y座標
@@ -49,7 +57,20 @@ public:
 	// 解放
 	void Release(void) override;
 
+	//　選択コマンドの変更
+	void SelectChange(SELECT next);
+
+	// 選択コマンドの描画(仮（後で画像に変更））
+	void SelectDraw(SELECT next);
+
+	void SelectUpdate(void);
+
+
 private:
+
+	SELECT select_; //選択コマンド
+
+	int selectCount_ = 0; //選択中のコマンド
 
 	//アニメ―ションコントローラのポインタを作成
 	AnimationController* animationController_;
@@ -65,11 +86,18 @@ private:
 
 	Transform player_;
 
+	//点滅管理用
 	int count = 0;
 
-	int imgTitle_;
-	int imgPushSpace_;
+	//画像ハンドルID
+	int imgTitle_;//タイトル
+	int imgPushSpace_;//PUSH
+
+	int maxIndex = static_cast<int>(SELECT::EXIT);
+	int minIndex = static_cast<int>(SELECT::GAME);
 
 	bool pushAlive_ = true;
+
+	bool IsSelect_ = false;
 
 };

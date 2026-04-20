@@ -77,6 +77,7 @@ private:
 	// ƒJƒƒ‰
 	Camera* camera_;
 
+
 	// ƒV[ƒ“‘JˆÚ’†”»’è
 	bool isSceneChanging_;
 
