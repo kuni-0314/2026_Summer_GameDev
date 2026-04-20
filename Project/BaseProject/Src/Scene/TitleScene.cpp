@@ -74,33 +74,43 @@ void TitleScene::Init(void)
 	//スカイドーム
 	skyDome_ = new SkyDome(empty_);
 	skyDome_->Init();
-
-
+	
+	//初期選択コマンド
+	select_ = SELECT::GAME;
+	
 
 }
 
 void TitleScene::Update(void)
 {
-	
-	
-
-	// プッシュスペース点滅
-	count++;
-	if (count % 70 < 30)
-	{
-		pushAlive_ = true;
-	}
-	else
-	{
-		pushAlive_ = false;
-	}
-
 	// シーン遷移
 	auto const& ins = InputManager::GetInstance();
-	if (ins.IsTrgDown(KEY_INPUT_SPACE))
+
+	if (!IsSelect_)
 	{
-		sceMng_.ChangeScene(SceneManager::SCENE_ID::GAME);
+		if (ins.IsTrgDown(KEY_INPUT_SPACE))
+		{
+			pushAlive_ = true;
+			IsSelect_ = true;
+		}
+
+	
+		count++;
+		if (count % 70 < 30)
+		{
+			pushAlive_ = true;
+		}
+		else
+		{
+			pushAlive_ = false;
+		}	
 	}
+	else 
+	{
+		SelectUpdate();
+	}
+
+
 
 	//サブ惑星の回転
 	subPlanet_.quaRot = subPlanet_.quaRot.Quaternion::Mult(
@@ -111,6 +121,7 @@ void TitleScene::Update(void)
 
 	skyDome_->Update();
 }
+
 
 void TitleScene::Draw(void)
 {
@@ -124,12 +135,16 @@ void TitleScene::Draw(void)
 
 	DrawGraph(Application::SCREEN_SIZE_X/3,IMG_TITLE_POS_Y, imgTitle_, TRUE);
 
-	if (pushAlive_)
+	if (!IsSelect_)
 	{
-		DrawGraph(Application::SCREEN_SIZE_X / 3, IMG_PUSH_POS_Y, imgPushSpace_, TRUE);
+		if (!pushAlive_)
+		{
+			DrawGraph(Application::SCREEN_SIZE_X / 3, IMG_PUSH_POS_Y, imgPushSpace_, TRUE);
+		}
 	}
+	
 
-
+	SelectDraw((SELECT)selectCount_);
 }
 
 void TitleScene::Release(void)
@@ -141,4 +156,70 @@ void TitleScene::Release(void)
 	//スカイドーム解放
 	skyDome_->Release();
 	delete skyDome_;
+}
+
+void TitleScene::SelectChange(SELECT next)
+{
+	select_ = next;
+
+	switch (next)
+	{
+	case SELECT::GAME:
+		sceMng_.ChangeScene(SceneManager::SCENE_ID::GAME);
+		break;
+	case SELECT::TUTORIAL:
+
+		break;
+	case SELECT::OPTION:
+
+		break;
+	case SELECT::EXIT:
+
+		Application::GetInstance().End();
+
+		break;
+	}
+}
+
+void TitleScene::SelectDraw(SELECT next)
+{
+	const char* name = "";
+
+	if (next == SELECT::GAME) name = "ゲームスタート";
+	else if (next == SELECT::TUTORIAL) name = "チュートリアル";
+	else if (next == SELECT::OPTION) name = "設定";
+	else if (next == SELECT::EXIT) name = "終了";
+
+	DrawFormatString(100, 100, GetColor(255, 255, 255), "選択中: %s", name);
+}
+
+void TitleScene::SelectUpdate(void)
+{
+	auto const& ins = InputManager::GetInstance();
+
+	//選択コマンド変更
+
+	if (ins.IsTrgDown(KEY_INPUT_UP))
+	{
+		selectCount_--;
+		if (selectCount_ < minIndex)
+		{
+			selectCount_ = minIndex; // 一番下へ
+		}
+	}
+
+	if (ins.IsTrgDown(KEY_INPUT_DOWN))
+	{
+		selectCount_++;
+		if (selectCount_ > maxIndex)
+		{
+			selectCount_ = maxIndex; // 一番上へ
+		}
+	}
+	if (ins.IsTrgDown(KEY_INPUT_SPACE))//決定
+	{
+		SelectChange((SELECT)selectCount_);
+	}
+	
+
 }

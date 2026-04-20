@@ -57,6 +57,8 @@ public:
 	// 重力の取得
 	float GetGravityPow(void) const { return GRAVITY * GRAVITY_SCALE; }
 
+	void End(void) { isEnd_ = true; };
+
 
 private:
 
@@ -68,6 +70,8 @@ private:
 
 	// 解放失敗
 	bool isReleaseFail_;
+
+	bool isEnd_ = false;
 
 	// デフォルトコンストラクタをprivateにして、
 	// 外部から生成できない様にする
