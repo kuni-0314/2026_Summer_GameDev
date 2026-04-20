@@ -1,12 +1,12 @@
 #include "CellDebuff.h"
 
-CellDebuff::CellDebuff(Field* field, Vector2 pos, int size)
-	: CellBase(field, CELL_TYPE::DEBUFF, pos, size)
+CellDebuff::CellDebuff(Vector2 pos, int size)
+	: CellBase(CELL_TYPE::DEBUFF, pos, size)
 {
 }
 
-CellDebuff::CellDebuff(Field* field, Vector2 pos, int size, int actionCount)
-	: CellBase(field, CELL_TYPE::DEBUFF, pos, size, actionCount)
+CellDebuff::CellDebuff(Vector2 pos, int size, int actionCount)
+	: CellBase(CELL_TYPE::DEBUFF, pos, size, actionCount)
 {
 }
 

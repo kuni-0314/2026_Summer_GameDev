@@ -17,6 +17,13 @@ public:
 		OPTION,
 		EXIT
 	};
+
+	enum class EXIT
+	{
+		YES,
+		NO
+	};
+
 	//タイトル画像のY座標
 	static constexpr int IMG_TITLE_POS_Y = 150;
 	//push画像Y座標
@@ -65,6 +72,18 @@ public:
 
 	void SelectUpdate(void);
 
+	void SelectOption(void);
+
+	void SelectExit(void);
+
+	void SelectTutorial(void);
+
+	void SelectOptionDraw(void);
+
+	void SelectExitDraw(void);
+
+	void SelectTutorialDraw(void);
+
 
 private:
 
@@ -93,8 +112,11 @@ private:
 	int imgTitle_;//タイトル
 	int imgPushSpace_;//PUSH
 
+
 	int maxIndex = static_cast<int>(SELECT::EXIT);
 	int minIndex = static_cast<int>(SELECT::GAME);
+
+	int ExitCount_ = static_cast<int>(EXIT::YES);//終了選択のカウント
 
 	bool pushAlive_ = true;
 

@@ -75,7 +75,7 @@ void GameScene::Update(void)
 
 	stage_->Update();//ステージ更新
 	skyDome_->Update();//スカイドーム更新
-	player_->Update();
+	//player_->Update();
 	enemyManager_->Update();
 	fieldManager_->Update();
 }
@@ -86,7 +86,7 @@ void GameScene::Draw(void)
 
 	stage_->Draw();		//ステージ描画
 
-	player_->Draw();	//プレイヤー描画
+	//player_->Draw();	//プレイヤー描画
 
 	enemyManager_->Draw();
 

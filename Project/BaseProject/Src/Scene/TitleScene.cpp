@@ -171,11 +171,11 @@ void TitleScene::SelectChange(SELECT next)
 
 		break;
 	case SELECT::OPTION:
-
+		
 		break;
 	case SELECT::EXIT:
 
-		Application::GetInstance().End();
+		SelectExit();
 
 		break;
 	}
@@ -222,4 +222,36 @@ void TitleScene::SelectUpdate(void)
 	}
 	
 
+}
+
+void TitleScene::SelectOption(void)
+{
+}
+
+void TitleScene::SelectExit(void)
+{
+
+	if (CheckHitKey(KEY_INPUT_LEFT) || CheckHitKey(KEY_INPUT_RIGHT)) {
+		// 選択を反転させる (YES <-> NO)
+		ExitCount_ = (ExitCount_ == static_cast<int>(EXIT::YES) ? static_cast<int>(EXIT::NO) : static_cast<int>( EXIT::YES);
+	}
+
+}
+
+void TitleScene::SelectTutorial(void)
+{
+}
+
+void TitleScene::SelectOptionDraw(void)
+{
+}
+
+void TitleScene::SelectExitDraw(void)
+{
+	DrawBox(0, 0, Application::SCREEN_SIZE_X, Application::SCREEN_SIZE_Y, GetColor(0, 0, 0), TRUE);
+	DrawFormatString(Application::SCREEN_SIZE_X / 2 - 100, Application::SCREEN_SIZE_Y / 2, GetColor(255, 255, 255), "ゲームを終了しますか？");
+}
+
+void TitleScene::SelectTutorialDraw(void)
+{
 }

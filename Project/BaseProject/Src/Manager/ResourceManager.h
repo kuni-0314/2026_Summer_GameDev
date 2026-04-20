@@ -19,7 +19,6 @@ public:
 		MAIN_STAGE,			//ステージ（ゲームシーン）
 		SKY_DOME,			//スカイドーム（ゲームシーン
 		PLAYER_SHADOW,		//シャドウ
-		ENEMY_RAT,
 		ENEMY_ROBOT,		//ロボット
 		VIEW_RANGE			//敵の視野
 	

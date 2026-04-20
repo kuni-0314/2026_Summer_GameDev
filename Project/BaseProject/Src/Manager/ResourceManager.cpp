@@ -56,9 +56,6 @@ void ResourceManager::Init(void)
 	res = new RES(RES_T::MODEL, PATH_MDL + "SkyDome/SkyDome.mv1");
 	resourcesMap_.emplace(SRC::SKY_DOME, res);	//mapに登録
 
-	//エネミーラット
-	res = new RES(RES_T::MODEL, PATH_MDL + "Enemy/Rat/Rat.mv1");
-	resourcesMap_.emplace(SRC::ENEMY_RAT, res);	//mapに登録
 
 	// プレイヤー影
 	res = new RES(RES_T::IMG, PATH_IMG + "Shadow.png");

@@ -1,12 +1,12 @@
 #include "CellBuff.h"
 
-CellBuff::CellBuff(Field* field, Vector2 pos, int size)
-	: CellBase(field, CELL_TYPE::BUFF, pos, size)
+CellBuff::CellBuff(Vector2 pos, int size)
+	: CellBase(CELL_TYPE::BUFF, pos, size)
 {
 }
 
-CellBuff::CellBuff(Field* field, Vector2 pos, int size, int actionCount)
-	: CellBase(field, CELL_TYPE::BUFF, pos, size, actionCount)
+CellBuff::CellBuff(Vector2 pos, int size, int actionCount)
+	: CellBase(CELL_TYPE::BUFF, pos, size, actionCount)
 {
 }
 

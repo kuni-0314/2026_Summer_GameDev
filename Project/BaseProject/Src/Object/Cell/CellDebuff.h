@@ -4,8 +4,8 @@
 class CellDebuff : public CellBase
 {
 public:
-	CellDebuff(Field* field, Vector2 pos, int size);
-	CellDebuff(Field* field, Vector2 pos, int size, int actionCount);
+	CellDebuff(Vector2 pos, int size);
+	CellDebuff(Vector2 pos, int size, int actionCount);
 	~CellDebuff(void);
 
 	void Init(void) override;

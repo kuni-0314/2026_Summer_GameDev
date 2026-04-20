@@ -1,8 +1,7 @@
 #include <string>
 #include <fstream>
 #include "../../../Application.h"
-#include "../../../Utility/AsoUtility.h"
-#include "Rat/EnemyRat.h"
+#include "../../../Utility/AsoUtility.h""
 #include "Robot/EnemyRobot.h"
 #include "EnemyManger.h"
 
@@ -110,11 +109,7 @@ EnemyBase* EnemyManager::Create(const EnemyBase::EnemyData& data)
 	EnemyBase* enemy = nullptr;
 	switch (data.type)
 	{
-	case EnemyBase::TYPE::RAT:
-		enemy = new EnemyRat(data,player_);
-		break;
-
-		
+	
 	case EnemyBase::TYPE::ROBOT:
 		enemy = new EnemyRobot(data,player_);
 		break;
