@@ -23,6 +23,73 @@ Player::~Player(void)
 {
 }
 
+void Player::Update()
+{
+	// 移動前座標を更新
+	prevPos_ = transform_.pos;
+
+	// 各キャラクターごとの更新処理
+	UpdateProcess();
+	// 移動方向に応じた遅延回転
+	DelayRotate();
+	// 重力による移動量
+	CalcGravityPow();
+	// 衝突判定前準備
+	CollisionReserve();
+	// 衝突判定
+	Collision();
+	// モデル制御更新
+	transform_.Update();
+	// アニメーション再生
+	animationController_->Update();
+	// 各キャラクターごとの更新後処理
+	UpdateProcessPost();
+
+
+	// hpのindexは4、luckのindexは9
+	if (InputManager::GetInstance().IsTrgDown(KEY_INPUT_UP))
+	{
+		if (currentGrantStatusIndex_ <= 4)
+		{
+			currentGrantStatusIndex_ = MAX_STATUS_INDEX;
+		}
+		else
+		{
+			currentGrantStatusIndex_--;
+		}
+	}
+	if (InputManager::GetInstance().IsTrgDown(KEY_INPUT_DOWN))
+	{
+		if (currentGrantStatusIndex_ >= MAX_STATUS_INDEX)
+		{
+			currentGrantStatusIndex_ = 4;
+		}
+		else
+		{
+			currentGrantStatusIndex_++;
+		}
+	}
+
+	// 矢印キー右でステータスにポイント割り振り
+	if (InputManager::GetInstance().IsTrgDown(KEY_INPUT_RIGHT))
+	{
+		if (pendingPoints_ > 0)
+		{
+			GrantStatus(currentGrantStatusIndex_);
+			pendingPoints_--;
+		}
+	}
+
+	// 矢印キー左でステータスからポイントを戻す
+	if (InputManager::GetInstance().IsTrgDown(KEY_INPUT_LEFT))
+	{
+		RevokeStatus(currentGrantStatusIndex_);
+	}
+
+
+
+}
+
 //void Player::Update()
 //{
 //	animationController_->Update();
@@ -103,6 +170,17 @@ void Player::InitAnimation(void)
 
 void Player::InitPost(void)
 {
+	status_.level = DEFAULT_LEVEL;
+	status_.hp = DEFAULT_HP;
+	status_.mp = DEFAULT_MP;
+	status_.physAtk = DEFAULT_PHYS_ATK;
+	status_.physDef = DEFAULT_PHYS_DEF;
+	status_.magicAtk = DEFAULT_MAGIC_ATK;
+	status_.magicDef = DEFAULT_MAGIC_DEF;
+	status_.wisdom = DEFAULT_WISDOM;
+	status_.luck = DEFAULT_LUCK;
+	currentGrantStatusIndex_ = 4;
+	pendingPoints_ = 30;
 }
 
 void Player::UpdateProcess(void)
@@ -119,6 +197,154 @@ void Player::UpdateProcess(void)
 
 void Player::UpdateProcessPost(void)
 {
+}
+
+void Player::Draw(void)
+{
+	//基底クラスの描画処理
+	ActorBase::Draw();
+	// 丸影の描画
+	DrawShadow();
+
+	// ステータス描画
+	int x = 20;
+	int y = 20;
+	int lineHeight = 25;
+
+	// 背景描画(半透明の黒)
+	SetDrawBlendMode(DX_BLENDMODE_ALPHA, 180);
+	DrawBox(x - 10, y - 10, x + 250, y + lineHeight * 11 + 10, 0x000000, TRUE);
+	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
+
+	// タイトル
+	DrawFormatString(x, y, 0xFFFFFF, "=== Player Status ===");
+	y += lineHeight;
+
+	// ステータス情報を描画（選択中の項目を黄色でハイライト）
+	unsigned int color = 0xFFFFFF;
+	unsigned int highlightColor = 0xFFFF00;
+
+	DrawFormatString(x, y, color, "Level  : %d", status_.level);
+	y += lineHeight;
+
+	DrawFormatString(x, y, (currentGrantStatusIndex_ == 2) ? highlightColor : color, "HP     : %d", status_.hp);
+	y += lineHeight;
+
+	DrawFormatString(x, y, (currentGrantStatusIndex_ == 3) ? highlightColor : color, "MP     : %d", status_.mp);
+	y += lineHeight;
+
+	DrawFormatString(x, y, (currentGrantStatusIndex_ == 4) ? highlightColor : color, "PhysAtk: %d", status_.physAtk);
+	y += lineHeight;
+
+	DrawFormatString(x, y, (currentGrantStatusIndex_ == 5) ? highlightColor : color, "PhysDef: %d", status_.physDef);
+	y += lineHeight;
+
+	DrawFormatString(x, y, (currentGrantStatusIndex_ == 6) ? highlightColor : color, "MagicAtk: %d", status_.magicAtk);
+	y += lineHeight;
+
+	DrawFormatString(x, y, (currentGrantStatusIndex_ == 7) ? highlightColor : color, "MagicDef: %d", status_.magicDef);
+	y += lineHeight;
+
+	DrawFormatString(x, y, (currentGrantStatusIndex_ == 8) ? highlightColor : color, "Wisdom : %d", status_.wisdom);
+	y += lineHeight;
+
+	DrawFormatString(x, y, (currentGrantStatusIndex_ == 9) ? highlightColor : color, "Luck   : %d", status_.luck);
+	y += lineHeight;
+
+	DrawFormatString(x, y, color, "PendingPoints   : %d", pendingPoints_);
+}
+
+void Player::GrantStatus(int index)
+{
+	switch (index)
+	{
+	case 4:
+		status_.physAtk += 1;
+		break;
+	case 5:
+		status_.physDef += 1;
+		break;
+	case 6:
+		status_.magicAtk += 1;
+		break;
+	case 7:
+		status_.magicDef += 1;
+		break;
+	case 8:
+		status_.wisdom += 1;
+		break;
+	case 9:
+		status_.luck += 1;
+		break;
+	default:
+		break;
+	}
+}
+
+void Player::RevokeStatus(int index)
+{
+	// 各ステータスが初期値以下にならないようにチェック
+	switch (index)
+	{
+	case 2:
+		if (status_.hp > DEFAULT_HP)
+		{
+			status_.hp -= 1;
+			pendingPoints_++;
+		}
+		break;
+	case 3:
+		if (status_.mp > DEFAULT_MP)
+		{
+			status_.mp -= 1;
+			pendingPoints_++;
+		}
+		break;
+	case 4:
+		if (status_.physAtk > DEFAULT_PHYS_ATK)
+		{
+			status_.physAtk -= 1;
+			pendingPoints_++;
+		}
+		break;
+	case 5:
+		if (status_.physDef > DEFAULT_PHYS_DEF)
+		{
+			status_.physDef -= 1;
+			pendingPoints_++;
+		}
+		break;
+	case 6:
+		if (status_.magicAtk > DEFAULT_MAGIC_ATK)
+		{
+			status_.magicAtk -= 1;
+			pendingPoints_++;
+		}
+		break;
+	case 7:
+		if (status_.magicDef > DEFAULT_MAGIC_DEF)
+		{
+			status_.magicDef -= 1;
+			pendingPoints_++;
+		}
+		break;
+	case 8:
+		if (status_.wisdom > DEFAULT_WISDOM)
+		{
+			status_.wisdom -= 1;
+			pendingPoints_++;
+		}
+		break;
+	case 9:
+		if (status_.luck > DEFAULT_LUCK)
+		{
+			status_.luck -= 1;
+			pendingPoints_++;
+		}
+		break;
+	default:
+		break;
+	}
 }
 
 void Player::ProcessMove(void)
