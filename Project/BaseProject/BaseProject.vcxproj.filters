@@ -144,9 +144,6 @@
     <ClCompile Include="Src\Object\Charactor\Enemy\EnemyBase.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="Src\Object\Charactor\Enemy\Rat\EnemyRat.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
     <ClCompile Include="Src\Object\Charactor\Enemy\EnemyManger.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>

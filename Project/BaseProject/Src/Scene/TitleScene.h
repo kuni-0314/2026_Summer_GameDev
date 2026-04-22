@@ -118,8 +118,12 @@ private:
 
 	int ExitCount_ = static_cast<int>(EXIT::YES);//終了選択のカウント
 
-	bool pushAlive_ = true;
+	bool pushAlive_ = true;//PUSH画像の点滅
 
-	bool IsSelect_ = false;
+	bool IsSelect_ = false;//選択されているか
+
+	bool Decision_ = false;//決定されたか
+
+
 
 };

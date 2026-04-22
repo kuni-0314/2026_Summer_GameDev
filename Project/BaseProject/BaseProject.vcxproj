@@ -32,7 +32,6 @@
     <ClCompile Include="Src\Object\Skill\SkillBase.cpp" />
     <ClCompile Include="Src\Scene\DebugScene.cpp" />
     <ClCompile Include="Src\Object\Charactor\Enemy\EnemyManger.cpp" />
-    <ClCompile Include="Src\Object\Charactor\Enemy\Rat\EnemyRat.cpp" />
     <ClCompile Include="Src\Object\Charactor\Enemy\EnemyBase.cpp" />
     <ClCompile Include="Src\Object\Collider\Sphere\ColliderSphere.cpp" />
     <ClCompile Include="Src\Object\Collider\Capsule\ColliderCapsule.cpp" />
