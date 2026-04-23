@@ -21,8 +21,8 @@ public:
 		PLAYER_SHADOW,		//シャドウ
 		ENEMY_RAT,
 		ENEMY_ROBOT,		//ロボット
-		VIEW_RANGE			//敵の視野
-	
+		VIEW_RANGE,			//敵の視野
+		CELL_RED,			// 赤色セル 		
 	};
 
 	// 明示的にインステンスを生成する

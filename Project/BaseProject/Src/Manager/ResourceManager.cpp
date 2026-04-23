@@ -71,6 +71,10 @@ void ResourceManager::Init(void)
 	//ìGÇÃéãñÏ
 	res = new RES(RES_T::MODEL, PATH_MDL + "Enemy/Robot/Cone.mv1");
 	resourcesMap_.emplace(SRC::VIEW_RANGE, res);	//mapÇ…ìoò^
+
+	// ê‘êFÉZÉã
+	res = new RES(RES_T::IMG, PATH_IMG + "Blocks/RedBlock.png");
+	resourcesMap_.emplace(SRC::CELL_RED, res);
 }
 
 void ResourceManager::Release(void)

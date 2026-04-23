@@ -43,6 +43,54 @@ private:
 	
 	int currentActionCount_;	// åªç›ÇÃçsìÆâÒêî
 
+	int imageCellRed_;
+
+	//tmp
+	enum class SKILL_LIST
+	{
+		SLASH = 0,
+		DEFENCE,
+		HEEL,
+		PROTECT,
+		FRAME,
+		MAX
+	};
+	static constexpr int BASE_CELL_SIZE = 36;
+	
+	static constexpr int GENERATE_SKILL_NUM = 4;
+	static constexpr int SKILL_MAX_SIZE = 4;
+	SKILL_LIST generatedSkills_[GENERATE_SKILL_NUM];
+	bool slashPiece[SKILL_MAX_SIZE][SKILL_MAX_SIZE] = {
+		{ false, false, false, false },
+		{ false, true, true, false },
+		{ false, true, true, false },
+		{ false, false, false, false },
+	};
+	bool defencePiece[SKILL_MAX_SIZE][SKILL_MAX_SIZE] = {
+		{ false, false, false, false },
+		{ true, true, false, false },
+		{ false, true, true, false },
+		{ false, false, false, false },
+	};
+	bool heelPiece[SKILL_MAX_SIZE][SKILL_MAX_SIZE] = {
+		{ false, true, false, false },
+		{ false, true, false, false },
+		{ false, true, true, false },
+		{ false, false, false, false },
+	};
+	bool protectPiece[SKILL_MAX_SIZE][SKILL_MAX_SIZE] = {
+		{ false, true, false, false },
+		{ false, true, false, false },
+		{ false, true, false, false },
+		{ false, true, false, false },
+	};
+	bool framePiece[SKILL_MAX_SIZE][SKILL_MAX_SIZE] = {
+		{ true, false, false, false },
+		{ true, true, true, false },
+		{ false, false, false, false },
+		{ false, false, false, false },
+	};
+
 	GameScene* gameScene_;
 };
 
