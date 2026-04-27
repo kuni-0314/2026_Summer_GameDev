@@ -54,6 +54,7 @@ public:
 		FIXED_POINT,
 		FREE,
 		FOLLOW,
+		MOUSE,
 	};
 
 	// コンストラクタ
@@ -154,10 +155,14 @@ private:
 	// カメラ回転(ゲームパッド)
 	void RotGamePad(bool isLimit);
 
+	// カメラ回転(マウス)
+	void RotMouse(bool isLimit);
+
 	// モード別更新ステップ
 	void SetBeforeDrawFixedPoint(void);
 	void SetBeforeDrawFree(void);
 	void SetBeforeDrawFollow(void);
+	void SetBeforeDrawMouse(void);
 
 	// 衝突判定
 	void Collision(void);

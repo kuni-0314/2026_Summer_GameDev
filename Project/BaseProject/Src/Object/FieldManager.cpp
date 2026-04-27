@@ -69,7 +69,7 @@ void FieldManager::Update(void)
 	}
 
 	// マウスを離したか
-	if (InputManager::GetInstance().IsTrgUpMouseLeft())
+	if (InputManager::GetInstance()->IsMouseTrgUp(MOUSE_INPUT_LEFT))
 	{
 		CellBase::CELL_TYPE cellType = CellBase::CELL_TYPE::NONE;
 		if (playerField_->GetHoldingCellType() != CellBase::CELL_TYPE::NONE)
@@ -111,7 +111,7 @@ void FieldManager::Update(void)
 		currentActionCount_ = 0;
 	}
 
-	if (InputManager::GetInstance().IsTrgDown(KEY_INPUT_R))
+	if (InputManager::GetInstance()->IsTrgDown(KEY_INPUT_R))
 	{
 		// メルセンヌ・ツイスタを使用した高精度乱数生成
 		static std::random_device rd;

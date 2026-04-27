@@ -64,12 +64,13 @@ void DebugScene::Release(void)
 }
 void DebugScene::PlaceDebugPoint(void)
 {
-	const auto& ins = InputManager::GetInstance();
+	const auto ins = InputManager::GetInstance();
 	// クリックした場所にデバッグポイントを配置
-	if (ins.IsTrgMouseLeft())
+	if (ins->IsMouseTrgDown(MOUSE_INPUT_LEFT))
 	{
 		// マウス座標の取得
-		Vector2 mousePos = ins.GetMousePos();
+		Vector2 mousePos;
+		ins->GetMousePos(mousePos.x, mousePos.y);
 		// スクリーン座標をVECTOR構造体に変換
 		VECTOR screenPos = VECTOR();
 		screenPos.x = static_cast<float>(mousePos.x);
@@ -102,14 +103,14 @@ void DebugScene::PlaceDebugPoint(void)
 		}
 	}
 	// 右クリックで最後のデバッグポイントを削除
-	if (ins.IsTrgMouseRight())
+	if (ins->IsMouseTrgDown(MOUSE_INPUT_RIGHT))
 	{
 		if (points_.size() > 0)
 		{
 			points_.pop_back();
 		}
 	}
-	if (ins.IsTrgDown(KEY_INPUT_SPACE))
+	if (ins->IsTrgDown(KEY_INPUT_SPACE))
 	{
 		// デバッグポイントの保存
 		SavePoints();

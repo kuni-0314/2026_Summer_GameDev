@@ -52,7 +52,7 @@ void Field::Init(void)
 
 void Field::Update(void)
 {
-	if (InputManager::GetInstance().IsTrgUpMouseLeft()
+	if (InputManager::GetInstance()->IsMouseTrgUp(MOUSE_INPUT_LEFT)
 		&& holdingCellType_ != CellBase::CELL_TYPE::NONE)
 	{
 		// セルの上か
@@ -68,7 +68,7 @@ void Field::Update(void)
 		}
 	}
 	// 右クリックでセルのタイプをリセット
-	if (InputManager::GetInstance().IsTrgUpMouseRight())
+	if (InputManager::GetInstance()->IsMouseTrgUp(MOUSE_INPUT_RIGHT))
 	{
 		int mouseX, mouseY;
 		GetMousePoint(&mouseX, &mouseY);

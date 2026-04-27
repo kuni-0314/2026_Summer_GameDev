@@ -60,7 +60,7 @@ void CellBase::Update(void)
 	GetMousePoint(&mouseX, &mouseY);
 	if (mouseX >= pos_.x && mouseX < pos_.x + size_ &&
 		mouseY >= pos_.y && mouseY < pos_.y + size_ &&
-		InputManager::GetInstance().IsTrgMouseLeft())
+		InputManager::GetInstance()->IsMouseTrgDown(MOUSE_INPUT_LEFT))
 	{
 		isActive_ = true;
 		field_->SetHoldingCellType(type_);
@@ -71,7 +71,7 @@ void CellBase::Update(void)
 	}
 
 	// マウス左ボタンが離されたらHoldingCellTypeをNONEにリセット
-	if (!InputManager::GetInstance().IsClickMouseLeft())
+	if (InputManager::GetInstance()->IsMouseTrgUp(MOUSE_INPUT_LEFT))
 	{
 		field_->SetHoldingCellType(CellBase::CELL_TYPE::NONE);
 	}

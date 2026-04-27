@@ -47,7 +47,7 @@ void Player::Update()
 
 
 	// hpのindexは4、luckのindexは9
-	if (InputManager::GetInstance().IsTrgDown(KEY_INPUT_UP))
+	if (InputManager::GetInstance()->IsTrgDown(KEY_INPUT_UP))
 	{
 		if (currentGrantStatusIndex_ <= 4)
 		{
@@ -58,7 +58,7 @@ void Player::Update()
 			currentGrantStatusIndex_--;
 		}
 	}
-	if (InputManager::GetInstance().IsTrgDown(KEY_INPUT_DOWN))
+	if (InputManager::GetInstance()->IsTrgDown(KEY_INPUT_DOWN))
 	{
 		if (currentGrantStatusIndex_ >= MAX_STATUS_INDEX)
 		{
@@ -71,7 +71,7 @@ void Player::Update()
 	}
 
 	// 矢印キー右でステータスにポイント割り振り
-	if (InputManager::GetInstance().IsTrgDown(KEY_INPUT_RIGHT))
+	if (InputManager::GetInstance()->IsTrgDown(KEY_INPUT_RIGHT))
 	{
 		if (pendingPoints_ > 0)
 		{
@@ -81,7 +81,7 @@ void Player::Update()
 	}
 
 	// 矢印キー左でステータスからポイントを戻す
-	if (InputManager::GetInstance().IsTrgDown(KEY_INPUT_LEFT))
+	if (InputManager::GetInstance()->IsTrgDown(KEY_INPUT_LEFT))
 	{
 		RevokeStatus(currentGrantStatusIndex_);
 	}
@@ -349,7 +349,7 @@ void Player::RevokeStatus(int index)
 
 void Player::ProcessMove(void)
 {
-	auto& ins = InputManager::GetInstance();
+	auto ins = InputManager::GetInstance();
 
 	//移動量
 	movePow_ = AsoUtility::VECTOR_ZERO;
@@ -367,27 +367,33 @@ void Player::ProcessMove(void)
 	if (GetJoypadNum() == 0)
 	{
 		// キーボード操作
-		if (ins.IsNew(KEY_INPUT_W)) { dir = AsoUtility::DIR_F; }
-		if (ins.IsNew(KEY_INPUT_A)) { dir = AsoUtility::DIR_L; }
-		if (ins.IsNew(KEY_INPUT_S)) { dir = AsoUtility::DIR_B; }
-		if (ins.IsNew(KEY_INPUT_D)) { dir = AsoUtility::DIR_R; }
-
+		if (ins->IsNew(KEY_INPUT_W)) { dir = AsoUtility::DIR_F; }
+		if (ins->IsNew(KEY_INPUT_A)) { dir = AsoUtility::DIR_L; }
+		if (ins->IsNew(KEY_INPUT_S)) { dir = AsoUtility::DIR_B; }
+		if (ins->IsNew(KEY_INPUT_D)) { dir = AsoUtility::DIR_R; }
 		// ダッシュキー
-		if (ins.IsNew(KEY_INPUT_RSHIFT)) { isDash_ = true; }
+		if (ins->IsNew(KEY_INPUT_RSHIFT)) { isDash_ = true; }
 	}
 	else
 	{
 		// ゲームパッド操作
 		// 接続されているゲームパッド１の情報を取得
-		InputManager::JOYPAD_IN_STATE padState =
-			ins.GetJPadInputState(InputManager::JOYPAD_NO::PAD1);
+		//InputManager::JOYPAD_IN_STATE padState =
+		//	ins->GetJPadInputState(InputManager::JOYPAD_NO::PAD1);
 
 		// アナログキーの入力値から方向を取得
-		dir = ins.GetDirectionXZAKey(padState.AKeyLX, padState.AKeyLY);
+		short leftX, leftY;
+		ins->GetLeftStick(0, leftX, leftY);
 
-		if (ins.IsPadBtnNew(
-			InputManager::JOYPAD_NO::PAD1,
-			InputManager::JOYPAD_BTN::R_TRIGGER))
+		// アナログスティックの入力値を正規化して方向ベクトルを作成
+		float magnitude = sqrtf(leftX * leftX + leftY * leftY);
+		if (magnitude > 0.0f)
+		{
+			dir.x = leftX / magnitude;
+			dir.z = leftY / magnitude;
+		}
+
+		if (ins->IsGamepadNew(InputManager::PadInput::RB, 0))
 		{
 			isDash_ = true;
 		}
@@ -449,12 +455,11 @@ void Player::ProcessMove(void)
 
 void Player::ProcessJump(void)
 {
-	auto& ins = InputManager::GetInstance();
+	auto ins = InputManager::GetInstance();
 
 	// 持続ジャンプ処理
-	bool isHitKeyNew = ins.IsNew(KEY_INPUT_BACKSLASH)
-		|| ins.IsPadBtnNew(
-			InputManager::JOYPAD_NO::PAD1, InputManager::JOYPAD_BTN::DOWN);
+	bool isHitKeyNew = ins->IsNew(KEY_INPUT_BACKSLASH)
+		|| ins->IsGamepadNew(InputManager::PadInput::Down, 0);
 	if (isHitKeyNew)
 	{
 		// ジャンプの入力受付時間を減少
@@ -474,10 +479,8 @@ void Player::ProcessJump(void)
 
 
 
-	bool isHitKey = ins.IsTrgDown(KEY_INPUT_BACKSLASH)
-		|| ins.IsPadBtnTrgDown(
-			InputManager::JOYPAD_NO::PAD1,
-			InputManager::JOYPAD_BTN::DOWN);
+	bool isHitKey = ins->IsTrgDown(KEY_INPUT_BACKSLASH)
+		|| ins->IsGamepadTrgDown(InputManager::PadInput::Down, 0);
 
 	// ジャンプ
 	if (isHitKey && !isJump_)

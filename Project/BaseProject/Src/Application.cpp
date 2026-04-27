@@ -84,6 +84,7 @@ void Application::Init(void)
 	// 入力制御初期化
 	SetUseDirectInputFlag(true);
 	InputManager::CreateInstance();
+	InputManager::GetInstance()->Init();
 
 	// リソース管理初期化
 	ResourceManager::CreateInstance();
@@ -96,14 +97,14 @@ void Application::Init(void)
 void Application::Run(void)
 {
 
-	InputManager& inputManager = InputManager::GetInstance();
+	InputManager* inputManager = InputManager::GetInstance();
 	SceneManager& sceneManager = SceneManager::GetInstance();
 
 	// ゲームループ
 	while (ProcessMessage() == 0 && CheckHitKey(KEY_INPUT_ESCAPE) == 0 && !isEnd_)
 	{
 
-		inputManager.Update();
+		inputManager->Update();
 		sceneManager.Update();
 
 		sceneManager.Draw();
@@ -129,7 +130,7 @@ void Application::Destroy(void)
 	delete fpsController_;
 	fpsController_ = nullptr;
 
-	InputManager::GetInstance().Destroy();
+	InputManager::GetInstance()->Release();
 	ResourceManager::GetInstance().Destroy();
 	
 	// シーン管理解放

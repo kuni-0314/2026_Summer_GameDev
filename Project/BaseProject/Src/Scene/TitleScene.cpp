@@ -84,11 +84,11 @@ void TitleScene::Init(void)
 void TitleScene::Update(void)
 {
 	// シーン遷移
-	auto const& ins = InputManager::GetInstance();
+	auto const ins = InputManager::GetInstance();
 
 	if (!IsSelect_)
 	{
-		if (ins.IsTrgDown(KEY_INPUT_SPACE))
+		if (ins->IsTrgDown(KEY_INPUT_SPACE))
 		{
 			pushAlive_ = true;
 			IsSelect_ = true;
@@ -195,11 +195,11 @@ void TitleScene::SelectDraw(SELECT next)
 
 void TitleScene::SelectUpdate(void)
 {
-	auto const& ins = InputManager::GetInstance();
+	auto const ins = InputManager::GetInstance();
 
 	//選択コマンド変更
 
-	if (ins.IsTrgDown(KEY_INPUT_UP))
+	if (ins->IsTrgDown(KEY_INPUT_UP))
 	{
 		selectCount_--;
 		if (selectCount_ < minIndex)
@@ -208,7 +208,7 @@ void TitleScene::SelectUpdate(void)
 		}
 	}
 
-	if (ins.IsTrgDown(KEY_INPUT_DOWN))
+	if (ins->IsTrgDown(KEY_INPUT_DOWN))
 	{
 		selectCount_++;
 		if (selectCount_ > maxIndex)
@@ -216,7 +216,7 @@ void TitleScene::SelectUpdate(void)
 			selectCount_ = maxIndex; // 一番上へ
 		}
 	}
-	if (ins.IsTrgDown(KEY_INPUT_SPACE))//決定
+	if (ins->IsTrgDown(KEY_INPUT_SPACE))//決定
 	{
 		SelectChange((SELECT)selectCount_);
 	}

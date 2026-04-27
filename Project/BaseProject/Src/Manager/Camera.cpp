@@ -57,6 +57,9 @@ void Camera::SetBeforeDraw(void)
 	case Camera::MODE::FOLLOW:
 		SetBeforeDrawFollow();
 		break;
+	case Camera::MODE::MOUSE:
+		SetBeforeDrawMouse();
+		break;
 	}
 
 	// カメラの設定(位置と注視点による制御)
@@ -170,6 +173,10 @@ void Camera::ChangeMode(MODE mode)
 		break;
 	case Camera::MODE::FOLLOW:
 		break;
+	case Camera::MODE::MOUSE:
+		// マウスカーソルを画面中央に固定
+		SetMouseDispFlag(FALSE);
+		break;
 	}
 
 }
@@ -238,26 +245,30 @@ void Camera::ProcessRot(bool isLimit)
 void Camera::ProcessMove(void)
 {
 
-	auto& ins = InputManager::GetInstance();
+	auto ins = InputManager::GetInstance();
 
 	VECTOR moveDir = AsoUtility::VECTOR_ZERO;
 
 	if (GetJoypadNum() == 0)
 	{
-		if (ins.IsNew(KEY_INPUT_W)) { moveDir = AsoUtility::DIR_F; }
-		if (ins.IsNew(KEY_INPUT_S)) { moveDir = AsoUtility::DIR_B; }
-		if (ins.IsNew(KEY_INPUT_A)) { moveDir = AsoUtility::DIR_L; }
-		if (ins.IsNew(KEY_INPUT_D)) { moveDir = AsoUtility::DIR_R; }
+		if (ins->IsNew(KEY_INPUT_W)) { moveDir = AsoUtility::DIR_F; }
+		if (ins->IsNew(KEY_INPUT_S)) { moveDir = AsoUtility::DIR_B; }
+		if (ins->IsNew(KEY_INPUT_A)) { moveDir = AsoUtility::DIR_L; }
+		if (ins->IsNew(KEY_INPUT_D)) { moveDir = AsoUtility::DIR_R; }
 	}
 	else
 	{
+		// アナログキーの入力値から方向を取得
+		short leftX, leftY;
+		ins->GetLeftStick(0, leftX, leftY);
 
-		InputManager::JOYPAD_IN_STATE padState =
-			ins.GetJPadInputState(InputManager::JOYPAD_NO::PAD1);
-
-		// 左スティックの傾き
-		moveDir = ins.GetDirectionXZAKey(padState.AKeyLX, padState.AKeyLY);
-
+		// アナログスティックの入力値を正規化して方向ベクトルを作成
+		float magnitude = sqrtf(leftX * leftX + leftY * leftY);
+		if (magnitude > 0.0f)
+		{
+			moveDir.x = leftX / magnitude;
+			moveDir.z = leftY / magnitude;
+		}
 	}
 
 	// 移動処理
@@ -320,6 +331,41 @@ void Camera::SetBeforeDrawFollow(void)
 	//当たり判定
 	Collision();
 	
+}
+
+void Camera::SetBeforeDrawMouse(void)
+{
+
+	// マウスによるカメラ回転
+	RotMouse(true);
+
+	// カメラ操作(移動)
+	ProcessMove();
+
+	// 追従対象との相対位置を同期
+	if (followTransform_ != nullptr)
+	{
+		SyncFollow();
+		
+		// 当たり判定
+		Collision();
+	}
+	else
+	{
+		// 追従対象がない場合はフリーカメラのように動作
+		// Y軸
+		rotY_ = Quaternion::AngleAxis(angles_.y, AsoUtility::AXIS_Y);
+
+		// Y軸 + X軸
+		transform_.quaRot = rotY_.Mult(Quaternion::AngleAxis(angles_.x, AsoUtility::AXIS_X));
+
+		// 注視点更新
+		targetPos_ = VAdd(transform_.pos, transform_.quaRot.PosAxis(FOLLOW_TARGET_LOCAL_POS));
+
+		// カメラの上方向更新
+		transform_.quaRot.GetUp();
+	}
+
 }
 
 void Camera::Collision(void)
@@ -468,14 +514,20 @@ void Camera::RotKeyboard(bool isLimit)
 void Camera::RotGamePad(bool isLimit)
 {
 
-	auto& ins = InputManager::GetInstance();
+	auto ins = InputManager::GetInstance();
 
-	// 接続されているゲームパッド１の情報を取得
-	InputManager::JOYPAD_IN_STATE padState =
-		ins.GetJPadInputState(InputManager::JOYPAD_NO::PAD1);
+	// アナログキーの入力値から方向を取得
+	short rightX, rightY;
+	ins->GetRightStick(0, rightX, rightY);
 
-	// 右スティックの傾き
-	VECTOR dir = ins.GetDirectionXZAKey(padState.AKeyRX, padState.AKeyRY);
+	// アナログスティックの入力値を正規化して方向ベクトルを作成
+	VECTOR dir = AsoUtility::VECTOR_ZERO;
+	float magnitude = sqrtf(rightX * rightX + rightY * rightY);
+	if (magnitude > 0.0f)
+	{
+		dir.x = rightX / magnitude;
+		dir.z = rightY / magnitude;
+	}
 
 	// 右スティック左右の傾き
 	angles_.y += dir.x * ROT_POW_RAD;
@@ -492,5 +544,47 @@ void Camera::RotGamePad(bool isLimit)
 	{
 		angles_.x = LIMIT_X_UP_RAD;
 	}
+
+}
+
+void Camera::RotMouse(bool isLimit)
+{
+
+	// マウスの移動量を取得
+	int mouseX, mouseY;
+	GetMousePoint(&mouseX, &mouseY);
+
+	// 画面中央の座標を取得
+	int screenW, screenH;
+	GetScreenState(&screenW, &screenH, nullptr);
+	int centerX = screenW / 2;
+	int centerY = screenH / 2;
+
+	// 画面中央からのマウスの移動量を計算
+	int deltaX = mouseX - centerX;
+	int deltaY = mouseY - centerY;
+
+	// マウスの移動量からカメラの回転角度を計算
+	// マウス感度を調整（ROT_POW_RADの半分程度に設定）
+	const float MOUSE_SENSITIVITY = 0.002f;
+	
+	angles_.y += deltaX * MOUSE_SENSITIVITY;
+	angles_.x += deltaY * MOUSE_SENSITIVITY;
+
+	// 角度制限
+	if (isLimit)
+	{
+		if (angles_.x < -LIMIT_X_DW_RAD)
+		{
+			angles_.x = -LIMIT_X_DW_RAD;
+		}
+		if (angles_.x > LIMIT_X_UP_RAD)
+		{
+			angles_.x = LIMIT_X_UP_RAD;
+		}
+	}
+
+	// マウスカーソルを画面中央に戻す
+	SetMousePoint(centerX, centerY);
 
 }

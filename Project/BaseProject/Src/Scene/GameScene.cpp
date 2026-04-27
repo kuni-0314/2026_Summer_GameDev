@@ -54,21 +54,21 @@ void GameScene::Init(void)
 	skyDome_->Init();
 
 	// フィールド
-	fieldManager_ = new FieldManager(this);
-	fieldManager_->Init();
+	//fieldManager_ = new FieldManager(this);
+	//fieldManager_->Init();
 
 	//追従カメラ
 	Camera* camera = sceMng_.GetCamera();
 	camera->SetFollow(&player_->GetTransform());
-	sceMng_.GetCamera()->ChangeMode(Camera::MODE::FOLLOW);
+	sceMng_.GetCamera()->ChangeMode(Camera::MODE::MOUSE);
 	camera->AddHitCollider(stageCollider);
 }
 
 void GameScene::Update(void)
 {
 	// シーン遷移
-	auto const& ins = InputManager::GetInstance();
-	if (ins.IsTrgDown(KEY_INPUT_SPACE))
+	auto const ins = InputManager::GetInstance();
+	if (ins->IsTrgDown(KEY_INPUT_SPACE))
 	{
 		sceMng_.ChangeScene(SceneManager::SCENE_ID::TITLE);
 	}
@@ -77,7 +77,7 @@ void GameScene::Update(void)
 	skyDome_->Update();//スカイドーム更新
 	player_->Update();
 	enemyManager_->Update();
-	fieldManager_->Update();
+	//fieldManager_->Update();
 }
 
 void GameScene::Draw(void)
@@ -96,14 +96,14 @@ void GameScene::Draw(void)
 	//DrawBox(0, 0, Application::SCREEN_SIZE_X, Application::SCREEN_SIZE_Y, GetColor(0, 0, 0), true);
 	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
 
-	fieldManager_->Draw();
+	//fieldManager_->Draw();
 }
 
 void GameScene::Release(void)
 {
 	// フィールド解放
-	fieldManager_->Release();
-	delete fieldManager_;
+	//fieldManager_->Release();
+	//delete fieldManager_;
 	// ステージ解放
 	stage_->Release();
 	delete stage_;
