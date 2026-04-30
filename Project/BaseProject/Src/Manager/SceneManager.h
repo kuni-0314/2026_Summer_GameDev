@@ -1,5 +1,7 @@
 #pragma once
 #include <chrono>
+#include <memory>
+#include <list>
 #include <DxLib.h>
 class SceneBase;
 class Fader;
@@ -24,6 +26,8 @@ public:
 		NONE,
 		TITLE,
 		GAME,
+		BATTELE,
+		SEARCH,
 		DEBUG,
 	};
 	
@@ -48,11 +52,21 @@ public:
 	// リソースの破棄
 	void Destroy(void);
 
-	// 状態遷移
-	void ChangeScene(SCENE_ID nextId);
+	//// 状態遷移
+	//void ChangeScene(SCENE_ID nextId);
+	
+	// シーンを変更する（全削除→新規追加）
+	void ChangeScene(std::shared_ptr<SceneBase> scene);
 
-	// シーンIDの取得
-	SCENE_ID GetSceneID(void);
+	// シーンを積む（上に追加する）
+	void PushScene(std::shared_ptr<SceneBase> scene);
+
+	// シーンを外す（上を削除する）
+	void PopScene(void);
+
+	// シーンをジャンプする（全削除→新規ロード）
+	void JumpScene(std::shared_ptr<SceneBase> scene);
+
 
 	// デルタタイムの取得
 	float GetDeltaTime(void) const;
@@ -60,19 +74,21 @@ public:
 	// カメラの取得
 	Camera* GetCamera(void) const;
 
+
+
 private:
 
 	// 静的インスタンス
 	static SceneManager* instance_;
 
-	SCENE_ID sceneId_;
-	SCENE_ID waitSceneId_;
 
 	// フェード
 	Fader* fader_;
 
 	// 各種シーン
-	SceneBase* scene_;
+	//SceneBase* scene_;
+	//スタック式で複数シーンを管理をする
+	std::list<std::shared_ptr<SceneBase>> scene_;
 
 	// カメラ
 	Camera* camera_;
@@ -99,7 +115,7 @@ private:
 	void ResetDeltaTime(void);
 
 	// シーン遷移
-	void DoChangeScene(SCENE_ID sceneId);
+	//void DoChangeScene(SCENE_ID sceneId);
 
 	// フェード
 	void Fade(void);

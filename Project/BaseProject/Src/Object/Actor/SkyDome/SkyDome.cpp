@@ -1,10 +1,12 @@
 #include "SkyDome.h"
+#include <memory>
 #include "../../../Manager/ResourceManager.h"
 #include "../../../Application.h"
 #include "../../Common/Transform.h"
 #include "../../../Common/Quaternion.h"
 #include "../../../Utility/AsoUtility.h"
 #include "../../../Manager/SceneManager.h"
+#include "../../../Scene/GameScene.h"
 
 SkyDome::SkyDome(const Transform& followTransform)
 	:
@@ -80,9 +82,9 @@ void SkyDome::InitPost(void)
 	MV1SetUseZBuffer(transform_.modelId, false);
 	MV1SetWriteZBuffer(transform_.modelId, false);
 
-	SceneManager::SCENE_ID sceneId = scnMng_.GetSceneID();
+	//sceneId == SceneManager::SCENE_ID::GAME
 
-	if (sceneId == SceneManager::SCENE_ID::GAME)
+	if (std::shared_ptr<GameScene>())
 	{
 		ChangeState(STATE::FOLLOW);
 	}

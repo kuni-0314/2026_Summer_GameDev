@@ -1,4 +1,5 @@
 #pragma once
+#include<memory>
 #include "SceneBase.h"
 #include "../Object/Common/Transform.h"
 
@@ -71,6 +72,8 @@ public:
 	void SelectDraw(SELECT next);
 
 	void SelectUpdate(void);
+
+	void SelectGame(void);
 
 	void SelectOption(void);
 

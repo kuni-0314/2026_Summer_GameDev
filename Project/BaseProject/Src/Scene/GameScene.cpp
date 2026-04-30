@@ -8,6 +8,7 @@
 #include "../Object/Charactor/Player/Player.h"
 #include "../Object/Charactor/Enemy/EnemyManger.h"
 #include "../Object/FieldManager.h"
+#include "../Scene/TitleScene.h"
 #include "GameScene.h"
 
 GameScene::GameScene(void)
@@ -70,7 +71,9 @@ void GameScene::Update(void)
 	auto const& ins = InputManager::GetInstance();
 	if (ins.IsTrgDown(KEY_INPUT_SPACE))
 	{
-		sceMng_.ChangeScene(SceneManager::SCENE_ID::TITLE);
+		auto newScene = std::make_shared<TitleScene>();
+
+		SceneManager::GetInstance().ChangeScene(newScene);
 	}
 
 	stage_->Update();//ステージ更新

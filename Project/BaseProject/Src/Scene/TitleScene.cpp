@@ -9,6 +9,7 @@
 #include "../Application.h"
 #include "../Object/Common/AnimationController.h"
 #include "../Object/Actor/SkyDome/SkyDome.h"
+#include "../Scene/GameScene.h"
 
 
 TitleScene::TitleScene(void)
@@ -125,6 +126,8 @@ void TitleScene::Update(void)
 
 	animationController_->Update();
 
+	auto a = skyDome_->GetTransform().pos;
+	
 	skyDome_->Update();
 }
 
@@ -180,7 +183,8 @@ void TitleScene::SelectChange(SELECT next)
 	switch (next)
 	{
 	case SELECT::GAME:
-		sceMng_.ChangeScene(SceneManager::SCENE_ID::GAME);
+	
+		SelectGame();
 		break;
 	case SELECT::TUTORIAL:
 
@@ -298,6 +302,12 @@ void TitleScene::SelectUpdate(void)
 		}
 	}
 
+}
+
+void TitleScene::SelectGame(void)
+{
+	auto newScene = std::make_shared<GameScene>();
+	SceneManager::GetInstance().ChangeScene(newScene);
 }
 
 void TitleScene::SelectOption(void)
