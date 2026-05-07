@@ -32,6 +32,12 @@ public:
 	// エネミー生成
 	EnemyBase* Create(const EnemyBase::EnemyData& data);
 
+	// 指定座標に最も近いエネミーの座標を取得
+	VECTOR GetNearEnemyPos(const VECTOR& pos) const;
+
+	// 指定IDのエネミーの座標を取得
+	VECTOR GetEnemyPos(int id) const;
+
 private:
 	//プレイヤー
 	Player* player_;

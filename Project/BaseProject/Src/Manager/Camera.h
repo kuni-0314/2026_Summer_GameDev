@@ -46,6 +46,12 @@ public:
 	// カメラのX回転上限度角
 	static constexpr float LIMIT_X_UP_RAD = 40.0f * (DX_PI_F / 180.0f);
 	static constexpr float LIMIT_X_DW_RAD = 10.0f * (DX_PI_F / 180.0f);
+
+	// MOUSEモード用定数
+	static constexpr VECTOR MOUSE_CAMERA_LOCAL_POS = { 0.0f, 200.0f, -300.0f };
+
+	// TARGETINGモード用定数
+	static constexpr VECTOR TARGETING_CAMERA_LOCAL_POS = { 150.0f, 200.0f, -300.0f };
 	
 	// カメラモード
 	enum class MODE
@@ -55,6 +61,7 @@ public:
 		FREE,
 		FOLLOW,
 		MOUSE,
+		TARGETING
 	};
 
 	// コンストラクタ
@@ -97,6 +104,12 @@ public:
 
 	// 追従対象の設定
 	void SetFollow(const Transform* follow);
+
+	// 注視点の設定
+	void SetTargetPos(const VECTOR& pos);
+
+	VECTOR debugTargetPos_;
+
 protected:
 
 	// リソースロード
@@ -163,6 +176,7 @@ private:
 	void SetBeforeDrawFree(void);
 	void SetBeforeDrawFollow(void);
 	void SetBeforeDrawMouse(void);
+	void SetBeforeDrawTargeting(void);
 
 	// 衝突判定
 	void Collision(void);

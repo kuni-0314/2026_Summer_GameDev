@@ -47,44 +47,44 @@ void Player::Update()
 
 
 	// hpのindexは4、luckのindexは9
-	if (InputManager::GetInstance()->IsTrgDown(KEY_INPUT_UP))
-	{
-		if (currentGrantStatusIndex_ <= 4)
-		{
-			currentGrantStatusIndex_ = MAX_STATUS_INDEX;
-		}
-		else
-		{
-			currentGrantStatusIndex_--;
-		}
-	}
-	if (InputManager::GetInstance()->IsTrgDown(KEY_INPUT_DOWN))
-	{
-		if (currentGrantStatusIndex_ >= MAX_STATUS_INDEX)
-		{
-			currentGrantStatusIndex_ = 4;
-		}
-		else
-		{
-			currentGrantStatusIndex_++;
-		}
-	}
+	//if (InputManager::GetInstance()->IsTrgDown(KEY_INPUT_UP))
+	//{
+	//	if (currentGrantStatusIndex_ <= 4)
+	//	{
+	//		currentGrantStatusIndex_ = MAX_STATUS_INDEX;
+	//	}
+	//	else
+	//	{
+	//		currentGrantStatusIndex_--;
+	//	}
+	//}
+	//if (InputManager::GetInstance()->IsTrgDown(KEY_INPUT_DOWN))
+	//{
+	//	if (currentGrantStatusIndex_ >= MAX_STATUS_INDEX)
+	//	{
+	//		currentGrantStatusIndex_ = 4;
+	//	}
+	//	else
+	//	{
+	//		currentGrantStatusIndex_++;
+	//	}
+	//}
 
-	// 矢印キー右でステータスにポイント割り振り
-	if (InputManager::GetInstance()->IsTrgDown(KEY_INPUT_RIGHT))
-	{
-		if (pendingPoints_ > 0)
-		{
-			GrantStatus(currentGrantStatusIndex_);
-			pendingPoints_--;
-		}
-	}
+	//// 矢印キー右でステータスにポイント割り振り
+	//if (InputManager::GetInstance()->IsTrgDown(KEY_INPUT_RIGHT))
+	//{
+	//	if (pendingPoints_ > 0)
+	//	{
+	//		GrantStatus(currentGrantStatusIndex_);
+	//		pendingPoints_--;
+	//	}
+	//}
 
-	// 矢印キー左でステータスからポイントを戻す
-	if (InputManager::GetInstance()->IsTrgDown(KEY_INPUT_LEFT))
-	{
-		RevokeStatus(currentGrantStatusIndex_);
-	}
+	//// 矢印キー左でステータスからポイントを戻す
+	//if (InputManager::GetInstance()->IsTrgDown(KEY_INPUT_LEFT))
+	//{
+	//	RevokeStatus(currentGrantStatusIndex_);
+	//}
 
 
 
@@ -252,6 +252,29 @@ void Player::Draw(void)
 	y += lineHeight;
 
 	DrawFormatString(x, y, color, "PendingPoints   : %d", pendingPoints_);
+
+
+	// プレイヤーの周りを回転するオブジェクトの描画
+	static float angle = 0.0f;
+	angle += 0.01f;
+
+	// プレイヤーの座標を中心に半径100.0fで回転
+	float radius = 100.0f;
+	VECTOR rot = transform_.pos;
+	rot.x += sinf(angle) * radius;
+	rot.z += cosf(angle) * radius;
+
+	// プレイヤーの座標系を描画
+	VECTOR lineX = { transform_.pos.x + 50.0f, transform_.pos.y, transform_.pos.z };
+	VECTOR lineY = { transform_.pos.x, transform_.pos.y + 50.0f, transform_.pos.z };
+	VECTOR lineZ = { transform_.pos.x, transform_.pos.y, transform_.pos.z + 50.0f };
+	DrawLine3D(transform_.pos, lineX, 0xFF0000);
+	DrawLine3D(transform_.pos, lineY, 0x00FF00);
+	DrawLine3D(transform_.pos, lineZ, 0x0000FF);
+	DrawSphere3D(lineX, 5.0f, 16, 0xFF0000, 0xFF0000, true);
+	DrawSphere3D(lineY, 5.0f, 16, 0x00FF00, 0x00FF00, true);
+	DrawSphere3D(lineZ, 5.0f, 16, 0x0000FF, 0x0000FF, true);
+	DrawSphere3D(rot, 5.0f, 16, 0xFFFF00, 0xFFFF00, true);
 }
 
 void Player::GrantStatus(int index)
@@ -373,6 +396,7 @@ void Player::ProcessMove(void)
 		if (ins->IsNew(KEY_INPUT_D)) { dir = AsoUtility::DIR_R; }
 		// ダッシュキー
 		if (ins->IsNew(KEY_INPUT_RSHIFT)) { isDash_ = true; }
+		if (ins->IsNew(KEY_INPUT_LSHIFT)) { isDash_ = true; }
 	}
 	else
 	{
@@ -458,7 +482,7 @@ void Player::ProcessJump(void)
 	auto ins = InputManager::GetInstance();
 
 	// 持続ジャンプ処理
-	bool isHitKeyNew = ins->IsNew(KEY_INPUT_BACKSLASH)
+	bool isHitKeyNew = ins->IsNew(KEY_INPUT_SPACE)
 		|| ins->IsGamepadNew(InputManager::PadInput::Down, 0);
 	if (isHitKeyNew)
 	{
@@ -479,7 +503,7 @@ void Player::ProcessJump(void)
 
 
 
-	bool isHitKey = ins->IsTrgDown(KEY_INPUT_BACKSLASH)
+	bool isHitKey = ins->IsTrgDown(KEY_INPUT_SPACE)
 		|| ins->IsGamepadTrgDown(InputManager::PadInput::Down, 0);
 
 	// ジャンプ

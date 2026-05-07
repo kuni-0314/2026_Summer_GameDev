@@ -60,7 +60,7 @@ void GameScene::Init(void)
 	//追従カメラ
 	Camera* camera = sceMng_.GetCamera();
 	camera->SetFollow(&player_->GetTransform());
-	sceMng_.GetCamera()->ChangeMode(Camera::MODE::MOUSE);
+	sceMng_.GetCamera()->ChangeMode(Camera::MODE::TARGETING);
 	camera->AddHitCollider(stageCollider);
 }
 
@@ -68,7 +68,7 @@ void GameScene::Update(void)
 {
 	// シーン遷移
 	auto const ins = InputManager::GetInstance();
-	if (ins->IsTrgDown(KEY_INPUT_SPACE))
+	if (ins->IsTrgDown(KEY_INPUT_RETURN))
 	{
 		sceMng_.ChangeScene(SceneManager::SCENE_ID::TITLE);
 	}
@@ -78,6 +78,12 @@ void GameScene::Update(void)
 	player_->Update();
 	enemyManager_->Update();
 	//fieldManager_->Update();
+
+	if (ins->IsTrgDown(KEY_INPUT_LEFT) && targetEnemyId_ > 0) targetEnemyId_--;
+	if (ins->IsTrgDown(KEY_INPUT_RIGHT)) targetEnemyId_++;
+
+	targetPos_ = enemyManager_->GetEnemyPos(targetEnemyId_);
+	SceneManager::GetInstance().GetCamera()->SetTargetPos(targetPos_);
 }
 
 void GameScene::Draw(void)
@@ -89,6 +95,10 @@ void GameScene::Draw(void)
 	player_->Draw();	//プレイヤー描画
 
 	enemyManager_->Draw();
+
+	//VECTOR enemyPos = enemyManager_->GetNearEnemyPos(player_->GetTransform().pos);
+	VECTOR targetPos = enemyManager_->GetEnemyPos(targetEnemyId_);
+	DrawSphere3D(targetPos, 40.0f, 16, GetColor(255, 0, 0), GetColor(255, 0, 0), true);
 
 
 	// 黒を描画（少し透過）

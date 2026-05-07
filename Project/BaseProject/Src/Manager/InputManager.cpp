@@ -82,7 +82,7 @@ bool InputManager::Init(void)
 
 	Add(KEY_INPUT_F9);
 
-	//Add(KEY_INPUT_LSHIFT);		// ダッシュ
+	Add(KEY_INPUT_LSHIFT);		// ダッシュ
 	Add(KEY_INPUT_LCONTROL);	// 向きを変えずに移動
 
 

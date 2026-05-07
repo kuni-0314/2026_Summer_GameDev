@@ -60,6 +60,8 @@ void Camera::SetBeforeDraw(void)
 	case Camera::MODE::MOUSE:
 		SetBeforeDrawMouse();
 		break;
+	case Camera::MODE::TARGETING:
+		SetBeforeDrawTargeting();
 	}
 
 	// カメラの設定(位置と注視点による制御)
@@ -76,6 +78,7 @@ void Camera::SetBeforeDraw(void)
 
 void Camera::DrawDebug(void)
 {
+	DrawSphere3D(debugTargetPos_, 10.0f, 16, 0xff00ff, 0xff00ff, true);	
 }
 
 void Camera::Release(void)
@@ -101,6 +104,11 @@ void Camera::Release(void)
 void Camera::SetFollow(const Transform* follow)
 {
 	followTransform_ = follow;
+}
+
+void Camera::SetTargetPos(const VECTOR& pos)
+{
+	targetPos_ = pos;
 }
 
 void Camera::InitCollider(void)
@@ -346,7 +354,14 @@ void Camera::SetBeforeDrawMouse(void)
 	if (followTransform_ != nullptr)
 	{
 		SyncFollow();
-		
+
+		//// プレイヤーの位置
+		//VECTOR playerPos = followTransform_->pos;
+
+		//// カメラ位置をプレイヤーの後ろに配置
+		//VECTOR localPos = transform_.quaRot.PosAxis(MOUSE_CAMERA_LOCAL_POS);
+		//transform_.pos = VAdd(playerPos, localPos);
+
 		// 当たり判定
 		Collision();
 	}
@@ -360,12 +375,44 @@ void Camera::SetBeforeDrawMouse(void)
 		transform_.quaRot = rotY_.Mult(Quaternion::AngleAxis(angles_.x, AsoUtility::AXIS_X));
 
 		// 注視点更新
-		targetPos_ = VAdd(transform_.pos, transform_.quaRot.PosAxis(FOLLOW_TARGET_LOCAL_POS));
+		targetPos_ = VAdd(transform_.pos, transform_.quaRot.PosAxis(MOUSE_CAMERA_LOCAL_POS));
 
 		// カメラの上方向更新
 		transform_.quaRot.GetUp();
 	}
 
+}
+
+void Camera::SetBeforeDrawTargeting(void)
+{
+	// カメラ操作(回転)
+	// ProcessRot(true);
+
+	// 注視点はGameSceneで設定済み（敵の位置）
+	debugTargetPos_ = targetPos_;
+
+	// プレイヤーの位置
+	VECTOR playerPos = followTransform_->pos;
+
+	// プレイヤーから敵への方向ベクトル
+	VECTOR toEnemy = VSub(targetPos_, playerPos);
+
+	// Y軸回転を敵の方向に向ける
+	float angleY = atan2f(toEnemy.x, toEnemy.z);
+	rotY_ = Quaternion::AngleAxis(angleY, AsoUtility::AXIS_Y);
+
+	// Y軸 + X軸回転
+	transform_.quaRot = rotY_.Mult(Quaternion::AngleAxis(angles_.x, AsoUtility::AXIS_X));
+
+	// カメラ位置をプレイヤーの後ろ上方に配置
+	VECTOR localPos = transform_.quaRot.PosAxis(TARGETING_CAMERA_LOCAL_POS);
+	transform_.pos = VAdd(playerPos, localPos);
+
+	// カメラの上方向
+	transform_.quaRot.GetUp();
+
+	// 当たり判定
+	Collision();
 }
 
 void Camera::Collision(void)
@@ -475,39 +522,39 @@ void Camera::Collision(void)
 void Camera::RotKeyboard(bool isLimit)
 {
 
-	const auto& ins = InputManager::GetInstance();
+	const auto ins = InputManager::GetInstance();
 
 	// カメラ回転
-	//if (ins.IsNew(KEY_INPUT_RIGHT))
-	//{
-	//	// 右回転
-	//	angles_.y += ROT_POW_RAD;
-	//}
-	//if (ins.IsNew(KEY_INPUT_LEFT))
-	//{
-	//	// 左回転
-	//	angles_.y -= ROT_POW_RAD;
-	//}
+	if (ins->IsNew(KEY_INPUT_RIGHT))
+	{
+		// 右回転
+		angles_.y += ROT_POW_RAD;
+	}
+	if (ins->IsNew(KEY_INPUT_LEFT))
+	{
+		// 左回転
+		angles_.y -= ROT_POW_RAD;
+	}
 
-	//// 上回転
-	//if (ins.IsNew(KEY_INPUT_UP))
-	//{
-	//	angles_.x += ROT_POW_RAD;
-	//	if (isLimit && angles_.x > LIMIT_X_UP_RAD)
-	//	{
-	//		angles_.x = LIMIT_X_UP_RAD;
-	//	}
-	//}
+	// 上回転
+	if (ins->IsNew(KEY_INPUT_UP))
+	{
+		angles_.x += ROT_POW_RAD;
+		if (isLimit && angles_.x > LIMIT_X_UP_RAD)
+		{
+			angles_.x = LIMIT_X_UP_RAD;
+		}
+	}
 
-	//// 下回転
-	//if (ins.IsNew(KEY_INPUT_DOWN))
-	//{
-	//	angles_.x -= ROT_POW_RAD;
-	//	if (isLimit && angles_.x < -LIMIT_X_DW_RAD)
-	//	{
-	//		angles_.x = -LIMIT_X_DW_RAD;
-	//	}
-	//}
+	// 下回転
+	if (ins->IsNew(KEY_INPUT_DOWN))
+	{
+		angles_.x -= ROT_POW_RAD;
+		if (isLimit && angles_.x < -LIMIT_X_DW_RAD)
+		{
+			angles_.x = -LIMIT_X_DW_RAD;
+		}
+	}
 
 }
 

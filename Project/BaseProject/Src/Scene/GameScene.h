@@ -35,4 +35,8 @@ private:
 	Player* player_;
 	EnemyManager* enemyManager_;
 	FieldManager* fieldManager_;
+
+	int targetEnemyId_;
+
+	VECTOR targetPos_;
 };

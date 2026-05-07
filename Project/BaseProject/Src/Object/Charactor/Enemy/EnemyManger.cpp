@@ -131,3 +131,29 @@ EnemyBase* EnemyManager::Create(const EnemyBase::EnemyData& data)
 	return enemy;
 
 }
+
+VECTOR EnemyManager::GetNearEnemyPos(const VECTOR& pos) const
+{
+	float minDist = FLT_MAX;
+	VECTOR nearPos = { 0.0f, 0.0f, 0.0f };
+	for (auto& enemy : enemies_)
+	{
+		VECTOR enemyPos = enemy->GetTransform().pos;
+		VECTOR toEnemyVec = VSub(enemyPos, pos);
+		float dist = VSize(toEnemyVec);
+		if (dist < minDist)
+		{
+			minDist = dist;
+			nearPos = enemyPos;
+		}
+	}
+	return nearPos;
+}
+
+VECTOR EnemyManager::GetEnemyPos(int id) const
+{
+	if (id < 0) id = 0;
+	else if (id >= enemies_.size()) id = enemies_.size() - 1;
+
+	return enemies_[id]->GetTransform().pos;
+}
