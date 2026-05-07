@@ -110,7 +110,6 @@ void SceneManager::Update(void)
 	{
 		// フェード状態の切替処理
 		//Fade();
-		nowScene->Init();
 		isSceneChanging_ = false;
 	}
 	else
@@ -196,16 +195,19 @@ void SceneManager::Destroy(void)
 
 void SceneManager::ChangeScene(std::shared_ptr<SceneBase> scene)
 {
-	//古いシーンの解放
+	// 古いシーンの解放
 	for (auto& s : scene_)
 		s->Release();
 	scene_.clear();
 
-	//新しいシーンの追加
+	// 新しいシーンの追加と初期化
 	scene_.push_back(scene);
+	scene->Init();  // ← 直ちに初期化
 	fader_->SetFade(Fader::STATE::FADE_OUT);
 	isSceneChanging_ = true;
 }
+
+
 
 void SceneManager::PushScene(std::shared_ptr<SceneBase> scene)
 {

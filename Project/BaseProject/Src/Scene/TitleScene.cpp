@@ -174,6 +174,7 @@ void TitleScene::Release(void)
 	//スカイドーム解放
 	skyDome_->Release();
 	delete skyDome_;
+	skyDome_ = nullptr;
 }
 
 void TitleScene::SelectChange(SELECT next)
