@@ -96,11 +96,14 @@ void GameScene::Draw(void)
 
 	enemyManager_->Draw();
 
+<<<<<<< HEAD
 	//VECTOR enemyPos = enemyManager_->GetNearEnemyPos(player_->GetTransform().pos);
 	VECTOR targetPos = enemyManager_->GetEnemyPos(targetEnemyId_);
 	DrawSphere3D(targetPos, 40.0f, 16, GetColor(255, 0, 0), GetColor(255, 0, 0), true);
 
 
+=======
+>>>>>>> main
 	// çïÇï`âÊÅiè≠ÇµìßâﬂÅj
 	SetDrawBlendMode(DX_BLENDMODE_ALPHA, 128);
 	//DrawBox(0, 0, Application::SCREEN_SIZE_X, Application::SCREEN_SIZE_Y, GetColor(0, 0, 0), true);
