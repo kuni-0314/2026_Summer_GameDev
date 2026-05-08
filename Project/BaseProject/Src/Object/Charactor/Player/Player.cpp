@@ -191,6 +191,12 @@ void Player::UpdateProcess(void)
 	// ジャンプ処理
 	ProcessJump();
 
+	// ジェット処理
+	ProcessJet();
+
+	// 
+	ProcessTmp();
+
 	
 
 }
@@ -377,7 +383,18 @@ void Player::ProcessMove(void)
 	auto ins = InputManager::GetInstance();
 
 	//移動量
-	movePow_ = AsoUtility::VECTOR_ZERO;
+	if (!isJump_ && !isJet_) movePow_ = AsoUtility::VECTOR_ZERO;
+	else if (isJump_ && !isJet_) VScale(movePow_, 0.9f); // ジャンプ中は移動量を徐々に減少させる
+
+	if (jetTime_ <= TIME_JET)
+	{
+		jetTime_ += scnMng_.GetDeltaTime();
+	}
+	else
+	{
+		isJet_ = false;
+	}
+
 	//移動方向
 	VECTOR dir = AsoUtility::VECTOR_ZERO;
 
@@ -463,7 +480,7 @@ void Player::ProcessMove(void)
 		moveDir_ = Quaternion::PosAxis(cameraRot, dir);
 
 		//移動量を計算
-		movePow_ = VScale(moveDir_, moveSpeed_);
+		if (!isJet_) movePow_ = VScale(moveDir_, moveSpeed_);
 
 	}
 	else
@@ -533,6 +550,27 @@ void Player::ProcessJump(void)
 	//	float jumpSpeed = POW_JUMP_KEEP * scnMng_.GetDeltaTime();
 	//	jumpPow_ = VAdd(jumpPow_, VScale(AsoUtility::DIR_U, jumpSpeed));
 	//}
+}
+
+void Player::ProcessJet(void)
+{
+	auto ins = InputManager::GetInstance();
+	if (ins->IsTrgDown(KEY_INPUT_E)
+		|| ins->IsGamepadTrgDown(InputManager::PadInput::X, 0))
+	{
+		movePow_ = VScale(moveDir_, POW_JET);
+		isJet_ = true;
+		jetTime_ = 0.0f;
+	}
+}
+
+void Player::ProcessTmp(void)
+{
+	auto ins = InputManager::GetInstance();
+	if (ins->IsMouseTrgDown(MOUSE_INPUT_LEFT))
+	{
+		jumpPow_ = VAdd(jumpPow_, VScale(AsoUtility::DIR_U, 20.0f));
+	}
 }
 
 void Player::CollisionReserve(void)

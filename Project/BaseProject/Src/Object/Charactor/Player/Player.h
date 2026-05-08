@@ -84,7 +84,7 @@ private:
 	static constexpr float TIME_JUMP_INPUT = 0.5f;
 
 	
-
+	static constexpr float POW_JET = 100.0f;
 
 
 
@@ -103,6 +103,10 @@ private:
 	void ProcessMove(void);
 	//ジャンプ
 	void ProcessJump(void);
+	//ジェット
+	void ProcessJet(void);
+	//
+	void ProcessTmp(void);
 
 	// 衝突判定
 	void CollisionReserve(void) override;
@@ -122,5 +126,9 @@ private:
 	static constexpr int DEFAULT_MAGIC_DEF = 5;
 	static constexpr int DEFAULT_WISDOM = 5;
 	static constexpr int DEFAULT_LUCK = 5;
+
+	bool isJet_;
+	float jetTime_;
+	static constexpr float TIME_JET = 0.2f;
 };
 
