@@ -65,6 +65,20 @@ public:
 
 	void SelectUpdate(void);
 
+	void SelectGame(void);
+
+	void SelectOption(void);
+
+	void SelectExit(void);
+
+	void SelectTutorial(void);
+
+	void SelectOptionDraw(void);
+
+	void SelectExitDraw(void);
+
+	void SelectTutorialDraw(void);
+
 
 private:
 

@@ -145,6 +145,16 @@ void TitleScene::Draw(void)
 	
 
 	SelectDraw((SELECT)selectCount_);
+
+
+	const char* name = "";
+
+	if (selectCount_ == static_cast<int>(SELECT::GAME)) name = "ゲームスタート";
+	else if (selectCount_ == static_cast<int>(SELECT::TUTORIAL)) name = "チュートリアル";
+	else if (selectCount_ == static_cast<int>(SELECT::OPTION)) name = "設定";
+	else if (selectCount_ == static_cast<int>(SELECT::EXIT)) name = "終了";
+
+	DrawFormatString(100, 100, GetColor(255, 255, 255), "選択中: %s", name);
 }
 
 void TitleScene::Release(void)
@@ -183,14 +193,9 @@ void TitleScene::SelectChange(SELECT next)
 
 void TitleScene::SelectDraw(SELECT next)
 {
-	const char* name = "";
 
-	if (next == SELECT::GAME) name = "ゲームスタート";
-	else if (next == SELECT::TUTORIAL) name = "チュートリアル";
-	else if (next == SELECT::OPTION) name = "設定";
-	else if (next == SELECT::EXIT) name = "終了";
 
-	DrawFormatString(100, 100, GetColor(255, 255, 255), "選択中: %s", name);
+	
 }
 
 void TitleScene::SelectUpdate(void)
@@ -222,4 +227,33 @@ void TitleScene::SelectUpdate(void)
 	}
 	
 
+}
+
+void TitleScene::SelectGame(void)
+{
+	
+}
+
+void TitleScene::SelectOption(void)
+{
+}
+
+void TitleScene::SelectExit(void)
+{
+}
+
+void TitleScene::SelectTutorial(void)
+{
+}
+
+void TitleScene::SelectOptionDraw(void)
+{
+}
+
+void TitleScene::SelectExitDraw(void)
+{
+}
+
+void TitleScene::SelectTutorialDraw(void)
+{
 }
