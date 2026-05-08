@@ -94,7 +94,7 @@ void CharactorBase::CalcGravityPow(void)
 	// d—Í•ûŒü
 	VECTOR dirGravity = AsoUtility::DIR_D;
 	// d—Í‚Ì‹­‚³
-	float gravityPow = Application::GetInstance().GetGravityPow() *scnMng_.GetDeltaTime();
+	float gravityPow = Application::GetInstance().GetGravityPow() * 0.01f/*scnMng_.GetDeltaTime()*/;
 	// d—Í
 	VECTOR gravity = VScale(dirGravity, gravityPow);
 	jumpPow_ = VAdd(jumpPow_, gravity);

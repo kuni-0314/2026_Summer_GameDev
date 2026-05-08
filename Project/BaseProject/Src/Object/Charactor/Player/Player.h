@@ -77,13 +77,17 @@ private:
 	static constexpr VECTOR COL_LINE_JUMP_END_LOCAL_POS = { 0.0f, 50.0f, 0.0f };;
 	
 	// ジャンプ力
-	static constexpr float POW_JUMP = 5000.0f;
-	static constexpr float POW_JUMP_INIT = 3500.0f;
-
+	static constexpr float POW_JUMP_INIT = 35.0f;
 	// 持続ジャンプ力
-	static constexpr float POW_JUMP_KEEP = 400.0f;
+	static constexpr float POW_JUMP_KEEP = 8.0f;
 	// ジャンプ受付時間
 	static constexpr float TIME_JUMP_INPUT = 0.5f;
+
+	
+
+
+
+
 
 	// 衝突判定用カプセル上部球体
 	static constexpr VECTOR COL_CAPSULE_TOP_LOCAL_POS = { 0.0f, 110.0f, 0.0f };

@@ -253,6 +253,8 @@ void Player::Draw(void)
 
 	DrawFormatString(x, y, color, "PendingPoints   : %d", pendingPoints_);
 
+	y += lineHeight;
+	DrawFormatString(x, y, color, "jumpPow   : %f.", jumpPow_.y);
 
 	// プレイヤーの周りを回転するオブジェクトの描画
 	static float angle = 0.0f;
@@ -481,42 +483,56 @@ void Player::ProcessJump(void)
 {
 	auto ins = InputManager::GetInstance();
 
-	// 持続ジャンプ処理
-	bool isHitKeyNew = ins->IsNew(KEY_INPUT_SPACE)
-		|| ins->IsGamepadNew(InputManager::PadInput::Down, 0);
-	if (isHitKeyNew)
-	{
-		// ジャンプの入力受付時間を減少
-		stepJump_ += scnMng_.GetDeltaTime();
-		if (stepJump_ < TIME_JUMP_INPUT)
-		{
-			// ジャンプ量の計算
-			float jumpSpeed = POW_JUMP_KEEP * scnMng_.GetDeltaTime();
-			jumpPow_ = VAdd(jumpPow_, VScale(AsoUtility::DIR_U, jumpSpeed));
-		}
-	}
-	else
-	{
-		// ボタンを離したらジャンプ力に加算しない
-		stepJump_ = TIME_JUMP_INPUT;
-	}
-
-
-
 	bool isHitKey = ins->IsTrgDown(KEY_INPUT_SPACE)
-		|| ins->IsGamepadTrgDown(InputManager::PadInput::Down, 0);
+		|| ins->IsGamepadTrgDown(InputManager::PadInput::B, 0);
 
-	// ジャンプ
-	if (isHitKey && !isJump_)
+	if (ins->IsTrgDown(KEY_INPUT_SPACE)
+		|| ins->IsGamepadTrgDown(InputManager::PadInput::B, 0))
 	{
-		// ジャンプ量の計算
-		float jumpSpeed = POW_JUMP * scnMng_.GetDeltaTime();
-		jumpPow_ = VScale(AsoUtility::DIR_U, jumpSpeed);
+		jumpPow_ = VAdd(jumpPow_, VScale(AsoUtility::DIR_U, POW_JUMP_INIT));
 		isJump_ = true;
+		stepJump_ = 0.0f;
+		
 		// アニメーション再生
 		animationController_->Play(
 			static_cast<int>(ANIM_TYPE::JUMP), false);
 	}
+
+	if (ins->IsNew(KEY_INPUT_SPACE)
+		|| ins->IsGamepadNew(InputManager::PadInput::B, 0))
+	{
+		if (isJump_ && stepJump_ < TIME_JUMP_INPUT)
+		{
+			jumpPow_ = VAdd(jumpPow_, VScale(AsoUtility::DIR_U, POW_JUMP_KEEP));
+			stepJump_ += scnMng_.GetDeltaTime();
+		}
+	}
+
+	//// ジャンプ開始
+	//if (isHitKey && !isJump_)
+	//{
+	//	// ジャンプ量の計算
+	//	float jumpSpeed = POW_JUMP * scnMng_.GetDeltaTime();
+	//	jumpPow_ = VScale(AsoUtility::DIR_U, jumpSpeed);
+	//	isJump_ = true;
+	//	stepJump_ = 0.0f;  // ジャンプ開始時にリセット
+	//	// アニメーション再生
+	//	animationController_->Play(
+	//		static_cast<int>(ANIM_TYPE::JUMP), false);
+	//}
+
+	//// 持続ジャンプ処理（ジャンプ中のみ）
+	//bool isHitKeyNew = ins->IsNew(KEY_INPUT_SPACE)
+	//	|| ins->IsGamepadNew(InputManager::PadInput::Down, 0);
+	//
+	//if (isHitKeyNew && isJump_ && stepJump_ < TIME_JUMP_INPUT)
+	//{
+	//	// ジャンプの入力受付時間を加算
+	//	stepJump_ += scnMng_.GetDeltaTime();
+	//	// ジャンプ量の計算
+	//	float jumpSpeed = POW_JUMP_KEEP * scnMng_.GetDeltaTime();
+	//	jumpPow_ = VAdd(jumpPow_, VScale(AsoUtility::DIR_U, jumpSpeed));
+	//}
 }
 
 void Player::CollisionReserve(void)

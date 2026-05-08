@@ -41,13 +41,13 @@ void GameScene::Init(void)
 	
 
 	//エネミーー
-	enemyManager_ = new EnemyManager(player_);
-	enemyManager_->Init();
-	enemyManager_->AddHitCollider(stageCollider);
+	//enemyManager_ = new EnemyManager(player_);
+	//enemyManager_->Init();
+	//enemyManager_->AddHitCollider(stageCollider);
 	
 	//プレイヤーのカプセルコライダ―をエネミーに登録
-	enemyManager_->AddHitCollider(
-		player_->GetOwnCollider(static_cast<int>(CharactorBase::COLLIDER_TYPE::CAPSULE)));
+	//enemyManager_->AddHitCollider(
+	//	player_->GetOwnCollider(static_cast<int>(CharactorBase::COLLIDER_TYPE::CAPSULE)));
 	
 	//スカイドーム
 	skyDome_ = new SkyDome(player_->GetTransform());
@@ -60,7 +60,7 @@ void GameScene::Init(void)
 	//追従カメラ
 	Camera* camera = sceMng_.GetCamera();
 	camera->SetFollow(&player_->GetTransform());
-	sceMng_.GetCamera()->ChangeMode(Camera::MODE::TARGETING);
+	sceMng_.GetCamera()->ChangeMode(Camera::MODE::MOUSE);
 	camera->AddHitCollider(stageCollider);
 }
 
@@ -76,14 +76,14 @@ void GameScene::Update(void)
 	stage_->Update();//ステージ更新
 	skyDome_->Update();//スカイドーム更新
 	player_->Update();
-	enemyManager_->Update();
+	//enemyManager_->Update();
 	//fieldManager_->Update();
 
 	if (ins->IsTrgDown(KEY_INPUT_LEFT) && targetEnemyId_ > 0) targetEnemyId_--;
 	if (ins->IsTrgDown(KEY_INPUT_RIGHT)) targetEnemyId_++;
 
-	targetPos_ = enemyManager_->GetEnemyPos(targetEnemyId_);
-	SceneManager::GetInstance().GetCamera()->SetTargetPos(targetPos_);
+	//targetPos_ = enemyManager_->GetEnemyPos(targetEnemyId_);
+	//SceneManager::GetInstance().GetCamera()->SetTargetPos(targetPos_);
 }
 
 void GameScene::Draw(void)
@@ -94,10 +94,10 @@ void GameScene::Draw(void)
 
 	player_->Draw();	//プレイヤー描画
 
-	enemyManager_->Draw();
+	//enemyManager_->Draw();
 	//VECTOR enemyPos = enemyManager_->GetNearEnemyPos(player_->GetTransform().pos);
-	VECTOR targetPos = enemyManager_->GetEnemyPos(targetEnemyId_);
-	DrawSphere3D(targetPos, 40.0f, 16, GetColor(255, 0, 0), GetColor(255, 0, 0), true);
+	//VECTOR targetPos = enemyManager_->GetEnemyPos(targetEnemyId_);
+	//DrawSphere3D(targetPos, 40.0f, 16, GetColor(255, 0, 0), GetColor(255, 0, 0), true);
 	// 黒を描画（少し透過）
 	SetDrawBlendMode(DX_BLENDMODE_ALPHA, 128);
 	//DrawBox(0, 0, Application::SCREEN_SIZE_X, Application::SCREEN_SIZE_Y, GetColor(0, 0, 0), true);
@@ -121,6 +121,6 @@ void GameScene::Release(void)
 	player_->Release();
 	delete player_;
 
-	enemyManager_->Release();
-	delete enemyManager_;
+	//enemyManager_->Release();
+	//delete enemyManager_;
 }
