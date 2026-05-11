@@ -86,15 +86,19 @@ private:
 	
 	static constexpr float POW_JET = 100.0f;
 
-
-
-
 	// 衝突判定用カプセル上部球体
 	static constexpr VECTOR COL_CAPSULE_TOP_LOCAL_POS = { 0.0f, 110.0f, 0.0f };
 	// 衝突判定用カプセル下部球体
 	static constexpr VECTOR COL_CAPSULE_DOWN_LOCAL_POS = { 0.0f, 30.0f, 0.0f };
 	// 衝突判定用カプセル球体半径
 	static constexpr float COL_CAPSULE_RADIUS = 20.0f;
+
+	// 衝突判定のサブステップ数（高速移動時のすり抜け防止）
+	static constexpr int COLLISION_SUB_STEPS = 4;
+	// 壁沿いスライドの最大試行回数
+	static constexpr int MAX_SLIDE_ITERATIONS = 4;
+	// スライド判定用の最小移動量
+	static constexpr float MIN_MOVE_THRESHOLD = 0.01f;
 
 	void GrantStatus(int index);
 	void RevokeStatus(int index);

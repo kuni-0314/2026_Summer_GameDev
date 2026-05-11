@@ -23,6 +23,7 @@ public:
 	// à íu
 	VECTOR pos;
 	VECTOR localPos;
+	VECTOR prevPos;
 
 	// çsóÒ
 	MATRIX matScl;

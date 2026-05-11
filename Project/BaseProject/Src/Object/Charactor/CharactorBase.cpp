@@ -1,3 +1,4 @@
+#include <cmath>
 #include "CharactorBase.h"
 #include "../../Object/Common/AnimationController.h"
 #include "../../Utility/AsoUtility.h"
@@ -110,16 +111,15 @@ void CharactorBase::CalcGravityPow(void)
 
 void CharactorBase::Collision(void)
 {
-	// 移動処理
-	transform_.pos = VAdd(transform_.pos, movePow_);
-	//衝突（カプセル）
+	// 衝突(カプセル)
 	CollisionCapsule();
-
+	
 	// ジャンプ量を加算
 	transform_.pos = VAdd(transform_.pos, jumpPow_);
 	// 衝突(重力)
 	CollisionGravity();
 }
+
 void CharactorBase::CollisionGravity(void)
 {
 	// 線分コライダ
@@ -146,14 +146,19 @@ void CharactorBase::CollisionGravity(void)
 		bool isHit_ = colliderLine_->PushBackUp(colliderModel, transform_, 2.0f,
 			true, false);
 
+		// ジャンプ判定
 		if (isHit_)
 		{
-			// ジャンプ判定
 			isJump_ = false;
+			isAir_ = false;
+		}
+		else
+		{
+			isAir_ = true;
 		}
 		
 	}
-	if (!isJump_)
+	if (!isJump_ && !isAir_)
 	{
 		// ジャンプリセット
 		jumpPow_ = AsoUtility::VECTOR_ZERO;
@@ -173,21 +178,74 @@ void CharactorBase::CollisionCapsule(void)
 	ColliderCapsule* colliderCapsule =
 		dynamic_cast<ColliderCapsule*>(ownColliders_.at(capsuleType));
 	if (colliderCapsule == nullptr) return;
-	// 登録されている衝突物を全てチェック
-	for (const auto& hitCol : hitColliders_)
+
+	// 移動量がカプセルの半径より大きい場合、移動量を分割して衝突判定を行う
+	float moveLen = VSize(movePow_);
+	float capRadius = colliderCapsule->GetRadius();
+	
+	// 移動開始位置を保存
+	VECTOR startPos = transform_.pos;
+	
+	if (moveLen > capRadius)
 	{
-		// モデル以外は処理を飛ばす
-		if (hitCol->GetShape() != ColliderBase::SHAPE::MODEL) continue;
-		// 派生クラスへキャスト
-		const ColliderModel* colliderModel =
-			dynamic_cast<const ColliderModel*>(hitCol);
-		if (colliderModel == nullptr) continue;
+		// 分割数を計算（最低でも1回は分割）
+		int splits = static_cast<int>(std::ceil(moveLen / capRadius));
+		VECTOR currentPos = startPos;
 
-		colliderCapsule->PushBackAlongNormal(colliderModel, transform_, CNT_TRY_COLLISION,
-			COLLISION_BACK_DIS, true, false);
+		// 分割された各ステップで衝突判定
+		for (int i = 1; i <= splits; i++)
+		{
+			// 前の位置を保存
+			VECTOR prevStepPos = currentPos;
+			
+			// 次の目標位置を計算
+			float t = static_cast<float>(i) / static_cast<float>(splits);
+			VECTOR targetPos = VAdd(startPos, VScale(movePow_, t));
+			
+			// 一時的なTransformを設定
+			Transform tempTrans = transform_;
+			tempTrans.prevPos = prevStepPos;
+			tempTrans.pos = targetPos;
+
+			// 全ての衝突物に対してチェック
+			for (const auto& hitCol : hitColliders_)
+			{
+				if (hitCol->GetShape() != ColliderBase::SHAPE::MODEL) continue;
+				const ColliderModel* colliderModel =
+					dynamic_cast<const ColliderModel*>(hitCol);
+				if (colliderModel == nullptr) continue;
+
+				colliderCapsule->PushBackAlongNormal(colliderModel, tempTrans, CNT_TRY_COLLISION,
+					COLLISION_BACK_DIS, true, false);
+			}
+			
+			// 修正された位置を次のステップに引き継ぐ
+			currentPos = tempTrans.pos;
+		}
+		
+		// 最終的な位置を反映
+		transform_.pos = currentPos;
 	}
+	else
+	{
+		// 移動後の位置を設定
+		transform_.prevPos = startPos;
+		transform_.pos = VAdd(startPos, movePow_);
+		
+		// 登録されている衝突物を全てチェック
+		for (const auto& hitCol : hitColliders_)
+		{
+			// モデル以外は処理を飛ばす
+			if (hitCol->GetShape() != ColliderBase::SHAPE::MODEL) continue;
+			// 派生クラスへキャスト
+			const ColliderModel* colliderModel =
+				dynamic_cast<const ColliderModel*>(hitCol);
+			if (colliderModel == nullptr) continue;
 
-
+			colliderCapsule->PushBackAlongNormal(colliderModel, transform_, CNT_TRY_COLLISION,
+				COLLISION_BACK_DIS, true, false);
+		}
+	}
 }
 
 void CharactorBase::DrawShadow(void)

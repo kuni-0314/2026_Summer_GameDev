@@ -69,6 +69,9 @@ protected:
 	// ジャンプ判定
 	bool isJump_;
 
+	// 空中判定
+	bool isAir_;
+
 	// 丸影画像
 	int imgShadow_;
 
@@ -91,9 +94,8 @@ protected:
 	virtual void  CollisionReserve(void) {}
 	void Collision(void);
 	void CollisionGravity(void);
-	//カプセル型当たり判定
+	//カプセル型当たり判定（flag:trueなら高精度処理を行う）
 	void CollisionCapsule(void);
-
 
 
 	// 丸影描画
