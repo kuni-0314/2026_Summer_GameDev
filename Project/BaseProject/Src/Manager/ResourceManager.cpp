@@ -75,6 +75,9 @@ void ResourceManager::Init(void)
 	// ê‘êFÉZÉã
 	res = new RES(RES_T::IMG, PATH_IMG + "Blocks/RedBlock.png");
 	resourcesMap_.emplace(SRC::CELL_RED, res);
+
+	res = new RES(RES_T::MODEL, PATH_MDL + "Stage/Stage/Stage.mv1");
+	resourcesMap_.emplace(SRC::MODEL_STAGE_1, res);
 }
 
 void ResourceManager::Release(void)

@@ -22,7 +22,12 @@ public:
 		ENEMY_RAT,
 		ENEMY_ROBOT,		//ロボット
 		VIEW_RANGE,			//敵の視野
-		CELL_RED,			// 赤色セル 		
+		CELL_RED,			// 赤色セル
+
+		MODEL_STAGE_1,
+
+
+
 	};
 
 	// 明示的にインステンスを生成する

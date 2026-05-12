@@ -504,7 +504,7 @@ void Player::ProcessJump(void)
 		|| ins->IsGamepadTrgDown(InputManager::PadInput::B, 0);
 
 	if (ins->IsTrgDown(KEY_INPUT_SPACE)
-		|| ins->IsGamepadTrgDown(InputManager::PadInput::B, 0))
+		|| ins->IsGamepadTrgDown(InputManager::PadInput::B, 0) && !isJump_)
 	{
 		jumpPow_ = VAdd(jumpPow_, VScale(AsoUtility::DIR_U, POW_JUMP_INIT));
 		isJump_ = true;
