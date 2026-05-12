@@ -11,6 +11,7 @@
 #include "../../../Object/Collider/ColliderBase.h"
 #include "../../../Object/Collider/Line/ColliderLine.h"
 #include "../../../Object/Collider/Capsule/ColliderCapsule.h"
+#include "PlayerIdleState.h"
 
 
 Player::Player(void)
@@ -195,7 +196,7 @@ void Player::UpdateProcess(void)
 	ProcessJet();
 
 	// 
-	ProcessTmp();
+	ProcessAttack();
 
 	
 
@@ -564,7 +565,7 @@ void Player::ProcessJet(void)
 	}
 }
 
-void Player::ProcessTmp(void)
+void Player::ProcessAttack(void)
 {
 	auto ins = InputManager::GetInstance();
 	if (ins->IsMouseTrgDown(MOUSE_INPUT_LEFT))
@@ -619,6 +620,12 @@ void Player::CollisionReserve(void)
 		
 		}
 	}
+}
+
+void Player::InitState(void)
+{
+	states_[STATE::IDLE] = new PlayerIdleState();
+	currentState_ = states_[STATE::IDLE];
 }
 
 

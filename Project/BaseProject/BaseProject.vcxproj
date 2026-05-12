@@ -19,6 +19,8 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Src\Object\Charactor\Player\PlayerIdleState.cpp" />
+    <ClCompile Include="Src\Object\Charactor\Player\PlayerState.cpp" />
     <ClCompile Include="Src\Object\Skill\SkillManger.cpp" />
     <ClCompile Include="Src\Object\Field.cpp" />
     <ClCompile Include="Src\Object\FieldManager.cpp" />
@@ -65,6 +67,8 @@
     <ClCompile Include="Src\Object\Actor\UI\UIBase.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Src\Object\Charactor\Player\PlayerIdleState.h" />
+    <ClInclude Include="Src\Object\Charactor\Player\PlayerState.h" />
     <ClInclude Include="Src\Object\Skill\SkillManger.h" />
     <ClInclude Include="Src\Object\Skill\SkillBase.h" />
     <ClInclude Include="Src\Object\Field.h" />

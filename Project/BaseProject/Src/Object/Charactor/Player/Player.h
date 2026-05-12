@@ -1,11 +1,23 @@
 #pragma once
 #include "../../Charactor/CharactorBase.h"
 class AnimationController;
+class PlayerState;
 
 class Player : public CharactorBase
 {
 
 public:
+	// 状態
+	enum class STATE
+	{
+		IDLE,
+		WALK, 
+		DASH, 
+		JUMP, 
+		ATTACK, 
+		JET, 
+	};
+
 	//アニメーション種別
 	enum class ANIM_TYPE
 	{
@@ -20,35 +32,17 @@ public:
 	//デストラクタ
 	~Player(void) override;
 
-	void Update()override;
+	void Update(void) override;
 
 	
 
 	void Draw(void) override;
 
-protected:
+	void ChangeState(STATE newState);
+	AnimationController* GetAnimationController(void) const { return animationController_;}
+	VECTOR GetMovePow(void) const { return movePow_; }
+	void SetMovePow(const VECTOR& pow) { movePow_ = pow; }
 
-	// リソースロード
-	void InitLoad(void) override;
-
-	// 大きさ、回転、座標の初期化
-	void InitTransform(void) override;
-
-	// 衝突判定の初期化
-	void InitCollider(void) override;
-
-	// アニメーションの初期化
-	void InitAnimation(void) override;
-
-	// 初期化後の個別処理
-	void InitPost(void) override;
-
-	//更新系
-	virtual void UpdateProcess(void) override;
-	virtual void UpdateProcessPost(void) override;
-
-
-private:
 	//スケール
 	static constexpr float SCL_PlAYER = 1.0f;
 	//初期座標
@@ -99,6 +93,29 @@ private:
 	static constexpr int MAX_SLIDE_ITERATIONS = 4;
 	// スライド判定用の最小移動量
 	static constexpr float MIN_MOVE_THRESHOLD = 0.01f;
+protected:
+
+	// リソースロード
+	void InitLoad(void) override;
+
+	// 大きさ、回転、座標の初期化
+	void InitTransform(void) override;
+
+	// 衝突判定の初期化
+	void InitCollider(void) override;
+
+	// アニメーションの初期化
+	void InitAnimation(void) override;
+
+	// 初期化後の個別処理
+	void InitPost(void) override;
+
+	//更新系
+	virtual void UpdateProcess(void) override;
+	virtual void UpdateProcessPost(void) override;
+
+
+private:
 
 	void GrantStatus(int index);
 	void RevokeStatus(int index);
@@ -110,10 +127,12 @@ private:
 	//ジェット
 	void ProcessJet(void);
 	//
-	void ProcessTmp(void);
+	void ProcessAttack(void);
 
 	// 衝突判定
 	void CollisionReserve(void) override;
+
+	void InitState(void);
 
 	Status status_;
 	int pendingPoints_;
@@ -134,5 +153,8 @@ private:
 	bool isJet_;
 	float jetTime_;
 	static constexpr float TIME_JET = 0.2f;
+
+	PlayerState* currentState_;
+	std::map<STATE, PlayerState*> states_;
 };
 
