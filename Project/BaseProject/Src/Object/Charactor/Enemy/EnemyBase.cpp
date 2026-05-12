@@ -1,4 +1,5 @@
 #include "../../../Utility/AsoUtility.h"
+#include "../../../Manager/InputManager.h"
 #include "EnemyBase.h"
 
 EnemyBase::EnemyBase(const EnemyBase::EnemyData& data,Player*player)
@@ -39,6 +40,8 @@ bool EnemyBase::InMovableRange(void) const
 	return ret;
 
 }
+
+
 
 void EnemyBase::ChangeState(int state)
 {

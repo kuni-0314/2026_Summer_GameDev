@@ -1,3 +1,4 @@
+#include "StageWall.h"
 #include "Stage.h"
 #include "../../../Manager/ResourceManager.h"
 #include "../../../Application.h"
@@ -6,40 +7,40 @@
 #include "../../../Utility/AsoUtility.h"
 #include "../../../Object/Collider/Model/ColliderModel.h"
 
-Stage::Stage(void)
+StageWall::StageWall(void)
 	:
 	ActorBase()
 {
 }
 
-Stage::~Stage(void)
+StageWall::~StageWall(void)
 {
 }
 
-void Stage::Update()
+void StageWall::Update()
 {
 }
 
 
 
-void Stage::InitLoad(void)
+void StageWall::InitLoad(void)
 {
-	transform_.SetModel(resMng_.Load(ResourceManager::SRC::BATTLE_STAGE).handleId_);
+ 	transform_.SetModel(resMng_.Load(ResourceManager::SRC::BATTLE_WALL).handleId_);
 }
 
-void Stage::InitTransform(void)
+void StageWall::InitTransform(void)
 {
 
 	transform_.scl = { SCL_MAIN_STAGE_X, SCL_MAIN_STAGE_Y, SCL_MAIN_STAGE_Z };
 	transform_.quaRot = Quaternion::Identity();
 	transform_.quaRotLocal = Quaternion::Identity();
-	transform_.pos =POS_MAIN_STAGE;
+	transform_.pos = POS_MAIN_STAGE;
 
 	transform_.Update();
 
 }
 
-void Stage::InitCollider(void)
+void StageWall::InitCollider(void)
 {
 	// DxLib側の衝突情報セットアップ
 	MV1SetupCollInfo(transform_.modelId);
@@ -62,10 +63,10 @@ void Stage::InitCollider(void)
 
 }
 
-void Stage::InitAnimation(void)
+void StageWall::InitAnimation(void)
 {
 }
 
-void Stage::InitPost(void)
+void StageWall::InitPost(void)
 {
 }

@@ -49,13 +49,10 @@ void ResourceManager::Init(void)
 	//プレイヤーモデル
 	res = new RES(RES_T::MODEL, PATH_MDL + "Player/Player.mv1");
 	resourcesMap_.emplace(SRC::PLAYER, res);	//mapに登録
-	//ステージモデル
-	res = new RES(RES_T::MODEL, PATH_MDL + "Stage/MainStage/MainStage.mv1");
-	resourcesMap_.emplace(SRC::MAIN_STAGE, res);	//mapに登録
+
 	//スカイドームモデル
 	res = new RES(RES_T::MODEL, PATH_MDL + "SkyDome/SkyDome.mv1");
 	resourcesMap_.emplace(SRC::SKY_DOME, res);	//mapに登録
-
 	//エネミーラット
 	res = new RES(RES_T::MODEL, PATH_MDL + "Enemy/Rat/Rat.mv1");
 	resourcesMap_.emplace(SRC::ENEMY_RAT, res);	//mapに登録
@@ -75,6 +72,14 @@ void ResourceManager::Init(void)
 	// 赤色セル
 	res = new RES(RES_T::IMG, PATH_IMG + "Blocks/RedBlock.png");
 	resourcesMap_.emplace(SRC::CELL_RED, res);
+
+	//ゲームステージ
+	res = new RES(RES_T::MODEL, PATH_MDL + "Stage/MainStage/GameStage/GameStage.mv1");
+	resourcesMap_.emplace(SRC::BATTLE_STAGE, res);	//mapに登録
+
+	//ゲームステージ
+	res = new RES(RES_T::MODEL, PATH_MDL + "Stage/MainStage/StageWall/StageWall.mv1");
+	resourcesMap_.emplace(SRC::BATTLE_WALL, res);	//mapに登録
 }
 
 void ResourceManager::Release(void)

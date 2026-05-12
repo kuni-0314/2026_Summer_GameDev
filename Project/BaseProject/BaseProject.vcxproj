@@ -19,6 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Src\Object\SkillBase.cpp" />
     <ClCompile Include="Src\Object\Skill\SkillManger.cpp" />
     <ClCompile Include="Src\Object\Field.cpp" />
     <ClCompile Include="Src\Object\FieldManager.cpp" />
@@ -63,8 +64,10 @@
     <ClCompile Include="Src\Utility\MatrixUtility.cpp" />
     <ClCompile Include="Src\Object\Actor\Stage\Stage.cpp" />
     <ClCompile Include="Src\Object\Actor\UI\UIBase.cpp" />
+    <ClCompile Include="Src\Object\Actor\Stage\StageWall.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Src\Object\SkillBase.h" />
     <ClInclude Include="Src\Object\Skill\SkillManger.h" />
     <ClInclude Include="Src\Object\Skill\SkillBase.h" />
     <ClInclude Include="Src\Object\Field.h" />
@@ -109,6 +112,7 @@
     <ClInclude Include="Src\Utility\MatrixUtility.h" />
     <ClInclude Include="Src\Object\Actor\Stage\Stage.h" />
     <ClInclude Include="Src\Object\Actor\UI\UIBase.h" />
+    <ClInclude Include="Src\Object\Actor\Stage\StageWall.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>

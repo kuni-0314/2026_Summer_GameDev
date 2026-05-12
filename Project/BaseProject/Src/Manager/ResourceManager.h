@@ -22,7 +22,9 @@ public:
 		ENEMY_RAT,
 		ENEMY_ROBOT,		//ロボット
 		VIEW_RANGE,			//敵の視野
-		CELL_RED,			// 赤色セル 		
+		CELL_RED,			// 赤色セル 	
+		BATTLE_STAGE,		//バトルステージ
+		BATTLE_WALL,		//ステージ壁
 	};
 
 	// 明示的にインステンスを生成する

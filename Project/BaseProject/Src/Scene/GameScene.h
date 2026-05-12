@@ -1,5 +1,7 @@
 #pragma once
+#include <memory>
 #include "SceneBase.h"
+class StageWall;
 class Stage;
 class SkyDome;
 class Player;
@@ -31,6 +33,7 @@ public:
 
 private:
 	Stage* stage_;
+	std::unique_ptr<StageWall> stageWall_;
 	SkyDome* skyDome_;
 	Player* player_;
 	EnemyManager* enemyManager_;

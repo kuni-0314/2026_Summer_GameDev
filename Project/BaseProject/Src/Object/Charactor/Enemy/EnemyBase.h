@@ -14,7 +14,6 @@ public:
 	enum class TYPE
 	{
 		RAT,
-		ROBOT
 	};
 	// エネミーデータ
 	struct EnemyData
@@ -77,6 +76,9 @@ protected:
 	virtual void UpdateProcessPost(void) override {}
 	// 移動可能範囲判定
 	bool InMovableRange(void) const;
+
+	// パラメータ設定
+	//virtual void SetParam(void);
 
 
 };

@@ -26,6 +26,8 @@ public:
 
 	void Draw(void) override;
 
+	VECTOR GetPos() const { return transform_.pos; }
+
 protected:
 
 	// リソースロード

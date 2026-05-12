@@ -4,6 +4,7 @@
 #include "../Manager/InputManager.h"
 #include "../Manager/Camera.h"
 #include "../Object/Actor/Stage/Stage.h"
+#include "../Object/Actor/Stage/StageWall.h"
 #include "../Object/Actor/SkyDome/SkyDome.h"
 #include "../Object/Charactor/Player/Player.h"
 #include "../Object/Charactor/Enemy/EnemyManger.h"
@@ -16,7 +17,8 @@ GameScene::GameScene(void)
 	stage_(nullptr),
 	skyDome_(nullptr),
 	player_(nullptr),
-	enemyManager_(nullptr)
+	enemyManager_(nullptr),
+	stageWall_(nullptr)
 {
 }
 
@@ -30,6 +32,9 @@ void GameScene::Init(void)
 	stage_ = new Stage();
 	stage_->Init();
 
+	stageWall_ = std::make_unique<StageWall>();
+	//stageWall_->Init();
+
 	//プレイヤー
 	player_ = new Player();
 	player_->Init();
@@ -41,9 +46,9 @@ void GameScene::Init(void)
 	
 
 	//エネミーー
-	//enemyManager_ = new EnemyManager(player_);
-	//enemyManager_->Init();
-	//enemyManager_->AddHitCollider(stageCollider);
+	enemyManager_ = new EnemyManager(player_);
+	enemyManager_->Init();
+	enemyManager_->AddHitCollider(stageCollider);
 	
 	//プレイヤーのカプセルコライダ―をエネミーに登録
 	//enemyManager_->AddHitCollider(
@@ -74,9 +79,10 @@ void GameScene::Update(void)
 	}
 
 	stage_->Update();//ステージ更新
+	//stageWall_->Update();//ステージ壁更新
 	skyDome_->Update();//スカイドーム更新
 	player_->Update();
-	//enemyManager_->Update();
+	enemyManager_->Update();
 	//fieldManager_->Update();
 
 	if (ins->IsTrgDown(KEY_INPUT_LEFT) && targetEnemyId_ > 0) targetEnemyId_--;
@@ -91,10 +97,10 @@ void GameScene::Draw(void)
 	skyDome_->Draw();	//スカイドーム描画
 
 	stage_->Draw();		//ステージ描画
-
+	//stageWall_->Draw();	//ステージ壁描画
 	player_->Draw();	//プレイヤー描画
 
-	//enemyManager_->Draw();
+	enemyManager_->Draw();
 	//VECTOR enemyPos = enemyManager_->GetNearEnemyPos(player_->GetTransform().pos);
 	//VECTOR targetPos = enemyManager_->GetEnemyPos(targetEnemyId_);
 	//DrawSphere3D(targetPos, 40.0f, 16, GetColor(255, 0, 0), GetColor(255, 0, 0), true);
@@ -114,6 +120,10 @@ void GameScene::Release(void)
 	// ステージ解放
 	stage_->Release();
 	delete stage_;
+
+	//ステージ壁解放
+	stageWall_->Release();
+
 	//スカイドーム解放
 	skyDome_->Release();
 	delete skyDome_;
@@ -121,6 +131,5 @@ void GameScene::Release(void)
 	player_->Release();
 	delete player_;
 
-	//enemyManager_->Release();
-	//delete enemyManager_;
+	
 }

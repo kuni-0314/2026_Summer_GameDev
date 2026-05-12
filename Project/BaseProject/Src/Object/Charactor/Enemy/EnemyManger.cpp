@@ -113,11 +113,6 @@ EnemyBase* EnemyManager::Create(const EnemyBase::EnemyData& data)
 	case EnemyBase::TYPE::RAT:
 		enemy = new EnemyRat(data,player_);
 		break;
-
-		
-	case EnemyBase::TYPE::ROBOT:
-		enemy = new EnemyRobot(data,player_);
-		break;
 	default:
 		break;
 	}
