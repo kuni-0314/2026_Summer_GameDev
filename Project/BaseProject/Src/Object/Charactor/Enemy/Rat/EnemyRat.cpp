@@ -1,17 +1,16 @@
+
 #include "EnemyRat.h"
-#include "../../Player/Player.h"
 #include "../../../../Manager/ResourceManager.h"
 #include "../../../../Manager/SceneManager.h"
 #include "../../../Collider/Capsule/ColliderCapsule.h"
+#include "../../../Collider/Sphere/ColliderSphere.h"
 #include "../../../Collider/Line/ColliderLine.h"
 #include "../../../Common/AnimationController.h"
 #include "../../../../Utility/AsoUtility.h"
-#include "../../../../Manager/InputManager.h"
 
 
-
-EnemyRat::EnemyRat(const EnemyBase::EnemyData& data,Player*player)
-	:EnemyBase(data,player),
+EnemyRat::EnemyRat(const EnemyBase::EnemyData& data, Player* player)
+	:EnemyBase(data, player),
 	state_(STATE::NONE),
 	step_(0.0f)
 {
@@ -20,6 +19,32 @@ EnemyRat::EnemyRat(const EnemyBase::EnemyData& data,Player*player)
 EnemyRat::~EnemyRat(void)
 {
 }
+
+void EnemyRat::Draw(void)
+{
+	// 基底クラスの描画処理
+	CharactorBase::Draw();
+
+
+	//デバッグ用攻撃範囲描画
+	VECTOR local = ATTACK_SPHERE_LOCAL_POS;
+	// 回転を適用
+	VECTOR rotated = transform_.quaRot.PosAxis(local);
+
+	// ワールド座標へ
+	worldPos = VAdd(transform_.pos, rotated);
+
+	if (stateBase_ == static_cast<int>(STATE::ATTACK))
+	{
+		DrawSphere3D(worldPos,
+			COL_SPHERE_RADIUS, 10, 0x0000ff, 0x0000ff, false);
+	}
+
+	
+
+}
+
+
 
 void EnemyRat::InitLoad(void)
 {
@@ -55,30 +80,27 @@ void EnemyRat::InitCollider(void)
 		COL_CAPSULE_TOP_LOCAL_POS, COL_CAPSULE_DOWN_LOCAL_POS,
 		COL_CAPSULE_RADIUS);
 	ownColliders_.emplace(static_cast<int>(COLLIDER_TYPE::CAPSULE), colCapsule);
+
 }
+
+
 
 void EnemyRat::InitAnimation(void)
 {
 	//アニメーションコントローラー
 	animationController_ = new AnimationController(transform_.modelId);
-	
-	animationController_->AddInFbx(static_cast<int>(ANIM_TYPE::WALK), 30.0f, 8);
-
 
 	int type = -1;
 
 	//待機
 	type = static_cast<int>(ANIM_TYPE::IDLE);
-	animationController_->AddInFbx(type, 20.0f, type);
-	
+	animationController_->AddInFbx(type, 20.0f, ANIM_INDX_IDLE);
+
 	type = static_cast<int>(ANIM_TYPE::WALK);
-	animationController_->AddInFbx(type, 20.0f, type);
+	animationController_->AddInFbx(type, 20.0f, ANIM_INDX_WALK);
 
 	type = static_cast<int>(ANIM_TYPE::ATTACK);
-	animationController_->AddInFbx(type, 20.0f, type);
-
-	type = static_cast<int>(ANIM_TYPE::END);
-	animationController_->AddInFbx(type, 20.0f, type);
+	animationController_->AddInFbx(type, 20.0f, ANIM_INDX_ATTACK);
 
 	animationController_->Play(static_cast<int>(ANIM_TYPE::IDLE), true);
 
@@ -98,35 +120,17 @@ void EnemyRat::InitPost(void)
 		std::bind(&EnemyRat::ChangeStateWander, this));
 	stateChanges_.emplace(static_cast<int>(STATE::ATTACK),
 		std::bind(&EnemyRat::ChangeStateAttack, this));
-	stateChanges_.emplace(static_cast<int>(STATE::CHASE),
-		std::bind(&EnemyRat::ChangeStateChaseRat, this));
 	stateChanges_.emplace(static_cast<int>(STATE::END),
 		std::bind(&EnemyRat::ChangeStateEnd, this));
 	// 初期状態設定
 	ChangeState(STATE::THINK);
-
-
-
 }
 
 void EnemyRat::UpdateProcess(void)
 {
 	stateUpdate_();
 
-	// シーン遷移
-	auto const ins = InputManager::GetInstance();
-
-
-	// プレイヤーが攻撃範囲内か判定
-	if (IsPlayerInAttackRange())
-	{
-		ChangeState(STATE::ATTACK);
-	}
-	// プレイヤーが追跡範囲内か判定
-	else if (IsPlayerInChaseRange())
-	{
-		ChangeState(STATE::CHASE);
-	}
+	HeadCollision();
 }
 
 void EnemyRat::UpdateProcessPost(void)
@@ -163,9 +167,13 @@ void EnemyRat::ChangeStateThink(void)
 	// ランダムに次の行動を決定
 	// 30%で待機、70%で徘徊
 	int rand = GetRand(100);
-	if (rand < 30)
+	if (rand < 20)
 	{
 		ChangeState(STATE::IDLE);
+	}
+	else if (rand < 50)
+	{
+		ChangeState(STATE::ATTACK);
 	}
 	else
 	{
@@ -205,32 +213,16 @@ void EnemyRat::ChangeStateAttack(void)
 {
 	stateUpdate_ = std::bind(&EnemyRat::UpdateAttack, this);
 
-	// 攻撃時間の初期化
-	step_ = 1.0f;
+	// ランダムな角度
+	float angle = static_cast<float>(GetRand(360)) * DX_PI_F / 180.0f;
+	// 移動方向
+	moveDir_ = VGet(cosf(angle), 0.0f, sinf(angle));
+
+	movePow_ = AsoUtility::VECTOR_ZERO;
 
 	// 攻撃アニメーション再生
 	animationController_->Play(
 		static_cast<int>(ANIM_TYPE::ATTACK), true);
-
-	// プレイヤーの方向を向く
-	FacePlayer();
-
-	// 移動を停止
-	movePow_ = AsoUtility::VECTOR_ZERO;
-
-	attackCooldown_ = ATTACK_COOLDOWN;
-
-
-}
-void EnemyRat::ChangeStateChaseRat(void)
-{
-	stateUpdate_ = std::bind(&EnemyRat::UpdateChaseRat, this);
-
-	// 歩きアニメーション再生
-	animationController_->Play(
-		static_cast<int>(ANIM_TYPE::WALK), true);
-
-	moveSpeed_ = CHASE_SPEED;
 }
 void EnemyRat::ChangeStateEnd(void)
 {
@@ -254,7 +246,7 @@ void EnemyRat::UpdateIdle(void)
 		return;
 	}
 
-	movePow_ = AsoUtility::VECTOR_ZERO;  // 移動しない
+	movePow_ = AsoUtility::VECTOR_ZERO;
 }
 
 void EnemyRat::UpdateWander(void)
@@ -266,6 +258,7 @@ void EnemyRat::UpdateWander(void)
 		return;
 	}
 
+	// 移動する ← 追加
 	movePow_ = VScale(moveDir_, moveSpeed_);
 }
 
@@ -277,60 +270,16 @@ void EnemyRat::UpdateAttack(void)
 		ChangeState(STATE::THINK);
 		return;
 	}
-}
 
-void EnemyRat::UpdateChaseRat(void)
-{
-	// プレイヤーが追跡範囲外に出たら思考状態に戻す
-	if (!IsPlayerInChaseRange())
-	{
-		ChangeState(STATE::THINK);
-		return;
-	}
 
-	// プレイヤーの方向を向く
-	FacePlayer();
-
-	// プレイヤーに向かって移動
-	VECTOR playerPos = player_->GetPos();  // ← こう変更
-	moveDir_ = VNorm(VSub(playerPos, transform_.pos));
-	movePow_ = VScale(moveDir_, moveSpeed_);
+	movePow_ = AsoUtility::VECTOR_ZERO;
 }
 
 void EnemyRat::UpdateEnd(void)
 {
 }
 
-bool EnemyRat::IsPlayerInAttackRange(void) const
-{
-	if (!player_) return false;
-	VECTOR playerPos = player_->GetPos();
-	float dis = AsoUtility::SqrMagnitude(transform_.pos, playerPos);
-	return dis < ATTACK_DISTANCE * ATTACK_DISTANCE;
-}
-
-bool EnemyRat::IsPlayerInChaseRange(void) const
+void EnemyRat::HeadCollision(void)
 {
 
-	if (!player_) return false;
-
-	VECTOR playerPos = player_->GetPos();
-	float dis = AsoUtility::SqrMagnitude(transform_.pos, playerPos);
-	return dis < CHASE_DISTANCE * CHASE_DISTANCE;
-}
-
-void EnemyRat::FacePlayer(void)
-{
-	VECTOR playerPos = player_->GetPos(); 
-	VECTOR diff = VSub(playerPos, transform_.pos);
-	diff.y = 0.0f;
-
-	moveDir_ = VNorm(diff);
-
-	transform_.rot.y = atan2(moveDir_.x, moveDir_.z);
-	transform_.rot.y += AsoUtility::Deg2RadF(180.0f);
-
-	transform_.rot.x = transform_.rot.z = 0.0f;
-
-	MV1SetRotationXYZ(transform_.modelId, transform_.rot);
 }

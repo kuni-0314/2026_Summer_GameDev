@@ -1,14 +1,11 @@
 #pragma once
 #include <DxLib.h>
 #include <functional>
-#include "../../Player/Player.h"
 #include "../EnemyBase.h"
 class Player;
-class AttackBase;
-class AttackRat;
 
 
-class EnemyRat: public EnemyBase
+class EnemyRat : public EnemyBase
 {
 public:
 	// アニメーション種別
@@ -16,8 +13,7 @@ public:
 	{
 		IDLE,
 		WALK,
-		ATTACK,
-		END
+		ATTACK
 	};
 
 	// 状態
@@ -28,14 +24,15 @@ public:
 		IDLE,
 		WANDER,
 		ATTACK,
-		CHASE,
 		END
 	};
 
 	// コンストラクタ
-	EnemyRat(const EnemyBase::EnemyData& data,Player* player);
+	EnemyRat(const EnemyBase::EnemyData& data, Player* player);
 	// デストラクタ
 	~EnemyRat(void) override;
+
+	void Draw(void) override;
 protected:
 	// リソースロード
 	void InitLoad(void) override;
@@ -51,6 +48,17 @@ protected:
 	void UpdateProcess(void) override;
 	void UpdateProcessPost(void) override;
 private:
+
+
+	//アニメーション登録番号
+	//待機
+	static constexpr int  ANIM_INDX_IDLE = 8; 
+	//歩く
+	static constexpr int  ANIM_INDX_WALK = 13;
+	//攻撃
+	static constexpr int  ANIM_INDX_ATTACK = 1;
+
+
 	// モデルの大きさ
 	static constexpr float SCALE = 0.5f;
 	// モデルのローカル回転
@@ -70,20 +78,20 @@ private:
 
 	// 衝突判定用カプセル球体半径
 	static constexpr float COL_CAPSULE_RADIUS = 20.0f;
-	// 追跡開始距離
-	static constexpr float CHASE_DISTANCE = 500.0f;     
-	static constexpr float ATTACK_DISTANCE = 150.0f;     // 攻撃範囲
-	static constexpr float CHASE_SPEED = 5.0f;           // 追跡速度
-	static constexpr float ATTACK_COOLDOWN = 2.0f;       // 攻撃クールタイム
+
+	// 衝突判定用カプセル球体半径
+	static constexpr float COL_SPHERE_RADIUS = 50.0f;
+
+	// 攻撃判定用球体
+	static constexpr VECTOR ATTACK_SPHERE_LOCAL_POS = { 0.0f, 30.0f, 120.0f };
+
+	//攻撃判定
+	bool isAttack_; 
 
 	// 状態
 	STATE state_;
 
-	Player* player_;
-
-	//攻撃
-	AttackBase* attackBase_;
-	AttackRat* attackRat_;
+	VECTOR worldPos;
 
 
 	// 状態管理(状態遷移時初期処理)
@@ -91,8 +99,7 @@ private:
 
 	// 更新ステップ
 	float step_;// 状態管理(更新ステップ)
-	
-	float attackCooldown_;  // 攻撃クールタイム管理
+	//std::function<void(void)> stateUpdate_;
 
 	// 状態遷移
 	void ChangeState(STATE state);
@@ -101,7 +108,6 @@ private:
 	void ChangeStateIdle(void);
 	void ChangeStateWander(void);
 	void ChangeStateAttack(void);
-	void ChangeStateChaseRat(void);
 	void ChangeStateEnd(void);
 
 	// 更新系
@@ -110,12 +116,9 @@ private:
 	void UpdateIdle(void);
 	void UpdateWander(void);
 	void UpdateAttack(void);
-	void UpdateChaseRat(void);
 	void UpdateEnd(void);
 
-	// ユーティリティ関数
-	bool IsPlayerInAttackRange(void) const;
-	bool IsPlayerInChaseRange(void) const;
-	void FacePlayer(void);
+	void HeadCollision(void);
+
 };
 
