@@ -11,8 +11,8 @@ public:
 	enum class STATE
 	{
 		IDLE,
-		WALK, 
-		DASH, 
+		RUN, 
+		FAST_RUN, 
 		JUMP, 
 		ATTACK, 
 		JET, 
@@ -39,9 +39,12 @@ public:
 	void Draw(void) override;
 
 	void ChangeState(STATE newState);
+
 	AnimationController* GetAnimationController(void) const { return animationController_;}
 	VECTOR GetMovePow(void) const { return movePow_; }
 	void SetMovePow(const VECTOR& pow) { movePow_ = pow; }
+	void SetMoveSpeed(const float speed) { moveSpeed_ = speed; }
+	void SetMoveDir(const VECTOR& dir) { moveDir_ = dir; }
 
 	//ÉXÉPÅ[Éã
 	static constexpr float SCL_PlAYER = 1.0f;

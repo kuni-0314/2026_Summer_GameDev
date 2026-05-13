@@ -47,6 +47,8 @@
     <ClCompile Include="Src\Object\Actor\UI\UIBase.cpp" />
     <ClCompile Include="Src\Object\Charactor\Player\PlayerState.cpp" />
     <ClCompile Include="Src\Object\Charactor\Player\PlayerIdleState.cpp" />
+    <ClCompile Include="Src\Object\Charactor\Player\PlayerRunState.cpp" />
+    <ClCompile Include="Src\Object\Charactor\Player\PlayerFastRunState.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Src\Object\Skill\SkillManger.h" />
@@ -95,5 +97,7 @@
     <ClInclude Include="Src\Object\Actor\UI\UIBase.h" />
     <ClInclude Include="Src\Object\Charactor\Player\PlayerState.h" />
     <ClInclude Include="Src\Object\Charactor\Player\PlayerIdleState.h" />
+    <ClInclude Include="Src\Object\Charactor\Player\PlayerRunState.h" />
+    <ClInclude Include="Src\Object\Charactor\Player\PlayerFastRunState.h" />
   </ItemGroup>
 </Project>

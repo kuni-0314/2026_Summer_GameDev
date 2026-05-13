@@ -12,6 +12,7 @@
 #include "../../../Object/Collider/Line/ColliderLine.h"
 #include "../../../Object/Collider/Capsule/ColliderCapsule.h"
 #include "PlayerIdleState.h"
+#include "PlayerRunState.h"
 
 
 Player::Player(void)
@@ -22,6 +23,11 @@ Player::Player(void)
 
 Player::~Player(void)
 {
+	for (auto& state:states_)
+	{
+		delete state.second;
+	}
+	states_.clear();
 }
 
 void Player::Update()
@@ -182,21 +188,32 @@ void Player::InitPost(void)
 	status_.luck = DEFAULT_LUCK;
 	currentGrantStatusIndex_ = 4;
 	pendingPoints_ = 30;
+
+	InitState();
 }
 
 void Player::UpdateProcess(void)
 {
-	// 移動操作
-	ProcessMove();
+	// 状態別更新処理
+	if (currentState_ != nullptr)
+	{
+		currentState_->Update(this);
+	}
 
-	// ジャンプ処理
-	ProcessJump();
 
-	// ジェット処理
-	ProcessJet();
 
-	// 
-	ProcessAttack();
+
+	//// 移動操作
+	//ProcessMove();
+
+	//// ジャンプ処理
+	//ProcessJump();
+
+	//// ジェット処理
+	//ProcessJet();
+
+	//// 
+	//ProcessAttack();
 
 	
 
@@ -284,6 +301,13 @@ void Player::Draw(void)
 	DrawSphere3D(lineY, 5.0f, 16, 0x00FF00, 0x00FF00, true);
 	DrawSphere3D(lineZ, 5.0f, 16, 0x0000FF, 0x0000FF, true);
 	DrawSphere3D(rot, 5.0f, 16, 0xFFFF00, 0xFFFF00, true);
+}
+
+void Player::ChangeState(STATE newState)
+{
+	currentState_->Exit(this);
+	currentState_ = states_[newState];
+	currentState_->Enter(this);
 }
 
 void Player::GrantStatus(int index)
@@ -625,6 +649,7 @@ void Player::CollisionReserve(void)
 void Player::InitState(void)
 {
 	states_[STATE::IDLE] = new PlayerIdleState();
+	states_[STATE::RUN] = new PlayerRunState();
 	currentState_ = states_[STATE::IDLE];
 }
 
