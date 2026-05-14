@@ -108,6 +108,9 @@ void EnemyRat::InitAnimation(void)
 	type = static_cast<int>(ANIM_TYPE::END);
 	animationController_->AddInFbx(type, 20.0f, ANIM_INDX_END);
 
+	type = static_cast<int>(ANIM_TYPE::HIT);
+	animationController_->AddInFbx(type, 20.0f, ANIM_INDX_HIT);
+
 	animationController_->Play(static_cast<int>(ANIM_TYPE::IDLE), true);
 
 
@@ -126,6 +129,8 @@ void EnemyRat::InitPost(void)
 		std::bind(&EnemyRat::ChangeStateWander, this));
 	stateChanges_.emplace(static_cast<int>(STATE::ATTACK),
 		std::bind(&EnemyRat::ChangeStateAttack, this));
+	stateChanges_.emplace(static_cast<int>(STATE::HIT),
+		std::bind(&EnemyRat::ChangeStateHit, this));
 	stateChanges_.emplace(static_cast<int>(STATE::DIE),
 		std::bind(&EnemyRat::ChangeStateDie, this));
 	stateChanges_.emplace(static_cast<int>(STATE::END),
@@ -141,22 +146,7 @@ void EnemyRat::UpdateProcess(void)
 
 	auto const ins = InputManager::GetInstance();
 
-	if (ins->IsTrgDown(KEY_INPUT_1))
-	{
-		hp_ = -1;
-	}
-	
-
-	if (hp_ < 0)
-	{
-		hp_ = 0;
-
-	}
-
-	if (hp_ == 0)
-	{
-		ChangeState(STATE::DIE);
-	}
+	Damege();
 }
 
 void EnemyRat::UpdateProcessPost(void)
@@ -250,6 +240,15 @@ void EnemyRat::ChangeStateAttack(void)
 	animationController_->Play(
 		static_cast<int>(ANIM_TYPE::ATTACK), true);
 }
+void EnemyRat::ChangeStateHit(void)
+{
+	stateUpdate_ = std::bind(&EnemyRat::UpdateHit, this);
+	movePow_ = AsoUtility::VECTOR_ZERO;
+
+	//死亡アニメーション再生
+	animationController_->Play(
+		static_cast<int>(ANIM_TYPE::HIT), false);
+}
 void EnemyRat::ChangeStateDie(void)
 {
 	stateUpdate_ = std::bind(&EnemyRat::UpdateDie, this);
@@ -311,6 +310,17 @@ void EnemyRat::UpdateAttack(void)
 	movePow_ = AsoUtility::VECTOR_ZERO;
 }
 
+void EnemyRat::UpdateHit(void)
+{
+	
+	if (animationController_->IsEnd())
+	{
+		ChangeState(STATE::THINK);
+		return;
+	}
+
+}
+
 void EnemyRat::UpdateDie(void)
 {
 	if (animationController_->IsEnd())
@@ -325,6 +335,35 @@ void EnemyRat::UpdateEnd(void)
 {
 
 	
+}
+
+void EnemyRat::Damege()
+{
+	int damege = 1;
+
+	auto const ins = InputManager::GetInstance();
+
+	if (ins->IsTrgDown(KEY_INPUT_1))
+	{
+		
+		hp_ -= damege;
+		if (hp_ < 0)
+		{
+			hp_ = 0;
+
+		}
+
+		if (hp_ <= 0)
+		{
+			ChangeState(STATE::DIE);
+		}
+		else
+		{
+			ChangeState(STATE::HIT);
+		}
+	}
+
+
 }
 
 

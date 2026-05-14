@@ -74,15 +74,6 @@ protected:
 	// ó‘Ô‘JˆÚ
 	void ChangeState(int state);
 
-	//void Damage(int damage)
-	//{
-	//	hp_ -= damage;
-	//	if (hp_ < 0)
-	//	{
-	//		hp_ = 0;
-	//	}
-	//}	
-
 
 	// XVŒn
 	virtual void UpdateProcessPost(void) override {}

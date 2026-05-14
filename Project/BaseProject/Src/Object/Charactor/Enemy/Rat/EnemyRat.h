@@ -14,7 +14,8 @@ public:
 		IDLE,
 		WALK,
 		ATTACK,
-		END
+		END,
+		HIT
 	};
 
 	// 状態
@@ -25,6 +26,7 @@ public:
 		IDLE,
 		WANDER,
 		ATTACK,
+		HIT,
 		DIE,
 		END
 	};
@@ -63,6 +65,8 @@ private:
 	static constexpr int  ANIM_INDX_ATTACK = 1;
 	//エンド
 	static constexpr int  ANIM_INDX_END = 6;
+	//HIT
+	static constexpr int  ANIM_INDX_HIT = 7;
 
 
 	// モデルの大きさ
@@ -102,12 +106,10 @@ private:
 	VECTOR worldPos;
 
 
-	// 状態管理(状態遷移時初期処理)
-	/*std::map<int, std::function<void(void)>> stateChanges_;*/
 
 	// 更新ステップ
 	float step_;// 状態管理(更新ステップ)
-	//std::function<void(void)> stateUpdate_;
+
 
 	// 状態遷移
 	void ChangeState(STATE state);
@@ -116,6 +118,7 @@ private:
 	void ChangeStateIdle(void);
 	void ChangeStateWander(void);
 	void ChangeStateAttack(void);
+	void ChangeStateHit(void);
 	void ChangeStateDie(void);
 	void ChangeStateEnd(void);
 
@@ -125,10 +128,12 @@ private:
 	void UpdateIdle(void);
 	void UpdateWander(void);
 	void UpdateAttack(void);
+	void UpdateHit(void);
 	void UpdateDie(void);
 	void UpdateEnd(void);
 
-
+	//デバッグ
+	void Damege();
 
 };
 
