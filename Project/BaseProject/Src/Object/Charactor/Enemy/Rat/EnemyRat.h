@@ -13,7 +13,8 @@ public:
 	{
 		IDLE,
 		WALK,
-		ATTACK
+		ATTACK,
+		END
 	};
 
 	// 状態
@@ -24,6 +25,7 @@ public:
 		IDLE,
 		WANDER,
 		ATTACK,
+		DIE,
 		END
 	};
 
@@ -47,6 +49,8 @@ protected:
 	// 更新系
 	void UpdateProcess(void) override;
 	void UpdateProcessPost(void) override;
+
+
 private:
 
 
@@ -57,6 +61,8 @@ private:
 	static constexpr int  ANIM_INDX_WALK = 13;
 	//攻撃
 	static constexpr int  ANIM_INDX_ATTACK = 1;
+	//エンド
+	static constexpr int  ANIM_INDX_END = 6;
 
 
 	// モデルの大きさ
@@ -87,6 +93,8 @@ private:
 
 	//攻撃判定
 	bool isAttack_; 
+	//生存判定
+	bool isAlive_ = true;
 
 	// 状態
 	STATE state_;
@@ -108,6 +116,7 @@ private:
 	void ChangeStateIdle(void);
 	void ChangeStateWander(void);
 	void ChangeStateAttack(void);
+	void ChangeStateDie(void);
 	void ChangeStateEnd(void);
 
 	// 更新系
@@ -116,9 +125,10 @@ private:
 	void UpdateIdle(void);
 	void UpdateWander(void);
 	void UpdateAttack(void);
+	void UpdateDie(void);
 	void UpdateEnd(void);
 
-	void HeadCollision(void);
+
 
 };
 

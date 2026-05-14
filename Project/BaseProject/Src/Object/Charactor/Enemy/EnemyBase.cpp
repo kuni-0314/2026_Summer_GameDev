@@ -9,7 +9,8 @@ EnemyBase::EnemyBase(const EnemyBase::EnemyData& data,Player*player)
 	type_(data.type),
 	hp_(data.hp),
 	defaultPos_(data.defaultPos),
-	movableRange_(data.movableRange)
+	movableRange_(data.movableRange),
+	power_(data.power)
 {
 	// ‰ŠúÀ•W‚Ìİ’è
 	transform_.pos = data.defaultPos;
@@ -49,5 +50,7 @@ void EnemyBase::ChangeState(int state)
 	// Šeó‘Ô‘JˆÚ‚Ì‰Šúˆ—
 	stateChanges_[stateBase_]();
 }
+
+
 
 

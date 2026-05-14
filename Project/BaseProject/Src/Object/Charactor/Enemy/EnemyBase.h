@@ -23,6 +23,7 @@ public:
 		int hp;
 		VECTOR defaultPos;
 		float movableRange;
+		int power;
 	};
 
 	// コンストラクタ
@@ -46,6 +47,8 @@ protected:
 	const VECTOR defaultPos_;
 
 	float movableRange_;
+
+	int power_;
 
 
 
@@ -71,14 +74,22 @@ protected:
 	// 状態遷移
 	void ChangeState(int state);
 
+	//void Damage(int damage)
+	//{
+	//	hp_ -= damage;
+	//	if (hp_ < 0)
+	//	{
+	//		hp_ = 0;
+	//	}
+	//}	
+
 
 	// 更新系
 	virtual void UpdateProcessPost(void) override {}
 	// 移動可能範囲判定
 	bool InMovableRange(void) const;
 
-	// パラメータ設定
-	//virtual void SetParam(void);
+
 
 
 };
