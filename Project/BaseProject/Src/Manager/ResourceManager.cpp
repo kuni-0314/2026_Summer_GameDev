@@ -80,6 +80,10 @@ void ResourceManager::Init(void)
 	//ゲームステージ
 	res = new RES(RES_T::MODEL, PATH_MDL + "Stage/MainStage/StageWall/StageWall.mv1");
 	resourcesMap_.emplace(SRC::BATTLE_WALL, res);	//mapに登録
+
+	//ゲームステージ
+	res = new RES(RES_T::MODEL, PATH_MDL + "Item/HpItem.mv1");
+	resourcesMap_.emplace(SRC::ITEM_HP, res);	//mapに登録
 }
 
 void ResourceManager::Release(void)

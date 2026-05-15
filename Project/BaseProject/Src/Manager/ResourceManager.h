@@ -25,6 +25,7 @@ public:
 		CELL_RED,			// 赤色セル 	
 		BATTLE_STAGE,		//バトルステージ
 		BATTLE_WALL,		//ステージ壁
+		ITEM_HP,			//体力アイテム
 	};
 
 	// 明示的にインステンスを生成する

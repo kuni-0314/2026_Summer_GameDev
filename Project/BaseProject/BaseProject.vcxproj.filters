@@ -47,6 +47,9 @@
     <ClCompile Include="Src\Object\Actor\UI\UIBase.cpp" />
     <ClCompile Include="Src\Object\SkillBase.cpp" />
     <ClCompile Include="Src\Object\Actor\Stage\StageWall.cpp" />
+    <ClCompile Include="Src\Object\Item\ItemBase.cpp" />
+    <ClCompile Include="Src\Object\Item\ItemManger.cpp" />
+    <ClCompile Include="Src\Object\Item\HP\HpItem.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Src\Object\Skill\SkillManger.h" />
@@ -95,5 +98,8 @@
     <ClInclude Include="Src\Object\Actor\UI\UIBase.h" />
     <ClInclude Include="Src\Object\SkillBase.h" />
     <ClInclude Include="Src\Object\Actor\Stage\StageWall.h" />
+    <ClInclude Include="Src\Object\Item\ItemBase.h" />
+    <ClInclude Include="Src\Object\Item\ItemManger.h" />
+    <ClInclude Include="Src\Object\Item\HP\HpItem.h" />
   </ItemGroup>
 </Project>
