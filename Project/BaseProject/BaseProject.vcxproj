@@ -19,6 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Src\Object\Charactor\Player\PlayerJumpState.cpp" />
     <ClCompile Include="Src\Object\Charactor\Player\PlayerFastRunState.cpp" />
     <ClCompile Include="Src\Object\Charactor\Player\PlayerRunState.cpp" />
     <ClCompile Include="Src\Object\Charactor\Player\PlayerIdleState.cpp" />
@@ -69,6 +70,7 @@
     <ClCompile Include="Src\Object\Actor\UI\UIBase.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Src\Object\Charactor\Player\PlayerJumpState.h" />
     <ClInclude Include="Src\Object\Charactor\Player\PlayerFastRunState.h" />
     <ClInclude Include="Src\Object\Charactor\Player\PlayerRunState.h" />
     <ClInclude Include="Src\Object\Charactor\Player\PlayerIdleState.h" />

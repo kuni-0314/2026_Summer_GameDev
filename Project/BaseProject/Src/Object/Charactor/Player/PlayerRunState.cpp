@@ -17,59 +17,38 @@ void PlayerRunState::Update(Player* player)
 {
 	auto ins = InputManager::GetInstance();
 
+	// ジャンプキーが入力されているか
+	if (!player->IsJump() && ins->IsTrgDown(KEY_INPUT_SPACE))
+	{
+		player->ChangeState(Player::STATE::JUMP);
+		return;
+	}
+
 	VECTOR dir = AsoUtility::VECTOR_ZERO;
 
 	// ゲームパッドが接続されている数で処理を分ける
 	if (GetJoypadNum() == 0)
 	{
 		// キーボード操作
-		if (ins->IsNew(KEY_INPUT_W)) { dir = AsoUtility::DIR_F; }
-		if (ins->IsNew(KEY_INPUT_A)) { dir = AsoUtility::DIR_L; }
-		if (ins->IsNew(KEY_INPUT_S)) { dir = AsoUtility::DIR_B; }
-		if (ins->IsNew(KEY_INPUT_D)) { dir = AsoUtility::DIR_R; }
+		ins->GetInputDirXZ(dir, KEY_INPUT_W, KEY_INPUT_S, KEY_INPUT_A, KEY_INPUT_D);
 	}
-	// ゲームパッド操作
 	//else
 	//{
+		// ゲームパッド操作
 	//}
 
 	// 方向入力がある場合
 	if (!AsoUtility::EqualsVZero(dir))
 	{
-		// ダッシュキー
+		// ダッシュキーが入力されているか
 		if (ins->IsNew(KEY_INPUT_LSHIFT))
 		{
 			player->ChangeState(Player::STATE::FAST_RUN);
+			return;
 		}
-		float speed = 0;
-		//if (isDash_)
-		//{
-		//	moveSpeed_ = SPEED_DASH;
-		//}
-		//else
-		{
-			//移動スピード
-			speed = Player::SPEED_MOVE;
-		}
-		player->SetMoveSpeed(speed);
-
-		// ジャンプ中はアニメーションを変えない
-		//if (!isJump_)
-		//{
-		//	// アニメーション
-		//	if (isDash_)
-		//	{
-
-		//		animationController_->Play(
-		//			static_cast<int>(ANIM_TYPE::FAST_RUN), true);
-		//	}
-		//	else
-		//	{
-		//		animationController_->Play(
-		//			static_cast<int>(ANIM_TYPE::RUN), true);
-		//	}
-		//}
-
+		
+		// 移動速度を設定
+		player->SetMoveSpeed(Player::SPEED_MOVE);
 
 		//Y軸のみのカメラ角度を取得
 		Quaternion cameraRot = SceneManager::GetInstance().GetCamera()->GetQuaRotY();
@@ -79,14 +58,12 @@ void PlayerRunState::Update(Player* player)
 		player->SetMoveDir(moveDir);
 
 		//移動量を計算
-		/*if (!isJet_)*/ player->SetMovePow(VScale(moveDir, speed));
+		player->SetMovePow(VScale(moveDir, Player::SPEED_MOVE));
 	}
 	else
 	{
-		//// ジャンプ中はアニメーションを変えない
-		//if (!isJump_)
-		{
-			player->ChangeState(Player::STATE::IDLE);
-		}
+		// 方向入力がない場合は待機状態に戻る
+		player->ChangeState(Player::STATE::IDLE);
+		return;
 	}
 }

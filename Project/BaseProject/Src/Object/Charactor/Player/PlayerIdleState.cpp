@@ -17,15 +17,26 @@ void PlayerIdleState::Update(Player* player)
 {
 	auto ins = InputManager::GetInstance();
 
-	// 移動キーが入力されたか
-	if (ins->IsNew(KEY_INPUT_W) || ins->IsNew(KEY_INPUT_A) || ins->IsNew(KEY_INPUT_S) || ins->IsNew(KEY_INPUT_D))
+	// ジャンプキーが入力されているか
+	if (!player->IsJump() && ins->IsTrgDown(KEY_INPUT_SPACE))
 	{
-		player->ChangeState(Player::STATE::RUN);
+		player->ChangeState(Player::STATE::JUMP);
+		return;
 	}
 
-	// ジャンプキーが入力されたか
-	if (ins->IsNew(KEY_INPUT_SPACE))
+	// 移動キーが入力されているか
+	if (ins->IsNew(KEY_INPUT_W) || ins->IsNew(KEY_INPUT_A) || ins->IsNew(KEY_INPUT_S) || ins->IsNew(KEY_INPUT_D))
 	{
-		//player->ChangeState(Player::STATE::JUMP);
+		// ダッシュキーが入力されているか
+		if (ins->IsNew(KEY_INPUT_LSHIFT))
+		{
+			player->ChangeState(Player::STATE::FAST_RUN);
+			return;
+		}
+		else
+		{
+			player->ChangeState(Player::STATE::RUN);
+			return;
+		}
 	}
 }

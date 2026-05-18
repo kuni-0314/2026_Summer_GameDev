@@ -37,14 +37,20 @@ public:
 	
 
 	void Draw(void) override;
-
+	
 	void ChangeState(STATE newState);
-
+ 
 	AnimationController* GetAnimationController(void) const { return animationController_;}
 	VECTOR GetMovePow(void) const { return movePow_; }
 	void SetMovePow(const VECTOR& pow) { movePow_ = pow; }
 	void SetMoveSpeed(const float speed) { moveSpeed_ = speed; }
 	void SetMoveDir(const VECTOR& dir) { moveDir_ = dir; }
+	VECTOR GetJumpPow(void) const { return jumpPow_; }
+	void SetJumpPow(const VECTOR& pow) { jumpPow_ = pow; }
+	float GetStepJump(void) const { return stepJump_; }
+	void SetStepJump(const float step) { stepJump_ = step; }
+	bool IsJump(void) const { return isJump_; }
+	void SetJump(const bool isJump) { isJump_ = isJump; }
 
 	//ÉXÉPÅ[Éã
 	static constexpr float SCL_PlAYER = 1.0f;
@@ -160,4 +166,3 @@ private:
 	PlayerState* currentState_;
 	std::map<STATE, PlayerState*> states_;
 };
-

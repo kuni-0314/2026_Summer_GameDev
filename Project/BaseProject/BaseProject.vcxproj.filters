@@ -49,6 +49,7 @@
     <ClCompile Include="Src\Object\Charactor\Player\PlayerIdleState.cpp" />
     <ClCompile Include="Src\Object\Charactor\Player\PlayerRunState.cpp" />
     <ClCompile Include="Src\Object\Charactor\Player\PlayerFastRunState.cpp" />
+    <ClCompile Include="Src\Object\Charactor\Player\PlayerJumpState.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Src\Object\Skill\SkillManger.h" />
@@ -99,5 +100,6 @@
     <ClInclude Include="Src\Object\Charactor\Player\PlayerIdleState.h" />
     <ClInclude Include="Src\Object\Charactor\Player\PlayerRunState.h" />
     <ClInclude Include="Src\Object\Charactor\Player\PlayerFastRunState.h" />
+    <ClInclude Include="Src\Object\Charactor\Player\PlayerJumpState.h" />
   </ItemGroup>
 </Project>

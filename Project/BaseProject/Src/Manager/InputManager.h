@@ -1,4 +1,5 @@
 #pragma once
+#include <DxLib.h>
 #include <map>
 
 // Addのやり方も悪くないけど面倒なので除外
@@ -79,6 +80,8 @@ public:
 	short GetRightStickX(int gamepadIndex);		// 右スティックのX軸を取得
 	short GetRightStickY(int gamepadIndex);		// 右スティックのY軸を取得
 
+	// 入力キーからXZ平面上の方向ベクトルを取得
+	void GetInputDirXZ(VECTOR& vec, int keyUp, int keyDown, int keyLeft, int keyRight);
 
 	// 対象のボタンのうち指定したボタンだけが押された瞬間を判定
 	// MainButtonとOtherButtonsの型にはIntまたはPadInputを指定すること

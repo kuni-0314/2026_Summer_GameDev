@@ -6,8 +6,6 @@
 #include <DxLib.h>
 #include "AsoUtility.h"
 
-
-
 float AsoUtility::Clamp(float v, float min, float max)
 {
 
@@ -585,5 +583,4 @@ std::vector<std::string> AsoUtility::Split(std::string& line, char delimiter)
     }
     return result;
 }
-
 

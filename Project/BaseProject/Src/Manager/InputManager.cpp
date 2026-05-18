@@ -334,6 +334,15 @@ short InputManager::GetRightStickY(int gamepadIndex)
 	return gamepadInfos_[gamepadIndex].AKeyRY;
 }
 
+// 入力キーからXZ平面上の方向ベクトルを取得
+void InputManager::GetInputDirXZ(VECTOR& vec, int keyUp, int keyDown, int keyLeft, int keyRight)
+{
+	if (IsNew(keyUp)) vec.z = 1.0f;
+	if (IsNew(keyDown)) vec.z = -1.0f;
+	if (IsNew(keyLeft)) vec.x = -1.0f;
+	if (IsNew(keyRight)) vec.x = 1.0f;
+}
+
 // ゲームパッドの更新
 void InputManager::UpdateGamePad(void)
 {

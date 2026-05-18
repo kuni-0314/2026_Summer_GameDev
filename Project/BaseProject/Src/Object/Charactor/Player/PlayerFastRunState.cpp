@@ -15,54 +15,33 @@ void PlayerFastRunState::Update(Player* player)
 {
 	auto ins = InputManager::GetInstance();
 
+	// ジャンプキーが入力されているか
+	if (!player->IsJump() && ins->IsTrgDown(KEY_INPUT_SPACE))
+	{
+		player->ChangeState(Player::STATE::JUMP);
+		return;
+	}
+
 	VECTOR dir = AsoUtility::VECTOR_ZERO;
 
 	// ゲームパッドが接続されている数で処理を分ける
 	if (GetJoypadNum() == 0)
 	{
 		// キーボード操作
-		bool isInputMoveKey = false;
-		if (ins->IsNew(KEY_INPUT_W)) { dir = AsoUtility::DIR_F; isInputMoveKey = true; }
-		if (ins->IsNew(KEY_INPUT_A)) { dir = AsoUtility::DIR_L; isInputMoveKey = true; }
-		if (ins->IsNew(KEY_INPUT_S)) { dir = AsoUtility::DIR_B; isInputMoveKey = true; }
-		if (ins->IsNew(KEY_INPUT_D)) { dir = AsoUtility::DIR_R; isInputMoveKey = true; }
+		ins->GetInputDirXZ(dir, KEY_INPUT_W, KEY_INPUT_S, KEY_INPUT_A, KEY_INPUT_D);
 
-		// 移動キーが離されたら待機状態に戻る
-		if (!isInputMoveKey)
-		{
-			player->ChangeState(Player::STATE::IDLE);
-			return;
-		}
-
-		// ダッシュキーが離されたら通常走りに戻る
-		{
-			if (!ins->IsNew(KEY_INPUT_LSHIFT)) player->ChangeState(Player::STATE::RUN); 
-			return;
-		}
-
+		// 方向入力がある場合
 		if (!AsoUtility::EqualsVZero(dir))
 		{
-			float speed = Player::SPEED_DASH;
+			// ダッシュキーが入力されていないか
+			if (!ins->IsNew(KEY_INPUT_LSHIFT))
+			{
+				player->ChangeState(Player::STATE::RUN);
+				return;
+			}
 
-			player->SetMoveSpeed(speed);
-
-			// ジャンプ中はアニメーションを変えない
-			//if (!isJump_)
-			//{
-			//	// アニメーション
-			//	if (isDash_)
-			//	{
-
-			//		animationController_->Play(
-			//			static_cast<int>(ANIM_TYPE::FAST_RUN), true);
-			//	}
-			//	else
-			//	{
-			//		animationController_->Play(
-			//			static_cast<int>(ANIM_TYPE::RUN), true);
-			//	}
-			//}
-
+			// 移動速度を設定
+			player->SetMoveSpeed(Player::SPEED_DASH);
 
 			//Y軸のみのカメラ角度を取得
 			Quaternion cameraRot = SceneManager::GetInstance().GetCamera()->GetQuaRotY();
@@ -72,7 +51,12 @@ void PlayerFastRunState::Update(Player* player)
 			player->SetMoveDir(moveDir);
 
 			//移動量を計算
-			/*if (!isJet_)*/ player->SetMovePow(VScale(moveDir, speed));
+			player->SetMovePow(VScale(moveDir, Player::SPEED_DASH));
+		}
+		else
+		{
+			player->ChangeState(Player::STATE::IDLE);
+			return;
 		}
 	}
 }

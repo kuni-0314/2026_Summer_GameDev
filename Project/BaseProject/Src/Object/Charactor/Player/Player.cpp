@@ -13,6 +13,8 @@
 #include "../../../Object/Collider/Capsule/ColliderCapsule.h"
 #include "PlayerIdleState.h"
 #include "PlayerRunState.h"
+#include "PlayerFastRunState.h"
+#include "PlayerJumpState.h"
 
 
 Player::Player(void)
@@ -23,7 +25,7 @@ Player::Player(void)
 
 Player::~Player(void)
 {
-	for (auto& state:states_)
+	for (auto& state : states_)
 	{
 		delete state.second;
 	}
@@ -245,40 +247,40 @@ void Player::Draw(void)
 	y += lineHeight;
 
 	// ステータス情報を描画（選択中の項目を黄色でハイライト）
-	unsigned int color = 0xFFFFFF;
-	unsigned int highlightColor = 0xFFFF00;
+	//unsigned int color = 0xFFFFFF;
+	//unsigned int highlightColor = 0xFFFF00;
 
-	DrawFormatString(x, y, color, "Level  : %d", status_.level);
-	y += lineHeight;
+	//DrawFormatString(x, y, color, "Level  : %d", status_.level);
+	//y += lineHeight;
 
-	DrawFormatString(x, y, (currentGrantStatusIndex_ == 2) ? highlightColor : color, "HP     : %d", status_.hp);
-	y += lineHeight;
+	//DrawFormatString(x, y, (currentGrantStatusIndex_ == 2) ? highlightColor : color, "HP     : %d", status_.hp);
+	//y += lineHeight;
 
-	DrawFormatString(x, y, (currentGrantStatusIndex_ == 3) ? highlightColor : color, "MP     : %d", status_.mp);
-	y += lineHeight;
+	//DrawFormatString(x, y, (currentGrantStatusIndex_ == 3) ? highlightColor : color, "MP     : %d", status_.mp);
+	//y += lineHeight;
 
-	DrawFormatString(x, y, (currentGrantStatusIndex_ == 4) ? highlightColor : color, "PhysAtk: %d", status_.physAtk);
-	y += lineHeight;
+	//DrawFormatString(x, y, (currentGrantStatusIndex_ == 4) ? highlightColor : color, "PhysAtk: %d", status_.physAtk);
+	//y += lineHeight;
 
-	DrawFormatString(x, y, (currentGrantStatusIndex_ == 5) ? highlightColor : color, "PhysDef: %d", status_.physDef);
-	y += lineHeight;
+	//DrawFormatString(x, y, (currentGrantStatusIndex_ == 5) ? highlightColor : color, "PhysDef: %d", status_.physDef);
+	//y += lineHeight;
 
-	DrawFormatString(x, y, (currentGrantStatusIndex_ == 6) ? highlightColor : color, "MagicAtk: %d", status_.magicAtk);
-	y += lineHeight;
+	//DrawFormatString(x, y, (currentGrantStatusIndex_ == 6) ? highlightColor : color, "MagicAtk: %d", status_.magicAtk);
+	//y += lineHeight;
 
-	DrawFormatString(x, y, (currentGrantStatusIndex_ == 7) ? highlightColor : color, "MagicDef: %d", status_.magicDef);
-	y += lineHeight;
+	//DrawFormatString(x, y, (currentGrantStatusIndex_ == 7) ? highlightColor : color, "MagicDef: %d", status_.magicDef);
+	//y += lineHeight;
 
-	DrawFormatString(x, y, (currentGrantStatusIndex_ == 8) ? highlightColor : color, "Wisdom : %d", status_.wisdom);
-	y += lineHeight;
+	//DrawFormatString(x, y, (currentGrantStatusIndex_ == 8) ? highlightColor : color, "Wisdom : %d", status_.wisdom);
+	//y += lineHeight;
 
-	DrawFormatString(x, y, (currentGrantStatusIndex_ == 9) ? highlightColor : color, "Luck   : %d", status_.luck);
-	y += lineHeight;
+	//DrawFormatString(x, y, (currentGrantStatusIndex_ == 9) ? highlightColor : color, "Luck   : %d", status_.luck);
+	//y += lineHeight;
 
-	DrawFormatString(x, y, color, "PendingPoints   : %d", pendingPoints_);
+	//DrawFormatString(x, y, color, "PendingPoints   : %d", pendingPoints_);
 
-	y += lineHeight;
-	DrawFormatString(x, y, color, "jumpPow   : %f.", jumpPow_.y);
+	//y += lineHeight;
+	//DrawFormatString(x, y, color, "jumpPow   : %f.", jumpPow_.y);
 
 	// プレイヤーの周りを回転するオブジェクトの描画
 	static float angle = 0.0f;
@@ -650,6 +652,8 @@ void Player::InitState(void)
 {
 	states_[STATE::IDLE] = new PlayerIdleState();
 	states_[STATE::RUN] = new PlayerRunState();
+	states_[STATE::FAST_RUN] = new PlayerFastRunState();
+	states_[STATE::JUMP] = new PlayerJumpState();
 	currentState_ = states_[STATE::IDLE];
 }
 
