@@ -1,11 +1,9 @@
 #pragma once
-#include "PlayerState.h"
+#include "PlayerAirborneState.h"
 
-class PlayerJumpState : public PlayerState
+class PlayerJumpState : public PlayerAirborneState
 {
-	public:
+public:
 	void Enter(Player* player) override;
-	void Update(Player* player) override;
-	void CollisionReserve(Player* player) override;
 };
 

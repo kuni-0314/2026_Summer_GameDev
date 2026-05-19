@@ -15,6 +15,9 @@
 #include "PlayerRunState.h"
 #include "PlayerFastRunState.h"
 #include "PlayerJumpState.h"
+#include "PlayerJetState.h"
+#include "PlayerFallState.h"
+#include "PlayerAttackState.h"
 
 
 Player::Player(void)
@@ -158,20 +161,26 @@ void Player::InitAnimation(void)
 {
 	//アニメーションコントローラー
 	animationController_ = new AnimationController(transform_.modelId);
-	//待機状態アニメーション
+
+	// 待機状態アニメーション
 	animationController_->Add(static_cast<int>(ANIM_TYPE::IDLE)
 		, 20.0f, Application::PATH_MODEL + "Player/Idle.mv1");
 
-	//走るアニメーション
+	// 走るアニメーション
 	animationController_->Add(static_cast<int>(ANIM_TYPE::RUN)
 		, 20.0f, Application::PATH_MODEL + "Player/Run.mv1");
 
-	//走り始めアニメーション
+	// ダッシュアニメーション
 	animationController_->Add(static_cast<int>(ANIM_TYPE::FAST_RUN)
 		, 20.0f, Application::PATH_MODEL + "Player/FastRun.mv1");
 
+	//ジャンプアニメーション
 	animationController_->Add(static_cast<int>(ANIM_TYPE::JUMP)
 		, 60.0f, Application::PATH_MODEL + "Player/JumpRising.mv1");
+
+	// 攻撃アニメーション
+	animationController_->Add(static_cast<int>(ANIM_TYPE::ATTACK)
+		, 60.0f, Application::PATH_MODEL + "Player/Attack3.mv1");
 
 	//初期アニメーション再生
 	animationController_->Play(static_cast<int>(ANIM_TYPE::IDLE), true);
@@ -203,7 +212,11 @@ void Player::UpdateProcess(void)
 	}
 
 
-
+	if (InputManager::GetInstance()->IsTrgDown(KEY_INPUT_R))
+	{
+		// リスポーン
+		transform_.pos = POS_PLAYER;
+	}
 
 	//// 移動操作
 	//ProcessMove();
@@ -405,192 +418,6 @@ void Player::RevokeStatus(int index)
 	}
 }
 
-void Player::ProcessMove(void)
-{
-	auto ins = InputManager::GetInstance();
-
-	//移動量
-	if (!isJump_ && !isJet_) movePow_ = AsoUtility::VECTOR_ZERO;
-	else if (isJump_ && !isJet_) VScale(movePow_, 0.9f); // ジャンプ中は移動量を徐々に減少させる
-
-	if (jetTime_ <= TIME_JET)
-	{
-		jetTime_ += scnMng_.GetDeltaTime();
-	}
-	else
-	{
-		isJet_ = false;
-	}
-
-	//移動方向
-	VECTOR dir = AsoUtility::VECTOR_ZERO;
-
-	// カメラの角度を取得
-	VECTOR camAngles =
-		SceneManager::GetInstance().GetCamera()->GetAngles();
-
-	// ダッシュ判定
-	bool isDash_ = false;
-
-	// ゲームパッドが接続されている数で処理を分ける
-	if (GetJoypadNum() == 0)
-	{
-		// キーボード操作
-		if (ins->IsNew(KEY_INPUT_W)) { dir = AsoUtility::DIR_F; }
-		if (ins->IsNew(KEY_INPUT_A)) { dir = AsoUtility::DIR_L; }
-		if (ins->IsNew(KEY_INPUT_S)) { dir = AsoUtility::DIR_B; }
-		if (ins->IsNew(KEY_INPUT_D)) { dir = AsoUtility::DIR_R; }
-		// ダッシュキー
-		if (ins->IsNew(KEY_INPUT_RSHIFT)) { isDash_ = true; }
-		if (ins->IsNew(KEY_INPUT_LSHIFT)) { isDash_ = true; }
-	}
-	else
-	{
-		// ゲームパッド操作
-		// 接続されているゲームパッド１の情報を取得
-		//InputManager::JOYPAD_IN_STATE padState =
-		//	ins->GetJPadInputState(InputManager::JOYPAD_NO::PAD1);
-
-		// アナログキーの入力値から方向を取得
-		short leftX, leftY;
-		ins->GetLeftStick(0, leftX, leftY);
-
-		// アナログスティックの入力値を正規化して方向ベクトルを作成
-		float magnitude = sqrtf(leftX * leftX + leftY * leftY);
-		if (magnitude > 0.0f)
-		{
-			dir.x = leftX / magnitude;
-			dir.z = leftY / magnitude;
-		}
-
-		if (ins->IsGamepadNew(InputManager::PadInput::RB, 0))
-		{
-			isDash_ = true;
-		}
-	}
-
-
-	if (!AsoUtility::EqualsVZero(dir))
-	{
-		if (isDash_)
-		{
-			moveSpeed_ = SPEED_DASH;
-		}
-		else
-		{
-			//移動スピード
-			moveSpeed_ = SPEED_MOVE;
-		}
-
-
-		// ジャンプ中はアニメーションを変えない
-		if (!isJump_)
-		{
-			// アニメーション
-			if (isDash_)
-			{
-				
-				animationController_->Play(
-					static_cast<int>(ANIM_TYPE::FAST_RUN), true);
-			}
-			else
-			{
-				animationController_->Play(
-					static_cast<int>(ANIM_TYPE::RUN), true);
-			}
-		}
-
-
-		//Y軸のみのカメラ角度を取得
-		Quaternion cameraRot = scnMng_.GetCamera()->GetQuaRotY();
-		//移動方向をカメラに合わせる
-		moveDir_ = Quaternion::PosAxis(cameraRot, dir);
-
-		//移動量を計算
-		if (!isJet_) movePow_ = VScale(moveDir_, moveSpeed_);
-
-	}
-	else
-	{
-		// ジャンプ中はアニメーションを変えない
-		if (!isJump_)
-		{
-			// IDLE状態に戻す
-			animationController_->Play(
-				static_cast<int>(ANIM_TYPE::IDLE), true);
-		}
-	}
-}
-	
-
-void Player::ProcessJump(void)
-{
-	auto ins = InputManager::GetInstance();
-
-	bool isHitKey = ins->IsTrgDown(KEY_INPUT_SPACE)
-		|| ins->IsGamepadTrgDown(InputManager::PadInput::B, 0);
-
-	if (ins->IsTrgDown(KEY_INPUT_SPACE)
-		|| ins->IsGamepadTrgDown(InputManager::PadInput::B, 0) && !isJump_)
-	{
-		jumpPow_ = VAdd(jumpPow_, VScale(AsoUtility::DIR_U, POW_JUMP_INIT));
-		isJump_ = true;
-		stepJump_ = 0.0f;
-		
-		// アニメーション再生
-		animationController_->Play(
-			static_cast<int>(ANIM_TYPE::JUMP), false);
-	}
-
-	if (ins->IsNew(KEY_INPUT_SPACE)
-		|| ins->IsGamepadNew(InputManager::PadInput::B, 0))
-	{
-		if (isJump_ && stepJump_ < TIME_JUMP_INPUT)
-		{
-			jumpPow_ = VAdd(jumpPow_, VScale(AsoUtility::DIR_U, POW_JUMP_KEEP));
-			stepJump_ += scnMng_.GetDeltaTime();
-		}
-	}
-
-	//// ジャンプ開始
-	//if (isHitKey && !isJump_)
-	//{
-	//	// ジャンプ量の計算
-	//	float jumpSpeed = POW_JUMP * scnMng_.GetDeltaTime();
-	//	jumpPow_ = VScale(AsoUtility::DIR_U, jumpSpeed);
-	//	isJump_ = true;
-	//	stepJump_ = 0.0f;  // ジャンプ開始時にリセット
-	//	// アニメーション再生
-	//	animationController_->Play(
-	//		static_cast<int>(ANIM_TYPE::JUMP), false);
-	//}
-
-	//// 持続ジャンプ処理（ジャンプ中のみ）
-	//bool isHitKeyNew = ins->IsNew(KEY_INPUT_SPACE)
-	//	|| ins->IsGamepadNew(InputManager::PadInput::Down, 0);
-	//
-	//if (isHitKeyNew && isJump_ && stepJump_ < TIME_JUMP_INPUT)
-	//{
-	//	// ジャンプの入力受付時間を加算
-	//	stepJump_ += scnMng_.GetDeltaTime();
-	//	// ジャンプ量の計算
-	//	float jumpSpeed = POW_JUMP_KEEP * scnMng_.GetDeltaTime();
-	//	jumpPow_ = VAdd(jumpPow_, VScale(AsoUtility::DIR_U, jumpSpeed));
-	//}
-}
-
-void Player::ProcessJet(void)
-{
-	auto ins = InputManager::GetInstance();
-	if (ins->IsTrgDown(KEY_INPUT_E)
-		|| ins->IsGamepadTrgDown(InputManager::PadInput::X, 0))
-	{
-		movePow_ = VScale(moveDir_, POW_JET);
-		isJet_ = true;
-		jetTime_ = 0.0f;
-	}
-}
-
 void Player::ProcessAttack(void)
 {
 	auto ins = InputManager::GetInstance();
@@ -600,60 +427,15 @@ void Player::ProcessAttack(void)
 	}
 }
 
-void Player::CollisionReserve(void)
-{
-
-	// アニメーションごとの線分調整
-	if (animationController_->GetPlayType() == static_cast<int>(ANIM_TYPE::JUMP))
-	{
-		// ジャンプ中は線分を伸ばす
-		if (ownColliders_.count(static_cast<int>(COLLIDER_TYPE::LINE)) != 0)
-		{
-			ColliderLine* colLine = dynamic_cast<ColliderLine*>(
-				ownColliders_.at(static_cast<int>(COLLIDER_TYPE::LINE)));
-			colLine->SetLocalPosStart(COL_LINE_JUMP_START_LOCAL_POS);
-			colLine->SetLocalPosEnd(COL_LINE_JUMP_END_LOCAL_POS);
-		}
-
-		if (ownColliders_.count(static_cast<int>(COLLIDER_TYPE::CAPSULE)) != 0)
-		{
-			ColliderCapsule* colCapsule = dynamic_cast<ColliderCapsule*>(
-				ownColliders_.at(static_cast<int>(COLLIDER_TYPE::CAPSULE)));
-			colCapsule->SetLocalPosTop(COL_CAPSULE_TOP_JUMP_LOCAL_POS);
-			colCapsule->SetLocalPosDown(COL_CAPSULE_DOWN_JUMP_LOCAL_POS);
-			colCapsule->SetRadius(COL_CAPSULE_RADIUS);
-		}
-	}
-	else
-	{
-		//ここから
-
-		// 通常時の線分に戻す
-		if (ownColliders_.count(static_cast<int>(COLLIDER_TYPE::LINE)) != 0)
-		{
-			ColliderLine* colLine = dynamic_cast<ColliderLine*>(
-				ownColliders_.at(static_cast<int>(COLLIDER_TYPE::LINE)));
-			colLine->SetLocalPosStart(COL_LINE_START_LOCAL_POS);
-			colLine->SetLocalPosEnd(COL_LINE_END_LOCAL_POS);
-		}
-		//通常時のカプセル
-		if (ownColliders_.count(static_cast<int>(COLLIDER_TYPE::CAPSULE)) != 0)
-		{
-			ColliderCapsule* colCapsule = dynamic_cast<ColliderCapsule*>(
-				ownColliders_.at(static_cast<int>(COLLIDER_TYPE::CAPSULE)));
-			colCapsule->SetLocalPosTop(COL_CAPSULE_TOP_LOCAL_POS);
-			colCapsule->SetLocalPosDown(COL_CAPSULE_DOWN_LOCAL_POS);
-		
-		}
-	}
-}
-
 void Player::InitState(void)
 {
 	states_[STATE::IDLE] = new PlayerIdleState();
 	states_[STATE::RUN] = new PlayerRunState();
 	states_[STATE::FAST_RUN] = new PlayerFastRunState();
 	states_[STATE::JUMP] = new PlayerJumpState();
+	states_[STATE::JET] = new PlayerJetState();
+	states_[STATE::FALL] = new PlayerFallState();
+	states_[STATE::ATTACK] = new PlayerAttackState();
 	currentState_ = states_[STATE::IDLE];
 }
 

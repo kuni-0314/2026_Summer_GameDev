@@ -19,6 +19,10 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Src\Object\Charactor\Player\PlayerAirborneState.cpp" />
+    <ClCompile Include="Src\Object\Charactor\Player\PlayerAttackState.cpp" />
+    <ClCompile Include="Src\Object\Charactor\Player\PlayerFallState.cpp" />
+    <ClCompile Include="Src\Object\Charactor\Player\PlayerJetState.cpp" />
     <ClCompile Include="Src\Object\Charactor\Player\PlayerJumpState.cpp" />
     <ClCompile Include="Src\Object\Charactor\Player\PlayerFastRunState.cpp" />
     <ClCompile Include="Src\Object\Charactor\Player\PlayerRunState.cpp" />
@@ -70,6 +74,10 @@
     <ClCompile Include="Src\Object\Actor\UI\UIBase.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Src\Object\Charactor\Player\PlayerAirborneState.h" />
+    <ClInclude Include="Src\Object\Charactor\Player\PlayerAttackState.h" />
+    <ClInclude Include="Src\Object\Charactor\Player\PlayerFallState.h" />
+    <ClInclude Include="Src\Object\Charactor\Player\PlayerJetState.h" />
     <ClInclude Include="Src\Object\Charactor\Player\PlayerJumpState.h" />
     <ClInclude Include="Src\Object\Charactor\Player\PlayerFastRunState.h" />
     <ClInclude Include="Src\Object\Charactor\Player\PlayerRunState.h" />

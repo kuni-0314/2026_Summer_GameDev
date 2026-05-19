@@ -154,6 +154,7 @@ void CharactorBase::CollisionGravity(void)
 		}
 		else
 		{
+
 			isAir_ = true;
 		}
 		

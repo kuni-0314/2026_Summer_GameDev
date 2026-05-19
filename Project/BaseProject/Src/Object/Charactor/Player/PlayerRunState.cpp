@@ -17,10 +17,9 @@ void PlayerRunState::Update(Player* player)
 {
 	auto ins = InputManager::GetInstance();
 
-	// ジャンプキーが入力されているか
-	if (!player->IsJump() && ins->IsTrgDown(KEY_INPUT_SPACE))
+	// 遷移チェック
+	if (CheckTransitions(player))
 	{
-		player->ChangeState(Player::STATE::JUMP);
 		return;
 	}
 
@@ -32,10 +31,6 @@ void PlayerRunState::Update(Player* player)
 		// キーボード操作
 		ins->GetInputDirXZ(dir, KEY_INPUT_W, KEY_INPUT_S, KEY_INPUT_A, KEY_INPUT_D);
 	}
-	//else
-	//{
-		// ゲームパッド操作
-	//}
 
 	// 方向入力がある場合
 	if (!AsoUtility::EqualsVZero(dir))

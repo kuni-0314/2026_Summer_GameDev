@@ -14,8 +14,10 @@ public:
 		RUN, 
 		FAST_RUN, 
 		JUMP, 
-		ATTACK, 
 		JET, 
+		FALL,
+		ATTACK,
+		MAX
 	};
 
 	//アニメーション種別
@@ -25,6 +27,7 @@ public:
 		RUN,
 		FAST_RUN,
 		JUMP,
+		ATTACK,
 	};
 
 	//コンストラクタ
@@ -44,6 +47,7 @@ public:
 	VECTOR GetMovePow(void) const { return movePow_; }
 	void SetMovePow(const VECTOR& pow) { movePow_ = pow; }
 	void SetMoveSpeed(const float speed) { moveSpeed_ = speed; }
+	VECTOR GetMoveDir(void) const { return moveDir_; }
 	void SetMoveDir(const VECTOR& dir) { moveDir_ = dir; }
 	VECTOR GetJumpPow(void) const { return jumpPow_; }
 	void SetJumpPow(const VECTOR& pow) { jumpPow_ = pow; }
@@ -51,6 +55,12 @@ public:
 	void SetStepJump(const float step) { stepJump_ = step; }
 	bool IsJump(void) const { return isJump_; }
 	void SetJump(const bool isJump) { isJump_ = isJump; }
+	bool IsAir(void) const { return isAir_; }
+	void SetAir(const bool isAir) { isAir_ = isAir; }
+	bool IsJet(void) const { return isJet_; }
+	void SetJet(const bool isJet) { isJet_ = isJet; }
+	float GetJetTime(void) const { return jetTime_; }
+	void SetJetTime(const float time) { jetTime_ = time; }
 
 	//スケール
 	static constexpr float SCL_PlAYER = 1.0f;
@@ -82,12 +92,21 @@ public:
 	// ジャンプ力
 	static constexpr float POW_JUMP_INIT = 35.0f;
 	// 持続ジャンプ力
-	static constexpr float POW_JUMP_KEEP = 8.0f;
+	static constexpr float POW_JUMP_KEEP = 8.5f;
 	// ジャンプ受付時間
 	static constexpr float TIME_JUMP_INPUT = 0.5f;
 
 	
-	static constexpr float POW_JET = 100.0f;
+	static constexpr float POW_JET = 80.0f;
+
+	static constexpr float JET_TIME = 0.25f;
+
+	// 地上での移動減少率
+	static constexpr float GROUND_MOVE_DEC_RATE = 0.8f;
+
+	// 空中での移動減少率
+	static constexpr float AIR_MOVE_DEC_RATE = 0.975f;
+
 
 	// 衝突判定用カプセル上部球体
 	static constexpr VECTOR COL_CAPSULE_TOP_LOCAL_POS = { 0.0f, 110.0f, 0.0f };
@@ -129,17 +148,7 @@ private:
 	void GrantStatus(int index);
 	void RevokeStatus(int index);
 
-	// 操作
-	void ProcessMove(void);
-	//ジャンプ
-	void ProcessJump(void);
-	//ジェット
-	void ProcessJet(void);
-	//
 	void ProcessAttack(void);
-
-	// 衝突判定
-	void CollisionReserve(void) override;
 
 	void InitState(void);
 

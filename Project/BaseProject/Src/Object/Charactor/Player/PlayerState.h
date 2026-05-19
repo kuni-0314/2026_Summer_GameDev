@@ -9,4 +9,8 @@ public:
 	virtual void CollisionReserve(Player* player) {};
 	virtual void Draw(Player* player) {};
 	virtual void Exit(Player* player) {};
+
+protected:
+	// 遷移チェック
+	bool CheckTransitions(Player* player);
 };

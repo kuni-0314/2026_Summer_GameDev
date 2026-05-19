@@ -14,11 +14,10 @@ void PlayerFastRunState::Enter(Player* player)
 void PlayerFastRunState::Update(Player* player)
 {
 	auto ins = InputManager::GetInstance();
-
-	// ジャンプキーが入力されているか
-	if (!player->IsJump() && ins->IsTrgDown(KEY_INPUT_SPACE))
+	
+	// 遷移チェック
+	if (CheckTransitions(player))
 	{
-		player->ChangeState(Player::STATE::JUMP);
 		return;
 	}
 
