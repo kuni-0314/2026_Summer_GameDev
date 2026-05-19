@@ -3,6 +3,7 @@
 #include <functional>
 #include "../EnemyBase.h"
 class Player;
+class ItemManger;
 
 
 class EnemyRat : public EnemyBase
@@ -55,6 +56,9 @@ protected:
 
 private:
 
+
+	
+	ItemManger* itemManager_ ;
 
 	//アニメーション登録番号
 	//待機
@@ -132,8 +136,7 @@ private:
 	void UpdateDie(void);
 	void UpdateEnd(void);
 
-	//デバッグ
-	void Damege();
+
 
 };
 

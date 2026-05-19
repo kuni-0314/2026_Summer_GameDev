@@ -7,6 +7,7 @@ class SkyDome;
 class Player;
 class EnemyManager;
 class FieldManager;
+class ItemManger;
 
 class GameScene : public SceneBase
 {
@@ -38,6 +39,8 @@ private:
 	Player* player_;
 	EnemyManager* enemyManager_;
 	FieldManager* fieldManager_;
+	//アイテムマネージャー
+	ItemManger* itemManger_;
 
 	int targetEnemyId_;
 

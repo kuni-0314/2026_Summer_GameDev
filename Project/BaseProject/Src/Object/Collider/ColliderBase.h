@@ -22,7 +22,8 @@ public:
 		CAMERA,
 		ENEMY,
 		VIEW_RANGE,
-		ENEMY_ATTACK
+		ENEMY_ATTACK,
+		ITEM
 
 	};
 	// コンストラクタ

@@ -34,6 +34,8 @@ public:
 	//•`‰æ
 	virtual void Draw(void) override;
 
+	void Damege(int damege);
+
 protected:
 
 	Player* player_;

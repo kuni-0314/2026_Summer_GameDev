@@ -27,6 +27,15 @@ void EnemyBase::Draw(void)
 	//DrawSphere3D(defaultPos_, 500.0f, 16, 0x000099, 0x000099, false);
 #endif // _DEBUG
 }
+void EnemyBase::Damege(int damege)
+{
+	hp_ -= damege;
+	if (hp_ <= 0)
+	{
+		hp_ = 0;
+		// Ž€–Sˆ—
+	}
+}
 bool EnemyBase::InMovableRange(void) const
 {
 	bool ret = false;

@@ -8,6 +8,7 @@
 #include "../Object/Actor/SkyDome/SkyDome.h"
 #include "../Object/Charactor/Player/Player.h"
 #include "../Object/Charactor/Enemy/EnemyManger.h"
+#include "../Object/Item/ItemManger.h"
 #include "../Object/FieldManager.h"
 #include "GameScene.h"
 
@@ -18,7 +19,8 @@ GameScene::GameScene(void)
 	skyDome_(nullptr),
 	player_(nullptr),
 	enemyManager_(nullptr),
-	stageWall_(nullptr)
+	stageWall_(nullptr),
+	itemManger_(nullptr)
 {
 }
 
@@ -49,6 +51,10 @@ void GameScene::Init(void)
 	enemyManager_ = new EnemyManager(player_);
 	enemyManager_->Init();
 	enemyManager_->AddHitCollider(stageCollider);
+
+	const ColliderBase* enemyCollider =
+		enemyManager_->GetOwnCollider(static_cast<int>(Stage::COLLIDER_TYPE::MODEL));
+	enemyManager_->AddHitCollider(enemyCollider);
 	
 	//プレイヤーのカプセルコライダ―をエネミーに登録
 	//enemyManager_->AddHitCollider(
@@ -61,6 +67,11 @@ void GameScene::Init(void)
 	// フィールド
 	//fieldManager_ = new FieldManager(this);
 	//fieldManager_->Init();
+
+	//アイテムマネージャー
+	itemManger_ = new ItemManger();
+	itemManger_->Init();
+	itemManger_->AddHitCollider(stageCollider);
 
 	//追従カメラ
 	Camera* camera = sceMng_.GetCamera();
@@ -84,6 +95,7 @@ void GameScene::Update(void)
 	player_->Update();
 	enemyManager_->Update();
 	//fieldManager_->Update();
+	itemManger_->Update();
 
 	if (ins->IsTrgDown(KEY_INPUT_LEFT) && targetEnemyId_ > 0) targetEnemyId_--;
 	if (ins->IsTrgDown(KEY_INPUT_RIGHT)) targetEnemyId_++;
@@ -99,6 +111,7 @@ void GameScene::Draw(void)
 	stage_->Draw();		//ステージ描画
 	//stageWall_->Draw();	//ステージ壁描画
 	player_->Draw();	//プレイヤー描画
+	itemManger_->Draw();	//アイテム描画
 
 	enemyManager_->Draw();
 	//VECTOR enemyPos = enemyManager_->GetNearEnemyPos(player_->GetTransform().pos);
@@ -114,6 +127,22 @@ void GameScene::Draw(void)
 
 void GameScene::Release(void)
 {
+	// アイテムマネージャー解放
+	if (itemManger_ != nullptr)
+	{
+		itemManger_->Release();
+		delete itemManger_;
+		itemManger_ = nullptr;
+	}
+
+	// エネミーマネージャー解放
+	if (enemyManager_ != nullptr)
+	{
+		enemyManager_->Release();
+		delete enemyManager_;
+		enemyManager_ = nullptr;
+	}
+
 	// フィールド解放
 	//fieldManager_->Release();
 	//delete fieldManager_;

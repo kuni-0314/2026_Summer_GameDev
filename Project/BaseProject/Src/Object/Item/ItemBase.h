@@ -2,6 +2,7 @@
 #include "../Actor/ActorBase.h"
 
 class AnimationController;
+class EnemyBase;
 class ItemBase : public ActorBase
 {
 public:
@@ -25,7 +26,7 @@ public:
 
 
 	// コンストラクタ
-	ItemBase(void);
+	ItemBase(EnemyBase* enemybase);
 	// デストラクタ
 	virtual ~ItemBase(void) override;
 
@@ -38,6 +39,8 @@ public:
 
 protected:
 
+
+	EnemyBase* enemyBase_;
 
 	// 最大落下速度
 	static constexpr float MAX_FALL_SPEED = -30.0f;
@@ -60,13 +63,15 @@ protected:
 	//移動スピード
 	float moveSpeed_;
 
+
+	//モデルID
+	int modelId_;
+
 	// 丸影画像
 	int imgShadow_;
 
 	// リソースロード
 	virtual void InitLoad(void) override;
-
-	virtual void InitAnimation(void) override;
 
 	// 更新系
 	virtual void UpdateProcess(void) = 0;
@@ -86,11 +91,9 @@ protected:
 	//カプセル型当たり判定（flag:trueなら高精度処理を行う）
 	void CollisionCapsule(void);
 
-
 	// 丸影描画
 	void DrawShadow(void);
 
-	AnimationController* animationController_;
 
 private:
 

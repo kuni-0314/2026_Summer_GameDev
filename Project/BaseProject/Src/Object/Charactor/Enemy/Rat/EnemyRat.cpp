@@ -8,6 +8,8 @@
 #include "../../../Common/AnimationController.h"
 #include "../../../../Utility/AsoUtility.h"
 #include "../../../../Manager/InputManager.h"
+#include "../../../../Object/Item/HP/HpItem.h"
+#include "../../../../Object/Item/ItemManger.h"
 
 
 EnemyRat::EnemyRat(const EnemyBase::EnemyData& data, Player* player)
@@ -23,28 +25,27 @@ EnemyRat::~EnemyRat(void)
 
 void EnemyRat::Draw(void)
 {
-	if (isAlive_)
+
+	// 基底クラスの描画処理
+	CharactorBase::Draw();
+
+
+	//デバッグ用攻撃範囲描画
+	VECTOR local = ATTACK_SPHERE_LOCAL_POS;
+	// 回転を適用
+	VECTOR rotated = transform_.quaRot.PosAxis(local);
+
+	// ワールド座標へ
+	worldPos = VAdd(transform_.pos, rotated);
+
+	if (stateBase_ == static_cast<int>(STATE::ATTACK))
 	{
-		// 基底クラスの描画処理
-		CharactorBase::Draw();
-
-
-		//デバッグ用攻撃範囲描画
-		VECTOR local = ATTACK_SPHERE_LOCAL_POS;
-		// 回転を適用
-		VECTOR rotated = transform_.quaRot.PosAxis(local);
-
-		// ワールド座標へ
-		worldPos = VAdd(transform_.pos, rotated);
-
-		if (stateBase_ == static_cast<int>(STATE::ATTACK))
-		{
-			DrawSphere3D(worldPos,
-				COL_SPHERE_RADIUS, 10, 0x0000ff, 0x0000ff, false);
-		}
+		DrawSphere3D(worldPos,
+			COL_SPHERE_RADIUS, 10, 0x0000ff, 0x0000ff, false);
 	}
+	
 
-	DrawFormatString(0, 300, 0xffffff, "Hp:%d", hp_);
+	
 }
 
 
@@ -83,6 +84,7 @@ void EnemyRat::InitCollider(void)
 		COL_CAPSULE_TOP_LOCAL_POS, COL_CAPSULE_DOWN_LOCAL_POS,
 		COL_CAPSULE_RADIUS);
 	ownColliders_.emplace(static_cast<int>(COLLIDER_TYPE::CAPSULE), colCapsule);
+
 
 }
 
@@ -146,7 +148,23 @@ void EnemyRat::UpdateProcess(void)
 
 	auto const ins = InputManager::GetInstance();
 
-	Damege();
+
+	if (ins->IsTrgDown(KEY_INPUT_1))
+	{
+
+		EnemyBase::Damege(1);
+
+		if (hp_ <= 0)
+		{
+			ChangeState(STATE::DIE);
+
+		}
+		else
+		{
+			ChangeState(STATE::HIT);
+		}
+	}
+
 }
 
 void EnemyRat::UpdateProcessPost(void)
@@ -325,10 +343,11 @@ void EnemyRat::UpdateDie(void)
 {
 	if (animationController_->IsEnd())
 	{
-		isAlive_ = false;
+		MV1DeleteModel(transform_.modelId);
 		ChangeState(STATE::END);
 	}
 	movePow_ = AsoUtility::VECTOR_ZERO;
+
 }
 
 void EnemyRat::UpdateEnd(void)
@@ -337,33 +356,6 @@ void EnemyRat::UpdateEnd(void)
 	
 }
 
-void EnemyRat::Damege()
-{
-	int damege = 1;
 
-	auto const ins = InputManager::GetInstance();
-
-	if (ins->IsTrgDown(KEY_INPUT_1))
-	{
-		
-		hp_ -= damege;
-		if (hp_ < 0)
-		{
-			hp_ = 0;
-
-		}
-
-		if (hp_ <= 0)
-		{
-			ChangeState(STATE::DIE);
-		}
-		else
-		{
-			ChangeState(STATE::HIT);
-		}
-	}
-
-
-}
 
 

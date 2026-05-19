@@ -4,8 +4,7 @@
 #include "ItemBase.h"
 
 class ColliderBase;
-class Player;
-
+class EnemyBase;
 
 class ItemManger
 {
@@ -13,7 +12,7 @@ class ItemManger
 public:
 	// コンストラクタ
 	// デストラクタ
-	ItemManger(Player* player);
+	ItemManger();
 	~ItemManger(void);
 	// 初期化
 	void Init(void);
@@ -23,27 +22,23 @@ public:
 	void Draw(void);
 	// 解放
 	void Release(void);
-	// エネミー
-	//const std::vector<ItemManger*>& GetItems(void) const { return items_; }
+	//エネミー
+	const std::vector<ItemBase*>& GetItems(void) const { return items_; }
 	// 衝突対象となるコライダを登録
 	void AddHitCollider(const ColliderBase* hitCollider);
-
-	// CSVから敵情報の読取を行う
-	//void LoadCsvData(void);
 	
-	// エネミー生成
-	//ItemManger* Create(const ItemBase::TYPE);
+	// アイテム生成
+	ItemBase* Create(const ItemBase::TYPE&type,EnemyBase* enemy);
 
-	// 指定座標に最も近いエネミーの座標を取得
-	VECTOR GetNearEnemyPos(const VECTOR& pos) const;
-
+	//void AddItem(ItemBase* item);
 
 private:
-	//プレイヤー
-	Player* player_;
 
-	// エネミー
+
+	//アイテム
 	std::vector<ItemBase*> items_;
+	//enemy
+	EnemyBase* enemys_;
 };
 
 

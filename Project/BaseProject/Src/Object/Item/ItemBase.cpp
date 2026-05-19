@@ -9,10 +9,10 @@
 #include "../../Object/Collider/Capsule/ColliderCapsule.h"
 #include "../../Manager/ResourceManager.h"
 
-ItemBase::ItemBase(void)
+ItemBase::ItemBase(EnemyBase* enemybase)
 	:
 	ActorBase(),
-	animationController_(nullptr),
+	enemyBase_(enemybase),
 	moveDir_(AsoUtility::VECTOR_ZERO),
 	moveSpeed_(0.0f),
 	movePow_(AsoUtility::VECTOR_ZERO)
@@ -31,10 +31,6 @@ void ItemBase::InitLoad(void)
 
 }
 
-void ItemBase::InitAnimation(void)
-{
-	animationController_ = new AnimationController(transform_.modelId);
-}
 
 void ItemBase::Update(void)
 {
@@ -53,8 +49,6 @@ void ItemBase::Update(void)
 	Collision();
 	// モデル制御更新
 	transform_.Update();
-	// アニメーション再生
-	animationController_->Update();
 	// 各キャラクターごとの更新後処理
 	UpdateProcessPost();
 
@@ -71,12 +65,7 @@ void ItemBase::Draw(void)
 
 void ItemBase::Release(void)
 {
-	//アニメーションコントローラー解放
-	if (animationController_ != nullptr)
-	{
-		animationController_->Release();
-		delete animationController_;
-	}
+
 	//基底クラスの開放
 	ActorBase::Release();
 }
