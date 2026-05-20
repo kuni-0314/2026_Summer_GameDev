@@ -83,7 +83,7 @@ void TitleScene::Init(void)
 
 void TitleScene::Update(void)
 {
-	// ƒV[ƒ“‘JˆÚ
+	
 	auto const ins = InputManager::GetInstance();
 
 	if (!IsSelect_)

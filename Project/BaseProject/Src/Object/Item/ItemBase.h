@@ -2,7 +2,8 @@
 #include "../Actor/ActorBase.h"
 
 class AnimationController;
-class CharactorBase : public ActorBase
+
+class ItemBase : public ActorBase
 {
 public:
 
@@ -16,24 +17,18 @@ public:
 		MAX,
 	};
 
-	// ステータス
-	struct Status
+	//アイテム種別
+	enum class TYPE
 	{
-		int level;		// レベル
-		int hp;			// 体力
-		int mp;			// 魔力
-		int physAtk;	// 物理攻撃力
-		int physDef;	// 物理防御力
-		int magicAtk;	// 魔法攻撃力
-		int magicDef;	// 魔法防御力
-		int wisdom;		// 賢さ
-		int luck;		// 運
+		HP,
+		SKILL,
 	};
 
+
 	// コンストラクタ
-	CharactorBase(void);
+	ItemBase();
 	// デストラクタ
-	virtual ~CharactorBase(void) override;
+	virtual ~ItemBase(void) override;
 
 	//更新
 	virtual void Update(void) override;
@@ -42,15 +37,7 @@ public:
 
 	virtual void Release(void) override;
 
-	// ダメージ処理
-	void Damege(int damege);
-
-	// HPの取得
-	int GetHp() const { return hp_; }
-
-	void SetAlive(bool alive) { isAlive_ = alive; }
-
-	bool IsAnimEnd();
+	void SetPos(const VECTOR& pos) { transform_.pos = pos; };
 
 protected:
 
@@ -76,26 +63,20 @@ protected:
 	//移動スピード
 	float moveSpeed_;
 
-	// ジャンプ判定
-	bool isJump_;
 
-	// 空中判定
-	bool isAir_;
+	//モデルID
+	int modelId_;
 
 	// 丸影画像
 	int imgShadow_;
 
-	//体力
-	int hp_;
-
 	// リソースロード
 	virtual void InitLoad(void) override;
-
-	virtual void InitAnimation(void) override;
 
 	// 更新系
 	virtual void UpdateProcess(void) = 0;
 	virtual void UpdateProcessPost(void) = 0;
+
 	// 移動方向に応じた遅延回転
 	void DelayRotate(void);
 
@@ -110,25 +91,22 @@ protected:
 	//カプセル型当たり判定（flag:trueなら高精度処理を行う）
 	void CollisionCapsule(void);
 
-
 	// 丸影描画
 	void DrawShadow(void);
 
-	AnimationController* animationController_;
 
 private:
 
 	int stage_; //影の判定用ステージハンドル
 
-	//ここから
-	float PLAYER_SHADOW_HEIGHT = 800.0f;
-	float PLAYER_SHADOW_SIZE = 30.0f;
+	float ITEM_SHADOW_HEIGHT = 800.0f;
+	float ITEM_SHADOW_SIZE = 30.0f;
 
 	MV1_COLL_RESULT_POLY_DIM HitResDim;
 	MV1_COLL_RESULT_POLY* HitRes;
 
 	VECTOR SlideVec;//影のベクトル
 	VERTEX3D Vertex[3];
-	
+
 };
 

@@ -62,6 +62,34 @@ public:
 	float GetJetTime(void) const { return jetTime_; }
 	void SetJetTime(const float time) { jetTime_ = time; }
 
+<<<<<<< HEAD
+=======
+	VECTOR GetPos() const { return transform_.pos; }
+
+protected:
+
+	// リソースロード
+	void InitLoad(void) override;
+
+	// 大きさ、回転、座標の初期化
+	void InitTransform(void) override;
+
+	// 衝突判定の初期化
+	void InitCollider(void) override;
+
+	// アニメーションの初期化
+	void InitAnimation(void) override;
+
+	// 初期化後の個別処理
+	void InitPost(void) override;
+
+	//更新系
+	virtual void UpdateProcess(void) override;
+	virtual void UpdateProcessPost(void) override;
+
+
+private:
+>>>>>>> origin/ITEM
 	//スケール
 	static constexpr float SCL_PlAYER = 1.0f;
 	//初期座標

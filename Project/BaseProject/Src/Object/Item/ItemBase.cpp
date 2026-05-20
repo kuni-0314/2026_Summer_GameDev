@@ -1,5 +1,5 @@
 #include <cmath>
-#include "CharactorBase.h"
+#include "ItemBase.h"
 #include "../../Object/Common/AnimationController.h"
 #include "../../Utility/AsoUtility.h"
 #include "../../Application.h"
@@ -9,21 +9,20 @@
 #include "../../Object/Collider/Capsule/ColliderCapsule.h"
 #include "../../Manager/ResourceManager.h"
 
-CharactorBase::CharactorBase(void)
+
+ItemBase::ItemBase()
 	:
-	ActorBase(),
-	animationController_(nullptr),
-	moveDir_(AsoUtility::VECTOR_ZERO),
-	moveSpeed_(0.0f),
-	movePow_(AsoUtility::VECTOR_ZERO),
-	hp_(0)
+ActorBase(),
+moveDir_(AsoUtility::VECTOR_ZERO),
+moveSpeed_(0.0f),
+movePow_(AsoUtility::VECTOR_ZERO)
 {
 }
-CharactorBase::~CharactorBase(void)
+ItemBase::~ItemBase(void)
 {
 }
 
-void CharactorBase::InitLoad(void)
+void ItemBase::InitLoad(void)
 {
 	// 丸影画像
 	imgShadow_ = resMng_.Load(ResourceManager::SRC::PLAYER_SHADOW).handleId_;
@@ -32,12 +31,8 @@ void CharactorBase::InitLoad(void)
 
 }
 
-void CharactorBase::InitAnimation(void)
-{
-	animationController_ = new AnimationController(transform_.modelId);
-}
 
-void CharactorBase::Update(void)
+void ItemBase::Update(void)
 {
 	// 移動前座標を更新
 	prevPos_ = transform_.pos;
@@ -54,14 +49,12 @@ void CharactorBase::Update(void)
 	Collision();
 	// モデル制御更新
 	transform_.Update();
-	// アニメーション再生
-	animationController_->Update();
 	// 各キャラクターごとの更新後処理
 	UpdateProcessPost();
 
 }
 
-void CharactorBase::Draw(void)
+void ItemBase::Draw(void)
 {
 	//基底クラスの描画処理
 	ActorBase::Draw();
@@ -70,35 +63,14 @@ void CharactorBase::Draw(void)
 
 }
 
-void CharactorBase::Release(void)
+void ItemBase::Release(void)
 {
-	//アニメーションコントローラー解放
-	if (animationController_ != nullptr)
-	{
-		animationController_->Release();
-		delete animationController_;
-	}
+
 	//基底クラスの開放
 	ActorBase::Release();
 }
 
-void CharactorBase::Damege(int damege)
-{
-	hp_ -= damege;
-	if (hp_ <= 0)
-	{
-		hp_ = 0;
-		// 死亡処理
-		//isAlive_ = false;
-	}
-}
-
-bool CharactorBase::IsAnimEnd()
-{
-	return animationController_->IsEnd(); 
-}
-
-void CharactorBase::DelayRotate(void)
+void ItemBase::DelayRotate(void)
 {
 	// 移動方向から回転に変換する
 	Quaternion goalRot = Quaternion::LookRotation(moveDir_);
@@ -107,7 +79,7 @@ void CharactorBase::DelayRotate(void)
 		Quaternion::Slerp(transform_.quaRot, goalRot, 0.2f);
 }
 
-void CharactorBase::CalcGravityPow(void)
+void ItemBase::CalcGravityPow(void)
 {
 	// 重力方向
 	VECTOR dirGravity = AsoUtility::DIR_D;
@@ -126,18 +98,18 @@ void CharactorBase::CalcGravityPow(void)
 
 }
 
-void CharactorBase::Collision(void)
+void ItemBase::Collision(void)
 {
 	// 衝突(カプセル)
 	CollisionCapsule();
-	
+
 	// ジャンプ量を加算
 	transform_.pos = VAdd(transform_.pos, jumpPow_);
 	// 衝突(重力)
 	CollisionGravity();
 }
 
-void CharactorBase::CollisionGravity(void)
+void ItemBase::CollisionGravity(void)
 {
 	// 線分コライダ
 	int lineType = static_cast<int>(COLLIDER_TYPE::LINE);
@@ -147,7 +119,7 @@ void CharactorBase::CollisionGravity(void)
 	ColliderLine* colliderLine_ = dynamic_cast<ColliderLine*>(ownColliders_.at(lineType));
 
 	if (colliderLine_ == nullptr) return;
-	
+
 
 	// 登録されている衝突物を全てチェック
 	for (const auto& hitCol : hitColliders_)
@@ -162,31 +134,11 @@ void CharactorBase::CollisionGravity(void)
 
 		bool isHit_ = colliderLine_->PushBackUp(colliderModel, transform_, 2.0f,
 			true, false);
-
-		// ジャンプ判定
-		if (isHit_)
-		{
-			isJump_ = false;
-			isAir_ = false;
-		}
-		else
-		{
-
-			isAir_ = true;
-		}
-		
-	}
-	if (!isJump_ && !isAir_)
-	{
-		// ジャンプリセット
-		jumpPow_ = AsoUtility::VECTOR_ZERO;
-		// ジャンプの入力受付時間をリセット
-		stepJump_ = 0.0f;
 	}
 
 }
 
-void CharactorBase::CollisionCapsule(void)
+void ItemBase::CollisionCapsule(void)
 {
 	// カプセルコライダ
 	int capsuleType = static_cast<int>(COLLIDER_TYPE::CAPSULE);
@@ -200,10 +152,10 @@ void CharactorBase::CollisionCapsule(void)
 	// 移動量がカプセルの半径より大きい場合、移動量を分割して衝突判定を行う
 	float moveLen = VSize(movePow_);
 	float capRadius = colliderCapsule->GetRadius();
-	
+
 	// 移動開始位置を保存
 	VECTOR startPos = transform_.pos;
-	
+
 	if (moveLen > capRadius)
 	{
 		// 分割数を計算（最低でも1回は分割）
@@ -215,11 +167,11 @@ void CharactorBase::CollisionCapsule(void)
 		{
 			// 前の位置を保存
 			VECTOR prevStepPos = currentPos;
-			
+
 			// 次の目標位置を計算
 			float t = static_cast<float>(i) / static_cast<float>(splits);
 			VECTOR targetPos = VAdd(startPos, VScale(movePow_, t));
-			
+
 			// 一時的なTransformを設定
 			Transform tempTrans = transform_;
 			tempTrans.prevPos = prevStepPos;
@@ -236,11 +188,11 @@ void CharactorBase::CollisionCapsule(void)
 				colliderCapsule->PushBackAlongNormal(colliderModel, tempTrans, CNT_TRY_COLLISION,
 					COLLISION_BACK_DIS, true, false);
 			}
-			
+
 			// 修正された位置を次のステップに引き継ぐ
 			currentPos = tempTrans.pos;
 		}
-		
+
 		// 最終的な位置を反映
 		transform_.pos = currentPos;
 	}
@@ -249,7 +201,7 @@ void CharactorBase::CollisionCapsule(void)
 		// 移動後の位置を設定
 		transform_.prevPos = startPos;
 		transform_.pos = VAdd(startPos, movePow_);
-		
+
 		// 登録されている衝突物を全てチェック
 		for (const auto& hitCol : hitColliders_)
 		{
@@ -266,7 +218,7 @@ void CharactorBase::CollisionCapsule(void)
 	}
 }
 
-void CharactorBase::DrawShadow(void)
+void ItemBase::DrawShadow(void)
 {
 
 	int i, j;
@@ -281,8 +233,8 @@ void CharactorBase::DrawShadow(void)
 	// テクスチャアドレスモードを CLAMP にする( テクスチャの端より先は端のドットが延々続く )
 	SetTextureAddressMode(DX_TEXADDRESS_CLAMP);
 
-	// プレイヤーの直下に存在する地面のポリゴンを取得
-	HitResDim = MV1CollCheck_Capsule(stage_, -1,transform_.pos, VAdd(transform_.pos, VGet(0.0f, -PLAYER_SHADOW_HEIGHT, 0.0f)), PLAYER_SHADOW_SIZE);
+	// アイテムの直下に存在する地面のポリゴンを取得
+	HitResDim = MV1CollCheck_Capsule(stage_, -1, transform_.pos, VAdd(transform_.pos, VGet(0.0f, -ITEM_SHADOW_HEIGHT, 0.0f)), ITEM_SHADOW_SIZE);
 
 	// 頂点データで変化が無い部分をセット
 	Vertex[0].dif = GetColorU8(255, 255, 255, 255);
@@ -311,22 +263,22 @@ void CharactorBase::DrawShadow(void)
 		Vertex[0].dif.a = 0;
 		Vertex[1].dif.a = 0;
 		Vertex[2].dif.a = 0;
-		if (HitRes->Position[0].y > transform_.pos.y - PLAYER_SHADOW_HEIGHT)
-			Vertex[0].dif.a = 128 * (1.0f - fabs(HitRes->Position[0].y - transform_.pos.y) / PLAYER_SHADOW_HEIGHT);
+		if (HitRes->Position[0].y > transform_.pos.y - ITEM_SHADOW_HEIGHT)
+			Vertex[0].dif.a = 128 * (1.0f - fabs(HitRes->Position[0].y - transform_.pos.y) / ITEM_SHADOW_HEIGHT);
 
-		if (HitRes->Position[1].y > transform_.pos.y - PLAYER_SHADOW_HEIGHT)
-			Vertex[1].dif.a = 128 * (1.0f - fabs(HitRes->Position[1].y - transform_.pos.y) / PLAYER_SHADOW_HEIGHT);
+		if (HitRes->Position[1].y > transform_.pos.y - ITEM_SHADOW_HEIGHT)
+			Vertex[1].dif.a = 128 * (1.0f - fabs(HitRes->Position[1].y - transform_.pos.y) / ITEM_SHADOW_HEIGHT);
 
-		if (HitRes->Position[2].y > transform_.pos.y - PLAYER_SHADOW_HEIGHT)
-			Vertex[2].dif.a = 128 * (1.0f - fabs(HitRes->Position[2].y - transform_.pos.y) / PLAYER_SHADOW_HEIGHT);
+		if (HitRes->Position[2].y > transform_.pos.y - ITEM_SHADOW_HEIGHT)
+			Vertex[2].dif.a = 128 * (1.0f - fabs(HitRes->Position[2].y - transform_.pos.y) / ITEM_SHADOW_HEIGHT);
 
 		// ＵＶ値は地面ポリゴンとプレイヤーの相対座標から割り出す
-		Vertex[0].u = (HitRes->Position[0].x - transform_.pos.x) / (PLAYER_SHADOW_SIZE * 2.0f) + 0.5f;
-		Vertex[0].v = (HitRes->Position[0].z - transform_.pos.z) / (PLAYER_SHADOW_SIZE * 2.0f) + 0.5f;
-		Vertex[1].u = (HitRes->Position[1].x - transform_.pos.x) / (PLAYER_SHADOW_SIZE * 2.0f) + 0.5f;
-		Vertex[1].v = (HitRes->Position[1].z - transform_.pos.z) / (PLAYER_SHADOW_SIZE * 2.0f) + 0.5f;
-		Vertex[2].u = (HitRes->Position[2].x - transform_.pos.x) / (PLAYER_SHADOW_SIZE * 2.0f) + 0.5f;
-		Vertex[2].v = (HitRes->Position[2].z - transform_.pos.z) / (PLAYER_SHADOW_SIZE * 2.0f) + 0.5f;
+		Vertex[0].u = (HitRes->Position[0].x - transform_.pos.x) / (ITEM_SHADOW_SIZE * 2.0f) + 0.5f;
+		Vertex[0].v = (HitRes->Position[0].z - transform_.pos.z) / (ITEM_SHADOW_SIZE * 2.0f) + 0.5f;
+		Vertex[1].u = (HitRes->Position[1].x - transform_.pos.x) / (ITEM_SHADOW_SIZE * 2.0f) + 0.5f;
+		Vertex[1].v = (HitRes->Position[1].z - transform_.pos.z) / (ITEM_SHADOW_SIZE * 2.0f) + 0.5f;
+		Vertex[2].u = (HitRes->Position[2].x - transform_.pos.x) / (ITEM_SHADOW_SIZE * 2.0f) + 0.5f;
+		Vertex[2].v = (HitRes->Position[2].z - transform_.pos.z) / (ITEM_SHADOW_SIZE * 2.0f) + 0.5f;
 
 		// 影ポリゴンを描画
 		DrawPolygon3D(Vertex, 1, imgShadow_, TRUE);
@@ -341,5 +293,3 @@ void CharactorBase::DrawShadow(void)
 	// Ｚバッファを無効にする
 	SetUseZBuffer3D(FALSE);
 }
-
-

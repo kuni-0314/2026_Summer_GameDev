@@ -21,7 +21,10 @@ public:
 		PLAYER,
 		CAMERA,
 		ENEMY,
-		VIEW_RANGE
+		VIEW_RANGE,
+		ENEMY_ATTACK,
+		ITEM
+
 	};
 	// コンストラクタ
 	ColliderBase(SHAPE shape, TAG tag, const Transform* follow);

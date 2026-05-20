@@ -3,9 +3,10 @@
 #include <functional>
 #include "../EnemyBase.h"
 class Player;
+class ItemManger;
 
 
-class EnemyRat: public EnemyBase
+class EnemyRat : public EnemyBase
 {
 public:
 	// アニメーション種別
@@ -13,6 +14,9 @@ public:
 	{
 		IDLE,
 		WALK,
+		ATTACK,
+		END,
+		HIT
 	};
 
 	// 状態
@@ -22,13 +26,18 @@ public:
 		THINK,
 		IDLE,
 		WANDER,
+		ATTACK,
+		HIT,
+		DIE,
 		END
 	};
 
 	// コンストラクタ
-	EnemyRat(const EnemyBase::EnemyData& data,Player* player);
+	EnemyRat(const EnemyBase::EnemyData& data, Player* player);
 	// デストラクタ
 	~EnemyRat(void) override;
+
+	void Draw(void) override;
 protected:
 	// リソースロード
 	void InitLoad(void) override;
@@ -43,7 +52,27 @@ protected:
 	// 更新系
 	void UpdateProcess(void) override;
 	void UpdateProcessPost(void) override;
+
+
 private:
+
+
+	
+	ItemManger* itemManager_ ;
+
+	//アニメーション登録番号
+	//待機
+	static constexpr int  ANIM_INDX_IDLE = 8; 
+	//歩く
+	static constexpr int  ANIM_INDX_WALK = 13;
+	//攻撃
+	static constexpr int  ANIM_INDX_ATTACK = 1;
+	//エンド
+	static constexpr int  ANIM_INDX_END = 6;
+	//HIT
+	static constexpr int  ANIM_INDX_HIT = 7;
+
+
 	// モデルの大きさ
 	static constexpr float SCALE = 0.5f;
 	// モデルのローカル回転
@@ -64,17 +93,27 @@ private:
 	// 衝突判定用カプセル球体半径
 	static constexpr float COL_CAPSULE_RADIUS = 20.0f;
 
+	// 衝突判定用カプセル球体半径
+	static constexpr float COL_SPHERE_RADIUS = 50.0f;
+
+	// 攻撃判定用球体
+	static constexpr VECTOR ATTACK_SPHERE_LOCAL_POS = { 0.0f, 30.0f, 120.0f };
+
+	//攻撃判定
+	bool isAttack_; 
+	//生存判定
+	bool isAlive_ = true;
+
 	// 状態
 	STATE state_;
 
+	VECTOR worldPos;
 
 
-	// 状態管理(状態遷移時初期処理)
-	/*std::map<int, std::function<void(void)>> stateChanges_;*/
 
 	// 更新ステップ
 	float step_;// 状態管理(更新ステップ)
-	//std::function<void(void)> stateUpdate_;
+
 
 	// 状態遷移
 	void ChangeState(STATE state);
@@ -82,6 +121,9 @@ private:
 	void ChangeStateThink(void);
 	void ChangeStateIdle(void);
 	void ChangeStateWander(void);
+	void ChangeStateAttack(void);
+	void ChangeStateHit(void);
+	void ChangeStateDie(void);
 	void ChangeStateEnd(void);
 
 	// 更新系
@@ -89,7 +131,12 @@ private:
 	void UpdateThink(void);
 	void UpdateIdle(void);
 	void UpdateWander(void);
+	void UpdateAttack(void);
+	void UpdateHit(void);
+	void UpdateDie(void);
 	void UpdateEnd(void);
+
+
 
 };
 

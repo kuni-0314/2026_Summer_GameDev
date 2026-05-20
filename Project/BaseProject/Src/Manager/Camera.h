@@ -45,7 +45,7 @@ public:
 
 	// カメラのX回転上限度角
 	static constexpr float LIMIT_X_UP_RAD = 40.0f * (DX_PI_F / 180.0f);
-	static constexpr float LIMIT_X_DW_RAD = 10.0f * (DX_PI_F / 180.0f);
+	static constexpr float LIMIT_X_DW_RAD = -1.0f * (DX_PI_F / 180.0f);;
 
 	// MOUSEモード用定数
 	static constexpr VECTOR MOUSE_CAMERA_LOCAL_POS = { 0.0f, 200.0f, -300.0f };

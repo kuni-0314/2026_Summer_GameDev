@@ -1,10 +1,13 @@
 #pragma once
+#include <memory>
 #include "SceneBase.h"
+class StageWall;
 class Stage;
 class SkyDome;
 class Player;
 class EnemyManager;
 class FieldManager;
+class ItemManger;
 
 class GameScene : public SceneBase
 {
@@ -29,12 +32,18 @@ public:
 	// 解放
 	void Release(void) override;
 
+	
+	ItemManger* GetItemManger() const { return itemManger_; }
+
 private:
 	Stage* stage_;
+	std::unique_ptr<StageWall> stageWall_;
 	SkyDome* skyDome_;
 	Player* player_;
 	EnemyManager* enemyManager_;
 	FieldManager* fieldManager_;
+	//アイテムマネージャー
+	ItemManger* itemManger_;
 
 	int targetEnemyId_;
 

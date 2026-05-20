@@ -5,13 +5,14 @@
 
 class ColliderBase;
 class Player;
+class GameScene;
 
 class EnemyManager
 {
 
 public:
 	// コンストラクタ
-	EnemyManager(Player* player);
+	EnemyManager(GameScene*gamescene,Player* player);
 	// デストラクタ
 	~EnemyManager(void);
 	// 初期化
@@ -38,11 +39,18 @@ public:
 	// 指定IDのエネミーの座標を取得
 	VECTOR GetEnemyPos(int id) const;
 
+
 private:
 	//プレイヤー
 	Player* player_;
+	//ゲームシーン
+	GameScene* gameScene_;
+
 	
 	// エネミー
 	std::vector<EnemyBase*> enemies_;
+
+	const ColliderBase* hitCollider_;
+
 };
 

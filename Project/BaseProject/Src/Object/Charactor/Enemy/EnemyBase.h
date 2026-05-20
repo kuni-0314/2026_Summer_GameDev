@@ -14,7 +14,6 @@ public:
 	enum class TYPE
 	{
 		RAT,
-		ROBOT
 	};
 	// エネミーデータ
 	struct EnemyData
@@ -24,6 +23,7 @@ public:
 		int hp;
 		VECTOR defaultPos;
 		float movableRange;
+		int power;
 	};
 
 	// コンストラクタ
@@ -34,19 +34,20 @@ public:
 	//描画
 	virtual void Draw(void) override;
 
+
 protected:
 
 	Player* player_;
 
 	// 種別
 	TYPE type_;
-	// HP
-	int hp_;
 
 	// 初期位置
 	const VECTOR defaultPos_;
 
 	float movableRange_;
+
+	int power_;
 
 
 
@@ -77,6 +78,8 @@ protected:
 	virtual void UpdateProcessPost(void) override {}
 	// 移動可能範囲判定
 	bool InMovableRange(void) const;
+
+
 
 
 };
