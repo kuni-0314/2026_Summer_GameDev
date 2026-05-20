@@ -10,7 +10,7 @@ public:
 
 
 	// コンストラクタ
-	HpItem(EnemyBase* enemy);
+	HpItem(void);
 	// デストラクタ
 	~HpItem(void) override;
 

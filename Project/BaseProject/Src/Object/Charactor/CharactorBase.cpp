@@ -15,7 +15,8 @@ CharactorBase::CharactorBase(void)
 	animationController_(nullptr),
 	moveDir_(AsoUtility::VECTOR_ZERO),
 	moveSpeed_(0.0f),
-	movePow_(AsoUtility::VECTOR_ZERO)
+	movePow_(AsoUtility::VECTOR_ZERO),
+	hp_(0)
 {
 }
 CharactorBase::~CharactorBase(void)
@@ -79,6 +80,22 @@ void CharactorBase::Release(void)
 	}
 	//基底クラスの開放
 	ActorBase::Release();
+}
+
+void CharactorBase::Damege(int damege)
+{
+	hp_ -= damege;
+	if (hp_ <= 0)
+	{
+		hp_ = 0;
+		// 死亡処理
+		//isAlive_ = false;
+	}
+}
+
+bool CharactorBase::IsAnimEnd()
+{
+	return animationController_->IsEnd(); 
 }
 
 void CharactorBase::DelayRotate(void)
@@ -323,3 +340,5 @@ void CharactorBase::DrawShadow(void)
 	// Ｚバッファを無効にする
 	SetUseZBuffer3D(FALSE);
 }
+
+

@@ -48,13 +48,10 @@ void GameScene::Init(void)
 	
 
 	//エネミーー
-	enemyManager_ = new EnemyManager(player_);
+	enemyManager_ = new EnemyManager(this,player_);
 	enemyManager_->Init();
 	enemyManager_->AddHitCollider(stageCollider);
 
-	const ColliderBase* enemyCollider =
-		enemyManager_->GetOwnCollider(static_cast<int>(Stage::COLLIDER_TYPE::MODEL));
-	enemyManager_->AddHitCollider(enemyCollider);
 	
 	//プレイヤーのカプセルコライダ―をエネミーに登録
 	//enemyManager_->AddHitCollider(
@@ -74,9 +71,9 @@ void GameScene::Init(void)
 	itemManger_->AddHitCollider(stageCollider);
 
 	//追従カメラ
+	sceMng_.GetCamera()->ChangeMode(Camera::MODE::MOUSE);
 	Camera* camera = sceMng_.GetCamera();
 	camera->SetFollow(&player_->GetTransform());
-	sceMng_.GetCamera()->ChangeMode(Camera::MODE::MOUSE);
 	camera->AddHitCollider(stageCollider);
 }
 

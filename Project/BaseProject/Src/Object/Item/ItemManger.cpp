@@ -16,8 +16,7 @@ ItemManger::~ItemManger(void)
 void ItemManger::Init(void)
 {
 
-
-	Create(ItemBase::TYPE::HP, enemys_);
+	//Create(ItemBase::TYPE::HP, enemys_);
 
 }
 void ItemManger::Update(void)
@@ -45,20 +44,19 @@ void ItemManger::Release(void)
 }
 void ItemManger::AddHitCollider(const ColliderBase* hitCollider)
 {
-	for (auto& item : items_)
-	{
-		item->AddHitCollider(hitCollider);
-
-	}
+	hitCollider_ = hitCollider;
 }
 
-ItemBase* ItemManger::Create(const ItemBase::TYPE& type,EnemyBase* enemy)
+ItemBase* ItemManger::Create(const ItemBase::TYPE& type, VECTOR pos , const ColliderBase* hitCollider)
 {
 	ItemBase* item = nullptr;
 	switch (type)
 	{
 	case ItemBase::TYPE::HP:
-		item = new HpItem(enemys_);
+		item = new HpItem();
+		item->Init();
+		item->SetPos(pos);
+		item->AddHitCollider(hitCollider);
 		break;
 	default:
 		break;
@@ -66,12 +64,14 @@ ItemBase* ItemManger::Create(const ItemBase::TYPE& type,EnemyBase* enemy)
 
 	if (item != nullptr)
 	{
-		item->Init();
+		
 		items_.emplace_back(item);
 	}
 
 	return item;
 }
+
+
 
 //void ItemManger::AddItem(ItemBase* item)
 //{

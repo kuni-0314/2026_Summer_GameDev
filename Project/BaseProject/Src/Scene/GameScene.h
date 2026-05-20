@@ -32,6 +32,9 @@ public:
 	// ‰ð•ú
 	void Release(void) override;
 
+	
+	ItemManger* GetItemManger() const { return itemManger_; }
+
 private:
 	Stage* stage_;
 	std::unique_ptr<StageWall> stageWall_;

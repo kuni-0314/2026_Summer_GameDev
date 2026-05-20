@@ -2,7 +2,7 @@
 #include "../Actor/ActorBase.h"
 
 class AnimationController;
-class EnemyBase;
+
 class ItemBase : public ActorBase
 {
 public:
@@ -26,7 +26,7 @@ public:
 
 
 	// コンストラクタ
-	ItemBase(EnemyBase* enemybase);
+	ItemBase();
 	// デストラクタ
 	virtual ~ItemBase(void) override;
 
@@ -37,10 +37,10 @@ public:
 
 	virtual void Release(void) override;
 
+	void SetPos(const VECTOR& pos) { transform_.pos = pos; };
+
 protected:
 
-
-	EnemyBase* enemyBase_;
 
 	// 最大落下速度
 	static constexpr float MAX_FALL_SPEED = -30.0f;

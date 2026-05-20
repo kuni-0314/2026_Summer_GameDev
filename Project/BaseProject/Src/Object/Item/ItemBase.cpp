@@ -9,13 +9,13 @@
 #include "../../Object/Collider/Capsule/ColliderCapsule.h"
 #include "../../Manager/ResourceManager.h"
 
-ItemBase::ItemBase(EnemyBase* enemybase)
+
+ItemBase::ItemBase()
 	:
-	ActorBase(),
-	enemyBase_(enemybase),
-	moveDir_(AsoUtility::VECTOR_ZERO),
-	moveSpeed_(0.0f),
-	movePow_(AsoUtility::VECTOR_ZERO)
+ActorBase(),
+moveDir_(AsoUtility::VECTOR_ZERO),
+moveSpeed_(0.0f),
+movePow_(AsoUtility::VECTOR_ZERO)
 {
 }
 ItemBase::~ItemBase(void)

@@ -34,7 +34,6 @@ public:
 	//•`‰æ
 	virtual void Draw(void) override;
 
-	void Damege(int damege);
 
 protected:
 
@@ -42,8 +41,6 @@ protected:
 
 	// í•Ê
 	TYPE type_;
-	// HP
-	int hp_;
 
 	// ‰ŠúˆÊ’u
 	const VECTOR defaultPos_;

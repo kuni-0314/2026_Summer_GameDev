@@ -42,6 +42,16 @@ public:
 
 	virtual void Release(void) override;
 
+	// ダメージ処理
+	void Damege(int damege);
+
+	// HPの取得
+	int GetHp() const { return hp_; }
+
+	void SetAlive(bool alive) { isAlive_ = alive; }
+
+	bool IsAnimEnd();
+
 protected:
 
 
@@ -74,6 +84,9 @@ protected:
 
 	// 丸影画像
 	int imgShadow_;
+
+	//体力
+	int hp_;
 
 	// リソースロード
 	virtual void InitLoad(void) override;

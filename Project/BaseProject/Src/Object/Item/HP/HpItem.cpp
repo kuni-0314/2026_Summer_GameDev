@@ -7,16 +7,9 @@
 #include "HpItem.h"
 
 
-HpItem::HpItem(EnemyBase* enemy)
-	: ItemBase(enemy)
+HpItem::HpItem()
 {
-	enemyBase_ = enemy;
-
 }
-
-//HpItem::HpItem(const VECTOR& pos)
-//{
-//}
 
 HpItem::~HpItem(void)
 {
@@ -42,7 +35,6 @@ void HpItem::InitTransform(void)
 	transform_.scl = { SCALE ,SCALE ,SCALE };
 	transform_.quaRot = Quaternion::Identity();
 	transform_.quaRotLocal = Quaternion::Euler(ROT);
-	transform_.pos = { 0,30,0 };
 	jumpPow_ = AsoUtility::VECTOR_ZERO;
 	transform_.Update();
 }

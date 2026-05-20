@@ -152,7 +152,7 @@ void EnemyRat::UpdateProcess(void)
 	if (ins->IsTrgDown(KEY_INPUT_1))
 	{
 
-		EnemyBase::Damege(1);
+		Damege(5);
 
 		if (hp_ <= 0)
 		{

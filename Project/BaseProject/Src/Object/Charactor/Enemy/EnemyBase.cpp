@@ -7,13 +7,15 @@ EnemyBase::EnemyBase(const EnemyBase::EnemyData& data,Player*player)
 	CharactorBase(),
 	player_(player),
 	type_(data.type),
-	hp_(data.hp),
+	//hp_(data.hp),
 	defaultPos_(data.defaultPos),
 	movableRange_(data.movableRange),
 	power_(data.power)
 {
 	// ‰ŠúÀ•W‚Ìİ’è
 	transform_.pos = data.defaultPos;
+
+	hp_ = data.hp;
 }
 EnemyBase::~EnemyBase(void)
 {
@@ -27,15 +29,7 @@ void EnemyBase::Draw(void)
 	//DrawSphere3D(defaultPos_, 500.0f, 16, 0x000099, 0x000099, false);
 #endif // _DEBUG
 }
-void EnemyBase::Damege(int damege)
-{
-	hp_ -= damege;
-	if (hp_ <= 0)
-	{
-		hp_ = 0;
-		// €–Sˆ—
-	}
-}
+
 bool EnemyBase::InMovableRange(void) const
 {
 	bool ret = false;

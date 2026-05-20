@@ -2,14 +2,19 @@
 #include <fstream>
 #include "../../../Application.h"
 #include "../../../Utility/AsoUtility.h"
+#include "../../../Scene/GameScene.h"
 #include "Rat/EnemyRat.h"
 #include "Robot/EnemyRobot.h"
+#include "../../Item/ItemBase.h"
+#include "../../Item/ItemManger.h"
 #include "EnemyManger.h"
 
 
 
-EnemyManager::EnemyManager(Player* player)
+
+EnemyManager::EnemyManager(GameScene* gamescene, Player* player)
 	:
+	gameScene_(gamescene),
 	player_(player)
 {
 }
@@ -19,7 +24,6 @@ EnemyManager::~EnemyManager(void)
 void EnemyManager::Init(void)
 {
 
-
 	LoadCsvData();
 
 }
@@ -28,6 +32,28 @@ void EnemyManager::Update(void)
 	for (auto& enemy : enemies_)
 	{
 		enemy->Update();
+
+		if (enemy->GetHp() <= 0 && enemy->IsAlive())
+		{
+
+			gameScene_->GetItemManger()->Create(ItemBase::TYPE::HP, enemy->GetTransform().pos,hitCollider_);
+		
+
+			enemy->SetAlive(false);
+		}
+	}
+
+	for (int j = 0; j < enemies_.size(); j++)
+	{
+		if (enemies_[j]->IsAnimEnd() && !enemies_[j]->IsAlive())
+		{
+			enemies_[j]->Release();
+			delete enemies_[j];
+			enemies_[j] = nullptr;
+			enemies_.erase(std::remove(enemies_.begin(), enemies_.end(), enemies_[j]), enemies_.end());
+
+			j--;
+		}
 	}
 }
 void EnemyManager::Draw(void)
@@ -48,6 +74,9 @@ void EnemyManager::Release(void)
 }
 void EnemyManager::AddHitCollider(const ColliderBase* hitCollider)
 {
+	
+	hitCollider_ = hitCollider;
+
 	for (auto& enemy : enemies_)
 	{
 		enemy->AddHitCollider(hitCollider);

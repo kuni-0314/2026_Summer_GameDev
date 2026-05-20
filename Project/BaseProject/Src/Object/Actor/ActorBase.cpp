@@ -7,6 +7,7 @@ ActorBase::ActorBase(void)
 	: 
 	resMng_(ResourceManager::GetInstance()),
 	scnMng_(SceneManager::GetInstance()),
+	isAlive_(true),
 	transform_()
 {
 }

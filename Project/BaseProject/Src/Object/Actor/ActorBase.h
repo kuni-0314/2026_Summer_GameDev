@@ -45,6 +45,9 @@ public:
 	// 衝突対象となるコライダをクリア
 	void ClearHitCollider(void);
 
+	// 生存状態の取得
+	bool IsAlive() const { return isAlive_; }
+
 protected:
 
 	// シングルトン参照
@@ -74,5 +77,8 @@ protected:
 
 	// 初期化後の個別処理
 	virtual void InitPost(void) = 0;
+
+	//変数
+	bool isAlive_; 
 
 };
