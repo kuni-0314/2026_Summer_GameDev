@@ -621,4 +621,56 @@ void Player::CollisionReserve(void)
 	}
 }
 
+bool Player::InSearchItem(void)
+{
+	bool ret = false;//判定結果
+
+	//player_->GetOwnCollider(static_cast<int>(CharactorBase::COLLIDER_TYPE::CAPSULE));
+
+	// 視野モデルコライダ
+	int type = static_cast<int>(COLLIDER_TYPE::CAPSULE);
+	// 視野モデルコライダが無ければ処理を抜ける
+	if (ownColliders_.count(type) == 0) return ret;
+	// 視野モデルコライダ情報
+	ColliderCapsule* capsule =
+		dynamic_cast<ColliderCapsule*>(ownColliders_.at(type));
+
+	if (capsule == nullptr) return ret;
+
+
+	//衝突情報更新
+	//MV1RefreshCollInfo(colliderModel->GetFollow()->modelId);
+
+	MV1CollCheck_Capsule(
+		capsule->GetFollow()->modelId,
+		-1,
+		capsule->GetPosTop(),
+		capsule->GetPosDown(),
+		capsule->GetRadius(),
+		-1);
+
+
+	// 登録されている衝突物を全てチェック
+	for (const auto& hitCol : hitColliders_)
+	{
+		// アイテム以外は処理を飛ばす
+		if (hitCol->GetTag() != ColliderBase::TAG::ITEM) continue;
+
+		// 派生クラスへキャスト
+		const ColliderCapsule* colliderCapsule =
+			dynamic_cast<const ColliderCapsule*>(hitCol);
+
+		if (colliderCapsule == nullptr) continue;
+
+		//モデルとカプセルの衝突判定
+
+		/*if (colliderCapsule->IsHit(get)
+		{
+			return true;
+		}*/
+	}
+
+	return ret;
+}
+
 

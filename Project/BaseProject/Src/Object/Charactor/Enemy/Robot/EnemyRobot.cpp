@@ -351,7 +351,6 @@ bool EnemyRobot::InSearchConeModel(void)
 
 	bool ret = false;//判定結果
 
-	//player_->GetOwnCollider(static_cast<int>(CharactorBase::COLLIDER_TYPE::CAPSULE));
 
 	// 視野モデルコライダ
 	int viewrangeType = static_cast<int>(COLLIDER_TYPE::VIEW_RAGE);

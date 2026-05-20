@@ -117,6 +117,9 @@ private:
 	// 衝突判定
 	void CollisionReserve(void) override;
 
+	//アイテムの回収フラグ
+	bool InSearchItem(void);
+
 	Status status_;
 	int pendingPoints_;
 	int currentGrantStatusIndex_;
