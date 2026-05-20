@@ -148,8 +148,6 @@ private:
 	void GrantStatus(int index);
 	void RevokeStatus(int index);
 
-	void ProcessAttack(void);
-
 	void InitState(void);
 
 	Status status_;

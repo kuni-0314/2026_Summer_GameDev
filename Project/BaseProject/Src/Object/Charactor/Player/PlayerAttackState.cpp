@@ -8,6 +8,13 @@ void PlayerAttackState::Enter(Player* player)
 {
 	// 攻撃アニメーション再生
 	 player->GetAnimationController()->Play(static_cast<int>(Player::ANIM_TYPE::ATTACK), false);
+
+	 if (player->IsAir())
+	 {
+		 player->SetMovePow({ 0.0f, 100.0f, 0.0f });
+	 }
+
+
 }
 
 void PlayerAttackState::Update(Player* player)

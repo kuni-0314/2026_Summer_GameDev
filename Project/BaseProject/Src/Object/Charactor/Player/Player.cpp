@@ -102,23 +102,6 @@ void Player::Update()
 
 }
 
-//void Player::Update()
-//{
-//	animationController_->Update();
-//
-//	// 移動操作
-//	ProcessMove();
-//
-//	// 移動処理
-//	transform_.pos = VAdd(transform_.pos, movePow_);
-//
-//	transform_.Update();
-//
-//	
-//}
-
-
-
 void Player::InitLoad(void)
 {
 	//基底クラスのリソースロード
@@ -180,7 +163,7 @@ void Player::InitAnimation(void)
 
 	// 攻撃アニメーション
 	animationController_->Add(static_cast<int>(ANIM_TYPE::ATTACK)
-		, 60.0f, Application::PATH_MODEL + "Player/Attack3.mv1");
+		, 40.0f, Application::PATH_MODEL + "Player/Shot.mv1");
 
 	//初期アニメーション再生
 	animationController_->Play(static_cast<int>(ANIM_TYPE::IDLE), true);
@@ -217,21 +200,6 @@ void Player::UpdateProcess(void)
 		// リスポーン
 		transform_.pos = POS_PLAYER;
 	}
-
-	//// 移動操作
-	//ProcessMove();
-
-	//// ジャンプ処理
-	//ProcessJump();
-
-	//// ジェット処理
-	//ProcessJet();
-
-	//// 
-	//ProcessAttack();
-
-	
-
 }
 
 void Player::UpdateProcessPost(void)
@@ -415,15 +383,6 @@ void Player::RevokeStatus(int index)
 		break;
 	default:
 		break;
-	}
-}
-
-void Player::ProcessAttack(void)
-{
-	auto ins = InputManager::GetInstance();
-	if (ins->IsMouseTrgDown(MOUSE_INPUT_LEFT))
-	{
-		jumpPow_ = VAdd(jumpPow_, VScale(AsoUtility::DIR_U, 20.0f));
 	}
 }
 
