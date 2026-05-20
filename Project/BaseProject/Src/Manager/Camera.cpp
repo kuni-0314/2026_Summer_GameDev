@@ -18,6 +18,9 @@ Camera::Camera(void)
 	angles_(AsoUtility::VECTOR_ZERO),
 	rotY_(Quaternion::Identity()),
 	targetPos_(AsoUtility::VECTOR_ZERO),
+	targetPosGoal_(AsoUtility::VECTOR_ZERO),
+	posGoal_(AsoUtility::VECTOR_ZERO),
+	anglesGoal_(AsoUtility::VECTOR_ZERO),
 	ActorBase()
 
 {
@@ -387,9 +390,6 @@ void Camera::SetBeforeDrawMouse(void)
 
 void Camera::SetBeforeDrawTargeting(void)
 {
-	// カメラ操作(回転)
-	// ProcessRot(true);
-
 	// 注視点はGameSceneで設定済み（敵の位置）
 	debugTargetPos_ = targetPos_;
 
@@ -400,15 +400,22 @@ void Camera::SetBeforeDrawTargeting(void)
 	VECTOR toEnemy = VSub(targetPos_, playerPos);
 
 	// Y軸回転を敵の方向に向ける
-	float angleY = atan2f(toEnemy.x, toEnemy.z);
-	rotY_ = Quaternion::AngleAxis(angleY, AsoUtility::AXIS_Y);
+	float angleYGoal = atan2f(toEnemy.x, toEnemy.z);
+	
+	// 角度をイージング
+	angles_.y = LerpAngle(angles_.y, angleYGoal, EASING_RATE_ANGLE);
+	
+	rotY_ = Quaternion::AngleAxis(angles_.y, AsoUtility::AXIS_Y);
 
 	// Y軸 + X軸回転
 	transform_.quaRot = rotY_.Mult(Quaternion::AngleAxis(angles_.x, AsoUtility::AXIS_X));
 
-	// カメラ位置をプレイヤーの後ろ上方に配置
+	// カメラ位置の目標を計算
 	VECTOR localPos = transform_.quaRot.PosAxis(TARGETING_CAMERA_LOCAL_POS);
-	transform_.pos = VAdd(playerPos, localPos);
+	posGoal_ = VAdd(playerPos, localPos);
+	
+	// カメラ位置をイージング
+	transform_.pos = LerpVector(transform_.pos, posGoal_, EASING_RATE_POS);
 
 	// カメラの上方向
 	transform_.quaRot.GetUp();
@@ -493,11 +500,8 @@ void Camera::Collision(void)
 		transform_.pos =
 			VAdd(hitPoly.HitPosition,
 				VScale(dirToTarget, COLLISION_BACK_DIS));
-
-
+	
 #pragma region 球体の衝突で押し戻す
-
-
 		// カメラ位置の球体コライダ
 		int typeSphere = static_cast<int>(COLLIDER_TYPE::SPHERE);
 		
@@ -638,4 +642,25 @@ void Camera::RotMouse(bool isLimit)
 	// マウスカーソルを画面中央に戻す
 	SetMousePoint(centerX, centerY);
 
+}
+
+
+// イージング処理の実装を追加（ファイル末尾に追加）
+VECTOR Camera::LerpVector(const VECTOR& current, const VECTOR& target, float rate)
+{
+	VECTOR result;
+	result.x = current.x + (target.x - current.x) * rate;
+	result.y = current.y + (target.y - current.y) * rate;
+	result.z = current.z + (target.z - current.z) * rate;
+	return result;
+}
+
+float Camera::LerpAngle(float current, float target, float rate)
+{
+	// 角度の差分を-π～πの範囲に正規化
+	float diff = target - current;
+	while (diff > DX_PI_F) diff -= DX_TWO_PI_F;
+	while (diff < -DX_PI_F) diff += DX_TWO_PI_F;
+	
+	return current + diff * rate;
 }

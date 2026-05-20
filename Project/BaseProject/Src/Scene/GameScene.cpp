@@ -71,10 +71,11 @@ void GameScene::Init(void)
 	itemManger_->AddHitCollider(stageCollider);
 
 	//’Ç]ƒJƒƒ‰
-	sceMng_.GetCamera()->ChangeMode(Camera::MODE::MOUSE);
+	sceMng_.GetCamera()->ChangeMode(Camera::MODE::TARGETING);
 	Camera* camera = sceMng_.GetCamera();
 	camera->SetFollow(&player_->GetTransform());
 	camera->AddHitCollider(stageCollider);
+	camera->SetTargetPos(enemyManager_->GetEnemyPos(1));
 }
 
 void GameScene::Update(void)
@@ -97,8 +98,8 @@ void GameScene::Update(void)
 	if (ins->IsTrgDown(KEY_INPUT_LEFT) && targetEnemyId_ > 0) targetEnemyId_--;
 	if (ins->IsTrgDown(KEY_INPUT_RIGHT)) targetEnemyId_++;
 
-	//targetPos_ = enemyManager_->GetEnemyPos(targetEnemyId_);
-	//SceneManager::GetInstance().GetCamera()->SetTargetPos(targetPos_);
+	targetPos_ = enemyManager_->GetEnemyPos(targetEnemyId_);
+	SceneManager::GetInstance().GetCamera()->SetTargetPos(targetPos_);
 }
 
 void GameScene::Draw(void)

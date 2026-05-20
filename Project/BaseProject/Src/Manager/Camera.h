@@ -53,6 +53,11 @@ public:
 	// TARGETINGモード用定数
 	static constexpr VECTOR TARGETING_CAMERA_LOCAL_POS = { 150.0f, 200.0f, -300.0f };
 	
+	// イージング定数
+	static constexpr float EASING_RATE_POS = 0.1f;			// 位置のイージング速度
+	static constexpr float EASING_RATE_TARGET = 0.15f;		// 注視点のイージング速度
+	static constexpr float EASING_RATE_ANGLE = 0.08f;		// 角度のイージング速度
+
 	// カメラモード
 	enum class MODE
 	{
@@ -151,6 +156,11 @@ private:
 	// 注視点
 	VECTOR targetPos_;
 
+	// イージング用の目標値
+	VECTOR targetPosGoal_;		// 注視点の目標位置
+	VECTOR posGoal_;			// カメラ位置の目標
+	VECTOR anglesGoal_;			// カメラ角度の目標
+
 	
 	// カメラを初期位置に戻す
 	void SetDefault(void);
@@ -180,5 +190,9 @@ private:
 
 	// 衝突判定
 	void Collision(void);
+
+	// イージング処理
+	VECTOR LerpVector(const VECTOR& current, const VECTOR& target, float rate);
+	float LerpAngle(float current, float target, float rate);
 
 };
