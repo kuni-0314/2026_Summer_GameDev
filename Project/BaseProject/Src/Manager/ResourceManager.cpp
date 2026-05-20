@@ -73,10 +73,6 @@ void ResourceManager::Init(void)
 	res = new RES(RES_T::IMG, PATH_IMG + "Blocks/RedBlock.png");
 	resourcesMap_.emplace(SRC::CELL_RED, res);
 
-<<<<<<< HEAD
-	res = new RES(RES_T::MODEL, PATH_MDL + "Stage/Stage/Stage.mv1");
-	resourcesMap_.emplace(SRC::MODEL_STAGE_1, res);
-=======
 	//ƒQ[ƒ€ƒXƒe[ƒW
 	res = new RES(RES_T::MODEL, PATH_MDL + "Stage/MainStage/GameStage/GameStage.mv1");
 	resourcesMap_.emplace(SRC::BATTLE_STAGE, res);	//map‚É“o˜^
@@ -88,7 +84,6 @@ void ResourceManager::Init(void)
 	//ƒQ[ƒ€ƒXƒe[ƒW
 	res = new RES(RES_T::MODEL, PATH_MDL + "Item/HpItem.mv1");
 	resourcesMap_.emplace(SRC::ITEM_HP, res);	//map‚É“o˜^
->>>>>>> origin/ITEM
 }
 
 void ResourceManager::Release(void)

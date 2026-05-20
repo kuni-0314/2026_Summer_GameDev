@@ -62,34 +62,7 @@ public:
 	float GetJetTime(void) const { return jetTime_; }
 	void SetJetTime(const float time) { jetTime_ = time; }
 
-<<<<<<< HEAD
-=======
-	VECTOR GetPos() const { return transform_.pos; }
 
-protected:
-
-	// リソースロード
-	void InitLoad(void) override;
-
-	// 大きさ、回転、座標の初期化
-	void InitTransform(void) override;
-
-	// 衝突判定の初期化
-	void InitCollider(void) override;
-
-	// アニメーションの初期化
-	void InitAnimation(void) override;
-
-	// 初期化後の個別処理
-	void InitPost(void) override;
-
-	//更新系
-	virtual void UpdateProcess(void) override;
-	virtual void UpdateProcessPost(void) override;
-
-
-private:
->>>>>>> origin/ITEM
 	//スケール
 	static constexpr float SCL_PlAYER = 1.0f;
 	//初期座標
@@ -149,6 +122,7 @@ private:
 	static constexpr int MAX_SLIDE_ITERATIONS = 4;
 	// スライド判定用の最小移動量
 	static constexpr float MIN_MOVE_THRESHOLD = 0.01f;
+
 protected:
 
 	// リソースロード
@@ -170,13 +144,13 @@ protected:
 	virtual void UpdateProcess(void) override;
 	virtual void UpdateProcessPost(void) override;
 
-
 private:
 
 	void GrantStatus(int index);
 	void RevokeStatus(int index);
 
 	void InitState(void);
+
 
 	Status status_;
 	int pendingPoints_;

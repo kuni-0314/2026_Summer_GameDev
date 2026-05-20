@@ -45,7 +45,6 @@
     <ClCompile Include="Src\Utility\MatrixUtility.cpp" />
     <ClCompile Include="Src\Object\Actor\Stage\Stage.cpp" />
     <ClCompile Include="Src\Object\Actor\UI\UIBase.cpp" />
-<<<<<<< HEAD
     <ClCompile Include="Src\Object\Charactor\Player\PlayerState.cpp" />
     <ClCompile Include="Src\Object\Charactor\Player\PlayerIdleState.cpp" />
     <ClCompile Include="Src\Object\Charactor\Player\PlayerRunState.cpp" />
@@ -55,13 +54,11 @@
     <ClCompile Include="Src\Object\Charactor\Player\PlayerFallState.cpp" />
     <ClCompile Include="Src\Object\Charactor\Player\PlayerAirborneState.cpp" />
     <ClCompile Include="Src\Object\Charactor\Player\PlayerAttackState.cpp" />
-=======
     <ClCompile Include="Src\Object\SkillBase.cpp" />
     <ClCompile Include="Src\Object\Actor\Stage\StageWall.cpp" />
     <ClCompile Include="Src\Object\Item\ItemBase.cpp" />
     <ClCompile Include="Src\Object\Item\ItemManger.cpp" />
     <ClCompile Include="Src\Object\Item\HP\HpItem.cpp" />
->>>>>>> origin/ITEM
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Src\Object\Skill\SkillManger.h" />
@@ -108,7 +105,6 @@
     <ClInclude Include="Src\Utility\MatrixUtility.h" />
     <ClInclude Include="Src\Object\Actor\Stage\Stage.h" />
     <ClInclude Include="Src\Object\Actor\UI\UIBase.h" />
-<<<<<<< HEAD
     <ClInclude Include="Src\Object\Charactor\Player\PlayerState.h" />
     <ClInclude Include="Src\Object\Charactor\Player\PlayerIdleState.h" />
     <ClInclude Include="Src\Object\Charactor\Player\PlayerRunState.h" />
@@ -118,12 +114,10 @@
     <ClInclude Include="Src\Object\Charactor\Player\PlayerFallState.h" />
     <ClInclude Include="Src\Object\Charactor\Player\PlayerAirborneState.h" />
     <ClInclude Include="Src\Object\Charactor\Player\PlayerAttackState.h" />
-=======
     <ClInclude Include="Src\Object\SkillBase.h" />
     <ClInclude Include="Src\Object\Actor\Stage\StageWall.h" />
     <ClInclude Include="Src\Object\Item\ItemBase.h" />
     <ClInclude Include="Src\Object\Item\ItemManger.h" />
     <ClInclude Include="Src\Object\Item\HP\HpItem.h" />
->>>>>>> origin/ITEM
   </ItemGroup>
 </Project>

@@ -49,10 +49,10 @@ private:
 	Transform mainStage_;
 
 	// 除外フレーム名称
-	const std::vector<std::string> EXCLUDE_FRAME_NAMES = { "Mush", "Grass",};
+	const std::vector<std::string> EXCLUDE_FRAME_NAMES = { "Mush", "Grass", };
 
 	// 対象フレーム
-	const std::vector<std::string> TARGET_FRAME_NAMES = {"Ground",};
+	const std::vector<std::string> TARGET_FRAME_NAMES = { "Ground", };
 
 
 };

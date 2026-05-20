@@ -24,17 +24,16 @@ void Stage::Update()
 
 void Stage::InitLoad(void)
 {
-	transform_.SetModel(resMng_.Load(ResourceManager::SRC::MAIN_STAGE).handleId_);
-	//transform_.SetModel(resMng_.Load(ResourceManager::SRC::MODEL_STAGE_1).handleId_);
+	transform_.SetModel(resMng_.Load(ResourceManager::SRC::BATTLE_STAGE).handleId_);
 }
 
 void Stage::InitTransform(void)
 {
 
-	transform_.scl = { SCL_MAIN_STAGE ,SCL_MAIN_STAGE ,SCL_MAIN_STAGE };
+	transform_.scl = { SCL_MAIN_STAGE_X, SCL_MAIN_STAGE_Y, SCL_MAIN_STAGE_Z };
 	transform_.quaRot = Quaternion::Identity();
 	transform_.quaRotLocal = Quaternion::Identity();
-	transform_.pos =POS_MAIN_STAGE;
+	transform_.pos = POS_MAIN_STAGE;
 
 	transform_.Update();
 

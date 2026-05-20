@@ -19,7 +19,6 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-<<<<<<< HEAD
     <ClCompile Include="Src\Object\Charactor\Player\PlayerAirborneState.cpp" />
     <ClCompile Include="Src\Object\Charactor\Player\PlayerAttackState.cpp" />
     <ClCompile Include="Src\Object\Charactor\Player\PlayerFallState.cpp" />
@@ -29,12 +28,10 @@
     <ClCompile Include="Src\Object\Charactor\Player\PlayerRunState.cpp" />
     <ClCompile Include="Src\Object\Charactor\Player\PlayerIdleState.cpp" />
     <ClCompile Include="Src\Object\Charactor\Player\PlayerState.cpp" />
-=======
     <ClCompile Include="Src\Object\Item\HP\HpItem.cpp" />
     <ClCompile Include="Src\Object\Item\ItemManger.cpp" />
     <ClCompile Include="Src\Object\Item\ItemBase.cpp" />
     <ClCompile Include="Src\Object\SkillBase.cpp" />
->>>>>>> origin/ITEM
     <ClCompile Include="Src\Object\Skill\SkillManger.cpp" />
     <ClCompile Include="Src\Object\Field.cpp" />
     <ClCompile Include="Src\Object\FieldManager.cpp" />
@@ -82,7 +79,6 @@
     <ClCompile Include="Src\Object\Actor\Stage\StageWall.cpp" />
   </ItemGroup>
   <ItemGroup>
-<<<<<<< HEAD
     <ClInclude Include="Src\Object\Charactor\Player\PlayerAirborneState.h" />
     <ClInclude Include="Src\Object\Charactor\Player\PlayerAttackState.h" />
     <ClInclude Include="Src\Object\Charactor\Player\PlayerFallState.h" />
@@ -92,12 +88,10 @@
     <ClInclude Include="Src\Object\Charactor\Player\PlayerRunState.h" />
     <ClInclude Include="Src\Object\Charactor\Player\PlayerIdleState.h" />
     <ClInclude Include="Src\Object\Charactor\Player\PlayerState.h" />
-=======
     <ClInclude Include="Src\Object\Item\HP\HpItem.h" />
     <ClInclude Include="Src\Object\Item\ItemManger.h" />
     <ClInclude Include="Src\Object\Item\ItemBase.h" />
     <ClInclude Include="Src\Object\SkillBase.h" />
->>>>>>> origin/ITEM
     <ClInclude Include="Src\Object\Skill\SkillManger.h" />
     <ClInclude Include="Src\Object\Skill\SkillBase.h" />
     <ClInclude Include="Src\Object\Field.h" />

@@ -22,19 +22,10 @@ public:
 		ENEMY_RAT,
 		ENEMY_ROBOT,		//ロボット
 		VIEW_RANGE,			//敵の視野
-<<<<<<< HEAD
 		CELL_RED,			// 赤色セル
-
-		MODEL_STAGE_1,
-
-
-
-=======
-		CELL_RED,			// 赤色セル 	
 		BATTLE_STAGE,		//バトルステージ
 		BATTLE_WALL,		//ステージ壁
 		ITEM_HP,			//体力アイテム
->>>>>>> origin/ITEM
 	};
 
 	// 明示的にインステンスを生成する
