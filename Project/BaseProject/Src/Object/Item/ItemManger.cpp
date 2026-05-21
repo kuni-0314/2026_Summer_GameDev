@@ -16,7 +16,7 @@ ItemManger::~ItemManger(void)
 void ItemManger::Init(void)
 {
 
-	//Create(ItemBase::TYPE::HP, enemys_);
+	
 
 }
 void ItemManger::Update(void)

@@ -11,6 +11,7 @@
 #include "../../../Object/Collider/ColliderBase.h"
 #include "../../../Object/Collider/Line/ColliderLine.h"
 #include "../../../Object/Collider/Capsule/ColliderCapsule.h"
+#include "../../../Object/Collider/Model/ColliderModel.h"
 
 
 Player::Player(void)
@@ -143,6 +144,18 @@ void Player::InitCollider(void)
 		COL_CAPSULE_TOP_LOCAL_POS, COL_CAPSULE_DOWN_LOCAL_POS,
 		COL_CAPSULE_RADIUS);
 	ownColliders_.emplace(static_cast<int>(COLLIDER_TYPE::CAPSULE), colCapsule);
+
+
+	// DxLib側の衝突情報セットアップ
+	MV1SetupCollInfo(transform_.modelId);
+
+	// 主に壁や木などの衝突で仕様するカプセルコライダ
+	ColliderModel* colModel = new ColliderModel(ColliderBase::TAG::PLAYER, &transform_);
+	//判定の登録
+	ownColliders_.emplace(static_cast<int>(COLLIDER_TYPE::PLAYER), colModel);
+
+
+
 }
 
 void Player::InitAnimation(void)
@@ -198,11 +211,17 @@ void Player::UpdateProcess(void)
 	ProcessTmp();
 
 	
-
+	
 }
 
 void Player::UpdateProcessPost(void)
 {
+	if (InSearchItem())
+	{
+		DrawFormatString(0, 550, 0xff0000, "HIT ITEM");
+	}
+
+	
 }
 
 void Player::Draw(void)
@@ -283,6 +302,7 @@ void Player::Draw(void)
 	DrawSphere3D(lineY, 5.0f, 16, 0x00FF00, 0x00FF00, true);
 	DrawSphere3D(lineZ, 5.0f, 16, 0x0000FF, 0x0000FF, true);
 	DrawSphere3D(rot, 5.0f, 16, 0xFFFF00, 0xFFFF00, true);
+
 }
 
 void Player::GrantStatus(int index)
@@ -625,35 +645,26 @@ bool Player::InSearchItem(void)
 {
 	bool ret = false;//判定結果
 
-	//player_->GetOwnCollider(static_cast<int>(CharactorBase::COLLIDER_TYPE::CAPSULE));
 
-	// 視野モデルコライダ
-	int type = static_cast<int>(COLLIDER_TYPE::CAPSULE);
-	// 視野モデルコライダが無ければ処理を抜ける
-	if (ownColliders_.count(type) == 0) return ret;
-	// 視野モデルコライダ情報
-	ColliderCapsule* capsule =
-		dynamic_cast<ColliderCapsule*>(ownColliders_.at(type));
+	// プレイヤーモデルコライダ
+	int playerType = static_cast<int>(COLLIDER_TYPE::PLAYER);
+	// プレイヤーモデルコライダが無ければ処理を抜ける
+	if (ownColliders_.count(playerType) == 0) return ret;
+	// プレイヤーモデルコライダ情報
+	ColliderModel* colliderModel =
+		dynamic_cast<ColliderModel*>(ownColliders_.at(playerType));
 
-	if (capsule == nullptr) return ret;
+	if (colliderModel == nullptr) return ret;
 
 
 	//衝突情報更新
-	//MV1RefreshCollInfo(colliderModel->GetFollow()->modelId);
-
-	MV1CollCheck_Capsule(
-		capsule->GetFollow()->modelId,
-		-1,
-		capsule->GetPosTop(),
-		capsule->GetPosDown(),
-		capsule->GetRadius(),
-		-1);
+	MV1RefreshCollInfo(colliderModel->GetFollow()->modelId);
 
 
 	// 登録されている衝突物を全てチェック
 	for (const auto& hitCol : hitColliders_)
 	{
-		// アイテム以外は処理を飛ばす
+		// プレイヤーモデル以外は処理を飛ばす
 		if (hitCol->GetTag() != ColliderBase::TAG::ITEM) continue;
 
 		// 派生クラスへキャスト
@@ -662,13 +673,14 @@ bool Player::InSearchItem(void)
 
 		if (colliderCapsule == nullptr) continue;
 
-		//モデルとカプセルの衝突判定
+		//モデルとカプセルの諸突判定
 
-		/*if (colliderCapsule->IsHit(get)
+		if (colliderCapsule->IsHit(colliderModel))
 		{
 			return true;
-		}*/
+		}
 	}
+
 
 	return ret;
 }

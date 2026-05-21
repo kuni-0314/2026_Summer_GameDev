@@ -13,6 +13,7 @@ public:
 		CAPSULE,
 		SPHERE,
 		VIEW_RAGE,
+		PLAYER,
 		MAX,
 	};
 

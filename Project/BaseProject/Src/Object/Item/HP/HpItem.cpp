@@ -19,7 +19,6 @@ void HpItem::Draw(void)
 {
 	ItemBase::Draw();
 
-	DrawFormatString(0, 300, 0xffffff, "pos:%f", transform_.pos.y);
 }
 
 void HpItem::InitLoad(void)
