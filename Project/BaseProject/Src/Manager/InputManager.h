@@ -57,11 +57,13 @@ public:
 	bool IsNew(int key);		// キーが押されているか
 	bool IsTrgDown(int key);	// キーが今押されたか
 	bool IsTrgUp(int key);		// キーは離されたか
+	bool IsHold(int key, int holdTime);	// キーが指定時間以上押されているか
 
 	void ClearMouse(void);				// 判定を行うマウスボタンをクリア
 	bool IsMouseNew(int button);		// マウスボタンが押されているか
 	bool IsMouseTrgDown(int button);	// マウスボタンが今押されたか
 	bool IsMouseTrgUp(int button);		// マウスボタンは離されたか
+	bool IsMouseHold(int button, int holdTime);	// マウスボタンが指定時間以上押されているか
 	int GetMouseWheel(void);			// マウスホイールの回転量を取得
 	void GetMousePos(int& x, int& y);	// マウスの座標を取得
 
@@ -71,6 +73,8 @@ public:
 	bool IsGamepadNew(PadInput button, int gamepadIndex);		// ゲームパッドボタンが押されているか
 	bool IsGamepadTrgDown(PadInput button, int gamepadIndex);	// ゲームパッドボタンが今押されたか
 	bool IsGamepadTrgUp(PadInput button, int gamepadIndex);		// ゲームパッドボタンは離されたか
+	bool IsGamepadHold(int button, int gamepadIndex, int holdTime);	// ゲームパッドボタンが指定時間以上押されているか
+	bool IsGamepadHold(PadInput button, int gamepadIndex, int holdTime);	// ゲームパッドボタンが指定時間以上押されているか
 
 	void GetStick(int gamepadIndex, short& leftX, short& leftY, short& rightX, short& rightY);	// スティックの値を取得
 	void GetLeftStick(int gamepadIndex, short& x, short& y);	// 左スティックの値を取得
@@ -121,6 +125,7 @@ private:
 		bool keyNew;
 		bool keyTrgDown;
 		bool keyTrgUp;
+		int holdTime;
 	};
 
 	// マウスボタンの入力状態の情報
@@ -131,6 +136,7 @@ private:
 		bool mouseNew;
 		bool mouseTrgDown;
 		bool mouseTrgUp;
+		int holdTime;
 	};
 
 	// パッドの状態
@@ -144,6 +150,7 @@ private:
 			bool buttonNew;
 			bool buttonTrgDown;
 			bool buttonTrgUp;
+			int holdTime;
 		};
 		ButtonInfo inputs[static_cast<int>(PadInput::MAX)];
 		short AKeyLX;

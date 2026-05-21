@@ -191,6 +191,50 @@ bool InputManager::IsTrgUp(int key)
 	return keyInfos_[key].keyTrgUp;
 }
 
+// キーが指定時間以上押されているか
+bool InputManager::IsHold(int key, int holdTime)
+{
+	auto it = keyInfos_.find(key);
+	if (it == keyInfos_.end()) return false;
+	return it->second.keyNew && it->second.holdTime >= holdTime;
+}
+
+// マウスボタンが指定時間以上押されているか
+bool InputManager::IsMouseHold(int button, int holdTime)
+{
+	auto it = mouseInfos_.find(button);
+	if (it == mouseInfos_.end()) return false;
+	return it->second.mouseNew && it->second.holdTime >= holdTime;
+}
+
+// ゲームパッドボタンが指定時間以上押されているか（int版）
+bool InputManager::IsGamepadHold(int button, int gamepadIndex, int holdTime)
+{
+	if (gamepadIndex < 0 || gamepadIndex >= GAMEPAD_NUM_MAX) return false;
+	
+	for (int i = 0; i < static_cast<int>(PadInput::MAX); i++)
+	{
+		if (gamepadInfos_[gamepadIndex].inputs[i].button == button)
+		{
+			return gamepadInfos_[gamepadIndex].inputs[i].buttonNew && 
+			       gamepadInfos_[gamepadIndex].inputs[i].holdTime >= holdTime;
+		}
+	}
+	return false;
+}
+
+// ゲームパッドボタンが指定時間以上押されているか（PadInput版）
+bool InputManager::IsGamepadHold(PadInput button, int gamepadIndex, int holdTime)
+{
+	if (gamepadIndex < 0 || gamepadIndex >= GAMEPAD_NUM_MAX) return false;
+	
+	int index = static_cast<int>(button);
+	if (index < 0 || index >= static_cast<int>(PadInput::MAX)) return false;
+	
+	return gamepadInfos_[gamepadIndex].inputs[index].buttonNew && 
+	       gamepadInfos_[gamepadIndex].inputs[index].holdTime >= holdTime;
+}
+
 // 判定を行うマウスボタンをクリア
 void InputManager::ClearMouse(void)
 {
