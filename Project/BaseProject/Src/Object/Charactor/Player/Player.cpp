@@ -219,13 +219,15 @@ void Player::Draw(void)
 	int lineHeight = 25;
 
 	// 背景描画(半透明の黒)
-	SetDrawBlendMode(DX_BLENDMODE_ALPHA, 180);
-	DrawBox(x - 10, y - 10, x + 250, y + lineHeight * 11 + 10, 0x000000, TRUE);
-	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
+	//SetDrawBlendMode(DX_BLENDMODE_ALPHA, 180);
+	//DrawBox(x - 10, y - 10, x + 250, y + lineHeight * 11 + 10, 0x000000, TRUE);
+	//SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
 
 	// タイトル
 	DrawFormatString(x, y, 0xFFFFFF, "=== Player Status ===");
 	y += lineHeight;
+
+	currentState_->Draw(this);
 
 	// ステータス情報を描画（選択中の項目を黄色でハイライト）
 	//unsigned int color = 0xFFFFFF;
@@ -261,7 +263,7 @@ void Player::Draw(void)
 	//DrawFormatString(x, y, color, "PendingPoints   : %d", pendingPoints_);
 
 	//y += lineHeight;
-	//DrawFormatString(x, y, color, "jumpPow   : %f.", jumpPow_.y);
+	DrawFormatString(x, y, 0xffffff, "jumpPow   : %f.", jumpPow_.y);
 
 	// プレイヤーの周りを回転するオブジェクトの描画
 	static float angle = 0.0f;

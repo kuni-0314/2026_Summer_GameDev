@@ -6,9 +6,11 @@ class PlayerAttackState : public PlayerState
 public:
 	void Enter(Player* player) override;
 	void Update(Player* player) override;
+	void Draw(Player* player) override;
 
 	enum class ATTACK_TYPE
 	{
+		NONE,
 		NORMAL1,
 		NORMAL2,
 		NORMAL3,
@@ -45,4 +47,7 @@ public:
 private:
 	// UŒ‚‚Ìí—Ş
 	ATTACK_TYPE attackType_;
+
+	// –½–¼–¢’è
+	bool tmp_;
 };

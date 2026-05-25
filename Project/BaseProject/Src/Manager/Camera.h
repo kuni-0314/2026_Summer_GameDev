@@ -54,7 +54,7 @@ public:
 	static constexpr VECTOR TARGETING_CAMERA_LOCAL_POS = { 150.0f, 200.0f, -300.0f };
 	
 	// イージング定数
-	static constexpr float EASING_RATE_POS = 0.1f;			// 位置のイージング速度
+	static constexpr float EASING_RATE_POS = 0.2f;			// 位置のイージング速度
 	static constexpr float EASING_RATE_TARGET = 0.15f;		// 注視点のイージング速度
 	static constexpr float EASING_RATE_ANGLE = 0.08f;		// 角度のイージング速度
 
