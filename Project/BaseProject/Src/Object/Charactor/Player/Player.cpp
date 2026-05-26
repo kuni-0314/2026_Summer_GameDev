@@ -108,6 +108,16 @@ void Player::Update()
 
 
 
+void Player::HeleHp(const int recovery)
+{
+	hp_ += recovery;
+
+	if (hp_ >= DEFAULT_HP_MAX)
+	{
+		hp_ = DEFAULT_HP_MAX;
+	}
+}
+
 void Player::InitLoad(void)
 {
 	//基底クラスのリソースロード
@@ -194,6 +204,8 @@ void Player::InitPost(void)
 	status_.luck = DEFAULT_LUCK;
 	currentGrantStatusIndex_ = 4;
 	pendingPoints_ = 30;
+
+	hp_ = DEFAULT_HP;
 }
 
 void Player::UpdateProcess(void)
@@ -216,10 +228,7 @@ void Player::UpdateProcess(void)
 
 void Player::UpdateProcessPost(void)
 {
-	if (InSearchItem())
-	{
-		DrawFormatString(0, 550, 0xff0000, "HIT ITEM");
-	}
+
 
 	
 }
@@ -236,45 +245,34 @@ void Player::Draw(void)
 	int y = 20;
 	int lineHeight = 25;
 
-	// 背景描画(半透明の黒)
-	SetDrawBlendMode(DX_BLENDMODE_ALPHA, 180);
-	DrawBox(x - 10, y - 10, x + 250, y + lineHeight * 11 + 10, 0x000000, TRUE);
-	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
-
-	// タイトル
-	DrawFormatString(x, y, 0xFFFFFF, "=== Player Status ===");
-	y += lineHeight;
-
-	// ステータス情報を描画（選択中の項目を黄色でハイライト）
+	//// 背景描画(半透明の黒)
+	//SetDrawBlendMode(DX_BLENDMODE_ALPHA, 180);
+	//DrawBox(x - 10, y - 10, x + 250, y + lineHeight * 11 + 10, 0x000000, TRUE);
+	//SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
+	//// タイトル
+	//DrawFormatString(x, y, 0xFFFFFF, "=== Player Status ===");
+	//y += lineHeight;
+	//// ステータス情報を描画（選択中の項目を黄色でハイライト）
 	unsigned int color = 0xFFFFFF;
-	unsigned int highlightColor = 0xFFFF00;
-
-	DrawFormatString(x, y, color, "Level  : %d", status_.level);
-	y += lineHeight;
-
-	DrawFormatString(x, y, (currentGrantStatusIndex_ == 2) ? highlightColor : color, "HP     : %d", status_.hp);
-	y += lineHeight;
-
-	DrawFormatString(x, y, (currentGrantStatusIndex_ == 3) ? highlightColor : color, "MP     : %d", status_.mp);
-	y += lineHeight;
-
-	DrawFormatString(x, y, (currentGrantStatusIndex_ == 4) ? highlightColor : color, "PhysAtk: %d", status_.physAtk);
-	y += lineHeight;
-
-	DrawFormatString(x, y, (currentGrantStatusIndex_ == 5) ? highlightColor : color, "PhysDef: %d", status_.physDef);
-	y += lineHeight;
-
-	DrawFormatString(x, y, (currentGrantStatusIndex_ == 6) ? highlightColor : color, "MagicAtk: %d", status_.magicAtk);
-	y += lineHeight;
-
-	DrawFormatString(x, y, (currentGrantStatusIndex_ == 7) ? highlightColor : color, "MagicDef: %d", status_.magicDef);
-	y += lineHeight;
-
-	DrawFormatString(x, y, (currentGrantStatusIndex_ == 8) ? highlightColor : color, "Wisdom : %d", status_.wisdom);
-	y += lineHeight;
-
-	DrawFormatString(x, y, (currentGrantStatusIndex_ == 9) ? highlightColor : color, "Luck   : %d", status_.luck);
-	y += lineHeight;
+	//unsigned int highlightColor = 0xFFFF00;
+	//DrawFormatString(x, y, color, "Level  : %d", status_.level);
+	//y += lineHeight;
+	//DrawFormatString(x, y, (currentGrantStatusIndex_ == 2) ? highlightColor : color, "HP     : %d", status_.hp);
+	//y += lineHeight;
+	//DrawFormatString(x, y, (currentGrantStatusIndex_ == 3) ? highlightColor : color, "MP     : %d", status_.mp);
+	//y += lineHeight;
+	//DrawFormatString(x, y, (currentGrantStatusIndex_ == 4) ? highlightColor : color, "PhysAtk: %d", status_.physAtk);
+	//y += lineHeight;
+	//DrawFormatString(x, y, (currentGrantStatusIndex_ == 5) ? highlightColor : color, "PhysDef: %d", status_.physDef);
+	//y += lineHeight;
+	//DrawFormatString(x, y, (currentGrantStatusIndex_ == 6) ? highlightColor : color, "MagicAtk: %d", status_.magicAtk);
+	//y += lineHeight;
+	//DrawFormatString(x, y, (currentGrantStatusIndex_ == 7) ? highlightColor : color, "MagicDef: %d", status_.magicDef);
+	//y += lineHeight;
+	//DrawFormatString(x, y, (currentGrantStatusIndex_ == 8) ? highlightColor : color, "Wisdom : %d", status_.wisdom);
+	//y += lineHeight;
+	//DrawFormatString(x, y, (currentGrantStatusIndex_ == 9) ? highlightColor : color, "Luck   : %d", status_.luck);
+	//y += lineHeight;
 
 	DrawFormatString(x, y, color, "PendingPoints   : %d", pendingPoints_);
 
@@ -303,6 +301,9 @@ void Player::Draw(void)
 	DrawSphere3D(lineZ, 5.0f, 16, 0x0000FF, 0x0000FF, true);
 	DrawSphere3D(rot, 5.0f, 16, 0xFFFF00, 0xFFFF00, true);
 
+	DrawFormatString(0, 600, 0xffffff, "HP : %d", hp_);
+
+	//DrawSphere3D(transform_.pos,colPlayerRad_, 10, 0x0000ff, 0x0000ff, false);
 }
 
 void Player::GrantStatus(int index)
@@ -639,50 +640,6 @@ void Player::CollisionReserve(void)
 		
 		}
 	}
-}
-
-bool Player::InSearchItem(void)
-{
-	bool ret = false;//判定結果
-
-
-	// プレイヤーモデルコライダ
-	int playerType = static_cast<int>(COLLIDER_TYPE::PLAYER);
-	// プレイヤーモデルコライダが無ければ処理を抜ける
-	if (ownColliders_.count(playerType) == 0) return ret;
-	// プレイヤーモデルコライダ情報
-	ColliderModel* colliderModel =
-		dynamic_cast<ColliderModel*>(ownColliders_.at(playerType));
-
-	if (colliderModel == nullptr) return ret;
-
-
-	//衝突情報更新
-	MV1RefreshCollInfo(colliderModel->GetFollow()->modelId);
-
-
-	// 登録されている衝突物を全てチェック
-	for (const auto& hitCol : hitColliders_)
-	{
-		// プレイヤーモデル以外は処理を飛ばす
-		if (hitCol->GetTag() != ColliderBase::TAG::ITEM) continue;
-
-		// 派生クラスへキャスト
-		const ColliderCapsule* colliderCapsule =
-			dynamic_cast<const ColliderCapsule*>(hitCol);
-
-		if (colliderCapsule == nullptr) continue;
-
-		//モデルとカプセルの諸突判定
-
-		if (colliderCapsule->IsHit(colliderModel))
-		{
-			return true;
-		}
-	}
-
-
-	return ret;
 }
 
 

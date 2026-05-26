@@ -24,6 +24,8 @@ public:
 		NONE,
 		TITLE,
 		GAME,
+		OVER,
+		CLERA,
 		DEBUG,
 	};
 	

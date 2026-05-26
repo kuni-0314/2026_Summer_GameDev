@@ -6,16 +6,6 @@ class CharactorBase : public ActorBase
 {
 public:
 
-	// 衝突判定種別
-	enum class COLLIDER_TYPE
-	{
-		LINE,
-		CAPSULE,
-		SPHERE,
-		VIEW_RAGE,
-		PLAYER,
-		MAX,
-	};
 
 	// ステータス
 	struct Status
@@ -52,6 +42,8 @@ public:
 	void SetAlive(bool alive) { isAlive_ = alive; }
 
 	bool IsAnimEnd();
+
+	
 
 protected:
 

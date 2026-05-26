@@ -43,6 +43,7 @@ public:
 	//衝突判定の判定渡し（モデル用）
 	bool IsHit(const ColliderModel* colliderModel, 
 		bool isExclude = false, bool isTarget = false) const;
+
 protected:
 	// デバッグ用描画
 	void DrawDebug(int color) override;
@@ -53,6 +54,5 @@ private:
 	VECTOR localPosDown_;
 	// 半径
 	float radius_;
-
 
 };

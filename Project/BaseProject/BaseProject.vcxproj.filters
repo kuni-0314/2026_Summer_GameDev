@@ -50,6 +50,8 @@
     <ClCompile Include="Src\Object\Item\ItemBase.cpp" />
     <ClCompile Include="Src\Object\Item\ItemManger.cpp" />
     <ClCompile Include="Src\Object\Item\HP\HpItem.cpp" />
+    <ClCompile Include="Src\Scene\GameOverScene.cpp" />
+    <ClCompile Include="Src\Scene\ClearScene.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Src\Object\Skill\SkillManger.h" />
@@ -101,5 +103,7 @@
     <ClInclude Include="Src\Object\Item\ItemBase.h" />
     <ClInclude Include="Src\Object\Item\ItemManger.h" />
     <ClInclude Include="Src\Object\Item\HP\HpItem.h" />
+    <ClInclude Include="Src\Scene\GameOverScene.h" />
+    <ClInclude Include="Src\Scene\ClearScene.h" />
   </ItemGroup>
 </Project>

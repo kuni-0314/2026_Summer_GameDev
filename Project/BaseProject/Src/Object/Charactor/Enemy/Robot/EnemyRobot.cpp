@@ -78,7 +78,7 @@ void EnemyRobot::InitCollider(void)
 		new ColliderModel(ColliderBase::TAG::VIEW_RANGE, &viewRangeTransform_);
 	//判定の登録
 	ownColliders_.emplace(
-		static_cast<int>(COLLIDER_TYPE::VIEW_RAGE), colModel);
+		static_cast<int>(ActorBase::COLLIDER_TYPE::VIEW_RANGE), colModel);
 
 }
 void EnemyRobot::InitAnimation(void)
@@ -353,7 +353,7 @@ bool EnemyRobot::InSearchConeModel(void)
 
 
 	// 視野モデルコライダ
-	int viewrangeType = static_cast<int>(COLLIDER_TYPE::VIEW_RAGE);
+	int viewrangeType = static_cast<int>(ActorBase::COLLIDER_TYPE::VIEW_RANGE);
 	// 視野モデルコライダが無ければ処理を抜ける
 	if (ownColliders_.count(viewrangeType) == 0) return ret;
 	// 視野モデルコライダ情報
@@ -386,8 +386,6 @@ bool EnemyRobot::InSearchConeModel(void)
 			return true;
 		}
 	}
-
-
 
 	return ret;
 }

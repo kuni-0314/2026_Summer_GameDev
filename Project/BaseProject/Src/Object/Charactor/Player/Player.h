@@ -22,11 +22,14 @@ public:
 
 	void Update()override;
 
-	
-
 	void Draw(void) override;
 
 	VECTOR GetPos() const { return transform_.pos; }
+
+	float GetcollRadius_() const { return colPlayerRad_; }
+
+	//hpの回復
+	void HeleHp(const int hp);
 
 protected:
 
@@ -73,6 +76,7 @@ private:
 	// 移動速度(ダッシュ)
 	static constexpr float SPEED_DASH = 10.0f;
 
+
 	// 衝突判定用線分開始(ジャンプ時)
 	static constexpr VECTOR COL_LINE_JUMP_START_LOCAL_POS = { 0.0f, 130.0f, 0.0f };
 	// 衝突判定用線分終了(ジャンプ時)
@@ -117,17 +121,20 @@ private:
 	// 衝突判定
 	void CollisionReserve(void) override;
 
-	//アイテムの回収フラグ
-	bool InSearchItem(void);
-
 	Status status_;
 	int pendingPoints_;
 	int currentGrantStatusIndex_;
+
+
+	float colPlayerRad_ = 40.0f;
+
+
 	static constexpr int MAX_STATUS_INDEX = 9;
 
 	// 初期ステータス（後々csvにでも）4
 	static constexpr int DEFAULT_LEVEL = 1;	// 最初だからあたりまえではある
-	static constexpr int DEFAULT_HP = 25;
+	static constexpr int DEFAULT_HP = 1;
+	static constexpr int DEFAULT_HP_MAX = 25;
 	static constexpr int DEFAULT_MP = 5;
 	static constexpr int DEFAULT_PHYS_ATK = 5;
 	static constexpr int DEFAULT_PHYS_DEF = 5;
@@ -140,4 +147,3 @@ private:
 	float jetTime_;
 	static constexpr float TIME_JET = 0.2f;
 };
-
