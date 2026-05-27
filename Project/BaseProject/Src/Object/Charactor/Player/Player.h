@@ -37,8 +37,6 @@ public:
 
 	void Update(void) override;
 
-	
-
 	void Draw(void) override;
 	
 	void ChangeState(STATE newState);
@@ -62,11 +60,41 @@ public:
 	float GetJetTime(void) const { return jetTime_; }
 	void SetJetTime(const float time) { jetTime_ = time; }
 
+<<<<<<< HEAD
 	// 攻撃関連のゲッター/セッター
 	int GetAttackCoolTime(void) const { return attackCoolTime_; }
 	void SetAttackCoolTime(const int time) { attackCoolTime_ = time; }
 	int GetComboTimer(void) const { return comboTimer_; }
 	void SetComboTimer(const int time) { comboTimer_ = time; }
+=======
+	VECTOR GetPos() const { return transform_.pos; }
+
+	float GetcollRadius_() const { return colPlayerRad_; }
+
+	//hpの回復
+	void HeleHp(const int hp);
+
+protected:
+
+	// リソースロード
+	void InitLoad(void) override;
+
+	// 大きさ、回転、座標の初期化
+	void InitTransform(void) override;
+
+	// 衝突判定の初期化
+	void InitCollider(void) override;
+
+	// アニメーションの初期化
+	void InitAnimation(void) override;
+
+	// 初期化後の個別処理
+	void InitPost(void) override;
+
+	//更新系
+	virtual void UpdateProcess(void) override;
+	virtual void UpdateProcessPost(void) override;
+>>>>>>> b5726539cb54c2e14d0b2c6d13b58141af57d69e
 
 
 	//スケール
@@ -90,6 +118,7 @@ public:
 	static constexpr float SPEED_MOVE = 5.0f;
 	// 移動速度(ダッシュ)
 	static constexpr float SPEED_DASH = 10.0f;
+
 
 	// 衝突判定用線分開始(ジャンプ時)
 	static constexpr VECTOR COL_LINE_JUMP_START_LOCAL_POS = { 0.0f, 130.0f, 0.0f };
@@ -161,11 +190,17 @@ private:
 	Status status_;
 	int pendingPoints_;
 	int currentGrantStatusIndex_;
+
+
+	float colPlayerRad_ = 40.0f;
+
+
 	static constexpr int MAX_STATUS_INDEX = 9;
 
 	// 初期ステータス（後々csvにでも）4
 	static constexpr int DEFAULT_LEVEL = 1;	// 最初だからあたりまえではある
-	static constexpr int DEFAULT_HP = 25;
+	static constexpr int DEFAULT_HP = 1;
+	static constexpr int DEFAULT_HP_MAX = 25;
 	static constexpr int DEFAULT_MP = 5;
 	static constexpr int DEFAULT_PHYS_ATK = 5;
 	static constexpr int DEFAULT_PHYS_DEF = 5;
@@ -177,6 +212,7 @@ private:
 	bool isJet_;
 	float jetTime_;
 	static constexpr float TIME_JET = 0.2f;
+<<<<<<< HEAD
 
 	PlayerState* currentState_;
 	std::map<STATE, PlayerState*> states_;
@@ -186,3 +222,6 @@ private:
 	// コンボタイマー(前回の攻撃からの経過フレーム)
 	int comboTimer_;
 };
+=======
+};
+>>>>>>> b5726539cb54c2e14d0b2c6d13b58141af57d69e

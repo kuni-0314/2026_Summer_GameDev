@@ -7,15 +7,6 @@ class ItemBase : public ActorBase
 {
 public:
 
-	// 衝突判定種別
-	enum class COLLIDER_TYPE
-	{
-		LINE,
-		CAPSULE,
-		SPHERE,
-		VIEW_RAGE,
-		MAX,
-	};
 
 	//アイテム種別
 	enum class TYPE
@@ -39,6 +30,9 @@ public:
 
 	void SetPos(const VECTOR& pos) { transform_.pos = pos; };
 
+	// プレイヤーのコライダを渡して判定を行う
+	bool InSearchModel(void);
+
 protected:
 
 
@@ -57,6 +51,9 @@ protected:
 	VECTOR jumpPow_;
 	// 移動前の座標
 	VECTOR prevPos_;
+
+
+	bool isPlayer_ ;
 
 	// ジャンプの入力受付時間
 	float stepJump_;
@@ -94,8 +91,10 @@ protected:
 	// 丸影描画
 	void DrawShadow(void);
 
+	
 
 private:
+
 
 	int stage_; //影の判定用ステージハンドル
 

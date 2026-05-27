@@ -3,6 +3,7 @@
 #include <functional>
 #include "../ItemBase.h"
 class EnemyBase;
+class Player;
 
 class HpItem : public ItemBase
 {
@@ -10,11 +11,14 @@ public:
 
 
 	// コンストラクタ
-	HpItem(void);
+	HpItem(Player* player);
 	// デストラクタ
 	~HpItem(void) override;
 
+	void Update(void)override;
+
 	void Draw(void) override;
+
 protected:
 	// リソースロード
 	void InitLoad(void) override;
@@ -36,8 +40,10 @@ private:
 	//enemy
 	EnemyBase* enemys_;
 
+	Player* player_;
+
 	// モデルの大きさ
-	static constexpr float SCALE = 0.7f;
+	static constexpr float SCALE = 1.0f;
 	// モデルのローカル回転
 	static constexpr VECTOR ROT = { 0.0f, 180.0f * DX_PI_F / 180.0f, 0.0f };
 
@@ -48,7 +54,7 @@ private:
 	static constexpr VECTOR COL_LINE_END_LOCAL_POS = { 0.0f, -10.0f, 0.0f };
 
 	// 衝突判定用カプセル上部球体
-	static constexpr VECTOR COL_CAPSULE_TOP_LOCAL_POS = { 0.0f, 20.0f, 0.0f };
+	static constexpr VECTOR COL_CAPSULE_TOP_LOCAL_POS = { 0.0f, 80.0f, 0.0f };
 
 	// 衝突判定用カプセル下部球体
 	static constexpr VECTOR COL_CAPSULE_DOWN_LOCAL_POS = { 0.0f, 0.0f, 0.0f };
@@ -57,10 +63,18 @@ private:
 	static constexpr float COL_CAPSULE_RADIUS = 40.0f;
 
 	// 衝突判定用カプセル球体半径
-	static constexpr float COL_SPHERE_RADIUS = 50.0f;
+	static constexpr float COL_SPHERE_RADIUS = 80.0f;
 
-	//生存判定
-	bool isAlive_ = true;
+	//　モデル縮小スピード
+	static constexpr float SCL_REDUCTION_SPEED = 0.9f;
+	//　モデル最小サイズ
+	static constexpr float SCL_REDUCTION_MIN = 0.2f;
+
+	//回復量
+	static constexpr int  HELE_HP = 1;
+
+	bool isGet_ = false;
+
 
 	VECTOR worldPos;
 

@@ -5,6 +5,7 @@
 
 class ColliderBase;
 class EnemyBase;
+class Player;
 
 class ItemManger
 {
@@ -28,9 +29,9 @@ public:
 	void AddHitCollider(const ColliderBase* hitCollider);
 	
 	// ÉAÉCÉeÉÄê∂ê¨
-	ItemBase* Create(const ItemBase::TYPE&type, VECTOR pos, const ColliderBase* hitCollider);
+	ItemBase* Create(const ItemBase::TYPE&type, VECTOR pos, const ColliderBase* hitCollider, const int key ,const Player* player);
 
-	//void AddItem(ItemBase* item);
+
 
 private:
 
@@ -39,6 +40,8 @@ private:
 	std::vector<ItemBase*> items_;
 	//enemy
 	EnemyBase* enemys_;
+
+	Player* player_;
 	const ColliderBase* hitCollider_;
 };
 
