@@ -22,7 +22,8 @@ bool PlayerState::CheckTransitions(Player* player)
 
 	bool isTrgUp = ins->IsMouseTrgUp(MOUSE_INPUT_LEFT);
 
-	if (!player->IsJet() && isTrgUp)
+	// 攻撃入力チェック（クールタイム考慮）
+	if (!player->IsJet() && isTrgUp && player->GetAttackCoolTime() <= 0)
 	{
 		player->ChangeState(Player::STATE::ATTACK);
 		return true;

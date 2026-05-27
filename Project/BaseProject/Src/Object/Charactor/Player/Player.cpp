@@ -40,9 +40,21 @@ void Player::Update()
 	// 移動前座標を更新
 	prevPos_ = transform_.pos;
 
+	// 攻撃のクールタイムを減算
+	if (attackCoolTime_ > 0)
+	{
+		attackCoolTime_--;
+	}
+
+	// コンボタイマーを減算
+	if (comboTimer_ > 0)
+	{
+		comboTimer_--;
+	}
+
 	// 各キャラクターごとの更新処理
 	UpdateProcess();
-	// 移動方向に応じた遅延回転
+	// 移動方向に応じて徐々に回転
 	DelayRotate();
 	// 重力による移動量
 	CalcGravityPow();
