@@ -20,18 +20,20 @@ bool PlayerState::CheckTransitions(Player* player)
 		return true;
 	}
 
-<<<<<<< HEAD
+
 	if (!player->IsJet() && ins->IsMouseTrgDown(MOUSE_INPUT_LEFT))
-=======
-	bool isTrgUp = ins->IsMouseTrgUp(MOUSE_INPUT_LEFT);
-
-	// 攻撃入力チェック（クールタイム考慮）
-	if (!player->IsJet() && isTrgUp && player->GetAttackCoolTime() <= 0)
->>>>>>> main
 	{
-		player->ChangeState(Player::STATE::ATTACK);
-		return true;
-	}
 
-	return false;
+		bool isTrgUp = ins->IsMouseTrgUp(MOUSE_INPUT_LEFT);
+
+		// 攻撃入力チェック（クールタイム考慮）
+		if (!player->IsJet() && isTrgUp && player->GetAttackCoolTime() <= 0)
+
+		{
+			player->ChangeState(Player::STATE::ATTACK);
+			return true;
+		}
+
+		return false;
+	}
 }

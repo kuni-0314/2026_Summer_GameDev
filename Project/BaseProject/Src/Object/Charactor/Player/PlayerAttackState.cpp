@@ -6,7 +6,7 @@
 
 void PlayerAttackState::Enter(Player* player)
 {
-<<<<<<< HEAD
+
 	// 攻撃アニメーション再生
 	 player->GetAnimationController()->Play(static_cast<int>(Player::ANIM_TYPE::ATTACK), false);
 
@@ -16,7 +16,7 @@ void PlayerAttackState::Enter(Player* player)
 	 }
 
 
-=======
+
 	// 攻撃タイプを決定
 	attackType_ = GetNextAttackType(player);
 
@@ -46,7 +46,7 @@ void PlayerAttackState::Enter(Player* player)
 	{
 		player->SetMovePow({ 0.0f, 100.0f, 0.0f });
 	}
->>>>>>> main
+
 }
 
 void PlayerAttackState::Update(Player* player)
@@ -61,16 +61,16 @@ void PlayerAttackState::Update(Player* player)
 	if (!AsoUtility::EqualsVZero(player->GetMovePow()))
 	{
 		VECTOR movePow = player->GetMovePow();
-<<<<<<< HEAD
+
 
 		// 地上
 		movePow = VScale(movePow, Player::GROUND_MOVE_DEC_RATE);
 
 		// 十分小さくなったら完全に停止
-=======
+
 		movePow = VScale(movePow, Player::GROUND_MOVE_DEC_RATE);
 
->>>>>>> main
+
 		if (VSize(movePow) < 0.01f)
 		{
 			movePow = { 0.0f, 0.0f, 0.0f };
@@ -80,13 +80,13 @@ void PlayerAttackState::Update(Player* player)
 	}
 
 	// アニメーションが終了したらIDLE状態に戻る
-<<<<<<< HEAD
+
 	 if (player->GetAnimationController()->IsEnd())
 	 {
 	 	player->ChangeState(Player::STATE::IDLE);
 	 	return;
 	 }
-=======
+
 	if (player->GetAnimationController()->IsEnd())
 	{
 		player->ChangeState(Player::STATE::IDLE);
@@ -191,5 +191,5 @@ PlayerAttackState::ATTACK_TYPE PlayerAttackState::GetNextAttackType(Player* play
 		default: return ATTACK_TYPE::NORMAL1;
 		}
 	}
->>>>>>> main
+
 }
