@@ -19,12 +19,8 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-<<<<<<< HEAD
     <ClCompile Include="Src\Sound\SoundTable.cpp" />
     <ClCompile Include="Src\Sound\AudioManager.cpp" />
-    <ClCompile Include="Src\Scene\ClearScene.cpp" />
-    <ClCompile Include="Src\Scene\GameOverScene.cpp" />
-=======
     <ClCompile Include="Src\Object\Charactor\Player\PlayerAirborneState.cpp" />
     <ClCompile Include="Src\Object\Charactor\Player\PlayerAttackState.cpp" />
     <ClCompile Include="Src\Object\Charactor\Player\PlayerFallState.cpp" />
@@ -34,7 +30,6 @@
     <ClCompile Include="Src\Object\Charactor\Player\PlayerRunState.cpp" />
     <ClCompile Include="Src\Object\Charactor\Player\PlayerIdleState.cpp" />
     <ClCompile Include="Src\Object\Charactor\Player\PlayerState.cpp" />
->>>>>>> 9e8e87f6444a86da0c51bc240b744f528719f38d
     <ClCompile Include="Src\Object\Item\HP\HpItem.cpp" />
     <ClCompile Include="Src\Object\Item\ItemManger.cpp" />
     <ClCompile Include="Src\Object\Item\ItemBase.cpp" />
@@ -86,12 +81,8 @@
     <ClCompile Include="Src\Object\Actor\Stage\StageWall.cpp" />
   </ItemGroup>
   <ItemGroup>
-<<<<<<< HEAD
     <ClInclude Include="Src\Sound\SoundTable.h" />
     <ClInclude Include="Src\Sound\AudioManager.h" />
-    <ClInclude Include="Src\Scene\ClearScene.h" />
-    <ClInclude Include="Src\Scene\GameOverScene.h" />
-=======
     <ClInclude Include="Src\Object\Charactor\Player\PlayerAirborneState.h" />
     <ClInclude Include="Src\Object\Charactor\Player\PlayerAttackState.h" />
     <ClInclude Include="Src\Object\Charactor\Player\PlayerFallState.h" />
@@ -101,7 +92,6 @@
     <ClInclude Include="Src\Object\Charactor\Player\PlayerRunState.h" />
     <ClInclude Include="Src\Object\Charactor\Player\PlayerIdleState.h" />
     <ClInclude Include="Src\Object\Charactor\Player\PlayerState.h" />
->>>>>>> 9e8e87f6444a86da0c51bc240b744f528719f38d
     <ClInclude Include="Src\Object\Item\HP\HpItem.h" />
     <ClInclude Include="Src\Object\Item\ItemManger.h" />
     <ClInclude Include="Src\Object\Item\ItemBase.h" />
