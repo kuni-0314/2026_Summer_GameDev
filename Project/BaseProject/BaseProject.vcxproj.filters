@@ -45,15 +45,27 @@
     <ClCompile Include="Src\Utility\MatrixUtility.cpp" />
     <ClCompile Include="Src\Object\Actor\Stage\Stage.cpp" />
     <ClCompile Include="Src\Object\Actor\UI\UIBase.cpp" />
+    <ClCompile Include="Src\Object\Charactor\Player\PlayerState.cpp" />
+    <ClCompile Include="Src\Object\Charactor\Player\PlayerIdleState.cpp" />
+    <ClCompile Include="Src\Object\Charactor\Player\PlayerRunState.cpp" />
+    <ClCompile Include="Src\Object\Charactor\Player\PlayerFastRunState.cpp" />
+    <ClCompile Include="Src\Object\Charactor\Player\PlayerJumpState.cpp" />
+    <ClCompile Include="Src\Object\Charactor\Player\PlayerJetState.cpp" />
+    <ClCompile Include="Src\Object\Charactor\Player\PlayerFallState.cpp" />
+    <ClCompile Include="Src\Object\Charactor\Player\PlayerAirborneState.cpp" />
+    <ClCompile Include="Src\Object\Charactor\Player\PlayerAttackState.cpp" />
     <ClCompile Include="Src\Object\SkillBase.cpp" />
     <ClCompile Include="Src\Object\Actor\Stage\StageWall.cpp" />
     <ClCompile Include="Src\Object\Item\ItemBase.cpp" />
     <ClCompile Include="Src\Object\Item\ItemManger.cpp" />
     <ClCompile Include="Src\Object\Item\HP\HpItem.cpp" />
+<<<<<<< HEAD
+=======
     <ClCompile Include="Src\Scene\GameOverScene.cpp" />
     <ClCompile Include="Src\Scene\ClearScene.cpp" />
     <ClCompile Include="Src\Sound\AudioManager.cpp" />
     <ClCompile Include="Src\Sound\SoundTable.cpp" />
+>>>>>>> a96a32522dab24fdd18a6c86e621c2d6c8157956
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Src\Object\Skill\SkillManger.h" />
@@ -100,14 +112,26 @@
     <ClInclude Include="Src\Utility\MatrixUtility.h" />
     <ClInclude Include="Src\Object\Actor\Stage\Stage.h" />
     <ClInclude Include="Src\Object\Actor\UI\UIBase.h" />
+    <ClInclude Include="Src\Object\Charactor\Player\PlayerState.h" />
+    <ClInclude Include="Src\Object\Charactor\Player\PlayerIdleState.h" />
+    <ClInclude Include="Src\Object\Charactor\Player\PlayerRunState.h" />
+    <ClInclude Include="Src\Object\Charactor\Player\PlayerFastRunState.h" />
+    <ClInclude Include="Src\Object\Charactor\Player\PlayerJumpState.h" />
+    <ClInclude Include="Src\Object\Charactor\Player\PlayerJetState.h" />
+    <ClInclude Include="Src\Object\Charactor\Player\PlayerFallState.h" />
+    <ClInclude Include="Src\Object\Charactor\Player\PlayerAirborneState.h" />
+    <ClInclude Include="Src\Object\Charactor\Player\PlayerAttackState.h" />
     <ClInclude Include="Src\Object\SkillBase.h" />
     <ClInclude Include="Src\Object\Actor\Stage\StageWall.h" />
     <ClInclude Include="Src\Object\Item\ItemBase.h" />
     <ClInclude Include="Src\Object\Item\ItemManger.h" />
     <ClInclude Include="Src\Object\Item\HP\HpItem.h" />
+<<<<<<< HEAD
+=======
     <ClInclude Include="Src\Scene\GameOverScene.h" />
     <ClInclude Include="Src\Scene\ClearScene.h" />
     <ClInclude Include="Src\Sound\AudioManager.h" />
     <ClInclude Include="Src\Sound\SoundTable.h" />
+>>>>>>> a96a32522dab24fdd18a6c86e621c2d6c8157956
   </ItemGroup>
 </Project>

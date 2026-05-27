@@ -129,6 +129,9 @@ public:
 	// スライド補正用の最小移動量
 	static constexpr float MIN_MOVE_THRESHOLD = 0.01f;
 
+	VECTOR GetPos(void) const { return transform_.pos; }
+	float GetCollRadius(void) const { return COL_CAPSULE_RADIUS; }
+
 protected:
 
 	// リソースロード

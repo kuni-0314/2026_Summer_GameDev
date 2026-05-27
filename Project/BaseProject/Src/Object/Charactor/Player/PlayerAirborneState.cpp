@@ -19,110 +19,99 @@ void PlayerAirborneState::Update(Player* player)
 	}
 
 	// ジャンプキーが入力されているか
-
-	if (player->IsJump() && ins->IsNew(KEY_INPUT_SPACE))
+	if (player->IsJump())
 	{
-		if (player->GetStepJump() < Player::TIME_JUMP_INPUT)
+		if (ins->IsNew(KEY_INPUT_SPACE))
 		{
-			player->SetJumpPow(VAdd(player->GetJumpPow(), VScale(AsoUtility::DIR_U, Player::POW_JUMP_KEEP)));
-			player->SetStepJump(player->GetStepJump() + SceneManager::GetInstance().GetDeltaTime());
-
-			if (player->IsJump())
+			if (player->GetStepJump() < Player::TIME_JUMP_INPUT)
 			{
-				if (ins->IsNew(KEY_INPUT_SPACE))
-				{
-					if (player->GetStepJump() < Player::TIME_JUMP_INPUT)
-					{
-						player->SetJumpPow(VAdd(player->GetJumpPow(), VScale(AsoUtility::DIR_U, Player::POW_JUMP_KEEP)));
-						player->SetStepJump(player->GetStepJump() + SceneManager::GetInstance().GetDeltaTime());
-					}
-				}
-				else
-				{
-					VECTOR jumpPow = player->GetJumpPow();
-					if (jumpPow.y > 0.0f)
-					{
-						jumpPow.y *= 0.0f;
-						player->SetJumpPow(jumpPow);
-					}
-					player->SetStepJump(Player::TIME_JUMP_INPUT);
-
-				}
+				player->SetJumpPow(VAdd(player->GetJumpPow(), VScale(AsoUtility::DIR_U, Player::POW_JUMP_KEEP)));
+				player->SetStepJump(player->GetStepJump() + SceneManager::GetInstance().GetDeltaTime());
 			}
-
-			// 着地している場合は、待機状態に遷移
-			if (!player->IsJump())
+		}
+		else
+		{
+			VECTOR jumpPow = player->GetJumpPow();
+			if (jumpPow.y > 0.0f)
 			{
-				player->ChangeState(Player::STATE::IDLE);
+				jumpPow.y *= 0.0f;
+				player->SetJumpPow(jumpPow);
+			}
+			player->SetStepJump(Player::TIME_JUMP_INPUT);
+		}
+	}
+
+	// 着地している場合は、待機状態に遷移
+	if (!player->IsJump())
+	{
+		player->ChangeState(Player::STATE::IDLE);
+		return;
+	}
+
+	VECTOR dir = AsoUtility::VECTOR_ZERO;
+
+	// ゲームパッドが接続されている数で処理を分ける
+	if (GetJoypadNum() == 0)
+	{
+		// キーボード操作
+		ins->GetInputDirXZ(dir, KEY_INPUT_W, KEY_INPUT_S, KEY_INPUT_A, KEY_INPUT_D);
+	}
+
+	// 方向入力がある場合
+	if (!AsoUtility::EqualsVZero(dir))
+	{
+		// 移動速度を設定
+		float speed = 0.0f;
+		if (ins->IsNew(KEY_INPUT_LSHIFT))
+		{
+			speed = Player::SPEED_DASH;
+		}
+		else
+		{
+			speed = Player::SPEED_MOVE;
+		}
+
+		//Y軸のみのカメラ角度を取得
+		Quaternion cameraRot = SceneManager::GetInstance().GetCamera()->GetQuaRotY();
+
+		//移動方向をカメラに合わせる
+		VECTOR moveDir = Quaternion::PosAxis(cameraRot, dir);
+		player->SetMoveDir(moveDir);
+
+		// 目標速度ベクトルを計算
+		VECTOR targetVelocity = VScale(moveDir, speed);
+
+		// 現在の移動量を取得
+		VECTOR currentVelocity = player->GetMovePow();
+
+		// 目標速度に向かって徐々に加速（慣性による滑らかな加速）
+		VECTOR newVelocity = VAdd(
+			VScale(currentVelocity, Player::AIR_MOVE_DEC_RATE),
+			VScale(targetVelocity, 1.0f - Player::AIR_MOVE_DEC_RATE)
+		);
+
+		player->SetMovePow(newVelocity);
+
+		// ジャンプ中でない場合は状態を変更
+		if (!player->IsJump())
+		{
+			// ダッシュキーが入力されているか
+			if (ins->IsNew(KEY_INPUT_LSHIFT))
+			{
+				player->ChangeState(Player::STATE::FAST_RUN);
 				return;
-			}
-
-			VECTOR dir = AsoUtility::VECTOR_ZERO;
-
-			// ゲームパッドが接続されている数で処理を分ける
-			if (GetJoypadNum() == 0)
-			{
-				// キーボード操作
-				ins->GetInputDirXZ(dir, KEY_INPUT_W, KEY_INPUT_S, KEY_INPUT_A, KEY_INPUT_D);
-			}
-
-			// 方向入力がある場合
-			if (!AsoUtility::EqualsVZero(dir))
-			{
-				// 移動速度を設定
-				float speed = 0.0f;
-				if (ins->IsNew(KEY_INPUT_LSHIFT))
-				{
-					speed = Player::SPEED_DASH;
-				}
-				else
-				{
-					speed = Player::SPEED_MOVE;
-				}
-
-				//Y軸のみのカメラ角度を取得
-				Quaternion cameraRot = SceneManager::GetInstance().GetCamera()->GetQuaRotY();
-
-				//移動方向をカメラに合わせる
-				VECTOR moveDir = Quaternion::PosAxis(cameraRot, dir);
-				player->SetMoveDir(moveDir);
-
-				// 目標速度ベクトルを計算
-				VECTOR targetVelocity = VScale(moveDir, speed);
-
-				// 現在の移動量を取得
-				VECTOR currentVelocity = player->GetMovePow();
-
-				// 目標速度に向かって徐々に加速（慣性による滑らかな加速）
-				VECTOR newVelocity = VAdd(
-					VScale(currentVelocity, Player::AIR_MOVE_DEC_RATE),
-					VScale(targetVelocity, 1.0f - Player::AIR_MOVE_DEC_RATE)
-				);
-
-				player->SetMovePow(newVelocity);
-
-				// ジャンプ中でない場合は状態を変更
-				if (!player->IsJump())
-				{
-					// ダッシュキーが入力されているか
-					if (ins->IsNew(KEY_INPUT_LSHIFT))
-					{
-						player->ChangeState(Player::STATE::FAST_RUN);
-						return;
-					}
-					else
-					{
-						player->ChangeState(Player::STATE::RUN);
-						return;
-					}
-				}
 			}
 			else
 			{
-				// 方向入力がない場合は移動量を減らす
-				player->SetMovePow(VScale(player->GetMovePow(), Player::AIR_MOVE_DEC_RATE));
+				player->ChangeState(Player::STATE::RUN);
+				return;
 			}
 		}
+	}
+	else
+	{
+		// 方向入力がない場合は移動量を減らす
+		player->SetMovePow(VScale(player->GetMovePow(), Player::AIR_MOVE_DEC_RATE));
 	}
 }
 

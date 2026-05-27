@@ -6,6 +6,13 @@ bool PlayerState::CheckTransitions(Player* player)
 {
 	auto ins = InputManager::GetInstance();
 
+	// 攻撃入力チェック（クールタイム考慮）
+	if (ins->IsMouseTrgUp(MOUSE_INPUT_LEFT) && player->GetAttackCoolTime() <= 0)
+	{
+		player->ChangeState(Player::STATE::ATTACK);
+		return true;
+	}
+
 	// ジェットキーが入力されているか
 	if (ins->IsTrgDown(KEY_INPUT_E))
 	{
@@ -20,20 +27,5 @@ bool PlayerState::CheckTransitions(Player* player)
 		return true;
 	}
 
-
-	if (!player->IsJet() && ins->IsMouseTrgDown(MOUSE_INPUT_LEFT))
-	{
-
-		bool isTrgUp = ins->IsMouseTrgUp(MOUSE_INPUT_LEFT);
-
-		// 攻撃入力チェック（クールタイム考慮）
-		if (!player->IsJet() && isTrgUp && player->GetAttackCoolTime() <= 0)
-
-		{
-			player->ChangeState(Player::STATE::ATTACK);
-			return true;
-		}
-
-		return false;
-	}
+	return false;
 }

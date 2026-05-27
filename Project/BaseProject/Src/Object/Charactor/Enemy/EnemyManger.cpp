@@ -176,6 +176,12 @@ VECTOR EnemyManager::GetNearEnemyPos(const VECTOR& pos) const
 
 VECTOR EnemyManager::GetEnemyPos(int id) const
 {
+	// 空チェックを追加
+	if (enemies_.empty())
+	{
+		return VECTOR{ 0.0f, 0.0f, 0.0f }; // デフォルト位置を返す
+	}
+
 	if (id < 0) id = 0;
 	else if (id >= enemies_.size()) id = enemies_.size() - 1;
 

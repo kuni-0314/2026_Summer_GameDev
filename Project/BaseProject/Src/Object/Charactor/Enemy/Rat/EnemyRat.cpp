@@ -1,4 +1,4 @@
-
+#include <DxLib.h>
 #include "EnemyRat.h"
 #include "../../../../Manager/ResourceManager.h"
 #include "../../../../Manager/SceneManager.h"
@@ -10,6 +10,7 @@
 #include "../../../../Manager/InputManager.h"
 #include "../../../../Object/Item/HP/HpItem.h"
 #include "../../../../Object/Item/ItemManger.h"
+#include "../../Player/Player.h"
 
 
 EnemyRat::EnemyRat(const EnemyBase::EnemyData& data, Player* player)
@@ -152,7 +153,7 @@ void EnemyRat::UpdateProcess(void)
 	stateUpdate_();
 
 	VECTOR playerPos = player_->GetPos();
-	float playerRad = player_->GetcollRadius_();
+	float playerRad = player_->GetCollRadius();
 
 	//一度プレイヤーを見つけるとずっと追従する
 	if (look_)

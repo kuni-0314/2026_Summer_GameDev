@@ -6,14 +6,11 @@ class PlayerAttackState : public PlayerState
 public:
 	void Enter(Player* player) override;
 	void Update(Player* player) override;
-
-
 	void Draw(Player* player) override;
 
 	enum class ATTACK_TYPE
 	{
 		NONE,
-
 		NORMAL1,
 		NORMAL2,
 		NORMAL3,
@@ -31,10 +28,7 @@ public:
 	};
 
 	static constexpr float ATTACK_POW[static_cast<int>(ATTACK_TYPE::MAX)] =
-
-	{	// tmp
-
-	
+	{
 		10.0f,	// NONE
 		10.0f,	// NORMAL1
 		12.0f,	// NORMAL2
@@ -50,8 +44,6 @@ public:
 		20.0f,  // AIR5
 		25.0f   // FALL
 	};
-
-
 
 	static constexpr int ATTACK_COOL_TIME[static_cast<int>(ATTACK_TYPE::MAX)] =
 	{
@@ -76,7 +68,6 @@ public:
 
 	// 次の攻撃タイプを取得（外部から呼ばれる）
 	ATTACK_TYPE GetNextAttackType(Player* player);
-
 
 private:
 	// 攻撃の種類
