@@ -60,12 +60,12 @@
     <ClCompile Include="Src\Object\Item\ItemManger.cpp" />
     <ClCompile Include="Src\Object\Item\HP\HpItem.cpp" />
 <<<<<<< HEAD
-=======
     <ClCompile Include="Src\Scene\GameOverScene.cpp" />
     <ClCompile Include="Src\Scene\ClearScene.cpp" />
     <ClCompile Include="Src\Sound\AudioManager.cpp" />
     <ClCompile Include="Src\Sound\SoundTable.cpp" />
->>>>>>> a96a32522dab24fdd18a6c86e621c2d6c8157956
+=======
+>>>>>>> 9e8e87f6444a86da0c51bc240b744f528719f38d
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Src\Object\Skill\SkillManger.h" />
@@ -127,11 +127,11 @@
     <ClInclude Include="Src\Object\Item\ItemManger.h" />
     <ClInclude Include="Src\Object\Item\HP\HpItem.h" />
 <<<<<<< HEAD
-=======
     <ClInclude Include="Src\Scene\GameOverScene.h" />
     <ClInclude Include="Src\Scene\ClearScene.h" />
     <ClInclude Include="Src\Sound\AudioManager.h" />
     <ClInclude Include="Src\Sound\SoundTable.h" />
->>>>>>> a96a32522dab24fdd18a6c86e621c2d6c8157956
+=======
+>>>>>>> 9e8e87f6444a86da0c51bc240b744f528719f38d
   </ItemGroup>
 </Project>
