@@ -33,13 +33,16 @@ void AnimationController::AddInFbx(int type, float speed, int animIndex)
 	Add(type, speed, animation);
 }
 
-void AnimationController::Play(int type, bool isLoop)
+void AnimationController::Play(int type, bool isLoop, bool isReset)
 {
 
 	if (playType_ == type)
 	{
-		// 同じアニメーションだったら再生を継続する
-		return;
+		if (!isReset)
+		{
+			// 同じアニメーションだったら再生を継続する
+			return;
+		}
 	}
 
 	if (playType_ != -1)

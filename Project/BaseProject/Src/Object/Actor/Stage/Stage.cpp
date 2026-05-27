@@ -33,7 +33,7 @@ void Stage::InitTransform(void)
 	transform_.scl = { SCL_MAIN_STAGE_X, SCL_MAIN_STAGE_Y, SCL_MAIN_STAGE_Z };
 	transform_.quaRot = Quaternion::Identity();
 	transform_.quaRotLocal = Quaternion::Identity();
-	transform_.pos =POS_MAIN_STAGE;
+	transform_.pos = POS_MAIN_STAGE;
 
 	transform_.Update();
 
