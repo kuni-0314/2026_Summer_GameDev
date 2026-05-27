@@ -86,14 +86,11 @@ void GameScene::Update(void)
 	{
 		sceMng_.ChangeScene(SceneManager::SCENE_ID::TITLE);
 	}
-<<<<<<< HEAD
-=======
 	//bool end = enemyManager_->GetEnemyDead();
 	//if (end)
 	//{
 	//	sceMng_.ChangeScene(SceneManager::SCENE_ID::CLERA);
 	//}
->>>>>>> a96a32522dab24fdd18a6c86e621c2d6c8157956
 
 	stage_->Update();//ステージ更新
 	//stageWall_->Update();//ステージ壁更新
