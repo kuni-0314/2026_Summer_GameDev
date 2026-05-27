@@ -81,8 +81,8 @@ protected:
 	// 移動可能範囲判定
 	bool InMovableRange(void) const;
 
-
-
+	//視線ベクトル
+	void LookPlayer(void);
 
 };
 

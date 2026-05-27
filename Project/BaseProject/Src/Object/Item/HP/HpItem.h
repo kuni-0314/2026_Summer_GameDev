@@ -43,7 +43,7 @@ private:
 	Player* player_;
 
 	// モデルの大きさ
-	static constexpr float SCALE = 1.0f;
+	static constexpr float SCALE = 0.8f;
 	// モデルのローカル回転
 	static constexpr VECTOR ROT = { 0.0f, 180.0f * DX_PI_F / 180.0f, 0.0f };
 

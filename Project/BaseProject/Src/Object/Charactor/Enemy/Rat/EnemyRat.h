@@ -14,6 +14,7 @@ public:
 	{
 		IDLE,
 		WALK,
+		RUN,
 		ATTACK,
 		END,
 		HIT
@@ -25,6 +26,7 @@ public:
 		NONE,
 		THINK,
 		IDLE,
+		RUN,
 		WANDER,
 		ATTACK,
 		HIT,
@@ -70,7 +72,9 @@ private:
 	//エンド
 	static constexpr int  ANIM_INDX_END = 6;
 	//HIT
-	static constexpr int  ANIM_INDX_HIT = 7;
+	static constexpr int  ANIM_INDX_HIT = 11;
+	//RUN
+	//static constexpr int  ANIM_INDX_HIT = 7;
 
 
 	// モデルの大きさ
@@ -99,10 +103,15 @@ private:
 	// 攻撃判定用球体
 	static constexpr VECTOR ATTACK_SPHERE_LOCAL_POS = { 0.0f, 30.0f, 120.0f };
 
+	// 行動切り替え用カプセル球体半径
+	static constexpr float COL_SWICH_RADIUS = 250.0f;
+
 	//攻撃判定
 	bool isAttack_; 
 	//生存判定
 	bool isAlive_ = true;
+
+	bool look_ = false;
 
 	// 状態
 	STATE state_;
@@ -125,6 +134,7 @@ private:
 	void ChangeStateHit(void);
 	void ChangeStateDie(void);
 	void ChangeStateEnd(void);
+	void ChangeStateRun(void);
 
 	// 更新系
 	void UpdateNone(void);
@@ -135,6 +145,7 @@ private:
 	void UpdateHit(void);
 	void UpdateDie(void);
 	void UpdateEnd(void);
+	void UpdateRun(void);
 
 
 

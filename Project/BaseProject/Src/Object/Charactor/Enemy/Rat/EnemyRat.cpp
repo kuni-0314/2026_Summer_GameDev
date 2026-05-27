@@ -44,9 +44,9 @@ void EnemyRat::Draw(void)
 		DrawSphere3D(worldPos,
 			COL_SPHERE_RADIUS, 10, 0x0000ff, 0x0000ff, false);
 	}
-	
 
-	
+	DrawSphere3D(worldPos,
+		COL_SWICH_RADIUS, 10, 0x0000ff, 0x0000ff, false);
 }
 
 
@@ -114,6 +114,9 @@ void EnemyRat::InitAnimation(void)
 	type = static_cast<int>(ANIM_TYPE::HIT);
 	animationController_->AddInFbx(type, 20.0f, ANIM_INDX_HIT);
 
+	type = static_cast<int>(ANIM_TYPE::RUN);
+	animationController_->AddInFbx(type, 20.0f, ANIM_INDX_HIT);
+
 	animationController_->Play(static_cast<int>(ANIM_TYPE::IDLE), true);
 
 
@@ -136,6 +139,8 @@ void EnemyRat::InitPost(void)
 		std::bind(&EnemyRat::ChangeStateHit, this));
 	stateChanges_.emplace(static_cast<int>(STATE::DIE),
 		std::bind(&EnemyRat::ChangeStateDie, this));
+	stateChanges_.emplace(static_cast<int>(STATE::RUN),
+		std::bind(&EnemyRat::ChangeStateRun, this));
 	stateChanges_.emplace(static_cast<int>(STATE::END),
 		std::bind(&EnemyRat::ChangeStateEnd, this));
 	// 初期状態設定
@@ -146,6 +151,19 @@ void EnemyRat::UpdateProcess(void)
 {
 
 	stateUpdate_();
+
+	VECTOR playerPos = player_->GetPos();
+	float playerRad = player_->GetcollRadius_();
+
+	//一度プレイヤーを見つけるとずっと追従する
+	if (look_)
+	{
+		LookPlayer();
+	}
+	else if(AsoUtility::IsHitSpheres(worldPos, COL_SWICH_RADIUS, playerPos, playerRad))
+	{
+		look_ = true;
+	}
 
 	auto const ins = InputManager::GetInstance();
 
@@ -205,10 +223,6 @@ void EnemyRat::ChangeStateThink(void)
 	if (rand < 20)
 	{
 		ChangeState(STATE::IDLE);
-	}
-	else if (rand < 50)
-	{
-		ChangeState(STATE::ATTACK);
 	}
 	else
 	{
@@ -281,6 +295,23 @@ void EnemyRat::ChangeStateEnd(void)
 {
 	stateUpdate_ = std::bind(&EnemyRat::UpdateEnd, this);
 	
+}
+
+void EnemyRat::ChangeStateRun(void)
+{
+	stateUpdate_ = std::bind(&EnemyRat::UpdateRun, this);
+
+	// ランダムな角度
+	float angle = static_cast<float>(GetRand(360)) * DX_PI_F / 180.0f;
+	// 移動方向
+	moveDir_ = VGet(cosf(angle), 0.0f, sinf(angle));
+	// ランダムな移動時間
+	step_ = 2.0f + static_cast<float>(GetRand(5));
+	// 移動スピード
+	moveSpeed_ = 10.0f;
+	// 歩きアニメーション再生
+	animationController_->Play(
+		static_cast<int>(ANIM_TYPE::RUN), true);
 }
 
 void EnemyRat::UpdateNone(void)
@@ -366,6 +397,10 @@ void EnemyRat::UpdateEnd(void)
 {
 
 	
+}
+
+void EnemyRat::UpdateRun(void)
+{
 }
 
 

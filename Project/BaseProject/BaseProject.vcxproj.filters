@@ -52,6 +52,8 @@
     <ClCompile Include="Src\Object\Item\HP\HpItem.cpp" />
     <ClCompile Include="Src\Scene\GameOverScene.cpp" />
     <ClCompile Include="Src\Scene\ClearScene.cpp" />
+    <ClCompile Include="Src\Sound\AudioManager.cpp" />
+    <ClCompile Include="Src\Sound\SoundTable.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Src\Object\Skill\SkillManger.h" />
@@ -105,5 +107,7 @@
     <ClInclude Include="Src\Object\Item\HP\HpItem.h" />
     <ClInclude Include="Src\Scene\GameOverScene.h" />
     <ClInclude Include="Src\Scene\ClearScene.h" />
+    <ClInclude Include="Src\Sound\AudioManager.h" />
+    <ClInclude Include="Src\Sound\SoundTable.h" />
   </ItemGroup>
 </Project>
