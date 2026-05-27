@@ -58,7 +58,7 @@ protected:
 
 private:
 
-	Player* player_;
+
 	
 	ItemManger* itemManager_ ;
 

@@ -1,3 +1,4 @@
+
 #include "EnemyRat.h"
 #include "../../../../Manager/ResourceManager.h"
 #include "../../../../Manager/SceneManager.h"
@@ -9,14 +10,12 @@
 #include "../../../../Manager/InputManager.h"
 #include "../../../../Object/Item/HP/HpItem.h"
 #include "../../../../Object/Item/ItemManger.h"
-#include "../../../Charactor/Player/Player.h"
 
 
 EnemyRat::EnemyRat(const EnemyBase::EnemyData& data, Player* player)
 	:EnemyBase(data, player),
 	state_(STATE::NONE),
-	step_(0.0f),
-	player_(player)
+	step_(0.0f)
 {
 }
 
@@ -253,7 +252,7 @@ void EnemyRat::ChangeStateWander(void)
 	// ランダムな移動時間
 	step_ = 2.0f + static_cast<float>(GetRand(5));
 	// 移動スピード
-	moveSpeed_ = 5.0f;
+	moveSpeed_ = 3.0f;
 	// 歩きアニメーション再生
 	animationController_->Play(
 		static_cast<int>(ANIM_TYPE::WALK), true);
@@ -349,17 +348,6 @@ void EnemyRat::UpdateWander(void)
 
 void EnemyRat::UpdateAttack(void)
 {
-	//プレイヤー座標取得
-	VECTOR playerPos = player_->GetPos();
-	float playerRad = player_->GetcollRadius_();
-	if (AsoUtility::IsHitSpheres(worldPos, COL_SPHERE_RADIUS, playerPos, playerRad))
-	{
-		player_->Damege(1);
-		ChangeState(STATE::THINK);
-		return;
-	}
-		
-
 	step_ -= scnMng_.GetDeltaTime();
 	if (step_ < 0.0f)
 	{

@@ -35,8 +35,6 @@ public:
 	virtual void Draw(void) override;
 
 
-
-
 protected:
 
 	Player* player_;

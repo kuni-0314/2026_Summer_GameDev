@@ -1,4 +1,5 @@
 #pragma once
+#include <DxLib.h>
 #include <map>
 
 // Addのやり方も悪くないけど面倒なので除外
@@ -56,13 +57,17 @@ public:
 	bool IsNew(int key);		// キーが押されているか
 	bool IsTrgDown(int key);	// キーが今押されたか
 	bool IsTrgUp(int key);		// キーは離されたか
+	bool IsHold(int key, int holdTime);	// キーが指定時間以上押されているか
+	int GetLastHoldTime(int key);	// キーが最後に離されるまで押されていた時間を取得
 
 	void ClearMouse(void);				// 判定を行うマウスボタンをクリア
 	bool IsMouseNew(int button);		// マウスボタンが押されているか
 	bool IsMouseTrgDown(int button);	// マウスボタンが今押されたか
 	bool IsMouseTrgUp(int button);		// マウスボタンは離されたか
+	bool IsMouseHold(int button, int holdTime);	// マウスボタンが指定時間以上押されているか
 	int GetMouseWheel(void);			// マウスホイールの回転量を取得
 	void GetMousePos(int& x, int& y);	// マウスの座標を取得
+	int GetMouseLastHoldTime(int button);	// マウスボタンが最後に離されるまで押されていた時間を取得
 
 	bool IsGamepadNew(int button, int gamepadIndex);		// ゲームパッドボタンが押されているか
 	bool IsGamepadTrgDown(int button, int gamepadIndex);	// ゲームパッドボタンが今押されたか
@@ -70,6 +75,10 @@ public:
 	bool IsGamepadNew(PadInput button, int gamepadIndex);		// ゲームパッドボタンが押されているか
 	bool IsGamepadTrgDown(PadInput button, int gamepadIndex);	// ゲームパッドボタンが今押されたか
 	bool IsGamepadTrgUp(PadInput button, int gamepadIndex);		// ゲームパッドボタンは離されたか
+	bool IsGamepadHold(int button, int gamepadIndex, int holdTime);	// ゲームパッドボタンが指定時間以上押されているか
+	bool IsGamepadHold(PadInput button, int gamepadIndex, int holdTime);	// ゲームパッドボタンが指定時間以上押されているか
+	int GetGamepadLastHoldTime(int button, int gamepadIndex);	// ゲームパッドボタンが最後に離されるまで押されていた時間を取得
+	int GetGamepadLastHoldTime(PadInput button, int gamepadIndex);	// ゲームパッドボタンが最後に離されるまで押されていた時間を取得
 
 	void GetStick(int gamepadIndex, short& leftX, short& leftY, short& rightX, short& rightY);	// スティックの値を取得
 	void GetLeftStick(int gamepadIndex, short& x, short& y);	// 左スティックの値を取得
@@ -79,6 +88,8 @@ public:
 	short GetRightStickX(int gamepadIndex);		// 右スティックのX軸を取得
 	short GetRightStickY(int gamepadIndex);		// 右スティックのY軸を取得
 
+	// 入力キーからXZ平面上の方向ベクトルを取得
+	void GetInputDirXZ(VECTOR& vec, int keyUp, int keyDown, int keyLeft, int keyRight);
 
 	// 対象のボタンのうち指定したボタンだけが押された瞬間を判定
 	// MainButtonとOtherButtonsの型にはIntまたはPadInputを指定すること
@@ -118,6 +129,8 @@ private:
 		bool keyNew;
 		bool keyTrgDown;
 		bool keyTrgUp;
+		int holdTime;
+		int lastHoldTime;
 	};
 
 	// マウスボタンの入力状態の情報
@@ -128,6 +141,8 @@ private:
 		bool mouseNew;
 		bool mouseTrgDown;
 		bool mouseTrgUp;
+		int holdTime;
+		int lastHoldTime;
 	};
 
 	// パッドの状態
@@ -141,6 +156,8 @@ private:
 			bool buttonNew;
 			bool buttonTrgDown;
 			bool buttonTrgUp;
+			int holdTime;
+			int lastHoldTime;
 		};
 		ButtonInfo inputs[static_cast<int>(PadInput::MAX)];
 		short AKeyLX;
