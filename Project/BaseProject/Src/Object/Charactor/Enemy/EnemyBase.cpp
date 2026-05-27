@@ -1,5 +1,6 @@
 #include "../../../Utility/AsoUtility.h"
 #include "../../../Manager/InputManager.h"
+#include "../../Charactor/Player/Player.h"
 #include "EnemyBase.h"
 
 EnemyBase::EnemyBase(const EnemyBase::EnemyData& data,Player*player)
@@ -43,6 +44,27 @@ bool EnemyBase::InMovableRange(void) const
 	}
 	return ret;
 
+}
+
+void EnemyBase::LookPlayer(void)
+{
+	
+	VECTOR playerPos = player_->GetPos();
+
+	//ベクトル計算
+	VECTOR diff = VSub(playerPos, transform_.pos);
+	diff.y = 0.0f;
+
+	//ベクトルの正規化で単位ベクトルの取得
+	moveDir_ = VNorm(diff);
+
+	transform_.rot.y = atan2(moveDir_.x, moveDir_.z);
+	transform_.rot.y += AsoUtility::Deg2RadF(180.0f);
+
+	//回転はY軸のみにする
+	transform_.rot.x = transform_.rot.z = 0.0f;
+
+	MV1SetRotationXYZ(transform_.modelId, transform_.rot);
 }
 
 

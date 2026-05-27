@@ -37,7 +37,11 @@ private:
 	EnemyBase* enemys_;
 
 	// モデルの大きさ
+<<<<<<< HEAD
 	static constexpr float SCALE = 0.7f;
+=======
+	static constexpr float SCALE = 0.8f;
+>>>>>>> a96a32522dab24fdd18a6c86e621c2d6c8157956
 	// モデルのローカル回転
 	static constexpr VECTOR ROT = { 0.0f, 180.0f * DX_PI_F / 180.0f, 0.0f };
 
