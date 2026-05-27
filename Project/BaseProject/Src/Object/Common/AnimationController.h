@@ -31,7 +31,7 @@ public:
 	void AddInFbx(int type, float speed, int animIndex);
 
 	// アニメーション再生
-	void Play(int type, bool isLoop = true, bool isReset = false);
+	void Play(int type, bool isLoop = true);
 
 	// 更新
 	void Update(void);

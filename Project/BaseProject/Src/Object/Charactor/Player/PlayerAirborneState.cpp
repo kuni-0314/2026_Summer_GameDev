@@ -19,25 +19,12 @@ void PlayerAirborneState::Update(Player* player)
 	}
 
 	// ジャンプキーが入力されているか
-	if (player->IsJump())
+	if (player->IsJump() && ins->IsNew(KEY_INPUT_SPACE))
 	{
-		if (ins->IsNew(KEY_INPUT_SPACE))
+		if (player->GetStepJump() < Player::TIME_JUMP_INPUT)
 		{
-			if (player->GetStepJump() < Player::TIME_JUMP_INPUT)
-			{
-				player->SetJumpPow(VAdd(player->GetJumpPow(), VScale(AsoUtility::DIR_U, Player::POW_JUMP_KEEP)));
-				player->SetStepJump(player->GetStepJump() + SceneManager::GetInstance().GetDeltaTime());
-			}
-		}
-		else
-		{
-			VECTOR jumpPow = player->GetJumpPow();
-			if (jumpPow.y > 0.0f)
-			{
-				jumpPow.y *= 0.0f;
-				player->SetJumpPow(jumpPow);
-			}
-			player->SetStepJump(Player::TIME_JUMP_INPUT);
+			player->SetJumpPow(VAdd(player->GetJumpPow(), VScale(AsoUtility::DIR_U, Player::POW_JUMP_KEEP)));
+			player->SetStepJump(player->GetStepJump() + SceneManager::GetInstance().GetDeltaTime());
 		}
 	}
 

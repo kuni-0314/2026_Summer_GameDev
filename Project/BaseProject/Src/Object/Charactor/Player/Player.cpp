@@ -40,21 +40,9 @@ void Player::Update()
 	// 移動前座標を更新
 	prevPos_ = transform_.pos;
 
-	// 攻撃のクールタイムを減算
-	if (attackCoolTime_ > 0)
-	{
-		attackCoolTime_--;
-	}
-
-	// コンボタイマーを減算
-	if (comboTimer_ > 0)
-	{
-		comboTimer_--;
-	}
-
 	// 各キャラクターごとの更新処理
 	UpdateProcess();
-	// 移動方向に応じて徐々に回転
+	// 移動方向に応じた遅延回転
 	DelayRotate();
 	// 重力による移動量
 	CalcGravityPow();
@@ -231,15 +219,13 @@ void Player::Draw(void)
 	int lineHeight = 25;
 
 	// 背景描画(半透明の黒)
-	//SetDrawBlendMode(DX_BLENDMODE_ALPHA, 180);
-	//DrawBox(x - 10, y - 10, x + 250, y + lineHeight * 11 + 10, 0x000000, TRUE);
-	//SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
+	SetDrawBlendMode(DX_BLENDMODE_ALPHA, 180);
+	DrawBox(x - 10, y - 10, x + 250, y + lineHeight * 11 + 10, 0x000000, TRUE);
+	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
 
 	// タイトル
 	DrawFormatString(x, y, 0xFFFFFF, "=== Player Status ===");
 	y += lineHeight;
-
-	currentState_->Draw(this);
 
 	// ステータス情報を描画（選択中の項目を黄色でハイライト）
 	//unsigned int color = 0xFFFFFF;
@@ -275,12 +261,7 @@ void Player::Draw(void)
 	//DrawFormatString(x, y, color, "PendingPoints   : %d", pendingPoints_);
 
 	//y += lineHeight;
-	DrawFormatString(x, y, 0xffffff, "jumpPow   : %f.", jumpPow_.y);
-
-	VECTOR lineStart = transform_.pos;
-	VECTOR lineEnd = { transform_.pos.x, transform_.pos.y + jumpPow_.y * 10.0f, transform_.pos.z };
-	DrawLine3D(lineStart, lineEnd, 0xFFFFFF);
-	DrawSphere3D(lineEnd, 5.0f, 16, 0xFF00FF, 0xFF00FF, true);
+	//DrawFormatString(x, y, color, "jumpPow   : %f.", jumpPow_.y);
 
 	// プレイヤーの周りを回転するオブジェクトの描画
 	static float angle = 0.0f;
