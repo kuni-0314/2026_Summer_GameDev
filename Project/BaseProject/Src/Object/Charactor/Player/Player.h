@@ -91,7 +91,7 @@ public:
 	static constexpr VECTOR COL_LINE_JUMP_END_LOCAL_POS = { 0.0f, 50.0f, 0.0f };;
 	
 	// ジャンプ力
-	static constexpr float POW_JUMP_INIT = 35.0f;
+	static constexpr float POW_JUMP_INIT = 40.0f;
 	// 持続ジャンプ力
 	static constexpr float POW_JUMP_KEEP = 8.5f;
 	// ジャンプ受付時間

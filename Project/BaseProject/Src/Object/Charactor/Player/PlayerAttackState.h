@@ -44,9 +44,29 @@ public:
 		25.0f   // FALL
 	};
 
+	static constexpr float ATTACK_COOL_TIME[static_cast<int>(ATTACK_TYPE::MAX)]
+	{// tmp
+		15.0f,	// NORMAL1
+		15.0f,	// NORMAL2
+		15.0f,	// NORMAL3
+		15.0f,	// NORMAL4
+		15.0f,	// NORMAL5
+		60.0f,	// HEAVY
+		30.0f,  // DASH
+		15.0f,  // AIR1
+		15.0f,  // AIR2
+		15.0f,  // AIR3
+		15.0f,  // AIR4
+		15.0f,  // AIR5
+		60.0f   // FALL
+	};
+
 private:
 	// 攻撃の種類
 	ATTACK_TYPE attackType_;
+
+	// クールタイム
+	int coolTime_;
 
 	// 命名未定
 	bool tmp_;

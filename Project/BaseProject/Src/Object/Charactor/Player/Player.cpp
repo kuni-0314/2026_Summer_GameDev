@@ -265,6 +265,11 @@ void Player::Draw(void)
 	//y += lineHeight;
 	DrawFormatString(x, y, 0xffffff, "jumpPow   : %f.", jumpPow_.y);
 
+	VECTOR lineStart = transform_.pos;
+	VECTOR lineEnd = { transform_.pos.x, transform_.pos.y + jumpPow_.y * 10.0f, transform_.pos.z };
+	DrawLine3D(lineStart, lineEnd, 0xFFFFFF);
+	DrawSphere3D(lineEnd, 5.0f, 16, 0xFF00FF, 0xFF00FF, true);
+
 	// プレイヤーの周りを回転するオブジェクトの描画
 	static float angle = 0.0f;
 	angle += 0.01f;

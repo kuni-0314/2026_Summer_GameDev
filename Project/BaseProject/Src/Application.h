@@ -17,7 +17,7 @@ public:
 
 	// 重力
 	static constexpr float GRAVITY = 9.81f * 100.0f;
-	static constexpr float GRAVITY_SCALE = 0.8f;
+	static constexpr float GRAVITY_SCALE = 1.0f;
 
 
 	// データパス関連

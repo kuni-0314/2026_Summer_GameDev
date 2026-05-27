@@ -56,7 +56,7 @@ protected:
 
 
 	// Å‘å—‰º‘¬“x
-	static constexpr float MAX_FALL_SPEED = -20.0f;
+	static constexpr float MAX_FALL_SPEED = -15.0f;
 	// Õ“Ë‚Ì‰Ÿ‚µ–ß‚µs‰ñ”
 	static constexpr int CNT_TRY_COLLISION = 20;
 	// Õ“Ë‚Ì‰Ÿ‚µ–ß‚µ—Ê

@@ -126,22 +126,6 @@ void PlayerAttackState::Update(Player* player)
 	auto ins = InputManager::GetInstance();
 	
 
-	bool aaa = ins->IsMouseTrgUp(MOUSE_INPUT_LEFT);// true‚É‚È‚ç‚È‚¢
-	bool bbb = ins->IsMouseTrgDown(MOUSE_INPUT_LEFT);// true‚É‚È‚é
-	bool ccc = ins->IsMouseNew(MOUSE_INPUT_LEFT);// true‚É‚È‚é
-	if (aaa)
-	{
-		int a = 0;
-	}
-	if (bbb)
-	{
-		int b = 0;
-	}
-	if (ccc)
-	{
-		int c = 0;
-	}
-
 
 
 
