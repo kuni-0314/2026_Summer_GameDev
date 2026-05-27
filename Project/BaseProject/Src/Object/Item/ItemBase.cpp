@@ -12,10 +12,10 @@
 
 ItemBase::ItemBase()
 	:
-ActorBase(),
-moveDir_(AsoUtility::VECTOR_ZERO),
-moveSpeed_(0.0f),
-movePow_(AsoUtility::VECTOR_ZERO)
+	ActorBase(),
+	moveDir_(AsoUtility::VECTOR_ZERO),
+	moveSpeed_(0.0f),
+	movePow_(AsoUtility::VECTOR_ZERO)
 {
 }
 ItemBase::~ItemBase(void)
@@ -37,12 +37,13 @@ void ItemBase::Update(void)
 	// 移動前座標を更新
 	prevPos_ = transform_.pos;
 
+
 	// 各キャラクターごとの更新処理
 	UpdateProcess();
 	// 移動方向に応じた遅延回転
 	DelayRotate();
 	// 重力による移動量
-	CalcGravityPow();
+	//CalcGravityPow();
 	// 衝突判定前準備
 	CollisionReserve();
 	// 衝突判定
@@ -52,6 +53,7 @@ void ItemBase::Update(void)
 	// 各キャラクターごとの更新後処理
 	UpdateProcessPost();
 
+
 }
 
 void ItemBase::Draw(void)
@@ -60,7 +62,6 @@ void ItemBase::Draw(void)
 	ActorBase::Draw();
 	// 丸影の描画
 	DrawShadow();
-
 }
 
 void ItemBase::Release(void)
@@ -69,6 +70,51 @@ void ItemBase::Release(void)
 	//基底クラスの開放
 	ActorBase::Release();
 }
+
+bool ItemBase::InSearchModel(void)
+{
+	bool ret = false;//判定結果
+
+
+	// 視野モデルコライダ
+	int itemType = static_cast<int>(COLLIDER_TYPE::ITEM);
+	// 視野モデルコライダが無ければ処理を抜ける
+	if (ownColliders_.count(itemType) == 0) return ret;
+	// 視野モデルコライダ情報
+	ColliderModel* colliderModel =
+		dynamic_cast<ColliderModel*>(ownColliders_.at(itemType));
+
+	if (colliderModel == nullptr) return ret;
+
+
+	//衝突情報更新
+	MV1RefreshCollInfo(colliderModel->GetFollow()->modelId);
+
+
+	// 登録されている衝突物を全てチェック
+	for (const auto& hitCol : hitColliders_)
+	{
+		// プレイヤーモデル以外は処理を飛ばす
+		if (hitCol->GetTag() != ColliderBase::TAG::PLAYER) continue;
+
+		// 派生クラスへキャスト
+		const ColliderCapsule* colliderCapsule =
+			dynamic_cast<const ColliderCapsule*>(hitCol);
+
+		if (colliderCapsule == nullptr) continue;
+
+		//モデルとカプセルの諸突判定
+
+		if (colliderCapsule->IsHit(colliderModel))
+		{
+			return true;
+		}
+	}
+
+	return ret;
+}
+
+
 
 void ItemBase::DelayRotate(void)
 {
@@ -107,6 +153,8 @@ void ItemBase::Collision(void)
 	transform_.pos = VAdd(transform_.pos, jumpPow_);
 	// 衝突(重力)
 	CollisionGravity();
+
+
 }
 
 void ItemBase::CollisionGravity(void)
@@ -221,6 +269,8 @@ void ItemBase::CollisionCapsule(void)
 void ItemBase::DrawShadow(void)
 {
 
+
+
 	int i, j;
 
 
@@ -293,3 +343,6 @@ void ItemBase::DrawShadow(void)
 	// Ｚバッファを無効にする
 	SetUseZBuffer3D(FALSE);
 }
+
+
+

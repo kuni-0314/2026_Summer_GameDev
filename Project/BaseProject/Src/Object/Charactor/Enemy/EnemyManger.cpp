@@ -7,6 +7,8 @@
 #include "Robot/EnemyRobot.h"
 #include "../../Item/ItemBase.h"
 #include "../../Item/ItemManger.h"
+#include "../../Charactor/Player/Player.h"
+#include "../../Actor/ActorBase.h"
 #include "EnemyManger.h"
 
 
@@ -26,6 +28,7 @@ void EnemyManager::Init(void)
 
 	LoadCsvData();
 
+
 }
 void EnemyManager::Update(void)
 {
@@ -36,13 +39,14 @@ void EnemyManager::Update(void)
 		if (enemy->GetHp() <= 0 && enemy->IsAlive())
 		{
 
-			gameScene_->GetItemManger()->Create(ItemBase::TYPE::HP, enemy->GetTransform().pos,hitCollider_);
-		
+			gameScene_->GetItemManger()->Create(ItemBase::TYPE::HP, enemy->GetTransform().pos, hitCollider_,
+				static_cast<int>(Player::COLLIDER_TYPE::PLAYER), player_);
+
 
 			enemy->SetAlive(false);
 		}
 	}
-
+	//エネミー削除
 	for (int j = 0; j < enemies_.size(); j++)
 	{
 		if (enemies_[j]->IsAnimEnd() && !enemies_[j]->IsAlive())
@@ -53,6 +57,17 @@ void EnemyManager::Update(void)
 			enemies_.erase(std::remove(enemies_.begin(), enemies_.end(), enemies_[j]), enemies_.end());
 
 			j--;
+		}
+	}
+
+	//エネミー全滅フラグ
+	isDead_ = true;
+	for (const auto enemy : enemies_)
+	{
+		if (enemy->IsAlive())
+		{
+			isDead_ = false;
+			break;
 		}
 	}
 }
@@ -74,13 +89,13 @@ void EnemyManager::Release(void)
 }
 void EnemyManager::AddHitCollider(const ColliderBase* hitCollider)
 {
-	
+
 	hitCollider_ = hitCollider;
 
 	for (auto& enemy : enemies_)
 	{
 		enemy->AddHitCollider(hitCollider);
-		
+
 	}
 }
 
@@ -107,7 +122,7 @@ void EnemyManager::LoadCsvData(void)
 		// １行をカンマ区切りで分割
 		strSplit = AsoUtility::Split(line, ',');
 		EnemyBase* enemy = nullptr;
-	
+
 		// 構造体に合わせて読込データを格納
 		EnemyBase::EnemyData data = EnemyBase::EnemyData();
 		int idx = 0;
@@ -129,18 +144,18 @@ void EnemyManager::LoadCsvData(void)
 		data.movableRange = stoi(strSplit[idx++]);
 
 		// エネミー生成
-		Create(data);
+		Create(data, player_);
 	}
 	ifs.close();
 }
 
-EnemyBase* EnemyManager::Create(const EnemyBase::EnemyData& data)
+EnemyBase* EnemyManager::Create(const EnemyBase::EnemyData& data, const Player* player)
 {
 	EnemyBase* enemy = nullptr;
 	switch (data.type)
 	{
 	case EnemyBase::TYPE::RAT:
-		enemy = new EnemyRat(data,player_);
+		enemy = new EnemyRat(data, const_cast<Player*>(player));
 		break;
 	default:
 		break;
@@ -176,14 +191,14 @@ VECTOR EnemyManager::GetNearEnemyPos(const VECTOR& pos) const
 
 VECTOR EnemyManager::GetEnemyPos(int id) const
 {
-	// 空チェックを追加
-	if (enemies_.empty())
-	{
-		return VECTOR{ 0.0f, 0.0f, 0.0f }; // デフォルト位置を返す
-	}
-
 	if (id < 0) id = 0;
 	else if (id >= enemies_.size()) id = enemies_.size() - 1;
 
 	return enemies_[id]->GetTransform().pos;
 }
+
+bool EnemyManager::GetEnemyDead(void)
+{
+	return isDead_;
+}
+

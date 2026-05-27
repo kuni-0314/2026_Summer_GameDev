@@ -12,6 +12,19 @@ class ActorBase
 
 public:
 
+
+	enum class COLLIDER_TYPE
+	{
+		LINE,
+		CAPSULE,
+		SPHERE,
+		MODEL,
+		VIEW_RANGE,
+		PLAYER,
+		ITEM,
+		MAX,
+	};
+
 	// コンストラクタ
 	ActorBase(void);
 
@@ -59,7 +72,7 @@ protected:
 
 	// 自身の衝突情報
 	std::map<int, ColliderBase*> ownColliders_;
-	
+
 	// 衝突相手の情報
 	std::vector<const ColliderBase*> hitColliders_;
 
@@ -79,6 +92,6 @@ protected:
 	virtual void InitPost(void) = 0;
 
 	//変数
-	bool isAlive_; 
+	bool isAlive_;
 
 };
