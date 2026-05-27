@@ -6,6 +6,15 @@ class CharactorBase : public ActorBase
 {
 public:
 
+	// 衝突判定種別
+	enum class COLLIDER_TYPE
+	{
+		LINE,
+		CAPSULE,
+		SPHERE,
+		VIEW_RAGE,
+		MAX,
+	};
 
 	// ステータス
 	struct Status
@@ -43,13 +52,11 @@ public:
 
 	bool IsAnimEnd();
 
-	
-
 protected:
 
 
 	// 最大落下速度
-	static constexpr float MAX_FALL_SPEED = -15.0f;
+	static constexpr float MAX_FALL_SPEED = -30.0f;
 	// 衝突時の押し戻し試行回数
 	static constexpr int CNT_TRY_COLLISION = 20;
 	// 衝突時の押し戻し量

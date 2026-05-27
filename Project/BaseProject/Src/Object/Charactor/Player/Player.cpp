@@ -11,7 +11,6 @@
 #include "../../../Object/Collider/ColliderBase.h"
 #include "../../../Object/Collider/Line/ColliderLine.h"
 #include "../../../Object/Collider/Capsule/ColliderCapsule.h"
-<<<<<<< HEAD
 #include "PlayerIdleState.h"
 #include "PlayerRunState.h"
 #include "PlayerFastRunState.h"
@@ -19,9 +18,6 @@
 #include "PlayerJetState.h"
 #include "PlayerFallState.h"
 #include "PlayerAttackState.h"
-=======
-#include "../../../Object/Collider/Model/ColliderModel.h"
->>>>>>> b5726539cb54c2e14d0b2c6d13b58141af57d69e
 
 
 Player::Player(void)
@@ -44,21 +40,9 @@ void Player::Update()
 	// 移動前座標を更新
 	prevPos_ = transform_.pos;
 
-	// 攻撃のクールタイムを減算
-	if (attackCoolTime_ > 0)
-	{
-		attackCoolTime_--;
-	}
-
-	// コンボタイマーを減算
-	if (comboTimer_ > 0)
-	{
-		comboTimer_--;
-	}
-
 	// 各キャラクターごとの更新処理
 	UpdateProcess();
-	// 移動方向に応じて徐々に回転
+	// 移動方向に応じた遅延回転
 	DelayRotate();
 	// 重力による移動量
 	CalcGravityPow();
@@ -118,36 +102,6 @@ void Player::Update()
 
 }
 
-<<<<<<< HEAD
-=======
-//void Player::Update()
-//{
-//	animationController_->Update();
-//
-//	// 移動操作
-//	ProcessMove();
-//
-//	// 移動処理
-//	transform_.pos = VAdd(transform_.pos, movePow_);
-//
-//	transform_.Update();
-//
-//	
-//}
-
-
-
-void Player::HeleHp(const int recovery)
-{
-	hp_ += recovery;
-
-	if (hp_ >= DEFAULT_HP_MAX)
-	{
-		hp_ = DEFAULT_HP_MAX;
-	}
-}
-
->>>>>>> b5726539cb54c2e14d0b2c6d13b58141af57d69e
 void Player::InitLoad(void)
 {
 	//基底クラスのリソースロード
@@ -184,18 +138,6 @@ void Player::InitCollider(void)
 		COL_CAPSULE_TOP_LOCAL_POS, COL_CAPSULE_DOWN_LOCAL_POS,
 		COL_CAPSULE_RADIUS);
 	ownColliders_.emplace(static_cast<int>(COLLIDER_TYPE::CAPSULE), colCapsule);
-
-
-	// DxLib側の衝突情報セットアップ
-	MV1SetupCollInfo(transform_.modelId);
-
-	// 主に壁や木などの衝突で仕様するカプセルコライダ
-	ColliderModel* colModel = new ColliderModel(ColliderBase::TAG::PLAYER, &transform_);
-	//判定の登録
-	ownColliders_.emplace(static_cast<int>(COLLIDER_TYPE::PLAYER), colModel);
-
-
-
 }
 
 void Player::InitAnimation(void)
@@ -241,11 +183,7 @@ void Player::InitPost(void)
 	currentGrantStatusIndex_ = 4;
 	pendingPoints_ = 30;
 
-<<<<<<< HEAD
 	InitState();
-=======
-	hp_ = DEFAULT_HP;
->>>>>>> b5726539cb54c2e14d0b2c6d13b58141af57d69e
 }
 
 void Player::UpdateProcess(void)
@@ -256,33 +194,16 @@ void Player::UpdateProcess(void)
 		currentState_->Update(this);
 	}
 
-<<<<<<< HEAD
 
 	if (InputManager::GetInstance()->IsTrgDown(KEY_INPUT_R))
 	{
 		// リスポーン
 		transform_.pos = POS_PLAYER;
 	}
-=======
-	// ジャンプ処理
-	ProcessJump();
-
-	// ジェット処理
-	ProcessJet();
-
-	// 
-	ProcessTmp();
-
-	
-	
->>>>>>> b5726539cb54c2e14d0b2c6d13b58141af57d69e
 }
 
 void Player::UpdateProcessPost(void)
 {
-
-
-	
 }
 
 void Player::Draw(void)
@@ -297,17 +218,14 @@ void Player::Draw(void)
 	int y = 20;
 	int lineHeight = 25;
 
-<<<<<<< HEAD
 	// 背景描画(半透明の黒)
-	//SetDrawBlendMode(DX_BLENDMODE_ALPHA, 180);
-	//DrawBox(x - 10, y - 10, x + 250, y + lineHeight * 11 + 10, 0x000000, TRUE);
-	//SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
+	SetDrawBlendMode(DX_BLENDMODE_ALPHA, 180);
+	DrawBox(x - 10, y - 10, x + 250, y + lineHeight * 11 + 10, 0x000000, TRUE);
+	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
 
 	// タイトル
 	DrawFormatString(x, y, 0xFFFFFF, "=== Player Status ===");
 	y += lineHeight;
-
-	currentState_->Draw(this);
 
 	// ステータス情報を描画（選択中の項目を黄色でハイライト）
 	//unsigned int color = 0xFFFFFF;
@@ -337,46 +255,13 @@ void Player::Draw(void)
 	//DrawFormatString(x, y, (currentGrantStatusIndex_ == 8) ? highlightColor : color, "Wisdom : %d", status_.wisdom);
 	//y += lineHeight;
 
-=======
-	//// 背景描画(半透明の黒)
-	//SetDrawBlendMode(DX_BLENDMODE_ALPHA, 180);
-	//DrawBox(x - 10, y - 10, x + 250, y + lineHeight * 11 + 10, 0x000000, TRUE);
-	//SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
-	//// タイトル
-	//DrawFormatString(x, y, 0xFFFFFF, "=== Player Status ===");
-	//y += lineHeight;
-	//// ステータス情報を描画（選択中の項目を黄色でハイライト）
-	unsigned int color = 0xFFFFFF;
-	//unsigned int highlightColor = 0xFFFF00;
-	//DrawFormatString(x, y, color, "Level  : %d", status_.level);
-	//y += lineHeight;
-	//DrawFormatString(x, y, (currentGrantStatusIndex_ == 2) ? highlightColor : color, "HP     : %d", status_.hp);
-	//y += lineHeight;
-	//DrawFormatString(x, y, (currentGrantStatusIndex_ == 3) ? highlightColor : color, "MP     : %d", status_.mp);
-	//y += lineHeight;
-	//DrawFormatString(x, y, (currentGrantStatusIndex_ == 4) ? highlightColor : color, "PhysAtk: %d", status_.physAtk);
-	//y += lineHeight;
-	//DrawFormatString(x, y, (currentGrantStatusIndex_ == 5) ? highlightColor : color, "PhysDef: %d", status_.physDef);
-	//y += lineHeight;
-	//DrawFormatString(x, y, (currentGrantStatusIndex_ == 6) ? highlightColor : color, "MagicAtk: %d", status_.magicAtk);
-	//y += lineHeight;
-	//DrawFormatString(x, y, (currentGrantStatusIndex_ == 7) ? highlightColor : color, "MagicDef: %d", status_.magicDef);
-	//y += lineHeight;
-	//DrawFormatString(x, y, (currentGrantStatusIndex_ == 8) ? highlightColor : color, "Wisdom : %d", status_.wisdom);
-	//y += lineHeight;
->>>>>>> b5726539cb54c2e14d0b2c6d13b58141af57d69e
 	//DrawFormatString(x, y, (currentGrantStatusIndex_ == 9) ? highlightColor : color, "Luck   : %d", status_.luck);
 	//y += lineHeight;
 
 	//DrawFormatString(x, y, color, "PendingPoints   : %d", pendingPoints_);
 
 	//y += lineHeight;
-	DrawFormatString(x, y, 0xffffff, "jumpPow   : %f.", jumpPow_.y);
-
-	VECTOR lineStart = transform_.pos;
-	VECTOR lineEnd = { transform_.pos.x, transform_.pos.y + jumpPow_.y * 10.0f, transform_.pos.z };
-	DrawLine3D(lineStart, lineEnd, 0xFFFFFF);
-	DrawSphere3D(lineEnd, 5.0f, 16, 0xFF00FF, 0xFF00FF, true);
+	//DrawFormatString(x, y, color, "jumpPow   : %f.", jumpPow_.y);
 
 	// プレイヤーの周りを回転するオブジェクトの描画
 	static float angle = 0.0f;
@@ -399,10 +284,6 @@ void Player::Draw(void)
 	DrawSphere3D(lineY, 5.0f, 16, 0x00FF00, 0x00FF00, true);
 	DrawSphere3D(lineZ, 5.0f, 16, 0x0000FF, 0x0000FF, true);
 	DrawSphere3D(rot, 5.0f, 16, 0xFFFF00, 0xFFFF00, true);
-
-	DrawFormatString(0, 600, 0xffffff, "HP : %d", hp_);
-
-	//DrawSphere3D(transform_.pos,colPlayerRad_, 10, 0x0000ff, 0x0000ff, false);
 }
 
 void Player::ChangeState(STATE newState)

@@ -82,16 +82,10 @@ void GameScene::Update(void)
 {
 	// シーン遷移
 	auto const ins = InputManager::GetInstance();
-	int playerhp_ = player_->GetHp();
-	if (playerhp_ == 0)
+	if (ins->IsTrgDown(KEY_INPUT_RETURN))
 	{
-		sceMng_.ChangeScene(SceneManager::SCENE_ID::OVER);
+		sceMng_.ChangeScene(SceneManager::SCENE_ID::TITLE);
 	}
-	/*bool end = enemyManager_->GetEnemyDead();
-	if (end)
-	{
-		sceMng_.ChangeScene(SceneManager::SCENE_ID::CLERA);
-	}*/
 
 	stage_->Update();//ステージ更新
 	//stageWall_->Update();//ステージ壁更新
@@ -155,7 +149,7 @@ void GameScene::Release(void)
 	delete stage_;
 
 	//ステージ壁解放
-	//stageWall_->Release();
+	stageWall_->Release();
 
 	//スカイドーム解放
 	skyDome_->Release();

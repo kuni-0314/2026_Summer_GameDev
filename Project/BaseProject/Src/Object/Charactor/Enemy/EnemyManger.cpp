@@ -7,8 +7,6 @@
 #include "Robot/EnemyRobot.h"
 #include "../../Item/ItemBase.h"
 #include "../../Item/ItemManger.h"
-#include "../../Charactor/Player/Player.h"
-#include "../../Actor/ActorBase.h"
 #include "EnemyManger.h"
 
 
@@ -27,7 +25,6 @@ void EnemyManager::Init(void)
 {
 
 	LoadCsvData();
-	
 
 }
 void EnemyManager::Update(void)
@@ -39,14 +36,13 @@ void EnemyManager::Update(void)
 		if (enemy->GetHp() <= 0 && enemy->IsAlive())
 		{
 
-			gameScene_->GetItemManger()->Create(ItemBase::TYPE::HP, enemy->GetTransform().pos,hitCollider_,
-				static_cast<int>(Player::COLLIDER_TYPE::PLAYER),player_);
+			gameScene_->GetItemManger()->Create(ItemBase::TYPE::HP, enemy->GetTransform().pos,hitCollider_);
 		
 
 			enemy->SetAlive(false);
 		}
 	}
-	//エネミー削除
+
 	for (int j = 0; j < enemies_.size(); j++)
 	{
 		if (enemies_[j]->IsAnimEnd() && !enemies_[j]->IsAlive())
@@ -57,17 +53,6 @@ void EnemyManager::Update(void)
 			enemies_.erase(std::remove(enemies_.begin(), enemies_.end(), enemies_[j]), enemies_.end());
 
 			j--;
-		}
-	}
-
-	//エネミー全滅フラグ
-	isDead_ = true;
-	for (const auto enemy : enemies_)
-	{
-		if (enemy->IsAlive())
-		{
-			isDead_ = false;
-			break;
 		}
 	}
 }
@@ -144,18 +129,18 @@ void EnemyManager::LoadCsvData(void)
 		data.movableRange = stoi(strSplit[idx++]);
 
 		// エネミー生成
-		Create(data,player_);
+		Create(data);
 	}
 	ifs.close();
 }
 
-EnemyBase* EnemyManager::Create(const EnemyBase::EnemyData& data,const Player*player)
+EnemyBase* EnemyManager::Create(const EnemyBase::EnemyData& data)
 {
 	EnemyBase* enemy = nullptr;
 	switch (data.type)
 	{
 	case EnemyBase::TYPE::RAT:
-		enemy = new EnemyRat(data, const_cast<Player*>(player));
+		enemy = new EnemyRat(data,player_);
 		break;
 	default:
 		break;
@@ -196,11 +181,3 @@ VECTOR EnemyManager::GetEnemyPos(int id) const
 
 	return enemies_[id]->GetTransform().pos;
 }
-
-bool EnemyManager::GetEnemyDead(void)
-{
-	return isDead_;
-}
-
-
-

@@ -12,19 +12,6 @@ class ActorBase
 
 public:
 
-
-	enum class COLLIDER_TYPE
-	{
-		LINE,
-		CAPSULE,
-		SPHERE,
-		MODEL,
-		VIEW_RANGE,
-		PLAYER,
-		ITEM,
-		MAX,
-	};
-
 	// コンストラクタ
 	ActorBase(void);
 

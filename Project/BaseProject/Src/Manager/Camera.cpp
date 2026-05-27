@@ -81,8 +81,9 @@ void Camera::SetBeforeDraw(void)
 
 void Camera::DrawDebug(void)
 {
-	//DrawSphere3D(debugTargetPos_, 10.0f, 16, 0xff00ff, 0xff00ff, true);	
+	DrawSphere3D(debugTargetPos_, 10.0f, 16, 0xff00ff, 0xff00ff, true);	
 
+	DrawFormatString(10, 200, 0xffffff, "camera angles: %f, %f, %f", angles_.x, angles_.y, angles_.z);
 }
 
 void Camera::Release(void)
