@@ -19,14 +19,6 @@ void PlayerAirborneState::Update(Player* player)
 	}
 
 	// ジャンプキーが入力されているか
-<<<<<<< HEAD
-	if (player->IsJump() && ins->IsNew(KEY_INPUT_SPACE))
-	{
-		if (player->GetStepJump() < Player::TIME_JUMP_INPUT)
-		{
-			player->SetJumpPow(VAdd(player->GetJumpPow(), VScale(AsoUtility::DIR_U, Player::POW_JUMP_KEEP)));
-			player->SetStepJump(player->GetStepJump() + SceneManager::GetInstance().GetDeltaTime());
-=======
 	if (player->IsJump())
 	{
 		if (ins->IsNew(KEY_INPUT_SPACE))
@@ -46,7 +38,6 @@ void PlayerAirborneState::Update(Player* player)
 				player->SetJumpPow(jumpPow);
 			}
 			player->SetStepJump(Player::TIME_JUMP_INPUT);
->>>>>>> main
 		}
 	}
 
