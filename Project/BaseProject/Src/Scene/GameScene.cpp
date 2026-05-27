@@ -71,21 +71,26 @@ void GameScene::Init(void)
 	itemManger_->AddHitCollider(stageCollider);
 
 	//追従カメラ
-	sceMng_.GetCamera()->ChangeMode(Camera::MODE::TARGETING);
+	sceMng_.GetCamera()->ChangeMode(Camera::MODE::MOUSE);
 	Camera* camera = sceMng_.GetCamera();
 	camera->SetFollow(&player_->GetTransform());
 	camera->AddHitCollider(stageCollider);
-	camera->SetTargetPos(enemyManager_->GetEnemyPos(1));
 }
 
 void GameScene::Update(void)
 {
 	// シーン遷移
 	auto const ins = InputManager::GetInstance();
-	if (ins->IsTrgDown(KEY_INPUT_RETURN))
+	int playerhp_ = player_->GetHp();
+	if (playerhp_ == 0)
 	{
-		sceMng_.ChangeScene(SceneManager::SCENE_ID::TITLE);
+		sceMng_.ChangeScene(SceneManager::SCENE_ID::OVER);
 	}
+	//bool end = enemyManager_->GetEnemyDead();
+	//if (end)
+	//{
+	//	sceMng_.ChangeScene(SceneManager::SCENE_ID::CLERA);
+	//}
 
 	stage_->Update();//ステージ更新
 	//stageWall_->Update();//ステージ壁更新
@@ -98,8 +103,8 @@ void GameScene::Update(void)
 	if (ins->IsTrgDown(KEY_INPUT_LEFT) && targetEnemyId_ > 0) targetEnemyId_--;
 	if (ins->IsTrgDown(KEY_INPUT_RIGHT)) targetEnemyId_++;
 
-	targetPos_ = enemyManager_->GetEnemyPos(targetEnemyId_);
-	SceneManager::GetInstance().GetCamera()->SetTargetPos(targetPos_);
+	//targetPos_ = enemyManager_->GetEnemyPos(targetEnemyId_);
+	//SceneManager::GetInstance().GetCamera()->SetTargetPos(targetPos_);
 }
 
 void GameScene::Draw(void)
@@ -149,7 +154,7 @@ void GameScene::Release(void)
 	delete stage_;
 
 	//ステージ壁解放
-	stageWall_->Release();
+	//stageWall_->Release();
 
 	//スカイドーム解放
 	skyDome_->Release();
