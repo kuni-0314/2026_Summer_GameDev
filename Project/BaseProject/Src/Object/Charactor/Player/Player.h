@@ -62,6 +62,12 @@ public:
 	float GetJetTime(void) const { return jetTime_; }
 	void SetJetTime(const float time) { jetTime_ = time; }
 
+	// 攻撃関連のゲッター/セッター
+	int GetAttackCoolTime(void) const { return attackCoolTime_; }
+	void SetAttackCoolTime(const int time) { attackCoolTime_ = time; }
+	int GetComboTimer(void) const { return comboTimer_; }
+	void SetComboTimer(const int time) { comboTimer_ = time; }
+
 
 	//スケール
 	static constexpr float SCL_PlAYER = 1.0f;
@@ -91,10 +97,10 @@ public:
 	static constexpr VECTOR COL_LINE_JUMP_END_LOCAL_POS = { 0.0f, 50.0f, 0.0f };;
 	
 	// ジャンプ力
-	static constexpr float POW_JUMP_INIT = 35.0f;
-	// 持続ジャンプ力
+	static constexpr float POW_JUMP_INIT = 40.0f;
+	// 連打ジャンプ力
 	static constexpr float POW_JUMP_KEEP = 8.5f;
-	// ジャンプ受付時間
+	// ジャンプ力付与時間
 	static constexpr float TIME_JUMP_INPUT = 0.5f;
 
 	
@@ -102,25 +108,25 @@ public:
 
 	static constexpr float JET_TIME = 0.25f;
 
-	// 地上での移動減少率
+	// 地上での移動減衰率
 	static constexpr float GROUND_MOVE_DEC_RATE = 0.8f;
 
-	// 空中での移動減少率
+	// 空中での移動減衰率
 	static constexpr float AIR_MOVE_DEC_RATE = 0.975f;
 
 
-	// 衝突判定用カプセル上部球体
+	// 衝突判定用カプセル上部座標
 	static constexpr VECTOR COL_CAPSULE_TOP_LOCAL_POS = { 0.0f, 110.0f, 0.0f };
-	// 衝突判定用カプセル下部球体
+	// 衝突判定用カプセル下部座標
 	static constexpr VECTOR COL_CAPSULE_DOWN_LOCAL_POS = { 0.0f, 30.0f, 0.0f };
-	// 衝突判定用カプセル球体半径
+	// 衝突判定用カプセルの半径
 	static constexpr float COL_CAPSULE_RADIUS = 20.0f;
 
-	// 衝突判定のサブステップ数（高速移動時のすり抜け防止）
+	// 衝突検出のサブステップ数(高速移動時のすり抜け防止)
 	static constexpr int COLLISION_SUB_STEPS = 4;
-	// 壁沿いスライドの最大試行回数
+	// 追加スライドの最大実行数
 	static constexpr int MAX_SLIDE_ITERATIONS = 4;
-	// スライド判定用の最小移動量
+	// スライド補正用の最小移動量
 	static constexpr float MIN_MOVE_THRESHOLD = 0.01f;
 
 protected:
@@ -137,7 +143,7 @@ protected:
 	// アニメーションの初期化
 	void InitAnimation(void) override;
 
-	// 初期化後の個別処理
+	// 初期化後の後処理
 	void InitPost(void) override;
 
 	//更新系
@@ -174,4 +180,9 @@ private:
 
 	PlayerState* currentState_;
 	std::map<STATE, PlayerState*> states_;
+
+	// 攻撃のクールタイム
+	int attackCoolTime_;
+	// コンボタイマー(前回の攻撃からの経過フレーム)
+	int comboTimer_;
 };

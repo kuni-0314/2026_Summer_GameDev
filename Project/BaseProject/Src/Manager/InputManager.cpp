@@ -134,6 +134,20 @@ void InputManager::Update(void)
 		info.keyNew = CheckHitKey(info.key) ? true : false;
 		info.keyTrgDown = (!info.keyOld && info.keyNew);
 		info.keyTrgUp = (info.keyOld && !info.keyNew);
+		
+		// holdTimeの更新
+		if (info.keyNew)
+		{
+			info.holdTime++;
+		}
+		else
+		{
+			if (info.keyTrgUp)
+			{
+				info.lastHoldTime = info.holdTime;
+			}
+			info.holdTime = 0;
+		}
 	}
 
 	// マウスボタンの更新
@@ -146,6 +160,20 @@ void InputManager::Update(void)
 		info.mouseNew = (mouseInput & info.button) != 0;
 		info.mouseTrgDown = (!info.mouseOld && info.mouseNew);
 		info.mouseTrgUp = (info.mouseOld && !info.mouseNew);
+		
+		// holdTimeの更新
+		if (info.mouseNew)
+		{
+			info.holdTime++;
+		}
+		else
+		{
+			if (info.mouseTrgUp)
+			{
+				info.lastHoldTime = info.holdTime;
+			}
+			info.holdTime = 0;
+		}
 	}
 
 	// マウスホイールの更新
@@ -199,6 +227,12 @@ bool InputManager::IsHold(int key, int holdTime)
 	return it->second.keyNew && it->second.holdTime >= holdTime;
 }
 
+// キーが最後に離されるまで押されていた時間を取得
+int InputManager::GetLastHoldTime(int key)
+{
+	return keyInfos_[key].holdTime;
+}
+
 // マウスボタンが指定時間以上押されているか
 bool InputManager::IsMouseHold(int button, int holdTime)
 {
@@ -235,6 +269,16 @@ bool InputManager::IsGamepadHold(PadInput button, int gamepadIndex, int holdTime
 	       gamepadInfos_[gamepadIndex].inputs[index].holdTime >= holdTime;
 }
 
+int InputManager::GetGamepadLastHoldTime(int button, int gamepadIndex)
+{
+	return gamepadInfos_[gamepadIndex].inputs[button].lastHoldTime;
+}
+
+int InputManager::GetGamepadLastHoldTime(PadInput button, int gamepadIndex)
+{
+	return gamepadInfos_[gamepadIndex].inputs[static_cast<int>(button)].lastHoldTime;
+}
+
 // 判定を行うマウスボタンをクリア
 void InputManager::ClearMouse(void)
 {
@@ -269,6 +313,11 @@ int InputManager::GetMouseWheel(void)
 void InputManager::GetMousePos(int& x, int& y)
 {
 	GetMousePoint(&x, &y);
+}
+
+int InputManager::GetMouseLastHoldTime(int button)
+{
+	return mouseInfos_[button].lastHoldTime;
 }
 
 // ゲームパッドボタンが押されているか
@@ -418,6 +467,20 @@ void InputManager::UpdateGamePad(void)
 			}
 			pad[i].inputs[j].buttonTrgDown = (!pad[i].inputs[j].buttonOld && pad[i].inputs[j].buttonNew);
 			pad[i].inputs[j].buttonTrgUp = (pad[i].inputs[j].buttonOld && !pad[i].inputs[j].buttonNew);
+			
+			// holdTimeの更新
+			if (pad[i].inputs[j].buttonNew)
+			{
+				pad[i].inputs[j].holdTime++;
+			}
+			else
+			{
+				if (pad[i].inputs[j].buttonTrgUp)
+				{
+					pad[i].inputs[j].lastHoldTime = pad[i].inputs[j].holdTime;
+				}
+				pad[i].inputs[j].holdTime = 0;
+			}
 		}	
 
 		pad[i].AKeyLX = xState.ThumbLX;
@@ -435,7 +498,7 @@ void InputManager::Add(int key)
 	// 重複登録を回避する
 	if (keyInfos_.find(key) == keyInfos_.end())
 	{
-		keyInfos_[key] = { key, false, false, false, false };
+		keyInfos_[key] = { key, false, false, false, false, 0, 0 };
 	}
 }
 
@@ -445,6 +508,6 @@ void InputManager::AddMouse(int button)
 	// 重複登録を回避する
 	if (mouseInfos_.find(button) == mouseInfos_.end())
 	{
-		mouseInfos_[button] = { button, false, false, false, false };
+		mouseInfos_[button] = { button, false, false, false, false, 0, 0 };
 	}
 }
