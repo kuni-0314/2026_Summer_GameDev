@@ -40,7 +40,7 @@ void EnemyManager::Update(void)
 		{
 
 			gameScene_->GetItemManger()->Create(ItemBase::TYPE::HP, enemy->GetTransform().pos, hitCollider_,
-				static_cast<int>(Player::COLLIDER_TYPE::PLAYER), player_);
+				static_cast<int>(Player::COLLIDER_TYPE::CAPSULE), player_);
 
 
 			enemy->SetAlive(false);
@@ -191,6 +191,11 @@ VECTOR EnemyManager::GetNearEnemyPos(const VECTOR& pos) const
 
 VECTOR EnemyManager::GetEnemyPos(int id) const
 {
+	if (enemies_.empty())
+	{
+		return { 0.0f, 0.0f, 0.0f };
+	}
+
 	if (id < 0) id = 0;
 	else if (id >= enemies_.size()) id = enemies_.size() - 1;
 
