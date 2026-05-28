@@ -32,10 +32,13 @@ void PlayerAttackState::Enter(Player* player)
 	player->GetAnimationController()->Play(
 		static_cast<int>(Player::ANIM_TYPE::ATTACK), false, true);
 
+	// プレイヤーの向きに応じた攻撃位置を計算
+	VECTOR attackPos = CalculateAttackPosition(player);
+
 	player->GetGameScene()->CreateAttackCollider(
 		ColliderBase::TAG::PLAYER,
-		player->GetTransform().pos,
-		50.0f, // 仮の攻撃範囲
+		attackPos,
+		ATTACK_RADIUS,
 		ATTACK_POW[static_cast<int>(attackType_)],
 		ATTACK_COOL_TIME[static_cast<int>(attackType_)]);	// 一旦攻撃のクールタイムを攻撃コライダーの寿命にする
 
@@ -121,6 +124,20 @@ void PlayerAttackState::Draw(Player* player)
 	DrawFormatString(0, 260, 0xFFFFFF, "CoolTime: %d", player->GetAttackCoolTime());
 	DrawFormatString(0, 280, 0xFFFFFF, "ComboTimer: %d / %d", 
 		player->GetComboTimer(), COMBO_WINDOW_FRAME);
+}
+
+VECTOR PlayerAttackState::CalculateAttackPosition(Player* player)
+{
+	// プレイヤーの位置と回転を取得
+	VECTOR playerPos = player->GetTransform().pos;
+	VECTOR playerRot = player->GetTransform().rot;
+
+	// ローカル座標をワールド座標に変換
+	MATRIX rotMat = MGetRotY(playerRot.y);
+	VECTOR worldOffset = VTransform(ATTACK_LOCAL_POS, rotMat);
+
+	// プレイヤーの位置に加算
+	return VAdd(playerPos, worldOffset);
 }
 
 PlayerAttackState::ATTACK_TYPE PlayerAttackState::GetNextAttackType(Player* player)

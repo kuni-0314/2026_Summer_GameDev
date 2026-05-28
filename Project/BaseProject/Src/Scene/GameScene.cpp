@@ -74,7 +74,7 @@ void GameScene::Init(void)
 	itemManger_->AddHitCollider(stageCollider);
 
 	//’Ç]ƒJƒƒ‰
-	sceMng_.GetCamera()->ChangeMode(Camera::MODE::TARGETING);
+	sceMng_.GetCamera()->ChangeMode(Camera::MODE::FOLLOW);
 	Camera* camera = sceMng_.GetCamera();
 	camera->SetFollow(&player_->GetTransform());
 	camera->AddHitCollider(stageCollider);

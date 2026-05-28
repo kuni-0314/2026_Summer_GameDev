@@ -63,6 +63,12 @@ public:
 		60		// FALL
 	};
 
+	// 攻撃のローカル座標オフセット（x:左右, y:高さ, z:前後）
+	static constexpr VECTOR ATTACK_LOCAL_POS = { 10.0f, 100.0f, 70.0f };
+	
+	// 
+	static constexpr float ATTACK_RADIUS = 80.0f;
+
 	// 連続攻撃を受け付けるフレーム数
 	static constexpr int COMBO_WINDOW_FRAME = 60;
 
@@ -72,4 +78,7 @@ public:
 private:
 	// 攻撃の種類
 	ATTACK_TYPE attackType_;
+
+	// 攻撃位置を計算（プレイヤーの向きを考慮）
+	VECTOR CalculateAttackPosition(Player* player);
 };
