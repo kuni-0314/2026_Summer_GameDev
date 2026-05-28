@@ -122,5 +122,7 @@ public:
 
 	// •¶Žš—ñ‚Ì•ªŠ„
 	static std::vector <std::string> Split(std::string& line, char delimiter);
+
+
 };
 

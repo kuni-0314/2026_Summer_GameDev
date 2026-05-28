@@ -1,4 +1,4 @@
-#include <DxLib.h>
+ï»¿#include <DxLib.h>
 #include "EnemyRat.h"
 #include "../../../../Manager/ResourceManager.h"
 #include "../../../../Manager/SceneManager.h"
@@ -27,16 +27,16 @@ EnemyRat::~EnemyRat(void)
 void EnemyRat::Draw(void)
 {
 
-	// Šî’êƒNƒ‰ƒX‚Ì•`‰æˆ—
+	// åŸºåº•ã‚¯ãƒ©ã‚¹ã®æç”»å‡¦ç†
 	CharactorBase::Draw();
 
 
-	//ƒfƒoƒbƒO—pUŒ‚”ÍˆÍ•`‰æ
+	//ãƒ‡ãƒãƒƒã‚°ç”¨æ”»æ’ƒç¯„å›²æç”»
 	VECTOR local = ATTACK_SPHERE_LOCAL_POS;
-	// ‰ñ“]‚ğ“K—p
+	// å›è»¢ã‚’é©ç”¨
 	VECTOR rotated = transform_.quaRot.PosAxis(local);
 
-	// ƒ[ƒ‹ƒhÀ•W‚Ö
+	// ãƒ¯ãƒ¼ãƒ«ãƒ‰åº§æ¨™ã¸
 	worldPos = VAdd(transform_.pos, rotated);
 
 	if (stateBase_ == static_cast<int>(STATE::ATTACK))
@@ -53,7 +53,7 @@ void EnemyRat::Draw(void)
 
 void EnemyRat::InitLoad(void)
 {
-	//Šî’êƒNƒ‰ƒX‚ÌƒŠƒ\[ƒXƒ[ƒh
+	//åŸºåº•ã‚¯ãƒ©ã‚¹ã®ãƒªã‚½ãƒ¼ã‚¹ãƒ­ãƒ¼ãƒ‰
 	CharactorBase::InitLoad();
 	transform_.SetModel(resMng_.LoadModelDuplicate(ResourceManager::SRC::ENEMY_RAT));
 
@@ -62,7 +62,7 @@ void EnemyRat::InitLoad(void)
 
 void EnemyRat::InitTransform(void)
 {
-	//‘å‚«‚³AÀ•W“™‚Ì‰Šú‰»
+	//å¤§ãã•ã€åº§æ¨™ç­‰ã®åˆæœŸåŒ–
 	transform_.scl = { SCALE ,SCALE ,SCALE };
 	transform_.quaRot = Quaternion::Identity();
 	transform_.quaRotLocal = Quaternion::Euler(ROT);
@@ -73,13 +73,13 @@ void EnemyRat::InitTransform(void)
 
 void EnemyRat::InitCollider(void)
 {
-	// å‚É’n–Ê‚Æ‚ÌÕ“Ë‚Åd—l‚·‚éü•ªƒRƒ‰ƒCƒ_
+	// ä¸»ã«åœ°é¢ã¨ã®è¡çªã§ä»•æ§˜ã™ã‚‹ç·šåˆ†ã‚³ãƒ©ã‚¤ãƒ€
 	ColliderLine* colLine = new ColliderLine(
 		ColliderBase::TAG::ENEMY, &transform_,
 		COL_LINE_START_LOCAL_POS, COL_LINE_END_LOCAL_POS);
 	ownColliders_.emplace(static_cast<int>(COLLIDER_TYPE::LINE), colLine);
 
-	// å‚É•Ç‚â–Ø‚È‚Ç‚ÌÕ“Ë‚Åd—l‚·‚éƒJƒvƒZƒ‹ƒRƒ‰ƒCƒ_
+	// ä¸»ã«å£ã‚„æœ¨ãªã©ã®è¡çªã§ä»•æ§˜ã™ã‚‹ã‚«ãƒ—ã‚»ãƒ«ã‚³ãƒ©ã‚¤ãƒ€
 	ColliderCapsule* colCapsule = new ColliderCapsule(
 		ColliderBase::TAG::ENEMY, &transform_,
 		COL_CAPSULE_TOP_LOCAL_POS, COL_CAPSULE_DOWN_LOCAL_POS,
@@ -93,12 +93,12 @@ void EnemyRat::InitCollider(void)
 
 void EnemyRat::InitAnimation(void)
 {
-	//ƒAƒjƒ[ƒVƒ‡ƒ“ƒRƒ“ƒgƒ[ƒ‰[
+	//ã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³ã‚³ãƒ³ãƒˆãƒ­ãƒ¼ãƒ©ãƒ¼
 	animationController_ = new AnimationController(transform_.modelId);
 
 	int type = -1;
 
-	//‘Ò‹@
+	//å¾…æ©Ÿ
 	type = static_cast<int>(ANIM_TYPE::IDLE);
 	animationController_->AddInFbx(type, 20.0f, ANIM_INDX_IDLE);
 
@@ -124,7 +124,7 @@ void EnemyRat::InitAnimation(void)
 
 void EnemyRat::InitPost(void)
 {
-	// ó‘Ô‘JˆÚ‰Šúˆ—“o˜^
+	// çŠ¶æ…‹é·ç§»åˆæœŸå‡¦ç†ç™»éŒ²
 	stateChanges_.emplace(static_cast<int>(STATE::NONE),
 		std::bind(&EnemyRat::ChangeStateNone, this));
 	stateChanges_.emplace(static_cast<int>(STATE::THINK),
@@ -141,9 +141,11 @@ void EnemyRat::InitPost(void)
 		std::bind(&EnemyRat::ChangeStateDie, this));
 	stateChanges_.emplace(static_cast<int>(STATE::RUN),
 		std::bind(&EnemyRat::ChangeStateRun, this));
+	stateChanges_.emplace(static_cast<int>(STATE::WARNIG),
+		std::bind(&EnemyRat::ChangeStateWarnig, this));
 	stateChanges_.emplace(static_cast<int>(STATE::END),
 		std::bind(&EnemyRat::ChangeStateEnd, this));
-	// ‰Šúó‘Ôİ’è
+	// åˆæœŸçŠ¶æ…‹è¨­å®š
 	ChangeState(STATE::THINK);
 }
 
@@ -152,18 +154,24 @@ void EnemyRat::UpdateProcess(void)
 
 	stateUpdate_();
 
-	VECTOR playerPos = player_->GetPos();
-	float playerRad = player_->GetCollRadius();
+	playerPos_ = player_->GetPos();
+	playerRad_ = player_->GetCollRadius();
 
-	//ˆê“xƒvƒŒƒCƒ„[‚ğŒ©‚Â‚¯‚é‚Æ‚¸‚Á‚Æ’Ç]‚·‚é
+	// ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼æ–¹å‘
+	toPlayer_ = VSub(playerPos_, transform_.pos);
+	// åˆ‡ã‚Šæ›¿ãˆç”¨è·é›¢
+	distance_ = VSize(toPlayer_);
+
+	//ä¸€åº¦ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã‚’è¦‹ã¤ã‘ã‚‹ã¨ãšã£ã¨è¿½å¾“ã™ã‚‹
 	if (look_)
 	{
 		LookPlayer();
 	}
-	else if(AsoUtility::IsHitSpheres(worldPos, COL_SWICH_RADIUS, playerPos, playerRad))
+	else if(AsoUtility::IsHitSpheres(worldPos, COL_SWICH_RADIUS, playerPos_, playerRad_))
 	{
 		look_ = true;
 	}
+
 
 	auto const ins = InputManager::GetInstance();
 
@@ -192,12 +200,13 @@ void EnemyRat::UpdateProcessPost(void)
 
 	if (!InMovableRange())
 	{
-		//ˆÚ“®‰Â”\”ÍˆÍŠO‚Éo‚½‚çˆÚ“®À•W‚É–ß‚·
+		//ç§»å‹•å¯èƒ½ç¯„å›²å¤–ã«å‡ºãŸã‚‰ç§»å‹•åº§æ¨™ã«æˆ»ã™
 		transform_.pos = prevPos_;
 		transform_.Update();
 
-		//vló‘Ô‚É–ß‚·
+		//æ€è€ƒçŠ¶æ…‹ã«æˆ»ã™
 		ChangeState(STATE::THINK);
+		look_ = false;
 	}
 
 }
@@ -214,11 +223,31 @@ void EnemyRat::ChangeStateNone(void)
 }
 void EnemyRat::ChangeStateThink(void)
 {
+
 	stateUpdate_ = std::bind(&EnemyRat::UpdateThink, this);
 
-	// vl
-	// ƒ‰ƒ“ƒ_ƒ€‚ÉŸ‚Ìs“®‚ğŒˆ’è
-	// 30%‚Å‘Ò‹@A70%‚Åœpœj
+	//ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã‚’ã™ã§ã«ç™ºè¦‹ã—ã¦ã„ã‚‹å ´åˆ
+	if (look_)
+	{
+		// æ”»æ’ƒãŒå±Šãè‡³è¿‘è·é›¢ãªã‚‰æ”»æ’ƒã™ã‚‹
+		if (distance_ <= COL_SPHERE_RADIUS)
+		{
+			ChangeState(STATE::ATTACK);
+		}
+		// ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ãŒé›¢ã‚ŒãŸï¼ˆRUN_SWICH_DISTANCE ã‚ˆã‚Š distance_ ã®æ–¹ãŒå¤§ãã„ï¼‰å ´åˆ
+		else if (distance_ > RUN_SWICH_DISTANCE)
+		{
+			ChangeState(STATE::RUN); // èµ°ã‚ŠçŠ¶æ…‹ã¸
+		}
+		// ãã‚Œä»¥å¤–ï¼ˆãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã®è¿‘ãã«ã„ã‚‹ï¼‰å ´åˆã¯ã€ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã®å‘¨å›²ã‚’å¾˜å¾Šã™ã‚‹
+		else
+		{
+			ChangeState(STATE::WANDER); // å¾˜å¾ŠçŠ¶æ…‹ã¸
+		}
+		return; // ç™ºè¦‹æ™‚ã®å‡¦ç†ã¯ã“ã“ã§çµ‚äº†
+	}
+
+	// ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã‚’ã¾ã ç™ºè¦‹ã—ã¦ã„ãªã„
 	int rand = GetRand(100);
 	if (rand < 20)
 	{
@@ -228,16 +257,17 @@ void EnemyRat::ChangeStateThink(void)
 	{
 		ChangeState(STATE::WANDER);
 	}
+	
 }
 void EnemyRat::ChangeStateIdle(void)
 {
 	stateUpdate_ = std::bind(&EnemyRat::UpdateIdle, this);
 
-	// ƒ‰ƒ“ƒ_ƒ€‚È‘Ò‹@ŠÔ
+	// ãƒ©ãƒ³ãƒ€ãƒ ãªå¾…æ©Ÿæ™‚é–“
 	step_ = 3.0f + static_cast<float>(GetRand(3));
-	// ˆÚ“®—Êƒ[ƒ
+	// ç§»å‹•é‡ã‚¼ãƒ­
 	movePow_ = AsoUtility::VECTOR_ZERO;
-	// ‘Ò‹@ƒAƒjƒ[ƒVƒ‡ƒ“Ä¶
+	// å¾…æ©Ÿã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³å†ç”Ÿ
 	animationController_->Play(
 		static_cast<int>(ANIM_TYPE::IDLE), true);
 
@@ -246,15 +276,15 @@ void EnemyRat::ChangeStateWander(void)
 {
 	stateUpdate_ = std::bind(&EnemyRat::UpdateWander, this);
 
-	// ƒ‰ƒ“ƒ_ƒ€‚ÈŠp“x
+	// ãƒ©ãƒ³ãƒ€ãƒ ãªè§’åº¦
 	float angle = static_cast<float>(GetRand(360)) * DX_PI_F / 180.0f;
-	// ˆÚ“®•ûŒü
+	// ç§»å‹•æ–¹å‘
 	moveDir_ = VGet(cosf(angle), 0.0f, sinf(angle));
-	// ƒ‰ƒ“ƒ_ƒ€‚ÈˆÚ“®ŠÔ
+	// ãƒ©ãƒ³ãƒ€ãƒ ãªç§»å‹•æ™‚é–“
 	step_ = 2.0f + static_cast<float>(GetRand(5));
-	// ˆÚ“®ƒXƒs[ƒh
+	// ç§»å‹•ã‚¹ãƒ”ãƒ¼ãƒ‰
 	moveSpeed_ = 3.0f;
-	// •à‚«ƒAƒjƒ[ƒVƒ‡ƒ“Ä¶
+	// æ­©ãã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³å†ç”Ÿ
 	animationController_->Play(
 		static_cast<int>(ANIM_TYPE::WALK), true);
 }
@@ -262,14 +292,14 @@ void EnemyRat::ChangeStateAttack(void)
 {
 	stateUpdate_ = std::bind(&EnemyRat::UpdateAttack, this);
 
-	// ƒ‰ƒ“ƒ_ƒ€‚ÈŠp“x
+	// ãƒ©ãƒ³ãƒ€ãƒ ãªè§’åº¦
 	float angle = static_cast<float>(GetRand(360)) * DX_PI_F / 180.0f;
-	// ˆÚ“®•ûŒü
+	// ç§»å‹•æ–¹å‘
 	moveDir_ = VGet(cosf(angle), 0.0f, sinf(angle));
 
 	movePow_ = AsoUtility::VECTOR_ZERO;
 
-	// UŒ‚ƒAƒjƒ[ƒVƒ‡ƒ“Ä¶
+	// æ”»æ’ƒã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³å†ç”Ÿ
 	animationController_->Play(
 		static_cast<int>(ANIM_TYPE::ATTACK), true);
 }
@@ -278,7 +308,7 @@ void EnemyRat::ChangeStateHit(void)
 	stateUpdate_ = std::bind(&EnemyRat::UpdateHit, this);
 	movePow_ = AsoUtility::VECTOR_ZERO;
 
-	//€–SƒAƒjƒ[ƒVƒ‡ƒ“Ä¶
+	//æ­»äº¡ã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³å†ç”Ÿ
 	animationController_->Play(
 		static_cast<int>(ANIM_TYPE::HIT), false);
 }
@@ -287,7 +317,7 @@ void EnemyRat::ChangeStateDie(void)
 	stateUpdate_ = std::bind(&EnemyRat::UpdateDie, this);
 	movePow_ = AsoUtility::VECTOR_ZERO;
 
-	//€–SƒAƒjƒ[ƒVƒ‡ƒ“Ä¶
+	//æ­»äº¡ã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³å†ç”Ÿ
 	animationController_->Play(
 		static_cast<int>(ANIM_TYPE::END), false);
 }
@@ -300,18 +330,30 @@ void EnemyRat::ChangeStateEnd(void)
 void EnemyRat::ChangeStateRun(void)
 {
 	stateUpdate_ = std::bind(&EnemyRat::UpdateRun, this);
-
-	// ƒ‰ƒ“ƒ_ƒ€‚ÈŠp“x
-	float angle = static_cast<float>(GetRand(360)) * DX_PI_F / 180.0f;
-	// ˆÚ“®•ûŒü
-	moveDir_ = VGet(cosf(angle), 0.0f, sinf(angle));
-	// ƒ‰ƒ“ƒ_ƒ€‚ÈˆÚ“®ŠÔ
+	// ãƒ©ãƒ³ãƒ€ãƒ ãªç§»å‹•æ™‚é–“
 	step_ = 2.0f + static_cast<float>(GetRand(5));
-	// ˆÚ“®ƒXƒs[ƒh
+	// ç§»å‹•ã‚¹ãƒ”ãƒ¼ãƒ‰
 	moveSpeed_ = 10.0f;
-	// •à‚«ƒAƒjƒ[ƒVƒ‡ƒ“Ä¶
+	// æ­©ãã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³å†ç”Ÿ
 	animationController_->Play(
 		static_cast<int>(ANIM_TYPE::RUN), true);
+}
+
+void EnemyRat::ChangeStateWarnig(void)
+{
+	stateUpdate_ = std::bind(&EnemyRat::UpdateWander, this);
+
+	// ãƒ©ãƒ³ãƒ€ãƒ ãªè§’åº¦
+	float angle = static_cast<float>(GetRand(360)) * DX_PI_F / 180.0f;
+	// ç§»å‹•æ–¹å‘
+	moveDir_ = VGet(cosf(angle), 0.0f, sinf(angle));
+	// ãƒ©ãƒ³ãƒ€ãƒ ãªç§»å‹•æ™‚é–“
+	step_ = 2.0f + static_cast<float>(GetRand(5));
+	// ç§»å‹•ã‚¹ãƒ”ãƒ¼ãƒ‰
+	moveSpeed_ = 3.0f;
+	// æ­©ãã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³å†ç”Ÿ
+	animationController_->Play(
+		static_cast<int>(ANIM_TYPE::WALK), true);
 }
 
 void EnemyRat::UpdateNone(void)
@@ -337,13 +379,29 @@ void EnemyRat::UpdateIdle(void)
 void EnemyRat::UpdateWander(void)
 {
 	step_ -= scnMng_.GetDeltaTime();
-	if (step_ < 0.0f)
+
+	//ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã‚’è¦‹ã¤ã‘ãŸå ´åˆã®ã¿
+	if (look_)
 	{
-		ChangeState(STATE::THINK);
-		return;
+
+		int rand = GetRand(100);
+		
+		if (rand < 40)
+		{
+			ChangeState(STATE::WARNIG);
+			return;
+		}
+		else
+		{
+			ChangeState(STATE::THINK);
+		}
 	}
 
-	// ˆÚ“®‚·‚é © ’Ç‰Á
+
+	
+	
+
+	// ç§»å‹•ã™ã‚‹ â† è¿½åŠ 
 	movePow_ = VScale(moveDir_, moveSpeed_);
 }
 
@@ -352,9 +410,16 @@ void EnemyRat::UpdateAttack(void)
 	step_ -= scnMng_.GetDeltaTime();
 	if (step_ < 0.0f)
 	{
-		ChangeState(STATE::THINK);
+		//ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã¸ã®ãƒ€ãƒ¡ãƒ¼ã‚¸å‡¦ç†
+		if (AsoUtility::IsHitSpheres(worldPos, COL_SPHERE_RADIUS, playerPos_, playerRad_))
+		{
+			player_->Damege(1);
+		}
+		
+		ChangeState(STATE::IDLE);
 		return;
 	}
+
 
 
 	movePow_ = AsoUtility::VECTOR_ZERO;
@@ -390,6 +455,43 @@ void EnemyRat::UpdateEnd(void)
 
 void EnemyRat::UpdateRun(void)
 {
+
+	if (AsoUtility::IsHitSpheres(worldPos, COL_SWICH_RADIUS/2, playerPos_, playerRad_))
+	{
+		// é‡ãªã‚‹æ‰‹å‰ã§ã€ç›´æ¥å¾˜å¾Šï¼ˆWANDERï¼‰ã¸åˆ‡ã‚Šæ›¿ãˆã‚‹
+		ChangeState(STATE::WANDER);
+		return;
+	}
+
+	// ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã¸ã®æ–¹å‘ãƒ™ã‚¯ãƒˆãƒ«ã‚’æ­£è¦åŒ–ã—ã¦ç§»å‹•æ–¹å‘ã«è¨­å®š
+	if (VSize(toPlayer_) > 0.01f)
+	{
+		moveDir_ = VNorm(toPlayer_);
+	}
+
+	// ç§»å‹•é‡ã‚’é©ç”¨
+	movePow_ = VScale(moveDir_, moveSpeed_);
+}
+
+void EnemyRat::UpdateWarnig(void)
+{
+	step_ -= scnMng_.GetDeltaTime();
+
+	int rand = GetRand(100);
+
+	if (rand < 40)
+	{
+		ChangeState(STATE::THINK);
+		return;
+	}
+	else
+	{
+		ChangeState(STATE::ATTACK);
+	}
+	
+
+	// ç§»å‹•ã™ã‚‹ â† è¿½åŠ 
+	movePow_ = VScale(moveDir_, moveSpeed_);
 }
 
 
