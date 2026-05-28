@@ -109,19 +109,31 @@ void GameScene::Update(void)
 	targetPos_ = enemyManager_->GetEnemyPos(targetEnemyId_);
 	SceneManager::GetInstance().GetCamera()->SetTargetPos(targetPos_);
 
-	for (auto data : attackColliders_)
+	// 攻撃コライダの更新と寿命管理
+	for (int i = 0; i < attackColliders_.size(); i++)
 	{
+		auto data = attackColliders_[i];
 		if (data->collider != nullptr)
 		{
 			data->lifeTime--;
+			
+			// 寿命が尽きたらコライダを削除
 			if (data->lifeTime <= 0)
 			{
+				// エネミーマネージャーから攻撃コライダを削除
+				enemyManager_->ClearAttackColliders();
+				
+				delete data->collider->GetFollow();
 				delete data->collider;
-				data->collider = nullptr;
+				delete data;
+				attackColliders_.erase(attackColliders_.begin() + i);
+				i--;
 			}
-			if (data->collider != nullptr)
+			else
 			{
-				dynamic_cast<ColliderSphere*>(data->collider)->SetPos(player_->GetTransform().pos);
+				// プレイヤーの位置に追従
+				Transform* transform = const_cast<Transform*>(data->collider->GetFollow());
+				transform->pos = player_->GetTransform().pos;
 			}
 		}
 	}
@@ -147,12 +159,18 @@ void GameScene::Draw(void)
 
 	//fieldManager_->Draw();
 
+	// 攻撃コライダのデバッグ表示
 	for (auto data : attackColliders_)
 	{
 		if (data->collider != nullptr)
 		{
 			VECTOR pos = data->collider->GetFollow()->pos;
-			DrawSphere3D(pos, 20.0f, 16, GetColor(255, 0, 0), GetColor(255, 0, 0), true);
+			ColliderSphere* sphere = dynamic_cast<ColliderSphere*>(data->collider);
+			if (sphere != nullptr)
+			{
+				float radius = sphere->GetRadius();
+				DrawSphere3D(pos, radius, 16, GetColor(255, 0, 0), GetColor(255, 0, 0), true);
+			}
 		}
 	}
 }
@@ -164,6 +182,7 @@ void GameScene::Release(void)
 	{
 		if (data->collider != nullptr)
 		{
+			delete data->collider->GetFollow();
 			delete data->collider;
 			data->collider = nullptr;
 		}
@@ -209,13 +228,22 @@ void GameScene::Release(void)
 
 void GameScene::CreateAttackCollider(ColliderBase::TAG tag, VECTOR pos, float radius, float Damage, int lifeTime)
 {
-	ColliderBase* collider = new ColliderSphere(tag, nullptr, pos, radius);
+	// 新しいTransformを作成
 	Transform* transform = new Transform();
 	transform->pos = pos;
-	collider->SetFollow(transform);
+	
+	// 球体コライダを作成
+	ColliderBase* collider = new ColliderSphere(tag, transform, pos, radius);
+	
+	// 攻撃データを作成
 	AttackColliderData* data = new AttackColliderData();
 	data->collider = collider;
 	data->damage = Damage;
 	data->lifeTime = lifeTime;
+	
+	// リストに追加
 	attackColliders_.push_back(data);
+	
+	// エネミーマネージャーに攻撃コライダを登録
+	enemyManager_->AddAttackCollider(collider);
 }

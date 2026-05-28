@@ -28,7 +28,19 @@ public:
 		RUN,
 		FAST_RUN,
 		JUMP,
-		ATTACK,
+		ATK_N1,
+		ATK_N2,
+		ATK_N3,
+		ATK_N4,
+		ATK_N5,
+		ATK_H,
+		ATK_D,
+		ATK_A1,
+		ATK_A2,
+		ATK_A3,
+		ATK_A4,
+		ATK_A5,
+		ATK_F,
 	};
 
 	//コンストラクタ

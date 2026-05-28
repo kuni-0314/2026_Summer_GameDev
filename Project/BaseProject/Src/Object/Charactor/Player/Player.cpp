@@ -174,7 +174,7 @@ void Player::InitAnimation(void)
 		, 60.0f, Application::PATH_MODEL + "Player/JumpRising.mv1");
 
 	// 攻撃アニメーション
-	animationController_->Add(static_cast<int>(ANIM_TYPE::ATTACK)
+	animationController_->Add(static_cast<int>(ANIM_TYPE::ATK_N1)
 		, 40.0f, Application::PATH_MODEL + "Player/Shot.mv1");
 
 	//初期アニメーション再生

@@ -66,7 +66,7 @@ public:
 	// 攻撃のローカル座標オフセット（x:左右, y:高さ, z:前後）
 	static constexpr VECTOR ATTACK_LOCAL_POS = { 10.0f, 100.0f, 70.0f };
 	
-	// 
+	// 攻撃の
 	static constexpr float ATTACK_RADIUS = 80.0f;
 
 	// 連続攻撃を受け付けるフレーム数

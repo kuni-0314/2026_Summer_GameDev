@@ -9,6 +9,8 @@
 #include "../../Item/ItemManger.h"
 #include "../../Charactor/Player/Player.h"
 #include "../../Actor/ActorBase.h"
+#include "../../Collider/Sphere/ColliderSphere.h"
+#include "../../Collider/Capsule/ColliderCapsule.h"
 #include "EnemyManger.h"
 
 
@@ -70,7 +72,11 @@ void EnemyManager::Update(void)
 			break;
 		}
 	}
+
+	// 攻撃コライダとの衝突チェック
+	CheckAttackCollision();
 }
+
 void EnemyManager::Draw(void)
 {
 	for (auto& enemy : enemies_)
@@ -205,5 +211,113 @@ VECTOR EnemyManager::GetEnemyPos(int id) const
 bool EnemyManager::GetEnemyDead(void)
 {
 	return isDead_;
+}
+
+void EnemyManager::AddAttackCollider(const ColliderBase* attackCollider)
+{
+	if (attackCollider != nullptr)
+	{
+		attackColliders_.push_back(attackCollider);
+	}
+}
+
+void EnemyManager::ClearAttackColliders(void)
+{
+	attackColliders_.clear();
+}
+
+void EnemyManager::CheckAttackCollision(void)
+{
+	// 攻撃コライダが登録されていない場合は処理しない
+	if (attackColliders_.empty())
+	{
+		return;
+	}
+
+	for (auto& enemy : enemies_)
+	{
+		// 死亡している敵はスキップ
+		if (!enemy->IsAlive())
+		{
+			continue;
+		}
+
+		// 敵のコライダを取得(CAPSULEタイプを想定)
+		const auto& enemyColliders = enemy->GetOwnColliders();
+		const ColliderBase* enemyCollider = nullptr;
+
+		// 敵のカプセルコライダを検索
+		for (const auto& [key, collider] : enemyColliders)
+		{
+			if (collider->GetShape() == ColliderBase::SHAPE::CAPSULE)
+			{
+				enemyCollider = collider;
+				break;
+			}
+		}
+
+		// 敵のコライダが見つからない場合はスキップ
+		if (enemyCollider == nullptr)
+		{
+			continue;
+		}
+
+		// 登録された攻撃コライダとの衝突判定
+		for (const auto* attackCollider : attackColliders_)
+		{
+			if (attackCollider == nullptr)
+			{
+				continue;
+			}
+
+			// 攻撃コライダのタイプに応じた当たり判定
+			bool isHit = false;
+
+			// 球体同士の当たり判定
+			if (attackCollider->GetShape() == ColliderBase::SHAPE::SPHERE &&
+				enemyCollider->GetShape() == ColliderBase::SHAPE::CAPSULE)
+			{
+				const ColliderSphere* sphere = dynamic_cast<const ColliderSphere*>(attackCollider);
+				const ColliderCapsule* capsule = dynamic_cast<const ColliderCapsule*>(enemyCollider);
+
+				if (sphere != nullptr && capsule != nullptr)
+				{
+					// 球体とカプセルの当たり判定
+					VECTOR spherePos = sphere->GetFollow()->pos;
+					float sphereRadius = sphere->GetRadius();
+
+					VECTOR capsuleTop = capsule->GetPosTop();
+					VECTOR capsuleDown = capsule->GetPosDown();
+					float capsuleRadius = capsule->GetRadius();
+
+					// カプセルの線分と球体の最近接点を計算
+					VECTOR capsuleVec = VSub(capsuleTop, capsuleDown);
+					VECTOR toSphere = VSub(spherePos, capsuleDown);
+					float t = VDot(toSphere, capsuleVec) / VDot(capsuleVec, capsuleVec);
+					t = (t < 0.0f) ? 0.0f : (t > 1.0f) ? 1.0f : t;
+
+					VECTOR closestPoint = VAdd(capsuleDown, VScale(capsuleVec, t));
+					float distance = VSize(VSub(spherePos, closestPoint));
+
+					isHit = (distance < sphereRadius + capsuleRadius);
+				}
+			}
+
+			// ヒットした場合、ダメージ処理
+			if (isHit)
+			{
+				// プレイヤーの攻撃力を取得してダメージを与える
+				// ここではデフォルト値として10を使用
+				int damage = 10;
+				if (player_ != nullptr)
+				{
+					// プレイヤーのステータスから攻撃力を取得する場合
+					// damage = player_->GetStatus().physAtk;
+				}
+
+				enemy->Damege(damage);
+			}
+		}
+	}
 }
 

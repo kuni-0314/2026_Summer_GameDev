@@ -30,17 +30,18 @@ void PlayerAttackState::Enter(Player* player)
 
 	// アニメーション再生
 	player->GetAnimationController()->Play(
-		static_cast<int>(Player::ANIM_TYPE::ATTACK), false, true);
+		static_cast<int>(Player::ANIM_TYPE::ATK_N1), false, true);
 
 	// プレイヤーの向きに応じた攻撃位置を計算
 	VECTOR attackPos = CalculateAttackPosition(player);
 
+	// 攻撃コライダを生成
 	player->GetGameScene()->CreateAttackCollider(
 		ColliderBase::TAG::PLAYER,
 		attackPos,
 		ATTACK_RADIUS,
 		ATTACK_POW[static_cast<int>(attackType_)],
-		ATTACK_COOL_TIME[static_cast<int>(attackType_)]);	// 一旦攻撃のクールタイムを攻撃コライダーの寿命にする
+		ATTACK_COOL_TIME[static_cast<int>(attackType_)]);
 
 	// 空中攻撃の場合は移動量を設定
 	//if (player->IsAir())
