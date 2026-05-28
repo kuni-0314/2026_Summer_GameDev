@@ -1,5 +1,6 @@
 #pragma once
 #include "../../Charactor/CharactorBase.h"
+class GameScene;
 class AnimationController;
 class PlayerState;
 
@@ -61,12 +62,12 @@ public:
 	void SetJet(const bool isJet) { isJet_ = isJet; }
 	float GetJetTime(void) const { return jetTime_; }
 	void SetJetTime(const float time) { jetTime_ = time; }
-
-	// 攻撃関連のゲッター/セッター
 	int GetAttackCoolTime(void) const { return attackCoolTime_; }
 	void SetAttackCoolTime(const int time) { attackCoolTime_ = time; }
 	int GetComboTimer(void) const { return comboTimer_; }
 	void SetComboTimer(const int time) { comboTimer_ = time; }
+	GameScene* GetGameScene(void) const { return gameScene_; }
+	void SetGameScene(GameScene* gameScene) { gameScene_ = gameScene; }
 
 
 	//スケール
@@ -132,6 +133,7 @@ public:
 	VECTOR GetPos(void) const { return transform_.pos; }
 	float GetCollRadius(void) const { return COL_CAPSULE_RADIUS; }
 
+
 protected:
 
 	// リソースロード
@@ -188,4 +190,6 @@ private:
 	int attackCoolTime_;
 	// コンボタイマー(前回の攻撃からの経過フレーム)
 	int comboTimer_;
+
+	GameScene* gameScene_;
 };

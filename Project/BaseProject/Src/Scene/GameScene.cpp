@@ -10,6 +10,8 @@
 #include "../Object/Charactor/Enemy/EnemyManger.h"
 #include "../Object/Item/ItemManger.h"
 #include "../Object/FieldManager.h"
+#include "../Object/Collider/ColliderBase.h"
+#include "../Object/Collider/Sphere/ColliderSphere.h"
 #include "GameScene.h"
 
 GameScene::GameScene(void)
@@ -40,6 +42,7 @@ void GameScene::Init(void)
 	//プレイヤー
 	player_ = new Player();
 	player_->Init();
+	player_->SetGameScene(this);
 
 	// ステージモデルのコライダーをプレイヤーに登録
 	const ColliderBase* stageCollider =
@@ -105,6 +108,23 @@ void GameScene::Update(void)
 
 	targetPos_ = enemyManager_->GetEnemyPos(targetEnemyId_);
 	SceneManager::GetInstance().GetCamera()->SetTargetPos(targetPos_);
+
+	for (auto data : attackColliders_)
+	{
+		if (data->collider != nullptr)
+		{
+			data->lifeTime--;
+			if (data->lifeTime <= 0)
+			{
+				delete data->collider;
+				data->collider = nullptr;
+			}
+			if (data->collider != nullptr)
+			{
+				dynamic_cast<ColliderSphere*>(data->collider)->SetPos(player_->GetTransform().pos);
+			}
+		}
+	}
 }
 
 void GameScene::Draw(void)
@@ -126,10 +146,31 @@ void GameScene::Draw(void)
 	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
 
 	//fieldManager_->Draw();
+
+	for (auto data : attackColliders_)
+	{
+		if (data->collider != nullptr)
+		{
+			VECTOR pos = data->collider->GetFollow()->pos;
+			DrawSphere3D(pos, 20.0f, 16, GetColor(255, 0, 0), GetColor(255, 0, 0), true);
+		}
+	}
 }
 
 void GameScene::Release(void)
 {
+	// 攻撃用コライダの解放
+	for (auto data : attackColliders_)
+	{
+		if (data->collider != nullptr)
+		{
+			delete data->collider;
+			data->collider = nullptr;
+		}
+		delete data;
+	}
+	attackColliders_.clear();
+
 	// アイテムマネージャー解放
 	if (itemManger_ != nullptr)
 	{
@@ -164,4 +205,17 @@ void GameScene::Release(void)
 	delete player_;
 
 	
+}
+
+void GameScene::CreateAttackCollider(ColliderBase::TAG tag, VECTOR pos, float radius, float Damage, int lifeTime)
+{
+	ColliderBase* collider = new ColliderSphere(tag, nullptr, pos, radius);
+	Transform* transform = new Transform();
+	transform->pos = pos;
+	collider->SetFollow(transform);
+	AttackColliderData* data = new AttackColliderData();
+	data->collider = collider;
+	data->damage = Damage;
+	data->lifeTime = lifeTime;
+	attackColliders_.push_back(data);
 }

@@ -1,6 +1,8 @@
 #include "PlayerAttackState.h"
 #include "Player.h"
 #include "../../../Manager/InputManager.h"
+#include "../../../Scene/GameScene.h"
+#include "../../../Object/Collider/ColliderBase.h"
 #include "../../../Utility/AsoUtility.h"
 #include "../../../Object/Common/AnimationController.h"
 
@@ -30,11 +32,18 @@ void PlayerAttackState::Enter(Player* player)
 	player->GetAnimationController()->Play(
 		static_cast<int>(Player::ANIM_TYPE::ATTACK), false, true);
 
+	player->GetGameScene()->CreateAttackCollider(
+		ColliderBase::TAG::PLAYER,
+		player->GetTransform().pos,
+		50.0f, // 仮の攻撃範囲
+		ATTACK_POW[static_cast<int>(attackType_)],
+		ATTACK_COOL_TIME[static_cast<int>(attackType_)]);	// 一旦攻撃のクールタイムを攻撃コライダーの寿命にする
+
 	// 空中攻撃の場合は移動量を設定
-	if (player->IsAir())
-	{
-		player->SetMovePow({ 0.0f, 100.0f, 0.0f });
-	}
+	//if (player->IsAir())
+	//{
+	//	player->SetMovePow({ 0.0f, 100.0f, 0.0f });
+	//}
 }
 
 void PlayerAttackState::Update(Player* player)

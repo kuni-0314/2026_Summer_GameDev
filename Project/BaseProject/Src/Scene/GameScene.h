@@ -1,6 +1,8 @@
 #pragma once
+#include <map>
 #include <memory>
 #include "SceneBase.h"
+#include "../Object/Collider/ColliderBase.h"
 class StageWall;
 class Stage;
 class SkyDome;
@@ -32,8 +34,16 @@ public:
 	// 解放
 	void Release(void) override;
 
+	ItemManger* GetItemManger(void) const { return itemManger_; }
+
+	struct AttackColliderData
+	{
+		ColliderBase* collider = nullptr;
+		float damage = 0.0f;
+		int lifeTime = 0;
+	};
 	
-	ItemManger* GetItemManger() const { return itemManger_; }
+	void CreateAttackCollider(ColliderBase::TAG tag, VECTOR pos, float radius, float Damage, int lifeTime);
 
 private:
 	Stage* stage_;
@@ -42,10 +52,11 @@ private:
 	Player* player_;
 	EnemyManager* enemyManager_;
 	FieldManager* fieldManager_;
-	//アイテムマネージャー
 	ItemManger* itemManger_;
 
 	int targetEnemyId_;
 
 	VECTOR targetPos_;
+
+	std::vector<AttackColliderData*> attackColliders_;
 };
