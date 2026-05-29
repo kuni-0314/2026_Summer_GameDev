@@ -11,54 +11,35 @@ void PlayerAttackState::Enter(Player* player)
 	// 攻撃タイプを決定
 	attackType_ = GetNextAttackType(player);
 
-	// クールタイムを設定
-	player->SetAttackCoolTime(ATTACK_COOL_TIME[static_cast<int>(attackType_)]);
+	// クールタイムを設定（アニメーション中は攻撃不可）
+	// 大きな値を設定して、アニメーション終了時に再設定
+	player->SetAttackCoolTime(9999);
 
-	// コンボタイマーをリセット
-	if (attackType_ == ATTACK_TYPE::HEAVY || 
-		attackType_ == ATTACK_TYPE::DASH || 
-		attackType_ == ATTACK_TYPE::FALL)
-	{
-		// 特殊攻撃はコンボをリセット
-		player->SetComboTimer(0);
-	}
-	else
-	{
-		// 通常攻撃はコンボ継続
-		player->SetComboTimer(COMBO_WINDOW_FRAME);
-	}
+	// コンボタイマーをリセット（アニメーション中はコンボ不可）
+	player->SetComboTimer(0);
 
-	// アニメーション再生
-	player->GetAnimationController()->Play(
-		static_cast<int>(Player::ANIM_TYPE::ATK_N1), false, true);
-
-	// プレイヤーの向きに応じた攻撃位置を計算
+	// 攻撃位置を計算してコライダ生成
 	VECTOR attackPos = CalculateAttackPosition(player);
-
-	// 攻撃コライダを生成
 	player->GetGameScene()->CreateAttackCollider(
 		ColliderBase::TAG::PLAYER,
 		attackPos,
 		ATTACK_RADIUS,
 		ATTACK_POW[static_cast<int>(attackType_)],
-		ATTACK_COOL_TIME[static_cast<int>(attackType_)]);
-
-	// 空中攻撃の場合は移動量を設定
-	//if (player->IsAir())
-	//{
-	//	player->SetMovePow({ 0.0f, 100.0f, 0.0f });
-	//}
+		60); 
+	
+	if (player->IsAir())
+	{
+		VECTOR movePow = player->GetMovePow();
+		movePow.y = 200.0f;
+		player->SetMovePow(movePow);
+	}
 }
 
 void PlayerAttackState::Update(Player* player)
 {
-	// 遷移チェック
-	if (CheckTransitions(player))
-	{
-		return;
-	}
+	// 攻撃アニメーション中は他の状態への遷移をチェックしない
 
-	// 慣性による移動量の減衰
+	// 移動量の減衰
 	if (!AsoUtility::EqualsVZero(player->GetMovePow()))
 	{
 		VECTOR movePow = player->GetMovePow();
@@ -72,9 +53,26 @@ void PlayerAttackState::Update(Player* player)
 		player->SetMovePow(movePow);
 	}
 
-	// アニメーションが終了したらIDLE状態に戻る
+	// アニメーション終了時
 	if (player->GetAnimationController()->IsEnd())
 	{
+		// クールタイムをクリア（攻撃可能に）
+		player->SetAttackCoolTime(0);
+
+		// コンボタイマーを設定
+		if (attackType_ == ATTACK_TYPE::HEAVY || 
+			attackType_ == ATTACK_TYPE::DASH || 
+			attackType_ == ATTACK_TYPE::FALL)
+		{
+			// 強攻撃、ダッシュ攻撃、落下攻撃はコンボ不可
+			player->SetComboTimer(0);
+		}
+		else
+		{
+			// 通常攻撃と空中攻撃は60フレームのコンボ受付時間
+			player->SetComboTimer(COMBO_WINDOW_FRAME);
+		}
+		
 		player->ChangeState(Player::STATE::IDLE);
 		return;
 	}
@@ -106,7 +104,7 @@ void PlayerAttackState::Draw(Player* player)
 
 	if (player->GetAttackCoolTime() > 0)
 	{
-		color = 0xFF0000; // 赤：クールタイム中
+		color = 0xFF0000; // 赤：クールタイム中（アニメーション中）
 	}
 	else if (player->GetComboTimer() > 0)
 	{
@@ -148,7 +146,20 @@ PlayerAttackState::ATTACK_TYPE PlayerAttackState::GetNextAttackType(Player* play
 	// 長押し判定
 	if (ins->GetMouseLastHoldTime(MOUSE_INPUT_LEFT) > 30)
 	{
-		return player->IsAir() ? ATTACK_TYPE::FALL : ATTACK_TYPE::HEAVY;
+		if (player->IsAir())
+		{
+			// アニメーション再生
+			player->GetAnimationController()->Play(
+				static_cast<int>(Player::ANIM_TYPE::ATK_H), false, true);
+			return ATTACK_TYPE::FALL;
+		}
+		else
+		{
+			// アニメーション再生
+			player->GetAnimationController()->Play(
+				static_cast<int>(Player::ANIM_TYPE::ATK_H), false, true);
+			return ATTACK_TYPE::HEAVY;
+		}
 	}
 
 	// ダッシュ攻撃判定
@@ -157,6 +168,9 @@ PlayerAttackState::ATTACK_TYPE PlayerAttackState::GetNextAttackType(Player* play
 		(ins->IsNew(KEY_INPUT_W) || ins->IsNew(KEY_INPUT_A) || 
 		 ins->IsNew(KEY_INPUT_S) || ins->IsNew(KEY_INPUT_D)))
 	{
+		// アニメーション再生
+		player->GetAnimationController()->Play(
+			static_cast<int>(Player::ANIM_TYPE::ATK_D), false, true);
 		return ATTACK_TYPE::DASH;
 	}
 
@@ -166,29 +180,80 @@ PlayerAttackState::ATTACK_TYPE PlayerAttackState::GetNextAttackType(Player* play
 	if (player->IsAir())
 	{
 		// 空中コンボ
-		if (!inCombo) return ATTACK_TYPE::AIR1;
+		if (!inCombo)
+		{
+			// アニメーション再生
+			player->GetAnimationController()->Play(
+				static_cast<int>(Player::ANIM_TYPE::ATK_A1), false, true);
+			return ATTACK_TYPE::AIR1;
+		}
 
 		switch (attackType_)
 		{
-		case ATTACK_TYPE::AIR1: return ATTACK_TYPE::AIR2;
-		case ATTACK_TYPE::AIR2: return ATTACK_TYPE::AIR3;
-		case ATTACK_TYPE::AIR3: return ATTACK_TYPE::AIR4;
-		case ATTACK_TYPE::AIR4: return ATTACK_TYPE::AIR5;
-		default: return ATTACK_TYPE::AIR1;
+		case ATTACK_TYPE::AIR1:
+			// アニメーション再生
+			player->GetAnimationController()->Play(
+				static_cast<int>(Player::ANIM_TYPE::ATK_A2), false, true);
+			return ATTACK_TYPE::AIR2;
+		case ATTACK_TYPE::AIR2:
+			// アニメーション再生
+			player->GetAnimationController()->Play(
+				static_cast<int>(Player::ANIM_TYPE::ATK_A3), false, true);
+			return ATTACK_TYPE::AIR3;
+		case ATTACK_TYPE::AIR3:
+			// アニメーション再生
+			player->GetAnimationController()->Play(
+				static_cast<int>(Player::ANIM_TYPE::ATK_A4), false, true);
+			return ATTACK_TYPE::AIR4;
+		case ATTACK_TYPE::AIR4:
+			// アニメーション再生
+			player->GetAnimationController()->Play(
+				static_cast<int>(Player::ANIM_TYPE::ATK_A5), false, true);
+			return ATTACK_TYPE::AIR5;
+		default:
+			// アニメーション再生
+			player->GetAnimationController()->Play(
+				static_cast<int>(Player::ANIM_TYPE::ATK_A1), false, true);
+			return ATTACK_TYPE::AIR1;
 		}
 	}
 	else
 	{
 		// 地上コンボ
-		if (!inCombo) return ATTACK_TYPE::NORMAL1;
-
+		if (!inCombo)
+		{
+			// アニメーション再生
+			player->GetAnimationController()->Play(
+				static_cast<int>(Player::ANIM_TYPE::ATK_N1), false, true);
+			return ATTACK_TYPE::NORMAL1;
+		}
 		switch (attackType_)
 		{
-		case ATTACK_TYPE::NORMAL1: return ATTACK_TYPE::NORMAL2;
-		case ATTACK_TYPE::NORMAL2: return ATTACK_TYPE::NORMAL3;
-		case ATTACK_TYPE::NORMAL3: return ATTACK_TYPE::NORMAL4;
-		case ATTACK_TYPE::NORMAL4: return ATTACK_TYPE::NORMAL5;
-		default: return ATTACK_TYPE::NORMAL1;
+		case ATTACK_TYPE::NORMAL1: 
+			// アニメーション再生
+			player->GetAnimationController()->Play(
+				static_cast<int>(Player::ANIM_TYPE::ATK_N2), false, true);
+			return ATTACK_TYPE::NORMAL2;
+		case ATTACK_TYPE::NORMAL2: 
+			// アニメーション再生
+			player->GetAnimationController()->Play(
+				static_cast<int>(Player::ANIM_TYPE::ATK_N3), false, true);
+			return ATTACK_TYPE::NORMAL3;
+		case ATTACK_TYPE::NORMAL3: 
+			// アニメーション再生
+			player->GetAnimationController()->Play(
+				static_cast<int>(Player::ANIM_TYPE::ATK_N4), false, true);
+			return ATTACK_TYPE::NORMAL4;
+		case ATTACK_TYPE::NORMAL4: 
+			// アニメーション再生
+			player->GetAnimationController()->Play(
+				static_cast<int>(Player::ANIM_TYPE::ATK_N5), false, true);
+			return ATTACK_TYPE::NORMAL5;
+		default: 
+			// アニメーション再生
+			player->GetAnimationController()->Play(
+				static_cast<int>(Player::ANIM_TYPE::ATK_N1), false, true);
+			return ATTACK_TYPE::NORMAL1;
 		}
 	}
 }
