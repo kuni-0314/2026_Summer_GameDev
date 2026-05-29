@@ -215,8 +215,13 @@ void Camera::SetDefault(void)
 void Camera::SyncFollow(void)
 {
 
-	// 同期先の位置
+	// 追従対象のルートフレーム2のワールド座標を取得
+	VECTOR rootFramePos = MV1GetFramePosition(followTransform_->modelId, 2);
+	
+	// カメラの追従対象座標（XZはルートフレーム、Yはプレイヤーの座標を使用）
 	VECTOR pos = followTransform_->pos;
+	pos.x = rootFramePos.x;
+	pos.z = rootFramePos.z;
 
 	// Y軸
 	rotY_ = Quaternion::AngleAxis(angles_.y, AsoUtility::AXIS_Y);

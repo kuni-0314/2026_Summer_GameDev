@@ -80,6 +80,10 @@ public:
 	void SetComboTimer(const int time) { comboTimer_ = time; }
 	GameScene* GetGameScene(void) const { return gameScene_; }
 	void SetGameScene(GameScene* gameScene) { gameScene_ = gameScene; }
+	bool GetApplyRootMotion(void) const { return applyRootMotion_; }
+	void SetApplyRootMotion(const bool apply) { applyRootMotion_ = apply; }
+	VECTOR GetAnimStartModelPos(void) const { return animStartModelPos_; }
+	void SetAnimStartModelPos(const VECTOR& pos) { animStartModelPos_ = pos; }
 
 
 	//スケール
@@ -204,4 +208,17 @@ private:
 	int comboTimer_;
 
 	GameScene* gameScene_;
+
+	// アニメーション再生前のモデル座標
+	VECTOR animStartModelPos_;
+	
+	// ルートモーションを適用するかどうか
+	bool applyRootMotion_;
+	VECTOR debugPos_;
+	VECTOR debugPosPrev_;
+	
+	// 差分
+	VECTOR animDiffPos_;
+
+	void ApplyRootMotion(void);
 };

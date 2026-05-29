@@ -11,8 +11,15 @@ void PlayerAttackState::Enter(Player* player)
 	// 攻撃タイプを決定
 	attackType_ = GetNextAttackType(player);
 
+	// ルートモーション有効化
+	player->SetApplyRootMotion(true);
+	
+	// アニメーション開始時のモデルのローカル座標を記録
+	MATRIX modelMatrix = MV1GetFrameLocalWorldMatrix(player->GetTransform().modelId, 2);
+	VECTOR localPos = { modelMatrix.m[3][0], modelMatrix.m[3][1], modelMatrix.m[3][2] };
+	player->SetAnimStartModelPos(localPos);
+
 	// クールタイムを設定（アニメーション中は攻撃不可）
-	// 大きな値を設定して、アニメーション終了時に再設定
 	player->SetAttackCoolTime(9999);
 
 	// コンボタイマーをリセット（アニメーション中はコンボ不可）
@@ -27,12 +34,12 @@ void PlayerAttackState::Enter(Player* player)
 		ATTACK_POW[static_cast<int>(attackType_)],
 		60); 
 	
-	if (player->IsAir())
-	{
-		VECTOR movePow = player->GetMovePow();
-		movePow.y = 200.0f;
-		player->SetMovePow(movePow);
-	}
+	//if (player->IsAir())
+	//{
+	//	VECTOR movePow = player->GetMovePow();
+	//	movePow.y = 200.0f;
+	//	player->SetMovePow(movePow);
+	//}
 }
 
 void PlayerAttackState::Update(Player* player)
@@ -40,22 +47,28 @@ void PlayerAttackState::Update(Player* player)
 	// 攻撃アニメーション中は他の状態への遷移をチェックしない
 
 	// 移動量の減衰
-	if (!AsoUtility::EqualsVZero(player->GetMovePow()))
-	{
-		VECTOR movePow = player->GetMovePow();
-		movePow = VScale(movePow, Player::GROUND_MOVE_DEC_RATE);
+	//if (!AsoUtility::EqualsVZero(player->GetMovePow()))
+	//{
+	//	VECTOR movePow = player->GetMovePow();
+	//	movePow = VScale(movePow, Player::GROUND_MOVE_DEC_RATE);
+	//
+	//	if (VSize(movePow) < 0.01f)
+	//	{
+	//		movePow = { 0.0f, 0.0f, 0.0f };
+	//	}
+	//
+	//	player->SetMovePow(movePow);
+	//}
 
-		if (VSize(movePow) < 0.01f)
-		{
-			movePow = { 0.0f, 0.0f, 0.0f };
-		}
-
-		player->SetMovePow(movePow);
-	}
+	// 移動量の減衰を無効化(ルートモーションで制御)
+	// ダッシュ攻撃などの場合はルートモーションで移動を表現
 
 	// アニメーション終了時
 	if (player->GetAnimationController()->IsEnd())
 	{
+		// ルートモーション無効化
+		player->SetApplyRootMotion(false);
+		
 		// クールタイムをクリア（攻撃可能に）
 		player->SetAttackCoolTime(0);
 
@@ -64,12 +77,10 @@ void PlayerAttackState::Update(Player* player)
 			attackType_ == ATTACK_TYPE::DASH || 
 			attackType_ == ATTACK_TYPE::FALL)
 		{
-			// 強攻撃、ダッシュ攻撃、落下攻撃はコンボ不可
 			player->SetComboTimer(0);
 		}
 		else
 		{
-			// 通常攻撃と空中攻撃は60フレームのコンボ受付時間
 			player->SetComboTimer(COMBO_WINDOW_FRAME);
 		}
 		
@@ -80,6 +91,11 @@ void PlayerAttackState::Update(Player* player)
 
 void PlayerAttackState::Draw(Player* player)
 {
+	// 攻撃球体の位置を計算して表示
+	VECTOR attackPos = CalculateAttackPosition(player);
+	DrawSphere3D(attackPos, ATTACK_RADIUS, 16, GetColor(255, 255, 0), GetColor(255, 255, 0), true);
+
+	// 既存のUI描画
 	bool state[5][5] = {};
 	switch (attackType_)
 	{
@@ -211,7 +227,7 @@ PlayerAttackState::ATTACK_TYPE PlayerAttackState::GetNextAttackType(Player* play
 				static_cast<int>(Player::ANIM_TYPE::ATK_A5), false, true);
 			return ATTACK_TYPE::AIR5;
 		default:
-			// アニメーション再生
+			// アニメション再生
 			player->GetAnimationController()->Play(
 				static_cast<int>(Player::ANIM_TYPE::ATK_A1), false, true);
 			return ATTACK_TYPE::AIR1;

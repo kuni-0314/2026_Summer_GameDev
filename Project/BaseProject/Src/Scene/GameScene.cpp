@@ -164,10 +164,10 @@ void GameScene::Draw(void)
 	{
 		if (data->collider != nullptr)
 		{
-			VECTOR pos = data->collider->GetFollow()->pos;
 			ColliderSphere* sphere = dynamic_cast<ColliderSphere*>(data->collider);
 			if (sphere != nullptr)
 			{
+				VECTOR pos = sphere->GetPos(); // GetFollow()->pos‚Å‚Í‚È‚­GetPos()‚ðŽg—p
 				float radius = sphere->GetRadius();
 				DrawSphere3D(pos, radius, 16, GetColor(255, 0, 0), GetColor(255, 0, 0), true);
 			}
