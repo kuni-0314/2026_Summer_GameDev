@@ -63,5 +63,4 @@ protected:
 	VECTOR GetRotPos(const VECTOR& localPos) const;
 	// デバッグ用描画
 	virtual void DrawDebug(int color) = 0;
-
 };

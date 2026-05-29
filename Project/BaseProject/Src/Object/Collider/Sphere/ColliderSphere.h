@@ -16,6 +16,7 @@ public:
 	void SetLocalPos(const VECTOR& localPos);
 	// ƒ[ƒ‹ƒhÀ•W‚ğæ“¾
 	VECTOR GetPos(void) const;
+	void SetPos(const VECTOR& pos);
 	// ”¼Œa
 	float GetRadius(void) const;
 	void SetRadius(float radius);

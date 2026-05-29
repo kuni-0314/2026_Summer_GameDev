@@ -42,6 +42,12 @@ public:
 
 	bool GetEnemyDead(void);
 
+	void CheckAttackCollision(void);
+
+	// 攻撃コライダを追加
+	void AddAttackCollider(const ColliderBase* attackCollider);
+	// 攻撃コライダをクリア
+	void ClearAttackColliders(void);
 
 private:
 	//プレイヤー
@@ -54,6 +60,8 @@ private:
 
 	const ColliderBase* hitCollider_;
 
+	// 攻撃コライダのリスト
+	std::vector<const ColliderBase*> attackColliders_;
 
 	bool isDead_ = false;
 

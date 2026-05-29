@@ -29,6 +29,11 @@ VECTOR ColliderSphere::GetPos(void) const
 	return GetRotPos(localPos_) ;
 }
 
+void ColliderSphere::SetPos(const VECTOR& pos)
+{
+	localPos_ = pos;
+}
+
 float ColliderSphere::GetRadius(void) const
 {
 	return radius_;
