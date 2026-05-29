@@ -229,13 +229,8 @@ void EnemyRat::ChangeStateThink(void)
 	//プレイヤーをすでに発見している場合
 	if (look_)
 	{
-		// 攻撃が届く至近距離なら攻撃する
-		if (distance_ <= COL_SPHERE_RADIUS)
-		{
-			ChangeState(STATE::ATTACK);
-		}
 		// プレイヤーが離れた（RUN_SWICH_DISTANCE より distance_ の方が大きい）場合
-		else if (distance_ > RUN_SWICH_DISTANCE)
+		if (distance_ > RUN_SWICH_DISTANCE)
 		{
 			ChangeState(STATE::RUN); // 走り状態へ
 		}
@@ -386,9 +381,9 @@ void EnemyRat::UpdateWander(void)
 
 		int rand = GetRand(100);
 		
-		if (rand < 40)
+		if (AsoUtility::IsHitSpheres(worldPos, COL_SWICH_RADIUS/2, playerPos_, playerRad_))
 		{
-			ChangeState(STATE::WARNIG);
+			ChangeState(STATE::ATTACK);
 			return;
 		}
 		else
@@ -407,18 +402,17 @@ void EnemyRat::UpdateWander(void)
 
 void EnemyRat::UpdateAttack(void)
 {
-	step_ -= scnMng_.GetDeltaTime();
-	if (step_ < 0.0f)
+
+	//プレイヤーへのダメージ処理
+	if (AsoUtility::IsHitSpheres(worldPos, COL_SPHERE_RADIUS, playerPos_, playerRad_))
 	{
-		//プレイヤーへのダメージ処理
-		if (AsoUtility::IsHitSpheres(worldPos, COL_SPHERE_RADIUS, playerPos_, playerRad_))
-		{
-			player_->Damege(1);
-		}
-		
-		ChangeState(STATE::IDLE);
-		return;
+		player_->Damege(1);
 	}
+	if (animationController_->IsEnd())
+	{
+		ChangeState(STATE::IDLE);
+	}
+	return;
 
 
 
@@ -455,11 +449,19 @@ void EnemyRat::UpdateEnd(void)
 
 void EnemyRat::UpdateRun(void)
 {
+	step_ -= scnMng_.GetDeltaTime();
 
-	if (AsoUtility::IsHitSpheres(worldPos, COL_SWICH_RADIUS/2, playerPos_, playerRad_))
+	// 一定時間追いかけたら思考へ戻す
+	if (step_ < 0.0f)
+	{
+		ChangeState(STATE::THINK);
+		return;
+	}
+
+	if (AsoUtility::IsHitSpheres(transform_.pos, COL_SWICH_RADIUS/2, playerPos_, playerRad_))
 	{
 		// 重なる手前で、直接徘徊（WANDER）へ切り替える
-		ChangeState(STATE::WANDER);
+		ChangeState(STATE::WARNIG);
 		return;
 	}
 
@@ -475,23 +477,19 @@ void EnemyRat::UpdateRun(void)
 
 void EnemyRat::UpdateWarnig(void)
 {
+
+	// 時間減少
 	step_ -= scnMng_.GetDeltaTime();
 
-	int rand = GetRand(100);
+	// 動かない
+	movePow_ = AsoUtility::VECTOR_ZERO;
 
-	if (rand < 40)
-	{
-		ChangeState(STATE::THINK);
-		return;
-	}
-	else
+	// 警戒終了
+	if (step_ < 0.0f)
 	{
 		ChangeState(STATE::ATTACK);
+		return;
 	}
-	
-
-	// 移動する ← 追加
-	movePow_ = VScale(moveDir_, moveSpeed_);
 }
 
 
