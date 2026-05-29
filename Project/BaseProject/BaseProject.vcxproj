@@ -19,6 +19,8 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Src\Scene\OverScene.cpp" />
+    <ClCompile Include="Src\Scene\ClearScene.cpp" />
     <ClCompile Include="Src\Sound\SoundTable.cpp" />
     <ClCompile Include="Src\Sound\AudioManager.cpp" />
     <ClCompile Include="Src\Object\Charactor\Player\PlayerAirborneState.cpp" />
@@ -81,6 +83,8 @@
     <ClCompile Include="Src\Object\Actor\Stage\StageWall.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Src\Scene\OverScene.h" />
+    <ClInclude Include="Src\Scene\ClearScene.h" />
     <ClInclude Include="Src\Sound\SoundTable.h" />
     <ClInclude Include="Src\Sound\AudioManager.h" />
     <ClInclude Include="Src\Object\Charactor\Player\PlayerAirborneState.h" />

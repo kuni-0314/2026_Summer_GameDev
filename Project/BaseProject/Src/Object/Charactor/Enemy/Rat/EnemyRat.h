@@ -31,6 +31,7 @@ public:
 		ATTACK,
 		HIT,
 		DIE,
+		WARNIG,
 		END
 	};
 
@@ -74,7 +75,7 @@ private:
 	//HIT
 	static constexpr int  ANIM_INDX_HIT = 11;
 	//RUN
-	//static constexpr int  ANIM_INDX_HIT = 7;
+	static constexpr int  ANIM_INDX_RUN = 12;
 
 
 	// モデルの大きさ
@@ -106,22 +107,37 @@ private:
 	// 行動切り替え用カプセル球体半径
 	static constexpr float COL_SWICH_RADIUS = 250.0f;
 
+	// RUN切り替え距離
+	static constexpr float RUN_SWICH_DISTANCE = 400.0f;
+
+	static constexpr float ATTACK_MOVE_SPEED = 3.0f;
+
 	//攻撃判定
 	bool isAttack_; 
 	//生存判定
 	bool isAlive_ = true;
-
+	//プレイヤー視認判定
 	bool look_ = false;
+	//連続攻撃判定
+	bool attackHit_ = false;;
 
 	// 状態
 	STATE state_;
 
 	VECTOR worldPos;
+	//プレイヤー方向
+	VECTOR toPlayer_;
+	//プレイヤー座標
+	VECTOR playerPos_;
+	//プレイヤー判定球の半径
+	float playerRad_;
 
 
 
 	// 更新ステップ
 	float step_;// 状態管理(更新ステップ)
+
+	float distance_;
 
 
 	// 状態遷移
@@ -135,6 +151,7 @@ private:
 	void ChangeStateDie(void);
 	void ChangeStateEnd(void);
 	void ChangeStateRun(void);
+	void ChangeStateWarnig(void);
 
 	// 更新系
 	void UpdateNone(void);
@@ -146,6 +163,7 @@ private:
 	void UpdateDie(void);
 	void UpdateEnd(void);
 	void UpdateRun(void);
+	void UpdateWarnig(void);
 
 
 

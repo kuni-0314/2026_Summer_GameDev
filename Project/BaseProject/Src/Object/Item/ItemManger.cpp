@@ -33,8 +33,8 @@ void ItemManger::Update(void)
 		{
 			items_[j]->Release();
 			delete items_[j];
-			items_[j] = nullptr;
-			items_.erase(std::remove(items_.begin(), items_.end(), items_[j]), items_.end());
+
+			items_.erase(items_.begin() + j);
 
 			j--;
 		}
@@ -75,7 +75,7 @@ ItemBase* ItemManger::Create(const ItemBase::TYPE& type, VECTOR pos, const Colli
 		item->SetPos(pos);
 		item->AddHitCollider(hitCollider);
 		const ColliderBase* playerCollide = player->GetOwnCollider(key);
-		item->AddHitCollider(playerCollide);
+
 		break;
 	}
 
@@ -88,14 +88,6 @@ ItemBase* ItemManger::Create(const ItemBase::TYPE& type, VECTOR pos, const Colli
 	return item;
 }
 
-
-
-
-
-//void ItemManger::AddItem(ItemBase* item)
-//{
-//??items_.emplace
-//}
 
 
 

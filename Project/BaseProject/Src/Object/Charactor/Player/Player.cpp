@@ -62,12 +62,10 @@ void Player::Update()
 	CollisionReserve();
 	// 衝突判定
 	Collision();
-	// アニメーション再生
-	animationController_->Update();
-	// ルートモーション適用
-	ApplyRootMotion();
 	// モデル制御更新
 	transform_.Update();
+	// アニメーション再生
+	animationController_->Update();
 	// 各キャラクターごとの更新後処理
 	UpdateProcessPost();
 
@@ -165,11 +163,11 @@ void Player::InitAnimation(void)
 
 	// 走るアニメーション
 	animationController_->Add(static_cast<int>(ANIM_TYPE::RUN)
-		, 35.0f, Application::PATH_MODEL + "Player/Walk.mv1");
+		, 20.0f, Application::PATH_MODEL + "Player/Walk.mv1");
 
 	// ダッシュアニメーション
 	animationController_->Add(static_cast<int>(ANIM_TYPE::FAST_RUN)
-		, 50.0f, Application::PATH_MODEL + "Player/Run.mv1");
+		, 20.0f, Application::PATH_MODEL + "Player/Run.mv1");
 
 	//ジャンプアニメーション
 	animationController_->Add(static_cast<int>(ANIM_TYPE::JUMP)
@@ -220,6 +218,9 @@ void Player::InitPost(void)
 	status_.luck = DEFAULT_LUCK;
 	currentGrantStatusIndex_ = 4;
 	pendingPoints_ = 30;
+
+	hp_ = 10;
+	maxHp_ = hp_;
 
 	InitState();
 }
@@ -330,11 +331,7 @@ void Player::Draw(void)
 	DrawSphere3D(lineZ, 5.0f, 16, 0x0000FF, 0x0000FF, true);
 	DrawSphere3D(rot, 5.0f, 16, 0xFFFF00, 0xFFFF00, true);
 
-	// debugPos
-	DrawSphere3D(debugPos_, 5.0f, 16, 0x00FFFF, 0x00FFFF, true);
-	DrawSphere3D(debugPosPrev_, 5.0f, 16, 0xFF00FF, 0xFF00FF, true);
-	DrawFormatString(x, y + lineHeight, 0x00FFFF, "debugPos   : (%f, %f, %f).", debugPos_.x, debugPos_.y, debugPos_.z);
-	DrawFormatString(x, y + lineHeight * 2, 0x00FFFF, "debugPosPrev   : (%f, %f, %f).", debugPosPrev_.x, debugPosPrev_.y, debugPosPrev_.z);
+	DrawFormatString(0, 500, 0xffffff, "<Player> HP : %d", hp_);
 }
 
 void Player::ChangeState(STATE newState)
@@ -447,39 +444,6 @@ void Player::InitState(void)
 	states_[STATE::FALL] = new PlayerFallState();
 	states_[STATE::ATTACK] = new PlayerAttackState();
 	currentState_ = states_[STATE::IDLE];
-}
-
-void Player::ApplyRootMotion(void)
-{
-	if (!applyRootMotion_) return;
-
-	//// モデルのルートフレーム2のローカル座標を取得
-	//// (モデル原点からの相対位置)
-	//MATRIX modelMatrix = MV1GetFrameLocalWorldMatrix(transform_.modelId, 2);
-	//VECTOR currentLocalPos = { modelMatrix.m[3][0], modelMatrix.m[3][1], modelMatrix.m[3][2] };
-
-	//// 前フレームからのローカル座標の差分を計算
-	//VECTOR deltaLocalPos = VGet(
-	//	currentLocalPos.x - animStartModelPos_.x,
-	//	currentLocalPos.y - animStartModelPos_.y,
-	//	currentLocalPos.z - animStartModelPos_.z
-	//);
-
-	//// 差分をワールド座標系に変換（プレイヤーの回転を考慮）
-	//MATRIX rotMatrix = MGetRotY(transform_.quaRot.ToEuler().y);
-	//VECTOR deltaWorld = VTransform(deltaLocalPos, rotMatrix);
-
-	//// プレイヤーの座標に差分を加算（XZ平面のみ）
-	//transform_.pos.x += deltaWorld.x;
-	//// transform_.pos.y += deltaWorld.y; // Y軸は重力処理があるため加算しない
-	//transform_.pos.z += deltaWorld.z;
-
-	//// 次のフレームのために現在のローカル座標を保存
-	//animStartModelPos_ = currentLocalPos;
-
-	//// デバッグ用
-	//debugPosPrev_ = debugPos_;
-	//debugPos_ = VAdd(transform_.pos, currentLocalPos);
 }
 
 
