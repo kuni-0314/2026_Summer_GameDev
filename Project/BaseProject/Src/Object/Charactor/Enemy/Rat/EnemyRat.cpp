@@ -39,14 +39,14 @@ void EnemyRat::Draw(void)
 	// ワールド座標へ
 	worldPos = VAdd(transform_.pos, rotated);
 
-	if (stateBase_ == static_cast<int>(STATE::ATTACK))
-	{
-		DrawSphere3D(worldPos,
-			COL_SPHERE_RADIUS, 10, 0x0000ff, 0x0000ff, false);
-	}
+	//if (stateBase_ == static_cast<int>(STATE::ATTACK))
+	//{
+	//	DrawSphere3D(worldPos,
+	//		COL_SPHERE_RADIUS, 10, 0x0000ff, 0x0000ff, false);
+	//}
 
-	DrawSphere3D(worldPos,
-		COL_SWICH_RADIUS, 10, 0x0000ff, 0x0000ff, false);
+	//DrawSphere3D(worldPos,
+	//	COL_SWICH_RADIUS, 10, 0x0000ff, 0x0000ff, false);
 }
 
 
