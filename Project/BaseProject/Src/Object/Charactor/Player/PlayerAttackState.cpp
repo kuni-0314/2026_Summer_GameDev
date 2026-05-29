@@ -91,54 +91,54 @@ void PlayerAttackState::Update(Player* player)
 
 void PlayerAttackState::Draw(Player* player)
 {
-	// 攻撃球体の位置を計算して表示
-	VECTOR attackPos = CalculateAttackPosition(player);
-	DrawSphere3D(attackPos, ATTACK_RADIUS, 16, GetColor(255, 255, 0), GetColor(255, 255, 0), true);
+	//// 攻撃球体の位置を計算して表示
+	//VECTOR attackPos = CalculateAttackPosition(player);
+	//DrawSphere3D(attackPos, ATTACK_RADIUS, 16, GetColor(255, 255, 0), GetColor(255, 255, 0), true);
 
-	// 既存のUI描画
-	bool state[5][5] = {};
-	switch (attackType_)
-	{
-	case ATTACK_TYPE::NORMAL1: state[0][0] = true; break;
-	case ATTACK_TYPE::NORMAL2: state[0][1] = true; break;
-	case ATTACK_TYPE::NORMAL3: state[0][2] = true; break;
-	case ATTACK_TYPE::NORMAL4: state[0][3] = true; break;
-	case ATTACK_TYPE::NORMAL5: state[0][4] = true; break;
-	case ATTACK_TYPE::HEAVY:   state[1][0] = true; break;
-	case ATTACK_TYPE::DASH:    state[2][0] = true; break;
-	case ATTACK_TYPE::AIR1:    state[3][0] = true; break;
-	case ATTACK_TYPE::AIR2:    state[3][1] = true; break;
-	case ATTACK_TYPE::AIR3:    state[3][2] = true; break;
-	case ATTACK_TYPE::AIR4:    state[3][3] = true; break;
-	case ATTACK_TYPE::AIR5:    state[3][4] = true; break;
-	case ATTACK_TYPE::FALL:    state[4][0] = true; break;
-	default: break;
-	}
+	//// 既存のUI描画
+	//bool state[5][5] = {};
+	//switch (attackType_)
+	//{
+	//case ATTACK_TYPE::NORMAL1: state[0][0] = true; break;
+	//case ATTACK_TYPE::NORMAL2: state[0][1] = true; break;
+	//case ATTACK_TYPE::NORMAL3: state[0][2] = true; break;
+	//case ATTACK_TYPE::NORMAL4: state[0][3] = true; break;
+	//case ATTACK_TYPE::NORMAL5: state[0][4] = true; break;
+	//case ATTACK_TYPE::HEAVY:   state[1][0] = true; break;
+	//case ATTACK_TYPE::DASH:    state[2][0] = true; break;
+	//case ATTACK_TYPE::AIR1:    state[3][0] = true; break;
+	//case ATTACK_TYPE::AIR2:    state[3][1] = true; break;
+	//case ATTACK_TYPE::AIR3:    state[3][2] = true; break;
+	//case ATTACK_TYPE::AIR4:    state[3][3] = true; break;
+	//case ATTACK_TYPE::AIR5:    state[3][4] = true; break;
+	//case ATTACK_TYPE::FALL:    state[4][0] = true; break;
+	//default: break;
+	//}
 
-	const int size = 50;
-	int color = 0xFFFF00;
+	//const int size = 50;
+	//int color = 0xFFFF00;
 
-	if (player->GetAttackCoolTime() > 0)
-	{
-		color = 0xFF0000; // 赤：クールタイム中（アニメーション中）
-	}
-	else if (player->GetComboTimer() > 0)
-	{
-		color = 0x00FF00; // 緑：コンボ可能
-	}
+	//if (player->GetAttackCoolTime() > 0)
+	//{
+	//	color = 0xFF0000; // 赤：クールタイム中（アニメーション中）
+	//}
+	//else if (player->GetComboTimer() > 0)
+	//{
+	//	color = 0x00FF00; // 緑：コンボ可能
+	//}
 
-	for (int y = 0; y < 5; y++)
-	{
-		for (int x = 0; x < 5; x++)
-		{
-			DrawBox(size * x, size * y, size * (x + 1), size * (y + 1), 
-				color, state[y][x]);
-		}
-	}
+	//for (int y = 0; y < 5; y++)
+	//{
+	//	for (int x = 0; x < 5; x++)
+	//	{
+	//		DrawBox(size * x, size * y, size * (x + 1), size * (y + 1), 
+	//			color, state[y][x]);
+	//	}
+	//}
 
-	DrawFormatString(0, 260, 0xFFFFFF, "CoolTime: %d", player->GetAttackCoolTime());
-	DrawFormatString(0, 280, 0xFFFFFF, "ComboTimer: %d / %d", 
-		player->GetComboTimer(), COMBO_WINDOW_FRAME);
+	//DrawFormatString(0, 260, 0xFFFFFF, "CoolTime: %d", player->GetAttackCoolTime());
+	//DrawFormatString(0, 280, 0xFFFFFF, "ComboTimer: %d / %d", 
+	//	player->GetComboTimer(), COMBO_WINDOW_FRAME);
 }
 
 VECTOR PlayerAttackState::CalculateAttackPosition(Player* player)
