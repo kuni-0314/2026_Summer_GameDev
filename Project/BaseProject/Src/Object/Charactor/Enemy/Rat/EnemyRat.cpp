@@ -156,15 +156,12 @@ void EnemyRat::UpdateProcess(void)
 	playerPos_ = player_->GetPos();
 	playerRad_ = player_->GetCollRadius();
 
-<<<<<<< HEAD
-=======
 	// プレイヤー方向
 	toPlayer_ = VSub(playerPos_, transform_.pos);
 	// 切り替え用距離
 	distance_ = VSize(toPlayer_);
 
 	//一度プレイヤーを見つけるとずっと追従する
->>>>>>> origin/α修正
 	if (look_)
 	{
 		LookPlayer();
@@ -177,9 +174,9 @@ void EnemyRat::UpdateProcess(void)
 
 	auto const ins = InputManager::GetInstance();
 
-	// 1�L�[ or ���N���b�N�i����300�ȓ��j�ő���
+	// 1キー or マウス左クリックでプレイヤーが近くにいる場合
 	if (ins->IsTrgDown(KEY_INPUT_1) ||
-		(ins->IsMouseTrgDown(MOUSE_INPUT_LEFT) && VSize(VSub(playerPos, transform_.pos)) < 300.0f))
+		(ins->IsMouseTrgDown(MOUSE_INPUT_LEFT) && VSize(VSub(playerPos_, transform_.pos)) < 300.0f))
 	{
 		Damege(99999);
 

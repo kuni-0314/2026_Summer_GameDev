@@ -74,7 +74,7 @@ void GameScene::Init(void)
 	itemManger_->AddHitCollider(stageCollider);
 
 	//追従カメラ
-	sceMng_.GetCamera()->ChangeMode(Camera::MODE::FOLLOW);
+	sceMng_.GetCamera()->ChangeMode(Camera::MODE::MOUSE);
 	Camera* camera = sceMng_.GetCamera();
 	camera->SetFollow(&player_->GetTransform());
 	camera->AddHitCollider(stageCollider);
@@ -198,19 +198,19 @@ void GameScene::Draw(void)
 	//fieldManager_->Draw();
 
 	// 攻撃コライダのデバッグ表示
-	for (auto data : attackColliders_)
-	{
-		if (data->collider != nullptr)
-		{
-			ColliderSphere* sphere = dynamic_cast<ColliderSphere*>(data->collider);
-			if (sphere != nullptr)
-			{
-				VECTOR pos = sphere->GetPos(); // GetFollow()->posではなくGetPos()を使用
-				float radius = sphere->GetRadius();
-				DrawSphere3D(pos, radius, 16, GetColor(255, 0, 0), GetColor(255, 0, 0), true);
-			}
-		}
-	}
+	//for (auto data : attackColliders_)
+	//{
+	//	if (data->collider != nullptr)
+	//	{
+	//		ColliderSphere* sphere = dynamic_cast<ColliderSphere*>(data->collider);
+	//		if (sphere != nullptr)
+	//		{
+	//			VECTOR pos = sphere->GetPos(); // GetFollow()->posではなくGetPos()を使用
+	//			float radius = sphere->GetRadius();
+	//			DrawSphere3D(pos, radius, 16, GetColor(255, 0, 0), GetColor(255, 0, 0), true);
+	//		}
+	//	}
+	//}
 }
 
 void GameScene::Release(void)
