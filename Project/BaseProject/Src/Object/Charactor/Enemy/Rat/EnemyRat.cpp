@@ -149,13 +149,11 @@ void EnemyRat::InitPost(void)
 
 void EnemyRat::UpdateProcess(void)
 {
-
 	stateUpdate_();
 
 	VECTOR playerPos = player_->GetPos();
 	float playerRad = player_->GetCollRadius();
 
-	//一度プレイヤーを見つけるとずっと追従する
 	if (look_)
 	{
 		LookPlayer();
@@ -167,23 +165,21 @@ void EnemyRat::UpdateProcess(void)
 
 	auto const ins = InputManager::GetInstance();
 
-
-	if (ins->IsTrgDown(KEY_INPUT_1))
+	// 1キー or 左クリック（距離300以内）で即死
+	if (ins->IsTrgDown(KEY_INPUT_1) ||
+		(ins->IsMouseTrgDown(MOUSE_INPUT_LEFT) && VSize(VSub(playerPos, transform_.pos)) < 300.0f))
 	{
-
-		Damege(5);
+		Damege(99999);
 
 		if (hp_ <= 0)
 		{
 			ChangeState(STATE::DIE);
-
 		}
 		else
 		{
 			ChangeState(STATE::HIT);
 		}
 	}
-
 }
 
 void EnemyRat::UpdateProcessPost(void)

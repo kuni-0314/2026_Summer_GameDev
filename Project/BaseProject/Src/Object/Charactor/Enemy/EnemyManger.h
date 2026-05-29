@@ -49,6 +49,9 @@ public:
 	// 攻撃コライダをクリア
 	void ClearAttackColliders(void);
 
+	// エネミーリストを取得（やっつけ用）
+	const std::vector<EnemyBase*>& GetEnemies() const { return enemies_; }
+
 private:
 	//プレイヤー
 	Player* player_;

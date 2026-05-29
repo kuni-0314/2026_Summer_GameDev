@@ -109,6 +109,19 @@ void GameScene::Update(void)
 	targetPos_ = enemyManager_->GetEnemyPos(targetEnemyId_);
 	SceneManager::GetInstance().GetCamera()->SetTargetPos(targetPos_);
 
+	if (ins->IsTrgDown(MOUSE_INPUT_LEFT)) {
+		auto enemies = enemyManager_->GetEnemies();
+		for (auto enemy : enemies) {
+			if (!enemy->IsAlive()) continue;
+			VECTOR playerPos = player_->GetTransform().pos;
+			VECTOR enemyPos = enemy->GetTransform().pos;
+			float dist = VSize(VSub(playerPos, enemyPos));
+			if (dist < 300.0f) { // 300以内なら即死
+				enemy->Damege(99999); // 即死ダメージ
+			}
+		}
+	}
+
 	// 攻撃コライダの更新と寿命管理
 	for (int i = 0; i < attackColliders_.size(); i++)
 	{
@@ -117,10 +130,35 @@ void GameScene::Update(void)
 		{
 			data->lifeTime--;
 			
+			// プレイヤーの位置に追従
+			ColliderSphere* sphere = dynamic_cast<ColliderSphere*>(data->collider);
+			if (sphere != nullptr)
+			{
+				Transform* transform = const_cast<Transform*>(data->collider->GetFollow());
+				transform->pos = player_->GetTransform().pos;
+				
+				// **やっつけ敵との当たり判定**
+				auto enemies = enemyManager_->GetEnemies();
+				for (auto enemy : enemies)
+				{
+					if (!enemy->IsAlive()) continue;
+					
+					// 敵との距離チェック
+					VECTOR enemyPos = enemy->GetTransform().pos;
+					VECTOR spherePos = sphere->GetPos();
+					float distance = VSize(VSub(enemyPos, spherePos));
+					
+					// 球体の半径内なら当たり
+					if (distance < sphere->GetRadius())
+					{
+						enemy->Damege(static_cast<int>(data->damage));
+					}
+				}
+			}
+			
 			// 寿命が尽きたらコライダを削除
 			if (data->lifeTime <= 0)
 			{
-				// エネミーマネージャーから攻撃コライダを削除
 				enemyManager_->ClearAttackColliders();
 				
 				delete data->collider->GetFollow();
