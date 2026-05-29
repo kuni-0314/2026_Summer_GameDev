@@ -287,16 +287,17 @@ void EnemyRat::ChangeStateAttack(void)
 {
 	stateUpdate_ = std::bind(&EnemyRat::UpdateAttack, this);
 
-	// ランダムな角度
-	float angle = static_cast<float>(GetRand(360)) * DX_PI_F / 180.0f;
-	// 移動方向
-	moveDir_ = VGet(cosf(angle), 0.0f, sinf(angle));
 
-	movePow_ = AsoUtility::VECTOR_ZERO;
+	// プレイヤー方向へ固定
+	if (VSize(toPlayer_) > 0.01f)
+	{
+		moveDir_ = VNorm(toPlayer_);
+	}
+	
 
 	// 攻撃アニメーション再生
 	animationController_->Play(
-		static_cast<int>(ANIM_TYPE::ATTACK), true);
+		static_cast<int>(ANIM_TYPE::ATTACK), false);
 }
 void EnemyRat::ChangeStateHit(void)
 {
@@ -328,7 +329,7 @@ void EnemyRat::ChangeStateRun(void)
 	// ランダムな移動時間
 	step_ = 2.0f + static_cast<float>(GetRand(5));
 	// 移動スピード
-	moveSpeed_ = 10.0f;
+	moveSpeed_ = 8.0f;
 	// 歩きアニメーション再生
 	animationController_->Play(
 		static_cast<int>(ANIM_TYPE::RUN), true);
@@ -336,17 +337,15 @@ void EnemyRat::ChangeStateRun(void)
 
 void EnemyRat::ChangeStateWarnig(void)
 {
-	stateUpdate_ = std::bind(&EnemyRat::UpdateWander, this);
+	stateUpdate_ = std::bind(&EnemyRat::UpdateWarnig, this);
 
-	// ランダムな角度
-	float angle = static_cast<float>(GetRand(360)) * DX_PI_F / 180.0f;
-	// 移動方向
-	moveDir_ = VGet(cosf(angle), 0.0f, sinf(angle));
-	// ランダムな移動時間
-	step_ = 2.0f + static_cast<float>(GetRand(5));
-	// 移動スピード
-	moveSpeed_ = 3.0f;
-	// 歩きアニメーション再生
+	// 警戒時間
+	step_ = 1.0f;
+
+	// 警戒時移動速度（遅め）
+	moveSpeed_ = 1.5f;
+
+	// 警戒アニメ
 	animationController_->Play(
 		static_cast<int>(ANIM_TYPE::WALK), true);
 }
@@ -402,14 +401,23 @@ void EnemyRat::UpdateWander(void)
 
 void EnemyRat::UpdateAttack(void)
 {
+	// 前進しながら攻撃
+	movePow_ = VScale(moveDir_, ATTACK_MOVE_SPEED);
+	
 
-	//プレイヤーへのダメージ処理
-	if (AsoUtility::IsHitSpheres(worldPos, COL_SPHERE_RADIUS, playerPos_, playerRad_))
+	if (!isAttack_)
 	{
-		player_->Damege(1);
+		//プレイヤーへのダメージ処理
+		if (AsoUtility::IsHitSpheres(worldPos, COL_SPHERE_RADIUS, playerPos_, playerRad_))
+		{
+			player_->Damege(1);
+			isAttack_ = true;
+		}
 	}
+
 	if (animationController_->IsEnd())
 	{
+		isAttack_ = false;
 		ChangeState(STATE::IDLE);
 	}
 	return;
@@ -481,10 +489,24 @@ void EnemyRat::UpdateWarnig(void)
 	// 時間減少
 	step_ -= scnMng_.GetDeltaTime();
 
-	// 動かない
-	movePow_ = AsoUtility::VECTOR_ZERO;
+	// プレイヤー方向へゆっくり移動
+	if (VSize(toPlayer_) > 0.01f)
+	{
+		moveDir_ = VNorm(toPlayer_);
+	}
 
-	// 警戒終了
+	movePow_ = VScale(moveDir_, moveSpeed_);
+
+	// プレイヤーを見る
+	LookPlayer();
+
+	// 十分近づいたら止まる
+	if (distance_ < COL_SPHERE_RADIUS * 1.2f)
+	{
+		movePow_ = AsoUtility::VECTOR_ZERO;
+	}
+
+	// 警戒終了後に攻撃
 	if (step_ < 0.0f)
 	{
 		ChangeState(STATE::ATTACK);

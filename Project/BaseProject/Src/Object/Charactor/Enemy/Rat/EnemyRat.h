@@ -110,6 +110,8 @@ private:
 	// RUN切り替え距離
 	static constexpr float RUN_SWICH_DISTANCE = 400.0f;
 
+	static constexpr float ATTACK_MOVE_SPEED = 3.0f;
+
 	//攻撃判定
 	bool isAttack_; 
 	//生存判定
@@ -117,7 +119,7 @@ private:
 	//プレイヤー視認判定
 	bool look_ = false;
 	//連続攻撃判定
-	bool hasAttacked_;
+	bool attackHit_ = false;;
 
 	// 状態
 	STATE state_;

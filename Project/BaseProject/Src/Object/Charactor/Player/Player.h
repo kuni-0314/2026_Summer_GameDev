@@ -164,6 +164,7 @@ private:
 	Status status_;
 	int pendingPoints_;
 	int currentGrantStatusIndex_;
+	int maxHp_;
 	static constexpr int MAX_STATUS_INDEX = 9;
 
 	// 初期ステータス（後々csvにでも）4

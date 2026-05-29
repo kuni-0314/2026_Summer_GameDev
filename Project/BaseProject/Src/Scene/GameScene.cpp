@@ -82,15 +82,15 @@ void GameScene::Update(void)
 {
 	// シーン遷移
 	auto const ins = InputManager::GetInstance();
-	if (ins->IsTrgDown(KEY_INPUT_RETURN))
+	if (player_->GetHp() <= 0)
 	{
-		sceMng_.ChangeScene(SceneManager::SCENE_ID::TITLE);
+		sceMng_.ChangeScene(SceneManager::SCENE_ID::OVER);
 	}
-	//bool end = enemyManager_->GetEnemyDead();
-	//if (end)
-	//{
-	//	sceMng_.ChangeScene(SceneManager::SCENE_ID::CLERA);
-	//}
+	bool end = enemyManager_->GetEnemyDead();
+	if (end)
+	{
+		sceMng_.ChangeScene(SceneManager::SCENE_ID::CLEAR);
+	}
 
 	stage_->Update();//ステージ更新
 	//stageWall_->Update();//ステージ壁更新

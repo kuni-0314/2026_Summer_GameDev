@@ -195,6 +195,9 @@ void Player::InitPost(void)
 	currentGrantStatusIndex_ = 4;
 	pendingPoints_ = 30;
 
+	hp_ = 10;
+	maxHp_ = hp_;
+
 	InitState();
 }
 
@@ -303,6 +306,8 @@ void Player::Draw(void)
 	DrawSphere3D(lineY, 5.0f, 16, 0x00FF00, 0x00FF00, true);
 	DrawSphere3D(lineZ, 5.0f, 16, 0x0000FF, 0x0000FF, true);
 	DrawSphere3D(rot, 5.0f, 16, 0xFFFF00, 0xFFFF00, true);
+
+	DrawFormatString(0, 500, 0xffffff, "<Player> HP : %d", hp_);
 }
 
 void Player::ChangeState(STATE newState)

@@ -5,6 +5,8 @@
 #include "../Scene/TitleScene.h"
 #include "../Scene/GameScene.h"
 #include "../Scene/DebugScene.h"
+#include "../Scene/ClearScene.h"
+#include "../Scene/OverScene.h"
 #include "Camera.h"
 #include "ResourceManager.h"
 #include "SceneManager.h"
@@ -249,6 +251,12 @@ void SceneManager::DoChangeScene(SCENE_ID sceneId)
 		break;
 	case SCENE_ID::DEBUG:
 		scene_ = new DebugScene();
+		break;
+	case SCENE_ID::CLEAR:
+		scene_ = new ClearScene();
+		break;
+	case SCENE_ID::OVER:
+		scene_ = new OverScene();
 		break;
 	}
 
