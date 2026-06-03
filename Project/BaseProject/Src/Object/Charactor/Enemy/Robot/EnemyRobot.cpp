@@ -164,9 +164,9 @@ void EnemyRobot::Draw(void)
 	CharactorBase::Draw();
 
 #pragma region éãñÏ(â~êç)ÇÃï`âÊ
-	SetUseLighting(FALSE);
+	SetUseLighting(false);
 	MV1DrawModel(viewRangeTransform_.modelId);
-	SetUseLighting(TRUE);
+	SetUseLighting(true);
 #pragma endregion
 
 #ifdef _DEBUG

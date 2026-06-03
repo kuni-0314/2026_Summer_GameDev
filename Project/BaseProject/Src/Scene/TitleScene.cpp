@@ -133,13 +133,13 @@ void TitleScene::Draw(void)
 	MV1DrawModel(player_.modelId);//player•`‰æ
 
 
-	DrawGraph(Application::SCREEN_SIZE_X/3,IMG_TITLE_POS_Y, imgTitle_, TRUE);
+	DrawGraph(Application::SCREEN_SIZE_X/3,IMG_TITLE_POS_Y, imgTitle_, true);
 
 	if (!IsSelect_)
 	{
 		if (!pushAlive_)
 		{
-			DrawGraph(Application::SCREEN_SIZE_X / 3, IMG_PUSH_POS_Y, imgPushSpace_, TRUE);
+			DrawGraph(Application::SCREEN_SIZE_X / 3, IMG_PUSH_POS_Y, imgPushSpace_, true);
 		}
 	}
 	

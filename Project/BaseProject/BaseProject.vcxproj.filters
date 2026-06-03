@@ -63,6 +63,7 @@
     <ClCompile Include="Src\Object\Actor\Stage\StageWall.cpp" />
     <ClCompile Include="Src\Scene\ClearScene.cpp" />
     <ClCompile Include="Src\Scene\OverScene.cpp" />
+    <ClCompile Include="Src\Object\Weapon\WeaponBase.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Src\Sound\SoundTable.h" />
@@ -127,5 +128,6 @@
     <ClInclude Include="Src\Object\Actor\Stage\StageWall.h" />
     <ClInclude Include="Src\Scene\ClearScene.h" />
     <ClInclude Include="Src\Scene\OverScene.h" />
+    <ClInclude Include="Src\Object\Weapon\WeaponBase.h" />
   </ItemGroup>
 </Project>

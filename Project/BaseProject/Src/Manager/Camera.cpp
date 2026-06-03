@@ -188,7 +188,7 @@ void Camera::ChangeMode(MODE mode)
 		break;
 	case Camera::MODE::MOUSE:
 		// マウスカーソルを画面中央に固定
-		SetMouseDispFlag(FALSE);
+		SetMouseDispFlag(false);
 		break;
 	}
 

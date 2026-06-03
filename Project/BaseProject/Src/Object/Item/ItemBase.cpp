@@ -275,10 +275,10 @@ void ItemBase::DrawShadow(void)
 
 
 	// ライティングを無効にする
-	SetUseLighting(FALSE);
+	SetUseLighting(false);
 
 	// Ｚバッファを有効にする
-	SetUseZBuffer3D(TRUE);
+	SetUseZBuffer3D(true);
 
 	// テクスチャアドレスモードを CLAMP にする( テクスチャの端より先は端のドットが延々続く )
 	SetTextureAddressMode(DX_TEXADDRESS_CLAMP);
@@ -331,17 +331,17 @@ void ItemBase::DrawShadow(void)
 		Vertex[2].v = (HitRes->Position[2].z - transform_.pos.z) / (ITEM_SHADOW_SIZE * 2.0f) + 0.5f;
 
 		// 影ポリゴンを描画
-		DrawPolygon3D(Vertex, 1, imgShadow_, TRUE);
+		DrawPolygon3D(Vertex, 1, imgShadow_, true);
 	}
 
 	// 検出した地面ポリゴン情報の後始末
 	MV1CollResultPolyDimTerminate(HitResDim);
 
 	// ライティングを有効にする
-	SetUseLighting(TRUE);
+	SetUseLighting(true);
 
 	// Ｚバッファを無効にする
-	SetUseZBuffer3D(FALSE);
+	SetUseZBuffer3D(false);
 }
 
 

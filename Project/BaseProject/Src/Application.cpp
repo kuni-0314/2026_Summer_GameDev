@@ -181,7 +181,7 @@ void Application::InitEffekseer(void)
 		DxLib_End();
 	}
 
-	SetChangeScreenModeGraphicsSystemResetFlag(FALSE);
+	SetChangeScreenModeGraphicsSystemResetFlag(false);
 
 	Effekseer_SetGraphicsDeviceLostCallbackFunctions();
 }

@@ -63,11 +63,17 @@ void PlayerAttackState::Update(Player* player)
 	// 移動量の減衰を無効化(ルートモーションで制御)
 	// ダッシュ攻撃などの場合はルートモーションで移動を表現
 
+	VECTOR framePos = MV1GetFramePosition(player->GetTransform().modelId, 2);
+	framePos.y = player->GetPos().y;
+	player->SetPos(framePos);
+
 	// アニメーション終了時
 	if (player->GetAnimationController()->IsEnd())
 	{
-		// ルートモーション無効化
-		player->SetApplyRootMotion(false);
+		// ルートフレーム2の座標をプレイヤーの座標にする
+		//VECTOR framePos = MV1GetFramePosition(player->GetTransform().modelId, 2);
+		//framePos.y = player->GetPos().y;
+		//player->SetPos(framePos);
 		
 		// クールタイムをクリア（攻撃可能に）
 		player->SetAttackCoolTime(0);

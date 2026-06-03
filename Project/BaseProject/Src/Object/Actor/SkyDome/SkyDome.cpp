@@ -46,9 +46,9 @@ void SkyDome::Update()
 
 void SkyDome::Draw()
 {
-	SetUseLighting(FALSE);
+	SetUseLighting(false);
 	MV1DrawModel(transform_.modelId);
-	SetUseLighting(TRUE);
+	SetUseLighting(true);
 }
 
 void SkyDome::InitLoad(void)

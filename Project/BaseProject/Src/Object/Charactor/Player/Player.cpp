@@ -167,7 +167,7 @@ void Player::InitAnimation(void)
 
 	// ダッシュアニメーション
 	animationController_->Add(static_cast<int>(ANIM_TYPE::FAST_RUN)
-		, 20.0f, Application::PATH_MODEL + "Player/Run.mv1");
+		, 40.0f, Application::PATH_MODEL + "Player/Run.mv1");
 
 	//ジャンプアニメーション
 	animationController_->Add(static_cast<int>(ANIM_TYPE::JUMP)
@@ -243,6 +243,7 @@ void Player::UpdateProcess(void)
 
 void Player::UpdateProcessPost(void)
 {
+
 }
 
 void Player::Draw(void)
@@ -259,7 +260,7 @@ void Player::Draw(void)
 
 	// 背景描画(半透明の黒)
 	//SetDrawBlendMode(DX_BLENDMODE_ALPHA, 180);
-	//DrawBox(x - 10, y - 10, x + 250, y + lineHeight * 11 + 10, 0x000000, TRUE);
+	//DrawBox(x - 10, y - 10, x + 250, y + lineHeight * 11 + 10, 0x000000, true);
 	//SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
 
 	// タイトル

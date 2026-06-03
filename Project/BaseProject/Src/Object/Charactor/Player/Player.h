@@ -87,7 +87,7 @@ public:
 
 
 	//スケール
-	static constexpr float SCL_PlAYER = 1.0f;
+	static constexpr float SCL_PlAYER = 0.75f;
 	//初期座標
 	static constexpr VECTOR POS_PLAYER = { 0.0f, 0.0f, 0.0f };
 	//初期回転
@@ -147,6 +147,7 @@ public:
 	static constexpr float MIN_MOVE_THRESHOLD = 0.01f;
 
 	VECTOR GetPos(void) const { return transform_.pos; }
+	void SetPos(const VECTOR& pos) { transform_.pos = pos; }
 	float GetCollRadius(void) const { return COL_CAPSULE_RADIUS; }
 
 
