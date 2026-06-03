@@ -19,6 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Src\Object\Weapon\Sword\Sword.cpp" />
     <ClCompile Include="Src\Scene\OverScene.cpp" />
     <ClCompile Include="Src\Scene\ClearScene.cpp" />
     <ClCompile Include="Src\Sound\SoundTable.cpp" />
@@ -84,6 +85,7 @@
     <ClCompile Include="Src\Object\Weapon\WeaponBase.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Src\Object\Weapon\Sword\Sword.h" />
     <ClInclude Include="Src\Scene\OverScene.h" />
     <ClInclude Include="Src\Scene\ClearScene.h" />
     <ClInclude Include="Src\Sound\SoundTable.h" />

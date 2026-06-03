@@ -13,10 +13,6 @@ public:
 	{
 		NONE,
 		SWORD,      // 剣
-		AXE,        // 斧
-		SPEAR,      // 槍
-		HAMMER,     // ハンマー
-		BOW,        // 弓
 		MAX
 	};
 
@@ -79,15 +75,13 @@ protected:
 	void InitPost(void) override;
 
 	// 武器固有の初期化（純粋仮想関数 - 継承先で実装）
-	virtual void InitModel(void) = 0;
 	virtual void InitHitboxes(void) = 0;
-	virtual void InitParameters(void) = 0;
 
 	// 武器の種類
-	TYPE type_;
+	const TYPE type_;
 
 	// 所有者のTransform（プレイヤーなど）
-	Transform* ownerTransform_;
+	const Transform* ownerTransform_;
 
 	// 基本ダメージ
 	int baseDamage_;

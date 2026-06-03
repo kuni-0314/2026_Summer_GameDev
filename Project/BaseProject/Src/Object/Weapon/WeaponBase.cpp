@@ -22,38 +22,25 @@ WeaponBase::~WeaponBase(void)
 
 void WeaponBase::InitLoad(void)
 {
-	// 武器固有のモデル読み込み
-	InitModel();
 }
 
 void WeaponBase::InitTransform(void)
 {
-	// 武器は所有者に追従するため、初期座標は所有者と同じ
-	if (ownerTransform_ != nullptr)
-	{
-		transform_.pos = ownerTransform_->pos;
-		transform_.rot = ownerTransform_->rot;
-		transform_.scl = ownerTransform_->scl;
-	}
+	transform_.pos = ownerTransform_->pos;
+	transform_.rot = ownerTransform_->rot;
+	transform_.scl = ownerTransform_->scl;
 }
 
 void WeaponBase::InitCollider(void)
 {
-	// 攻撃判定用のコライダーは BeginAttack() で動的に生成
-	// 必要に応じて継承先でオーバーライド
 }
 
 void WeaponBase::InitAnimation(void)
 {
-	// 武器は基本的にアニメーションを持たない
-	// 特殊な武器（変形する武器など）の場合は継承先でオーバーライド
 }
 
 void WeaponBase::InitPost(void)
 {
-	// パラメータ初期化
-	InitParameters();
-
 	// 攻撃判定情報の初期化
 	InitHitboxes();
 }
@@ -79,7 +66,6 @@ void WeaponBase::Update(void)
 
 void WeaponBase::Draw(void)
 {
-	// ActorBase の Draw を呼び出す（モデル描画）
 	ActorBase::Draw();
 
 	// デバッグ描画
