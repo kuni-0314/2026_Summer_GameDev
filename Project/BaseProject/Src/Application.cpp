@@ -17,6 +17,7 @@ Application* Application::instance_ = nullptr;
 const std::string Application::PATH_IMAGE = "Data/Image/";
 const std::string Application::PATH_MODEL = "Data/Model/";
 const std::string Application::PATH_EFFECT = "Data/Effect/";
+const std::string Application::PATH_SHADER = "Data/Shader/";
 const std::string Application::PATH_CSV = "Data/Csv/";
 const std::string Application::PATH_SOUND_SE = "Data/Sound/SE";
 const std::string Application::PATH_SOUND_BGM = "Data/Sound/BGM";

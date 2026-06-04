@@ -101,7 +101,17 @@ bool InputManager::Init(void)
 	Add(KEY_INPUT_DOWN);	// 
 
 
-
+	//num
+	Add(KEY_INPUT_NUMPAD1);
+	Add(KEY_INPUT_NUMPAD2);
+	Add(KEY_INPUT_NUMPAD3);
+	Add(KEY_INPUT_NUMPAD4);
+	Add(KEY_INPUT_NUMPAD5);
+	Add(KEY_INPUT_NUMPAD6);
+	Add(KEY_INPUT_NUMPAD7);
+	Add(KEY_INPUT_NUMPAD8);
+	Add(KEY_INPUT_NUMPAD9);
+	Add(KEY_INPUT_NUMPAD0);
 
 	Add(KEY_INPUT_1);	// デバッグ用
 	Add(KEY_INPUT_2);	// デバッグ用

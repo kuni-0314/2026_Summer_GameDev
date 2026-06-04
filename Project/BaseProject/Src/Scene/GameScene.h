@@ -10,11 +10,27 @@ class Player;
 class EnemyManager;
 class FieldManager;
 class ItemManger;
+class PixelMaterial;
+class PixelRenderer;
 
 class GameScene : public SceneBase
 {
 
 public:
+	enum EFFECT
+	{
+		MONO,
+		SEPIA,
+		INVERT,
+		MOSAIC,
+		CHROM_ABR,
+		VIGNETTE,
+		SCANLINE,
+		POSTERIZE,
+		GLITCH,
+		EMBOSS,
+		MAX
+	};
 	
 	// コンストラクタ
 	GameScene(void);
@@ -59,4 +75,12 @@ private:
 	VECTOR targetPos_;
 
 	std::vector<AttackColliderData*> attackColliders_;
+	// ピクセルシェーダ用オリジナル定数バッファの使用開始スロット
+	static constexpr int CONSTANT_BUF_SLOT_BEGIN_PS = 4;
+	int postEffectScreen_;
+	// エフェクトのマテリアルとレンダラー
+	std::unique_ptr<PixelMaterial> materials_[MAX];
+	std::unique_ptr<PixelRenderer> renderers_[MAX];
+	// 現在適用しているエフェクト
+	int currentEffect_;
 };

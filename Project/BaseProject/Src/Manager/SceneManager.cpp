@@ -1,6 +1,7 @@
 #include <chrono>
 #include <DxLib.h>
 #include <EffekseerForDXLib.h>
+#include "../Application.h"
 #include "../Common/Fader.h"
 #include "../Scene/TitleScene.h"
 #include "../Scene/GameScene.h"
@@ -46,6 +47,9 @@ void SceneManager::Init(void)
 
 	// デルタタイム
 	preTime_ = std::chrono::system_clock::now();
+
+	// メインスクリーンの取得
+	mainScreen_ = MakeScreen(Application::SCREEN_SIZE_X, Application::SCREEN_SIZE_Y, true);
 
 	// 3D用の設定
 	Init3D();
@@ -120,32 +124,20 @@ void SceneManager::Update(void)
 
 void SceneManager::Draw(void)
 {
-	
-	// 描画先グラフィック領域の指定
-	// (３Ｄ描画で使用するカメラの設定などがリセットされる)
-	SetDrawScreen(DX_SCREEN_BACK);
-
-	// 画面を初期化
+	SetDrawScreen(mainScreen_);
 	ClearDrawScreen();
 
-	// カメラ設定
 	camera_->SetBeforeDraw();
-
-	// Effekseerにより再生中のエフェクトを更新する。
 	UpdateEffekseer3D();
 
-	// 各シーンの描画処理
 	scene_->Draw();
 
-	// カメラ描画
 	camera_->DrawDebug();
-
-	// Effekseerにより再生中のエフェクトを描画する。
 	DrawEffekseer3D();
-	
-	// 暗転・明転
 	fader_->Draw();
 
+	SetDrawScreen(DX_SCREEN_BACK);
+	DrawGraph(0, 0, mainScreen_, true);
 }
 
 void SceneManager::Destroy(void)
@@ -200,6 +192,11 @@ float SceneManager::GetDeltaTime(void) const
 Camera* SceneManager::GetCamera(void) const
 {
 	return camera_;
+}
+
+int SceneManager::GetMainScreen(void) const
+{
+	return mainScreen_;
 }
 
 SceneManager::SceneManager(void)

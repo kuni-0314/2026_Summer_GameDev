@@ -12,6 +12,8 @@
 #include "../Object/FieldManager.h"
 #include "../Object/Collider/ColliderBase.h"
 #include "../Object/Collider/Sphere/ColliderSphere.h"
+#include "../Shader/PixelMaterial.h"
+#include "../Shader/PixelRenderer.h"
 #include "GameScene.h"
 
 GameScene::GameScene(void)
@@ -22,7 +24,10 @@ GameScene::GameScene(void)
 	player_(nullptr),
 	enemyManager_(nullptr),
 	stageWall_(nullptr),
-	itemManger_(nullptr)
+	itemManger_(nullptr),
+	currentEffect_(0),
+	targetEnemyId_(0),
+	postEffectScreen_(-1)
 {
 }
 
@@ -32,58 +37,84 @@ GameScene::~GameScene(void)
 
 void GameScene::Init(void)
 {
-	//ステージ
 	stage_ = new Stage();
 	stage_->Init();
 
 	stageWall_ = std::make_unique<StageWall>();
-	//stageWall_->Init();
 
-	//プレイヤー
 	player_ = new Player();
 	player_->Init();
 	player_->SetGameScene(this);
 
-	// ステージモデルのコライダーをプレイヤーに登録
 	const ColliderBase* stageCollider =
 		stage_->GetOwnCollider(static_cast<int>(Stage::COLLIDER_TYPE::MODEL));
 	player_->AddHitCollider(stageCollider);
-	
 
-	//エネミーー
 	enemyManager_ = new EnemyManager(this,player_);
 	enemyManager_->Init();
 	enemyManager_->AddHitCollider(stageCollider);
 
-	
-	//プレイヤーのカプセルコライダ―をエネミーに登録
-	//enemyManager_->AddHitCollider(
-	//	player_->GetOwnCollider(static_cast<int>(CharactorBase::COLLIDER_TYPE::CAPSULE)));
-	
-	//スカイドーム
 	skyDome_ = new SkyDome(player_->GetTransform());
 	skyDome_->Init();
 
-	// フィールド
-	//fieldManager_ = new FieldManager(this);
-	//fieldManager_->Init();
-
-	//アイテムマネージャー
 	itemManger_ = new ItemManger();
 	itemManger_->Init();
 	itemManger_->AddHitCollider(stageCollider);
 
-	//追従カメラ
 	sceMng_.GetCamera()->ChangeMode(Camera::MODE::MOUSE);
 	Camera* camera = sceMng_.GetCamera();
 	camera->SetFollow(&player_->GetTransform());
 	camera->AddHitCollider(stageCollider);
 	camera->SetTargetPos(enemyManager_->GetEnemyPos(1));
+
+	postEffectScreen_ = MakeScreen(
+		Application::SCREEN_SIZE_X, Application::SCREEN_SIZE_Y, true);
+
+	materials_[MONO] = std::make_unique<PixelMaterial>("Monotone.cso", 1);
+	renderers_[MONO] = std::make_unique<PixelRenderer>(*materials_[MONO]);
+	renderers_[MONO]->MakeSquareVertex();
+
+	materials_[SEPIA] = std::make_unique<PixelMaterial>("Sepia.cso", 1);
+	renderers_[SEPIA] = std::make_unique<PixelRenderer>(*materials_[SEPIA]);
+	renderers_[SEPIA]->MakeSquareVertex();
+
+	materials_[INVERT] = std::make_unique<PixelMaterial>("Invert.cso", 1);
+	renderers_[INVERT] = std::make_unique<PixelRenderer>(*materials_[INVERT]);
+	renderers_[INVERT]->MakeSquareVertex();
+
+	materials_[MOSAIC] = std::make_unique<PixelMaterial>("Mosaic.cso", 1);
+	renderers_[MOSAIC] = std::make_unique<PixelRenderer>(*materials_[MOSAIC]);
+	renderers_[MOSAIC]->MakeSquareVertex();
+
+	materials_[CHROM_ABR] = std::make_unique<PixelMaterial>("ChromaticAberration.cso", 1);
+	renderers_[CHROM_ABR] = std::make_unique<PixelRenderer>(*materials_[CHROM_ABR]);
+	renderers_[CHROM_ABR]->MakeSquareVertex();
+
+	materials_[VIGNETTE] = std::make_unique<PixelMaterial>("Vignette.cso", 1);
+	renderers_[VIGNETTE] = std::make_unique<PixelRenderer>(*materials_[VIGNETTE]);
+	renderers_[VIGNETTE]->MakeSquareVertex();
+
+	materials_[SCANLINE] = std::make_unique<PixelMaterial>("Scanline.cso", 1);
+	renderers_[SCANLINE] = std::make_unique<PixelRenderer>(*materials_[SCANLINE]);
+	renderers_[SCANLINE]->MakeSquareVertex();
+
+	materials_[POSTERIZE] = std::make_unique<PixelMaterial>("Posterize.cso", 1);
+	renderers_[POSTERIZE] = std::make_unique<PixelRenderer>(*materials_[POSTERIZE]);
+	renderers_[POSTERIZE]->MakeSquareVertex();
+
+	materials_[GLITCH] = std::make_unique<PixelMaterial>("Glitch.cso", 1);
+	renderers_[GLITCH] = std::make_unique<PixelRenderer>(*materials_[GLITCH]);
+	renderers_[GLITCH]->MakeSquareVertex();
+
+	materials_[EMBOSS] = std::make_unique<PixelMaterial>("Emboss.cso", 1);
+	renderers_[EMBOSS] = std::make_unique<PixelRenderer>(*materials_[EMBOSS]);
+	renderers_[EMBOSS]->MakeSquareVertex();
+	
+	currentEffect_ = MONO;
 }
 
 void GameScene::Update(void)
 {
-	// シーン遷移
 	auto const ins = InputManager::GetInstance();
 	if (player_->GetHp() <= 0)
 	{
@@ -95,12 +126,10 @@ void GameScene::Update(void)
 		sceMng_.ChangeScene(SceneManager::SCENE_ID::CLEAR);
 	}
 
-	stage_->Update();//ステージ更新
-	//stageWall_->Update();//ステージ壁更新
-	skyDome_->Update();//スカイドーム更新
+	stage_->Update();
+	skyDome_->Update();
 	player_->Update();
 	enemyManager_->Update();
-	//fieldManager_->Update();
 	itemManger_->Update();
 
 	if (ins->IsTrgDown(KEY_INPUT_LEFT) && targetEnemyId_ > 0) targetEnemyId_--;
@@ -116,13 +145,12 @@ void GameScene::Update(void)
 			VECTOR playerPos = player_->GetTransform().pos;
 			VECTOR enemyPos = enemy->GetTransform().pos;
 			float dist = VSize(VSub(playerPos, enemyPos));
-			if (dist < 300.0f) { // 300以内なら即死
-				enemy->Damege(99999); // 即死ダメージ
+			if (dist < 300.0f) {
+				enemy->Damege(99999);
 			}
 		}
 	}
 
-	// 攻撃コライダの更新と寿命管理
 	for (int i = 0; i < attackColliders_.size(); i++)
 	{
 		auto data = attackColliders_[i];
@@ -130,25 +158,21 @@ void GameScene::Update(void)
 		{
 			data->lifeTime--;
 			
-			// プレイヤーの位置に追従
 			ColliderSphere* sphere = dynamic_cast<ColliderSphere*>(data->collider);
 			if (sphere != nullptr)
 			{
 				Transform* transform = const_cast<Transform*>(data->collider->GetFollow());
 				transform->pos = player_->GetTransform().pos;
 				
-				// **やっつけ敵との当たり判定**
 				auto enemies = enemyManager_->GetEnemies();
 				for (auto enemy : enemies)
 				{
 					if (!enemy->IsAlive()) continue;
 					
-					// 敵との距離チェック
 					VECTOR enemyPos = enemy->GetTransform().pos;
 					VECTOR spherePos = sphere->GetPos();
 					float distance = VSize(VSub(enemyPos, spherePos));
 					
-					// 球体の半径内なら当たり
 					if (distance < sphere->GetRadius())
 					{
 						enemy->Damege(static_cast<int>(data->damage));
@@ -156,7 +180,6 @@ void GameScene::Update(void)
 				}
 			}
 			
-			// 寿命が尽きたらコライダを削除
 			if (data->lifeTime <= 0)
 			{
 				enemyManager_->ClearAttackColliders();
@@ -169,53 +192,133 @@ void GameScene::Update(void)
 			}
 			else
 			{
-				// プレイヤーの位置に追従
 				Transform* transform = const_cast<Transform*>(data->collider->GetFollow());
 				transform->pos = player_->GetTransform().pos;
 			}
 		}
 	}
+
+	if (ins->IsTrgDown(KEY_INPUT_NUMPAD4))
+	{
+		currentEffect_ = (currentEffect_ - 1 + EFFECT::MAX) % EFFECT::MAX;
+	}
+	if (ins->IsTrgDown(KEY_INPUT_NUMPAD6))
+	{
+		currentEffect_ = (currentEffect_ + 1) % EFFECT::MAX;
+	}
 }
 
 void GameScene::Draw(void)
 {
-	skyDome_->Draw();	//スカイドーム描画
-
-	stage_->Draw();		//ステージ描画
-	//stageWall_->Draw();	//ステージ壁描画
-	player_->Draw();	//プレイヤー描画
-	itemManger_->Draw();	//アイテム描画
-
+	int mainScreen = SceneManager::GetInstance().GetMainScreen();
+	
+	// ステップ1: 3D描画（mainScreenに描画される）
+	skyDome_->Draw();
+	stage_->Draw();
+	player_->Draw();
+	itemManger_->Draw();
 	enemyManager_->Draw();
-	//VECTOR enemyPos = enemyManager_->GetNearEnemyPos(player_->GetTransform().pos);
-	//VECTOR targetPos = enemyManager_->GetEnemyPos(targetEnemyId_);
-	//DrawSphere3D(targetPos, 40.0f, 16, GetColor(255, 0, 0), GetColor(255, 0, 0), true);
-	// 黒を描画（少し透過）
+	
 	SetDrawBlendMode(DX_BLENDMODE_ALPHA, 128);
-	//DrawBox(0, 0, Application::SCREEN_SIZE_X, Application::SCREEN_SIZE_Y, GetColor(0, 0, 0), true);
 	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
 
-	//fieldManager_->Draw();
+	// この時点でmainScreenには3D描画が完了している
+	// （ただし、camera_->DrawDebug()やfader_->Draw()はまだ描画されていない）
+	
+	// ステップ2: mainScreenの内容を一時的に保存
+	// 新しいスクリーンを作成して、mainScreenの内容をコピー
+	int tempScreen = MakeScreen(Application::SCREEN_SIZE_X, Application::SCREEN_SIZE_Y, false);
+	
+	// mainScreenの内容をtempScreenにコピー
+	SetDrawScreen(tempScreen);
+	ClearDrawScreen();
+	DrawGraph(0, 0, mainScreen, false);
+	
+	// ステップ3: ポストエフェクト処理
+	SetDrawScreen(postEffectScreen_);
+	ClearDrawScreen();
 
-	// 攻撃コライダのデバッグ表示
-	//for (auto data : attackColliders_)
-	//{
-	//	if (data->collider != nullptr)
-	//	{
-	//		ColliderSphere* sphere = dynamic_cast<ColliderSphere*>(data->collider);
-	//		if (sphere != nullptr)
-	//		{
-	//			VECTOR pos = sphere->GetPos(); // GetFollow()->posではなくGetPos()を使用
-	//			float radius = sphere->GetRadius();
-	//			DrawSphere3D(pos, radius, 16, GetColor(255, 0, 0), GetColor(255, 0, 0), true);
-	//		}
-	//	}
-	//}
+	materials_[currentEffect_]->Begin();
+	materials_[currentEffect_]->SetTexture(0, tempScreen);
+
+	FLOAT4* constBufsPtr = materials_[currentEffect_]->GetConstantBuffer();
+	static float time = 0.0f;
+	time += SceneManager::GetInstance().GetDeltaTime();
+
+	FLOAT4 bufs = {};
+	switch (currentEffect_)
+	{
+	case MONO:
+		break;
+	case SEPIA:
+		break;
+	case INVERT:
+		break;
+	case MOSAIC:
+		bufs.x = 32.0f;
+		bufs.y = 20.0f;
+		break;
+	case CHROM_ABR:
+		bufs.x = 10.0f;
+		break;
+	case VIGNETTE:
+		bufs.x = 0.6f;
+		bufs.y = 0.7f;
+		break;
+	case SCANLINE:
+		bufs.x = 100.0f;
+		bufs.y = 0.3f;
+		break;
+	case POSTERIZE:
+		bufs.x = 4.0f;
+		break;
+	case GLITCH:
+		bufs.x = time;
+		break;
+	case EMBOSS:
+		bufs.x = 0.001f;
+		bufs.y = 0.001f;
+		break;
+	}
+
+	constBufsPtr->x = bufs.x;
+	constBufsPtr->y = bufs.y;
+	constBufsPtr->z = bufs.z;
+	constBufsPtr->w = bufs.w;
+
+	materials_[currentEffect_]->UpdateConstantBuffer(CONSTANT_BUF_SLOT_BEGIN_PS);
+	renderers_[currentEffect_]->Draw();
+	materials_[currentEffect_]->SetTexture(0, -1);
+	materials_[currentEffect_]->End();
+	
+	// ステップ4: ポストエフェクト結果をmainScreenに描画
+	SetDrawScreen(mainScreen);
+	DrawGraph(0, 0, postEffectScreen_, false);
+	
+	DrawFormatString(10, 10, 0xFFFF00, "=== SHADER DEBUG INFO ===");
+	DrawFormatString(10, 30, 0xFF0000, "currentEffect: %d", currentEffect_);
+	DrawFormatString(10, 50, 0xFF0000, "postEffectScreen: %d", postEffectScreen_);
+	DrawFormatString(10, 70, 0xFF0000, "shader handle: %d", materials_[currentEffect_]->shader_);
+	DrawFormatString(10, 90, 0xFF0000, "constBuf: %d", materials_[currentEffect_]->constBuf_);
+	DrawFormatString(10, 110, 0xFFFFFF, "mainScreen: %d", mainScreen);
+	DrawFormatString(10, 130, 0xFFFFFF, "tempScreen: %d", tempScreen);
+
+
+	// ステップ5: 一時スクリーンを削除
+	DeleteGraph(tempScreen);
+	
+	// この後、SceneManager::Draw()に戻り、
+	// camera_->DrawDebug()とfader_->Draw()がmainScreenに描画される
 }
 
 void GameScene::Release(void)
 {
-	// 攻撃用コライダの解放
+	if (postEffectScreen_ != -1)
+	{
+		DeleteGraph(postEffectScreen_);
+		postEffectScreen_ = -1;
+	}
+
 	for (auto data : attackColliders_)
 	{
 		if (data->collider != nullptr)
@@ -228,7 +331,6 @@ void GameScene::Release(void)
 	}
 	attackColliders_.clear();
 
-	// アイテムマネージャー解放
 	if (itemManger_ != nullptr)
 	{
 		itemManger_->Release();
@@ -236,7 +338,6 @@ void GameScene::Release(void)
 		itemManger_ = nullptr;
 	}
 
-	// エネミーマネージャー解放
 	if (enemyManager_ != nullptr)
 	{
 		enemyManager_->Release();
@@ -244,44 +345,31 @@ void GameScene::Release(void)
 		enemyManager_ = nullptr;
 	}
 
-	// フィールド解放
-	//fieldManager_->Release();
-	//delete fieldManager_;
-	// ステージ解放
 	stage_->Release();
 	delete stage_;
 
-	//ステージ壁解放
 	stageWall_->Release();
 
-	//スカイドーム解放
 	skyDome_->Release();
 	delete skyDome_;
-	//プレイヤー解放
+
 	player_->Release();
 	delete player_;
-
-	
 }
 
 void GameScene::CreateAttackCollider(ColliderBase::TAG tag, VECTOR pos, float radius, float Damage, int lifeTime)
 {
-	// 新しいTransformを作成
 	Transform* transform = new Transform();
 	transform->pos = pos;
 	
-	// 球体コライダを作成
 	ColliderBase* collider = new ColliderSphere(tag, transform, pos, radius);
 	
-	// 攻撃データを作成
 	AttackColliderData* data = new AttackColliderData();
 	data->collider = collider;
 	data->damage = Damage;
 	data->lifeTime = lifeTime;
 	
-	// リストに追加
 	attackColliders_.push_back(data);
 	
-	// エネミーマネージャーに攻撃コライダを登録
 	enemyManager_->AddAttackCollider(collider);
 }

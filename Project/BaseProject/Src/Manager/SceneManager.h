@@ -62,6 +62,9 @@ public:
 	// カメラの取得
 	Camera* GetCamera(void) const;
 
+	// メインスクリーンの取得
+	int GetMainScreen(void) const;
+
 private:
 
 	// 静的インスタンス
@@ -87,6 +90,9 @@ private:
 	std::chrono::system_clock::time_point preTime_;
 	float deltaTime_;
 	
+	// メインスクリーン
+	int mainScreen_;
+
 	// デフォルトコンストラクタをprivateにして、
 	// 外部から生成できない様にする
 	SceneManager(void);
