@@ -14,6 +14,7 @@ public:
 	enum class TYPE
 	{
 		RAT,
+		RASE,
 	};
 	// エネミーデータ
 	struct EnemyData
@@ -38,18 +39,12 @@ public:
 protected:
 
 	Player* player_;
-
 	// 種別
 	TYPE type_;
-
 	// 初期位置
 	const VECTOR defaultPos_;
-
 	float movableRange_;
-
 	int power_;
-
-
 
 	// 状態管理
 	int stateBase_;

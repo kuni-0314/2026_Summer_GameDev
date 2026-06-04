@@ -1,6 +1,5 @@
 #include "SoundTable.h"
 #include "../Application.h"
-#include <unordered_map>
 
 // サウンドID から サウンドパスを取得
 
@@ -19,8 +18,9 @@ namespace SoundTable_Title
 {
 	static const std::unordered_map<SoundID, std::string> Table =
 	{
-		{ SoundID::BGM_TITLE, Application::PATH_SOUND_BGM + "GameBgm.wav" },
 		
+		{ SoundID::BGM_TITLE,"Data/Sound/BGM/TitleBgm.wav" },
+		{ SoundID::BGM_TITLE2,Application::PATH_SOUND_BGM+"TitleBgm.wav" }
 
 	};
 }
@@ -30,8 +30,7 @@ namespace SoundTable_Game
 {
 	static const std::unordered_map<SoundID, std::string> Table =
 	{
-
-
+		{ SoundID::BGM_TITLE, Application::PATH_SOUND_BGM + "TitleBgm.wav" },
 	};
 }
 

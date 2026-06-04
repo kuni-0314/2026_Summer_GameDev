@@ -5,6 +5,7 @@
 #include "../../../Scene/GameScene.h"
 #include "Rat/EnemyRat.h"
 #include "Robot/EnemyRobot.h"
+#include "Rase/EnemyRase.h"
 #include "../../Item/ItemBase.h"
 #include "../../Item/ItemManger.h"
 #include "../../Charactor/Player/Player.h"
@@ -40,8 +41,23 @@ void EnemyManager::Update(void)
 
 		if (enemy->GetHp() <= 0 && enemy->IsAlive())
 		{
+			VECTOR hpPos = enemy->GetTransform().pos;
 
-			gameScene_->GetItemManger()->Create(ItemBase::TYPE::HP, enemy->GetTransform().pos, hitCollider_,
+			int randNum = rand() % 500;
+
+			hpPos.x += randNum;
+
+			VECTOR skillPos = enemy->GetTransform().pos;
+
+			randNum = rand() % 500;
+
+			skillPos.z += randNum;
+
+
+			gameScene_->GetItemManger()->Create(ItemBase::TYPE::HP, hpPos, hitCollider_,
+				static_cast<int>(Player::COLLIDER_TYPE::CAPSULE), player_);
+
+			gameScene_->GetItemManger()->Create(ItemBase::TYPE::SKILL, skillPos, hitCollider_,
 				static_cast<int>(Player::COLLIDER_TYPE::CAPSULE), player_);
 
 
@@ -163,6 +179,9 @@ EnemyBase* EnemyManager::Create(const EnemyBase::EnemyData& data, const Player* 
 	case EnemyBase::TYPE::RAT:
 		enemy = new EnemyRat(data, const_cast<Player*>(player));
 		break;
+	case EnemyBase::TYPE::RASE:
+		enemy = new EnemyRase(data, const_cast<Player*>(player));
+		break;
 	default:
 		break;
 	}
@@ -197,10 +216,21 @@ VECTOR EnemyManager::GetNearEnemyPos(const VECTOR& pos) const
 
 VECTOR EnemyManager::GetEnemyPos(int id) const
 {
+
+
+	// ìGÇ™ë∂ç›ÇµÇ»Ç¢
+	if (enemies_.empty())
+	{
+		return VGet(0.0f, 0.0f, 0.0f);
+	}
+
+
+
 	if (enemies_.empty())
 	{
 		return { 0.0f, 0.0f, 0.0f };
 	}
+
 
 	if (id < 0) id = 0;
 	else if (id >= enemies_.size()) id = enemies_.size() - 1;

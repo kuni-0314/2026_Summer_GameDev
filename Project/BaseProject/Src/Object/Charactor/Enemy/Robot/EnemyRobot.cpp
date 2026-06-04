@@ -26,8 +26,8 @@ void EnemyRobot::InitLoad(void)
 	// 基底クラスのリソースロード
 	CharactorBase::InitLoad();
 	// モデルのロード
-	transform_.SetModel(
-		resMng_.LoadModelDuplicate(ResourceManager::SRC::ENEMY_ROBOT));
+	/*transform_.SetModel(
+		resMng_.LoadModelDuplicate(ResourceManager::SRC::ENEMY_ROBOT));*/
 
 	// 視野(円錐)モデルのロード
 	viewRangeTransform_.SetModel(
