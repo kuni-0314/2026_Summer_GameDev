@@ -30,6 +30,7 @@ public:
 	//スキルデータ
 	struct SkillData
 	{
+		int id;                 //スキルID
 		std::string skillName;	// スキル名
 		TYPE type;				// スキルタイプ
 		ATTRIBUTE attribute;	// スキル属性
@@ -41,7 +42,7 @@ public:
 	};
 
 	// コンストラクタ
-	SkillBase(void);
+	SkillBase(const SkillBase::SkillData& data,Player*player);
 	//デストラクタ
 	~SkillBase(void);
 	
@@ -53,10 +54,20 @@ public:
 protected:
 	void LoadSkillData(void);	// スキルデータファイルの読み込み
 
+	//プレイヤー
+	Player* player_; 
+	//スキルタイプ
+	TYPE type_;
+	//スキル属性
+	ATTRIBUTE attribute_;
 
-
+	float physAtkMag_;
+	float physDefMag_;		// 物理防御倍率
+	float magicAtkMag_;		// 魔法攻撃倍率
+	float magicDefMag_;		// 魔法防御倍率
+	float recoveryMag_;
 
 	std::map<int, SkillData> skillDataMap_;	// スキルデータ
 
+	
 };
-

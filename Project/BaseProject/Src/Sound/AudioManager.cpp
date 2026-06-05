@@ -49,7 +49,14 @@ void AudioManager::LoadSceneSound(LoadScene scene)
 	for (auto& [id, path] : *table)
 	{
 		// サウンドを読み込む
-		handles_[id] = LoadSoundMem(path.c_str());
+		int handle = LoadSoundMem(path.c_str());
+		if (handle < 0)
+		{
+			// ロード失敗 -> ログを残して登録しない（またはエラーハンドリング）
+			// 例: OutputDebugStringA(("LoadSoundMem failed: " + path + "\n").c_str());
+			continue;
+		}
+		handles_[id] = handle;
 	}
 }
 
@@ -93,12 +100,30 @@ void AudioManager::PlayBGM(SoundID id)
 
 	// サウンドが読み込まれているか？
 	if (it == handles_.end())
-		// 読み込まれていないので終了
 		return;
 
-	// 現在のBGMが同じならスキップ
-	if (currentBgm_ == id && CheckSoundMem(it->second))
+	int handle = it->second;
+	// ハンドルが無効なら処理しない（登録ミスがある場合を保護）
+	if (handle < 0)
+	{
+		// 不正ハンドルなら登録から削除して終了
+		handles_.erase(it);
 		return;
+	}
+
+	// 現在のBGMが同じなら再生中かチェックしてスキップ
+	if (currentBgm_ == id)
+	{
+		int state = CheckSoundMem(handle);
+		if (state == 1) // 1 = 再生中（DXライブラリの想定値。必要なら実値を確認）
+			return;
+		// state < 0 はエラー -> 登録をクリアして終了
+		if (state < 0)
+		{
+			handles_.erase(it);
+			return;
+		}
+	}
 
 	// 別のBGMが再生中なら停止
 	if (currentBgm_ != static_cast<SoundID>(-1))
@@ -111,10 +136,10 @@ void AudioManager::PlayBGM(SoundID id)
 	int volume = static_cast<int>(bgmVolume_ * (masterVolume_ / 255.0f));
 
 	// 音量を変更
-	ChangeVolumeSoundMem(volume, it->second);
+	ChangeVolumeSoundMem(volume, handle);
 
 	// BGMなのでループ再生
-	PlaySoundMem(it->second, DX_PLAYTYPE_LOOP, true);
+	PlaySoundMem(handle, DX_PLAYTYPE_LOOP, true);
 }
 
 void AudioManager::StopBGM()
@@ -123,12 +148,8 @@ void AudioManager::StopBGM()
 	if (currentBgm_ == static_cast<SoundID>(-1))
 		return;
 
-	// IDからサウンドハンドルを抽出
 	auto it = handles_.find(currentBgm_);
-
-	// サウンドが読み込まれているか？
-	if (it != handles_.end())
-		// 読み込まれているのでサウンドを止める
+	if (it != handles_.end() && it->second >= 0)
 		StopSoundMem(it->second);
 
 	// 現在のBGMを再生していない状態に更新
@@ -137,22 +158,19 @@ void AudioManager::StopBGM()
 
 void AudioManager::PlaySE(SoundID id)
 {
-	// IDからサウンドハンドルを抽出
 	auto it = handles_.find(id);
+	if (it == handles_.end()) return;
 
-	// サウンドが読み込まれているか？
-	if (it == handles_.end())
-		// 読み込まれていないので終了
+	int handle = it->second;
+	if (handle < 0)
+	{
+		handles_.erase(it);
 		return;
+	}
 
-	// 実音量を計算
 	int volume = static_cast<int>(seVolume_ * (masterVolume_ / 255.0f));
-
-	// 音量を変更
-	ChangeVolumeSoundMem(volume, it->second);
-
-	// SEは複数同時再生を許可
-	PlaySoundMem(it->second, DX_PLAYTYPE_BACK, true);
+	ChangeVolumeSoundMem(volume, handle);
+	PlaySoundMem(handle, DX_PLAYTYPE_BACK, true);
 }
 
 void AudioManager::DeleteAll(void)
