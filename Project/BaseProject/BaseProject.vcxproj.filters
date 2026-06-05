@@ -67,6 +67,8 @@
     <ClCompile Include="Src\Object\Weapon\Sword\Sword.cpp" />
     <ClCompile Include="Src\Shader\PixelMaterial.cpp" />
     <ClCompile Include="Src\Shader\PixelRenderer.cpp" />
+    <ClCompile Include="Src\Effect\EffectBase.cpp" />
+    <ClCompile Include="Src\Manager\EffectManager.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Src\Sound\SoundTable.h" />
@@ -135,6 +137,8 @@
     <ClInclude Include="Src\Object\Weapon\Sword\Sword.h" />
     <ClInclude Include="Src\Shader\PixelRenderer.h" />
     <ClInclude Include="Src\Shader\PixelMaterial.h" />
+    <ClInclude Include="Src\Effect\EffectBase.h" />
+    <ClInclude Include="Src\Manager\EffectManager.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Src\Shader\PostEffect\ChromaticAberration.hlsl" />

@@ -14,6 +14,7 @@
 #include "../Object/Collider/Sphere/ColliderSphere.h"
 #include "../Shader/PixelMaterial.h"
 #include "../Shader/PixelRenderer.h"
+#include "../Manager/EffectManager.h"
 #include "GameScene.h"
 
 GameScene::GameScene(void)
@@ -131,6 +132,7 @@ void GameScene::Update(void)
 	player_->Update();
 	enemyManager_->Update();
 	itemManger_->Update();
+	EffectManager::GetInstance().Update();
 
 	if (ins->IsTrgDown(KEY_INPUT_LEFT) && targetEnemyId_ > 0) targetEnemyId_--;
 	if (ins->IsTrgDown(KEY_INPUT_RIGHT)) targetEnemyId_++;
@@ -218,6 +220,8 @@ void GameScene::Draw(void)
 	player_->Draw();
 	itemManger_->Draw();
 	enemyManager_->Draw();
+	// エフェクトを一番手前に描画
+	EffectManager::GetInstance().Draw();
 	
 	SetDrawBlendMode(DX_BLENDMODE_ALPHA, 128);
 	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
@@ -313,6 +317,9 @@ void GameScene::Draw(void)
 
 void GameScene::Release(void)
 {
+	// シーン切り替え時に、現在残っているエフェクトを綺麗に消去する
+	EffectManager::GetInstance().Clear();
+
 	if (postEffectScreen_ != -1)
 	{
 		DeleteGraph(postEffectScreen_);
