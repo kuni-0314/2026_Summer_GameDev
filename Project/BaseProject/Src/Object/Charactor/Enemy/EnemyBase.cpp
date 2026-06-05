@@ -3,7 +3,7 @@
 #include "../../Charactor/Player/Player.h"
 #include "EnemyBase.h"
 
-EnemyBase::EnemyBase(const EnemyBase::EnemyData& data,Player*player)
+EnemyBase::EnemyBase(const EnemyBase::EnemyData& data, Player* player)
 	:
 	CharactorBase(),
 	player_(player),
@@ -47,7 +47,7 @@ bool EnemyBase::InMovableRange(void) const
 
 void EnemyBase::LookPlayer(void)
 {
-	
+
 	VECTOR playerPos = player_->GetPos();
 
 	//ベクトル計算
@@ -71,8 +71,21 @@ void EnemyBase::LookPlayer(void)
 void EnemyBase::ChangeState(int state)
 {
 	stateBase_ = state;
-	// 各状態遷移の初期処理
-	stateChanges_[stateBase_]();
+
+
+	auto it = stateChanges_.find(stateBase_);
+
+	if (it != stateChanges_.end())
+	{
+		// 登録された初期処理を実行（EnemyRat::ChangeStateXXX が stateUpdate_ を設定する）
+		it->second();
+	}
+	else
+	{
+		// マッピングがない場合は明示的に空にする（保険）
+		stateUpdate_ = std::function<void(void)>{};
+	}
+
 }
 
 

@@ -57,6 +57,7 @@ protected:
 	void UpdateProcess(void) override;
 	void UpdateProcessPost(void) override;
 
+	void 
 
 private:
 
@@ -66,21 +67,14 @@ private:
 
 	//アニメーション登録番号
 	//待機
-	static constexpr int  ANIM_INDX_IDLE = 8;
+	static constexpr int  ANIM_INDX_IDLE = 2;
 	//歩く
 	static constexpr int  ANIM_INDX_WALK = 13;
-	//攻撃
-	static constexpr int  ANIM_INDX_ATTACK = 1;
-	//エンド
-	static constexpr int  ANIM_INDX_END = 6;
-	//HIT
-	static constexpr int  ANIM_INDX_HIT = 11;
-	//RUN
-	static constexpr int  ANIM_INDX_RUN = 12;
+
 
 
 	// モデルの大きさ
-	static constexpr float SCALE = 0.5f;
+	static constexpr float SCALE = 0.3f;
 	// モデルのローカル回転
 	static constexpr VECTOR ROT = { 0.0f, 180.0f * DX_PI_F / 180.0f, 0.0f };
 

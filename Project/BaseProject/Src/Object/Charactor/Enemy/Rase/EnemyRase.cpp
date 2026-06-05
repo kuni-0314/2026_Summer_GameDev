@@ -33,7 +33,7 @@ void EnemyRase::InitLoad(void)
 {
 	//基底クラスのリソースロード
 	CharactorBase::InitLoad();
-	transform_.SetModel(resMng_.LoadModelDuplicate(ResourceManager::SRC::ENEMY_RAT));
+	transform_.SetModel(resMng_.LoadModelDuplicate(ResourceManager::SRC::ENEMY_RASE));
 }
 
 void EnemyRase::InitTransform(void)
@@ -109,6 +109,20 @@ void EnemyRase::ChangeStateIdle(void)
 
 }
 
+void EnemyRase::ChangeStateThink(void)
+{
+	stateUpdate_ = std::bind(&EnemyRase::UpdateThink, this);
+
+	// ランダムな待機時間
+	step_ = 3.0f + static_cast<float>(GetRand(3));
+	// 移動量ゼロ
+	movePow_ = AsoUtility::VECTOR_ZERO;
+	// 待機アニメーション再生
+	animationController_->Play(
+		static_cast<int>(ANIM_TYPE::IDLE), true);
+
+}
+
 void EnemyRase::UpdateIdle(void)
 {
 	step_ -= scnMng_.GetDeltaTime();
@@ -119,4 +133,9 @@ void EnemyRase::UpdateIdle(void)
 	}
 
 	movePow_ = AsoUtility::VECTOR_ZERO;
+}
+
+void EnemyRase::UpdateThink(void)
+{
+	ChangeState(STATE::IDLE);
 }
