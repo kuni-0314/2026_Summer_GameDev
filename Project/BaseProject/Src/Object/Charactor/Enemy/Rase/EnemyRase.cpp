@@ -72,7 +72,7 @@ void EnemyRase::InitAnimation(void)
 
 	//待機
 	type = static_cast<int>(ANIM_TYPE::IDLE);
-	animationController_->AddInFbx(type, 20.0f, ANIM_INDX_IDLE);
+	animationController_->AddInFbx(type, 20.0f, ANIM_INDX_FRY);
 }
 
 void EnemyRase::InitPost(void)
@@ -83,6 +83,13 @@ void EnemyRase::InitPost(void)
 
 void EnemyRase::UpdateProcess(void)
 {
+	//// プレイヤーをまだ発見していない
+	//int rand = GetRand(100);
+	//if (rand < 70)
+	//{
+	//	transform_.pos.y += rand;
+	//}
+
 }
 
 void EnemyRase::UpdateProcessPost(void)
@@ -109,6 +116,18 @@ void EnemyRase::ChangeStateIdle(void)
 
 }
 
+void EnemyRase::ChangeStateAttack(void)
+{
+}
+
+void EnemyRase::ChangeStateHit(void)
+{
+}
+
+void EnemyRase::ChangeStateEnd(void)
+{
+}
+
 void EnemyRase::ChangeStateThink(void)
 {
 	stateUpdate_ = std::bind(&EnemyRase::UpdateThink, this);
@@ -133,6 +152,22 @@ void EnemyRase::UpdateIdle(void)
 	}
 
 	movePow_ = AsoUtility::VECTOR_ZERO;
+}
+
+void EnemyRase::UpdateAttack(void)
+{
+}
+
+void EnemyRase::UpdateHit(void)
+{
+}
+
+void EnemyRase::UpdateDie(void)
+{
+}
+
+void EnemyRase::UpdateEnd(void)
+{
 }
 
 void EnemyRase::UpdateThink(void)

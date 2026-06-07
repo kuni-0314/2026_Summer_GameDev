@@ -15,7 +15,6 @@ public:
 	{
 		IDLE,
 		WALK,
-		RUN,
 		ATTACK,
 		END,
 		HIT
@@ -57,7 +56,6 @@ protected:
 	void UpdateProcess(void) override;
 	void UpdateProcessPost(void) override;
 
-	void 
 
 private:
 
@@ -67,9 +65,11 @@ private:
 
 	//アニメーション登録番号
 	//待機
-	static constexpr int  ANIM_INDX_IDLE = 2;
-	//歩く
-	static constexpr int  ANIM_INDX_WALK = 13;
+	static constexpr int  ANIM_INDX_FRY = 2;
+	//HIT
+	static constexpr int  ANIM_INDX_HIT = 4;
+	//END
+	static constexpr int  ANIM_INDX_DEAD = 0;
 
 
 
@@ -137,28 +137,21 @@ private:
 
 	// 状態遷移
 	void ChangeState(STATE state);
-	void ChangeStateNone(void);
 	void ChangeStateThink(void);
 	void ChangeStateIdle(void);
-	void ChangeStateWander(void);
 	void ChangeStateAttack(void);
 	void ChangeStateHit(void);
-	void ChangeStateDie(void);
 	void ChangeStateEnd(void);
-	void ChangeStateRun(void);
-	void ChangeStateWarnig(void);
+
 
 	// 更新系
-	void UpdateNone(void);
 	void UpdateThink(void);
 	void UpdateIdle(void);
-	void UpdateWander(void);
 	void UpdateAttack(void);
 	void UpdateHit(void);
 	void UpdateDie(void);
 	void UpdateEnd(void);
-	void UpdateRun(void);
-	void UpdateWarnig(void);
+
 
 
 
