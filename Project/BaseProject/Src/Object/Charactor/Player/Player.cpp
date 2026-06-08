@@ -159,7 +159,7 @@ void Player::InitAnimation(void)
 
 	// 待機状態アニメーション
 	animationController_->Add(static_cast<int>(ANIM_TYPE::IDLE)
-		, 20.0f, Application::PATH_MODEL + "Player/Idle.mv1");
+		, 20.0f, Application::PATH_MODEL + "NewPlayer/Idle.mv1");
 
 	// 走るアニメーション
 	animationController_->Add(static_cast<int>(ANIM_TYPE::RUN)
