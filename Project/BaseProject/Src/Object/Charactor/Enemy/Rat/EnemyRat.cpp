@@ -147,6 +147,8 @@ void EnemyRat::InitPost(void)
 		std::bind(&EnemyRat::ChangeStateEnd, this));
 	// 初期状態設定
 	ChangeState(STATE::THINK);
+
+	isGravity_ = true;
 }
 
 void EnemyRat::UpdateProcess(void)

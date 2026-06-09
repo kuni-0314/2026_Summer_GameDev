@@ -222,6 +222,8 @@ void Player::InitPost(void)
 	hp_ = 10;
 	maxHp_ = hp_;
 
+	isGravity_ = true;
+
 	InitState();
 }
 

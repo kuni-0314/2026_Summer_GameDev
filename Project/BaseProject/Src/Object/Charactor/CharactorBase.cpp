@@ -109,20 +109,22 @@ void CharactorBase::DelayRotate(void)
 
 void CharactorBase::CalcGravityPow(void)
 {
-	// 重力方向
-	VECTOR dirGravity = AsoUtility::DIR_D;
-	// 重力の強さ
-	float gravityPow = Application::GetInstance().GetGravityPow() * 0.01f/*scnMng_.GetDeltaTime()*/;
-	// 重力
-	VECTOR gravity = VScale(dirGravity, gravityPow);
-	jumpPow_ = VAdd(jumpPow_, gravity);
-
-	// 重力速度の制限
-	if (jumpPow_.y < MAX_FALL_SPEED)
+	if (isGravity_)
 	{
-		jumpPow_.y = MAX_FALL_SPEED;
-	}
+		// 重力方向
+		VECTOR dirGravity = AsoUtility::DIR_D;
+		// 重力の強さ
+		float gravityPow = Application::GetInstance().GetGravityPow() * 0.01f/*scnMng_.GetDeltaTime()*/;
+		// 重力
+		VECTOR gravity = VScale(dirGravity, gravityPow);
+		jumpPow_ = VAdd(jumpPow_, gravity);
 
+		// 重力速度の制限
+		if (jumpPow_.y < MAX_FALL_SPEED)
+		{
+			jumpPow_.y = MAX_FALL_SPEED;
+		}
+	}
 
 }
 

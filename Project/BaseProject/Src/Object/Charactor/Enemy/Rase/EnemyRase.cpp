@@ -79,6 +79,8 @@ void EnemyRase::InitPost(void)
 {
 	// ‰Šúó‘Ôİ’è
 	ChangeState(STATE::IDLE);
+
+	isGravity_ = false;
 }
 
 void EnemyRase::UpdateProcess(void)

@@ -84,6 +84,8 @@ protected:
 	// ‹ó’†”»’è
 	bool isAir_;
 
+	bool isGravity_;
+
 	// ŠÛ‰e‰æ‘œ
 	int imgShadow_;
 
