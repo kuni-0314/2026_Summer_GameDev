@@ -35,8 +35,29 @@ void ResourceManager::Init(void)
 	res = new RES(RES_T::IMG, PATH_IMG + "Title.png");
 	resourcesMap_.emplace(SRC::TITLE, res);	//mapÇ…ìoò^
 
-	res = new RES(RES_T::IMG, PATH_IMG + "PushSpace.png");
-	resourcesMap_.emplace(SRC::TITLE_PUSH, res);	//mapÇ…ìoò^
+	res = new RES(RES_T::IMG, PATH_IMG + "Title/ImgPlayer.png");
+	resourcesMap_.emplace(SRC::TITLE_PLAYER, res);	//mapÇ…ìoò^
+
+	//ÉQÅ[ÉÄÉXÉ^Å[ÉgâÊëú
+	res = new RES(RES_T::IMG, PATH_IMG + "Title/Choice_GameStart.png");
+	resourcesMap_.emplace(SRC::TITLE_GAMESTART, res);	//mapÇ…ìoò^
+	res = new RES(RES_T::IMG, PATH_IMG + "Title/NotChoice_GameStart.png");
+	resourcesMap_.emplace(SRC::TITLE_NOT_GAMESTART, res);	//mapÇ…ìoò^
+	//É`ÉÖÅ[ÉgÉäÉAÉãâÊëú
+	res = new RES(RES_T::IMG, PATH_IMG + "Title/Choice_Tutorial.png");
+	resourcesMap_.emplace(SRC::TITLE_TUTORIAL, res);	//mapÇ…ìoò^
+	res = new RES(RES_T::IMG, PATH_IMG + "Title/NotChoice_Tutorial.png");
+	resourcesMap_.emplace(SRC::TITLE_NOT_TUTORIAL, res);	//mapÇ…ìoò^
+	//ÉIÉvÉVÉáÉìâÊëú
+	res = new RES(RES_T::IMG, PATH_IMG + "Title/Choice_Option.png");
+	resourcesMap_.emplace(SRC::TITLE_OPTION, res);	//mapÇ…ìoò^
+	res = new RES(RES_T::IMG, PATH_IMG + "Title/NotChoice_Option.png");
+	resourcesMap_.emplace(SRC::TITLE_NOT_OPTION, res);	//mapÇ…ìoò^
+	//èIóπâÊëú
+	res = new RES(RES_T::IMG, PATH_IMG + "Title/Choice_End.png");
+	resourcesMap_.emplace(SRC::TITLE_END, res);	//mapÇ…ìoò^
+	res = new RES(RES_T::IMG, PATH_IMG + "Title/NotChoice_End.png");
+	resourcesMap_.emplace(SRC::TITLE_NOT_END, res);	//mapÇ…ìoò^
 
 	//ÉÇÉfÉãìoò^ 
 

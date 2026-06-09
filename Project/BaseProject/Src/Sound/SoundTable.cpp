@@ -16,12 +16,12 @@ namespace SoundTable_System
 // タイトル画面用
 namespace SoundTable_Title
 {
+
 	static const std::unordered_map<SoundID, std::string> Table =
 	{
-		
-		{ SoundID::BGM_TITLE,"Data/Sound/BGM/TitleBgm.wav" },
-		{ SoundID::BGM_TITLE2,Application::PATH_SOUND_BGM+"TitleBgm.wav" }
-
+		{ SoundID::BGM_TITLE,"Data/Sound/BGM/TitleBgm.wav"},
+		{ SoundID::SE_TITLE_SELECT,"Data/Sound/SE/Title_Select.wav"},
+		{ SoundID::SE_TITLE_DECISION,"Data/Sound/SE/Title_Decision.wav"},
 	};
 }
 
@@ -30,7 +30,7 @@ namespace SoundTable_Game
 {
 	static const std::unordered_map<SoundID, std::string> Table =
 	{
-		{ SoundID::BGM_TITLE, Application::PATH_SOUND_BGM + "TitleBgm.wav" },
+		
 	};
 }
 

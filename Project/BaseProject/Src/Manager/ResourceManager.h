@@ -13,6 +13,15 @@ public:
 	{
 		TITLE, //タイトル画像
 		TITLE_PUSH,	//push画像
+		TITLE_GAMESTART,	//スタート画像
+		TITLE_NOT_GAMESTART,//非選択スタート画像
+		TITLE_END,	//終了画像
+		TITLE_NOT_END,//非選択終了画像
+		TITLE_TUTORIAL,	//チュートリアル画像
+		TITLE_NOT_TUTORIAL,//非選択チュートリアル画像
+		TITLE_OPTION,	//オプション画像
+		TITLE_NOT_OPTION,//非選択オプション画像
+		TITLE_PLAYER,	//タイトルプレイヤー
 		PIT_FALL_PLANET,	//メイン惑星
 		SPHERE_PLANET,		//サブ惑星
 		PLAYER,				//プレイヤー
