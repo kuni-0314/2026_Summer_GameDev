@@ -14,8 +14,9 @@
 #include "../Object/Collider/Sphere/ColliderSphere.h"
 #include "../Shader/PixelMaterial.h"
 #include "../Shader/PixelRenderer.h"
-#include "../Manager/EffectManager.h"
+#include "../Effect/EffectManager.h"
 #include "GameScene.h"
+#include <EffekseerForDXLib.h>
 
 GameScene::GameScene(void)
 	:
@@ -127,6 +128,8 @@ void GameScene::Update(void)
 	//	sceMng_.ChangeScene(SceneManager::SCENE_ID::CLEAR);
 	//}
 
+	UpdateEffekseer3D();
+
 	stage_->Update();
 	skyDome_->Update();
 	player_->Update();
@@ -220,99 +223,102 @@ void GameScene::Draw(void)
 	player_->Draw();
 	itemManger_->Draw();
 	enemyManager_->Draw();
-	// エフェクトを一番手前に描画
-	EffectManager::GetInstance().Draw();
-	
-	SetDrawBlendMode(DX_BLENDMODE_ALPHA, 128);
-	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
 
-	// この時点でmainScreenには3D描画が完了している
-	// （ただし、camera_->DrawDebug()やfader_->Draw()はまだ描画されていない）
-	
-	// ステップ2: mainScreenの内容を一時的に保存
-	// 新しいスクリーンを作成して、mainScreenの内容をコピー
-	int tempScreen = MakeScreen(Application::SCREEN_SIZE_X, Application::SCREEN_SIZE_Y, false);
-	
-	// mainScreenの内容をtempScreenにコピー
-	SetDrawScreen(tempScreen);
-	ClearDrawScreen();
-	DrawGraph(0, 0, mainScreen, false);
-	
-	// ステップ3: ポストエフェクト処理
-	SetDrawScreen(postEffectScreen_);
-	ClearDrawScreen();
+	DrawEffekseer3D();
 
-	materials_[currentEffect_]->Begin();
-	materials_[currentEffect_]->SetTexture(0, tempScreen);
+	//// エフェクトを一番手前に描画
+	//EffectManager::GetInstance().Draw();
+	//
+	//SetDrawBlendMode(DX_BLENDMODE_ALPHA, 128);
+	//SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
 
-	FLOAT4* constBufsPtr = materials_[currentEffect_]->GetConstantBuffer();
-	static float time = 0.0f;
-	time += SceneManager::GetInstance().GetDeltaTime();
+	//// この時点でmainScreenには3D描画が完了している
+	//// （ただし、camera_->DrawDebug()やfader_->Draw()はまだ描画されていない）
+	//
+	//// ステップ2: mainScreenの内容を一時的に保存
+	//// 新しいスクリーンを作成して、mainScreenの内容をコピー
+	//int tempScreen = MakeScreen(Application::SCREEN_SIZE_X, Application::SCREEN_SIZE_Y, false);
+	//
+	//// mainScreenの内容をtempScreenにコピー
+	//SetDrawScreen(tempScreen);
+	//ClearDrawScreen();
+	//DrawGraph(0, 0, mainScreen, false);
+	//
+	//// ステップ3: ポストエフェクト処理
+	//SetDrawScreen(postEffectScreen_);
+	//ClearDrawScreen();
 
-	FLOAT4 bufs = {};
-	switch (currentEffect_)
-	{
-	case MONO:
-		break;
-	case SEPIA:
-		break;
-	case INVERT:
-		break;
-	case MOSAIC:
-		bufs.x = 32.0f;
-		bufs.y = 20.0f;
-		break;
-	case CHROM_ABR:
-		bufs.x = 10.0f;
-		break;
-	case VIGNETTE:
-		bufs.x = 0.6f;
-		bufs.y = 0.7f;
-		break;
-	case SCANLINE:
-		bufs.x = 100.0f;
-		bufs.y = 0.3f;
-		break;
-	case POSTERIZE:
-		bufs.x = 4.0f;
-		break;
-	case GLITCH:
-		bufs.x = time;
-		break;
-	case EMBOSS:
-		bufs.x = 0.001f;
-		bufs.y = 0.001f;
-		break;
-	}
+	//materials_[currentEffect_]->Begin();
+	//materials_[currentEffect_]->SetTexture(0, tempScreen);
 
-	constBufsPtr->x = bufs.x;
-	constBufsPtr->y = bufs.y;
-	constBufsPtr->z = bufs.z;
-	constBufsPtr->w = bufs.w;
+	//FLOAT4* constBufsPtr = materials_[currentEffect_]->GetConstantBuffer();
+	//static float time = 0.0f;
+	//time += SceneManager::GetInstance().GetDeltaTime();
 
-	materials_[currentEffect_]->UpdateConstantBuffer(CONSTANT_BUF_SLOT_BEGIN_PS);
-	renderers_[currentEffect_]->Draw();
-	materials_[currentEffect_]->SetTexture(0, -1);
-	materials_[currentEffect_]->End();
-	
-	// ステップ4: ポストエフェクト結果をmainScreenに描画
-	SetDrawScreen(mainScreen);
-	DrawGraph(0, 0, postEffectScreen_, false);
-	
-	DrawFormatString(10, 10, 0xFFFF00, "=== SHADER DEBUG INFO ===");
-	DrawFormatString(10, 30, 0xFF0000, "currentEffect: %d", currentEffect_);
-	DrawFormatString(10, 50, 0xFF0000, "postEffectScreen: %d", postEffectScreen_);
-	DrawFormatString(10, 70, 0xFF0000, "shader handle: %d", materials_[currentEffect_]->shader_);
-	DrawFormatString(10, 90, 0xFF0000, "constBuf: %d", materials_[currentEffect_]->constBuf_);
-	DrawFormatString(10, 110, 0xFFFFFF, "mainScreen: %d", mainScreen);
-	DrawFormatString(10, 130, 0xFFFFFF, "tempScreen: %d", tempScreen);
+	//FLOAT4 bufs = {};
+	//switch (currentEffect_)
+	//{
+	//case MONO:
+	//	break;
+	//case SEPIA:
+	//	break;
+	//case INVERT:
+	//	break;
+	//case MOSAIC:
+	//	bufs.x = 32.0f;
+	//	bufs.y = 20.0f;
+	//	break;
+	//case CHROM_ABR:
+	//	bufs.x = 10.0f;
+	//	break;
+	//case VIGNETTE:
+	//	bufs.x = 0.6f;
+	//	bufs.y = 0.7f;
+	//	break;
+	//case SCANLINE:
+	//	bufs.x = 100.0f;
+	//	bufs.y = 0.3f;
+	//	break;
+	//case POSTERIZE:
+	//	bufs.x = 4.0f;
+	//	break;
+	//case GLITCH:
+	//	bufs.x = time;
+	//	break;
+	//case EMBOSS:
+	//	bufs.x = 0.001f;
+	//	bufs.y = 0.001f;
+	//	break;
+	//}
+
+	//constBufsPtr->x = bufs.x;
+	//constBufsPtr->y = bufs.y;
+	//constBufsPtr->z = bufs.z;
+	//constBufsPtr->w = bufs.w;
+
+	//materials_[currentEffect_]->UpdateConstantBuffer(CONSTANT_BUF_SLOT_BEGIN_PS);
+	//renderers_[currentEffect_]->Draw();
+	//materials_[currentEffect_]->SetTexture(0, -1);
+	//materials_[currentEffect_]->End();
+	//
+	//// ステップ4: ポストエフェクト結果をmainScreenに描画
+	//SetDrawScreen(mainScreen);
+	//DrawGraph(0, 0, postEffectScreen_, false);
+	//
+	//DrawFormatString(10, 10, 0xFFFF00, "=== SHADER DEBUG INFO ===");
+	//DrawFormatString(10, 30, 0xFF0000, "currentEffect: %d", currentEffect_);
+	//DrawFormatString(10, 50, 0xFF0000, "postEffectScreen: %d", postEffectScreen_);
+	//DrawFormatString(10, 70, 0xFF0000, "shader handle: %d", materials_[currentEffect_]->shader_);
+	//DrawFormatString(10, 90, 0xFF0000, "constBuf: %d", materials_[currentEffect_]->constBuf_);
+	//DrawFormatString(10, 110, 0xFFFFFF, "mainScreen: %d", mainScreen);
+	//DrawFormatString(10, 130, 0xFFFFFF, "tempScreen: %d", tempScreen);
 
 
-	// ステップ5: 一時スクリーンを削除
-	DeleteGraph(tempScreen);
-	
-	// この後、SceneManager::Draw()に戻り、
-	// camera_->DrawDebug()とfader_->Draw()がmainScreenに描画される
+	//// ステップ5: 一時スクリーンを削除
+	//DeleteGraph(tempScreen);
+	//
+	//// この後、SceneManager::Draw()に戻り、
+	//// camera_->DrawDebug()とfader_->Draw()がmainScreenに描画される
 }
 
 void GameScene::Release(void)

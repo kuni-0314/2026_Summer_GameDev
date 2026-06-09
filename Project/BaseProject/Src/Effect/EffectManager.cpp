@@ -2,7 +2,8 @@
 #include <algorithm>
 
 // 全エフェクトの更新と不要になったエフェクトの自動削除
-void EffectManager::Update() {
+void EffectManager::Update() 
+{
     // 1. 各エフェクトの更新処理
     for (auto& effect : m_effects) {
         effect->Update();
@@ -20,19 +21,22 @@ void EffectManager::Update() {
 }
 
 // 全エフェクトの描画
-void EffectManager::Draw() const {
+void EffectManager::Draw() const 
+{
     for (const auto& effect : m_effects) {
         effect->Draw();
     }
 }
 
 // 全削除
-void EffectManager::Clear() {
+void EffectManager::Clear() 
+{
     m_effects.clear(); // shared_ptr なので、これだけでメモリも自動解放されます
 }
 
 // 外部から新しいエフェクトを追加
-void EffectManager::RegisterEffect(const std::shared_ptr<EffectBase>& effect) {
+void EffectManager::RegisterEffect(const std::shared_ptr<EffectBase>& effect)
+{
     if (effect != nullptr) {
         m_effects.push_back(effect);
     }

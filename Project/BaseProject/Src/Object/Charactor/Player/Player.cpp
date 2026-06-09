@@ -11,6 +11,8 @@
 #include "../../../Object/Collider/ColliderBase.h"
 #include "../../../Object/Collider/Line/ColliderLine.h"
 #include "../../../Object/Collider/Capsule/ColliderCapsule.h"
+#include "../../../Effect/LoadEffekseer/EffekseerEffect.h" // パスは環境に合わせて調整してください
+#include "../../../Effect/EffectManager.h"
 #include "PlayerIdleState.h"
 #include "PlayerRunState.h"
 #include "PlayerFastRunState.h"
@@ -68,6 +70,21 @@ void Player::Update()
 	animationController_->Update();
 	// 各キャラクターごとの更新後処理
 	UpdateProcessPost();
+
+	if (m_isPowerUp && m_powerUpEffect != nullptr)
+	{
+		if (!m_powerUpEffect->IsDead())
+		{
+			// プレイヤーの最新座標にエフェクトを追従させる
+			m_powerUpEffect->SetPosition(transform_.pos);
+		}
+		else
+		{
+			// エフェクトの再生時間が終了して自動消滅していたらクリア
+			m_powerUpEffect = nullptr;
+			m_isPowerUp = false;
+		}
+	}
 
 
 	// hpのindexは4、luckのindexは9
@@ -222,6 +239,9 @@ void Player::InitPost(void)
 	hp_ = 10;
 	maxHp_ = hp_;
 
+	m_isPowerUp = false;
+	m_powerUpEffect = nullptr;
+
 	InitState();
 }
 
@@ -238,6 +258,11 @@ void Player::UpdateProcess(void)
 	{
 		// リスポーン
 		transform_.pos = POS_PLAYER;
+	}
+
+	if (InputManager::GetInstance()->IsTrgDown(KEY_INPUT_P))
+	{
+		ActivatePowerUp();
 	}
 }
 
@@ -340,6 +365,19 @@ void Player::ChangeState(STATE newState)
 	currentState_->Exit(this);
 	currentState_ = states_[newState];
 	currentState_->Enter(this);
+}
+
+void Player::ActivatePowerUp()
+{
+	if (m_isPowerUp) return; // すでに発動中なら重複して出さない
+
+	m_isPowerUp = true;
+
+	// エフェクトを生成（画像から確認した正しいパスを設定しています）
+	m_powerUpEffect = std::make_shared<EffekseerEffect>(L"Data/Effect/PowerUp/PowerUp.efkefc", transform_.pos);
+
+	// エフェクトマネージャーに登録して自動管理してもらう
+	EffectManager::GetInstance().RegisterEffect(m_powerUpEffect);
 }
 
 void Player::GrantStatus(int index)

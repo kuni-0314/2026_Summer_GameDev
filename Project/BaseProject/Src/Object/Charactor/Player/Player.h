@@ -1,8 +1,10 @@
 #pragma once
+#include <memory>
 #include "../../Charactor/CharactorBase.h"
 class GameScene;
 class AnimationController;
 class PlayerState;
+class EffekseerEffect;
 
 class Player : public CharactorBase
 {
@@ -84,7 +86,7 @@ public:
 	void SetApplyRootMotion(const bool apply) { applyRootMotion_ = apply; }
 	VECTOR GetAnimStartModelPos(void) const { return animStartModelPos_; }
 	void SetAnimStartModelPos(const VECTOR& pos) { animStartModelPos_ = pos; }
-
+	void ActivatePowerUp();
 
 	//スケール
 	static constexpr float SCL_PlAYER = 0.75f;
@@ -200,9 +202,14 @@ private:
 	bool isJet_;
 	float jetTime_;
 	static constexpr float TIME_JET = 0.2f;
+	// パワーアップ状態フラグ（あなたのプロジェクトの状態管理に合わせて調整してください）
+	bool m_isPowerUp;
 
 	PlayerState* currentState_;
 	std::map<STATE, PlayerState*> states_;
+
+	// 現在プレイヤーに追従しているエフェクトのポインタ
+	std::shared_ptr<EffekseerEffect> m_powerUpEffect;
 
 	// 攻撃のクールタイム
 	int attackCoolTime_;

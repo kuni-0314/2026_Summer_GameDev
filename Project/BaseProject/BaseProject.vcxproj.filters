@@ -15,8 +15,6 @@
     <ClCompile Include="Src\Object\Item\HP\HpItem.cpp" />
     <ClCompile Include="Src\Object\Item\ItemManger.cpp" />
     <ClCompile Include="Src\Object\Item\ItemBase.cpp" />
-    <ClCompile Include="Src\Object\SkillBase.cpp" />
-    <ClCompile Include="Src\Object\Skill\SkillManger.cpp" />
     <ClCompile Include="Src\Object\Field.cpp" />
     <ClCompile Include="Src\Object\FieldManager.cpp" />
     <ClCompile Include="Src\Object\Cell\CellAttack.cpp" />
@@ -26,7 +24,6 @@
     <ClCompile Include="Src\Object\Cell\CellNone.cpp" />
     <ClCompile Include="Src\Object\Cell\CellBase.cpp" />
     <ClCompile Include="Src\Object\Charactor\Enemy\Robot\EnemyRobot.cpp" />
-    <ClCompile Include="Src\Object\Skill\SkillBase.cpp" />
     <ClCompile Include="Src\Scene\DebugScene.cpp" />
     <ClCompile Include="Src\Object\Charactor\Enemy\EnemyManger.cpp" />
     <ClCompile Include="Src\Object\Charactor\Enemy\Rat\EnemyRat.cpp" />
@@ -68,7 +65,10 @@
     <ClCompile Include="Src\Shader\PixelMaterial.cpp" />
     <ClCompile Include="Src\Shader\PixelRenderer.cpp" />
     <ClCompile Include="Src\Effect\EffectBase.cpp" />
-    <ClCompile Include="Src\Manager\EffectManager.cpp" />
+    <ClCompile Include="Src\Effect\EffectManager.cpp" />
+    <ClCompile Include="Src\Object\Item\ItemSkill\SkillItem.cpp" />
+    <ClCompile Include="Src\Effect\LoadEffekseer\EffekseerEffect.cpp" />
+    <ClCompile Include="Src\Object\Charactor\Enemy\Rase\EnemyRase.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Src\Sound\SoundTable.h" />
@@ -85,9 +85,6 @@
     <ClInclude Include="Src\Object\Item\HP\HpItem.h" />
     <ClInclude Include="Src\Object\Item\ItemManger.h" />
     <ClInclude Include="Src\Object\Item\ItemBase.h" />
-    <ClInclude Include="Src\Object\SkillBase.h" />
-    <ClInclude Include="Src\Object\Skill\SkillManger.h" />
-    <ClInclude Include="Src\Object\Skill\SkillBase.h" />
     <ClInclude Include="Src\Object\Field.h" />
     <ClInclude Include="Src\Object\FieldManager.h" />
     <ClInclude Include="Src\Object\Cell\CellAttack.h" />
@@ -138,7 +135,10 @@
     <ClInclude Include="Src\Shader\PixelRenderer.h" />
     <ClInclude Include="Src\Shader\PixelMaterial.h" />
     <ClInclude Include="Src\Effect\EffectBase.h" />
-    <ClInclude Include="Src\Manager\EffectManager.h" />
+    <ClInclude Include="Src\Effect\EffectManager.h" />
+    <ClInclude Include="Src\Object\Item\ItemSkill\SkillItem.h" />
+    <ClInclude Include="Src\Effect\LoadEffekseer\EffekseerEffect.h" />
+    <ClInclude Include="Src\Object\Charactor\Enemy\Rase\EnemyRase.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Src\Shader\PostEffect\ChromaticAberration.hlsl" />

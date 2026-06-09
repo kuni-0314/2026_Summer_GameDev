@@ -1,7 +1,8 @@
 #pragma once
 #include "../Common/Vector2.h" // 状況に応じてVector3やQuaternionに変更してください
 
-class EffectBase {
+class EffectBase 
+{
 protected:
     Vector2 m_position;  // 発生位置
     bool m_isDead;       // 消滅フラグ

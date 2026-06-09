@@ -71,10 +71,11 @@ void EnemyBase::LookPlayer(void)
 void EnemyBase::ChangeState(int state)
 {
 	stateBase_ = state;
-	// 各状態遷移の初期処理
-	stateChanges_[stateBase_]();
+
+	// 指定されたステートの関数が存在し、かつ中身が空っぽ（nullptr）でないか確認する
+	if (stateChanges_.count(stateBase_) > 0 && stateChanges_[stateBase_] != nullptr)
+	{
+		// 中身があるときだけ実行
+		stateChanges_[stateBase_]();
+	}
 }
-
-
-
-

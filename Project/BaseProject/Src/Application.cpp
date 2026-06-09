@@ -1,6 +1,5 @@
 #define _CRTDBG_MAP_ALLOC
 #include <crtdbg.h>
-#include <DxLib.h>
 #include <EffekseerForDXLib.h>
 #include "Manager/InputManager.h"
 #include "Manager/ResourceManager.h"
@@ -189,12 +188,22 @@ Application::Application(void)
 
 void Application::InitEffekseer(void)
 {
+	// 1. Effekseerの初期化
 	if (Effekseer_Init(8000) == -1)
 	{
 		DxLib_End();
+		return; // 失敗時は関数を抜ける
 	}
 
+	// ★追加: 3D表示の設定（DirectX11デバイス等）をDxLibの現在の設定と強制的に同期させる
+	Effekseer_Sync3DSetting();
+
+	// ★追加（任意）: 歪みエフェクト（ディストーション）を使用する場合はここでも初期化
+	Effekseer_InitDistortion();
+
+	// 画面モード変更時にシステムがリセットされるのを防ぐ設定
 	SetChangeScreenModeGraphicsSystemResetFlag(false);
 
+	// デバイスロスト（ウィンドウの最小化など）時のコールバック登録
 	Effekseer_SetGraphicsDeviceLostCallbackFunctions();
 }
