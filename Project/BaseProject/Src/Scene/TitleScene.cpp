@@ -51,7 +51,7 @@ void TitleScene::Init(void)
 
 	//初期選択コマンド
 	select_ = SELECT::GAME;
-	
+
 	AudioManager::GetInstance()->LoadSceneSound(LoadScene::TITLE);
 	AudioManager::GetInstance()->PlayBGM(SoundID::BGM_TITLE);
 	AudioManager::GetInstance()->SetBgmVolume(120);
@@ -60,38 +60,26 @@ void TitleScene::Init(void)
 
 void TitleScene::Update(void)
 {
-	
+
 	auto const ins = InputManager::GetInstance();
 
 	IsSelect_ = true;
 
 	SelectUpdate();
-	
+
 }
 
 
 void TitleScene::Draw(void)
 {
-	DrawGraph(Application::SCREEN_SIZE_X/2 +100, 100, imgPlayer_, true);
+	DrawGraph(Application::SCREEN_SIZE_X / 2 + 100, 100, imgPlayer_, true);
 
-	DrawGraph(50,20, imgTitle_, TRUE);
+	DrawGraph(50, 20, imgTitle_, TRUE);
 
-<<<<<<< HEAD
-
-	DrawGraph(Application::SCREEN_SIZE_X/3,IMG_TITLE_POS_Y, imgTitle_, true);
-
-	if (!IsSelect_)
-	{
-		if (!pushAlive_)
-		{
-			DrawGraph(Application::SCREEN_SIZE_X / 3, IMG_PUSH_POS_Y, imgPushSpace_, true);
-		}
-=======
 	//ゲームスタート
 	if (selectCount_ == static_cast <int>(SELECT::GAME))
 	{
 		DrawGraph(IMG_CHOICE_POS_X, IMG_CHOICE_POS_Y, imgGameStart_, TRUE);
->>>>>>> origin/ﾎｱ菫ｮ豁｣
 	}
 	else
 	{
@@ -100,7 +88,7 @@ void TitleScene::Draw(void)
 	//チュートリアル
 	if (selectCount_ == static_cast <int>(SELECT::TUTORIAL))
 	{
-		DrawGraph(IMG_CHOICE_POS_X	, IMG_CHOICE_POS_Y + 100, imgTutorial_, TRUE);
+		DrawGraph(IMG_CHOICE_POS_X, IMG_CHOICE_POS_Y + 100, imgTutorial_, TRUE);
 	}
 	else
 	{
@@ -124,9 +112,9 @@ void TitleScene::Draw(void)
 	{
 		DrawGraph(IMG_NOT_CHOICE_POS_X, IMG_CHOICE_POS_Y + 300, imgNotEnd_, TRUE);
 	}
-	
 
-	
+
+
 
 	SelectDraw((SELECT)selectCount_);
 }
@@ -211,6 +199,6 @@ void TitleScene::SelectUpdate(void)
 		AudioManager::GetInstance()->PlaySE(SoundID::SE_TITLE_DECISION);
 		SelectChange((SELECT)selectCount_);
 	}
-	
+
 
 }
