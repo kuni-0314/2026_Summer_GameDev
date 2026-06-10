@@ -19,6 +19,7 @@ class GameScene : public SceneBase
 public:
 	enum EFFECT
 	{
+		NORMAL,
 		MONO,
 		SEPIA,
 		INVERT,
@@ -29,6 +30,29 @@ public:
 		POSTERIZE,
 		GLITCH,
 		EMBOSS,
+		RETROWAVE,
+		BLOOM,
+		RIPPLE,
+		RGB_SPLIT,
+		PIXELATE,
+		SWIRL,
+		RADIAL_BLUR,
+		HUE_SHIFT,
+		WAVE,
+		EDGE_DETECT,
+		OLD_FILM,
+		NIGHT_VISION,
+		LIQUID_DIST,
+		PINHOLE,
+		SPEED_LINES,
+		FROSTED_GLASS,
+		DOT_MATRIX,
+		DEPTH_FOG,
+		DIGITAL_RAIN,
+		STROBE,
+		SNOW_STORM,
+		SCREEN_SHAKE,
+		CRT,
 		MAX
 	};
 	
@@ -60,6 +84,10 @@ public:
 	};
 	
 	void CreateAttackCollider(ColliderBase::TAG tag, VECTOR pos, float radius, float Damage, int lifeTime);
+
+	void SetEffectParameters(int effectType, FLOAT4& bufs, float time);
+
+	void ApplyEffect(int effectType, int srcScreen, int dstScreen, float time);
 
 private:
 	Stage* stage_;
