@@ -125,6 +125,18 @@ void TitleScene::Release(void)
 
 	DeleteGraph(imgTitle_);
 	DeleteGraph(imgGameStart_);
+
+	//‘I‘ð‰æ‘œ‰ð•ú
+	DeleteGraph(imgGameStart_);
+	DeleteGraph(imgNotGameStart_);
+	DeleteGraph(imgEnd_);
+	DeleteGraph(imgNotEnd_);
+	DeleteGraph(imgOption_);
+	DeleteGraph(imgNotOption_);
+	DeleteGraph(imgTutorial_);
+	DeleteGraph(imgNotTutorial_);
+
+
 }
 
 void TitleScene::SelectChange(SELECT next)
