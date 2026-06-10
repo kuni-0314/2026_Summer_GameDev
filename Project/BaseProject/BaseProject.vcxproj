@@ -19,6 +19,9 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Src\Object\Charactor\Enemy\Rase\EnemyRase.cpp" />
+    <ClCompile Include="Src\Object\Item\ItemSkill\SkillItem.cpp" />
+    <ClCompile Include="Src\Object\Skill\SkillBase.cpp" />
     <ClCompile Include="Src\Object\Weapon\Sword\Sword.cpp" />
     <ClCompile Include="Src\Scene\OverScene.cpp" />
     <ClCompile Include="Src\Scene\ClearScene.cpp" />
@@ -85,6 +88,9 @@
     <ClCompile Include="Src\Object\Weapon\WeaponBase.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Src\Object\Charactor\Enemy\Rase\EnemyRase.h" />
+    <ClInclude Include="Src\Object\Item\ItemSkill\SkillItem.h" />
+    <ClInclude Include="Src\Object\Skill\SkillBase.h" />
     <ClInclude Include="Src\Object\Weapon\Sword\Sword.h" />
     <ClInclude Include="Src\Scene\OverScene.h" />
     <ClInclude Include="Src\Scene\ClearScene.h" />
@@ -516,6 +522,7 @@
       <AdditionalIncludeDirectories>$(DXLIB_DIR)</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
       <LanguageStandard>stdcpp20</LanguageStandard>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -553,6 +560,7 @@
       <AdditionalIncludeDirectories>$(DXLIB_DIR)</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <LanguageStandard>stdcpp20</LanguageStandard>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
