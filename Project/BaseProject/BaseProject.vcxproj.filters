@@ -147,5 +147,29 @@
     <FxCompile Include="Src\Shader\PostEffect\Scanline.hlsl" />
     <FxCompile Include="Src\Shader\PostEffect\Sepia.hlsl" />
     <FxCompile Include="Src\Shader\PostEffect\Vignette.hlsl" />
+    <FxCompile Include="Src\Shader\PostEffect\Bloom.hlsl" />
+    <FxCompile Include="Src\Shader\PostEffect\CRT.hlsl" />
+    <FxCompile Include="Src\Shader\PostEffect\DigitalRain.hlsl" />
+    <FxCompile Include="Src\Shader\PostEffect\DepthFog.hlsl" />
+    <FxCompile Include="Src\Shader\PostEffect\DotMatrix.hlsl" />
+    <FxCompile Include="Src\Shader\PostEffect\EdgeDetection.hlsl" />
+    <FxCompile Include="Src\Shader\PostEffect\FrostedGlass.hlsl" />
+    <FxCompile Include="Src\Shader\PostEffect\HueShift.hlsl" />
+    <FxCompile Include="Src\Shader\PostEffect\LiquidDistortion.hlsl" />
+    <FxCompile Include="Src\Shader\PostEffect\NightVision.hlsl" />
+    <FxCompile Include="Src\Shader\PostEffect\Normal.hlsl" />
+    <FxCompile Include="Src\Shader\PostEffect\OldFilm.hlsl" />
+    <FxCompile Include="Src\Shader\PostEffect\Pinhole.hlsl" />
+    <FxCompile Include="Src\Shader\PostEffect\Pixelate.hlsl" />
+    <FxCompile Include="Src\Shader\PostEffect\RadialBlur.hlsl" />
+    <FxCompile Include="Src\Shader\PostEffect\RGBSplit.hlsl" />
+    <FxCompile Include="Src\Shader\PostEffect\Ripple.hlsl" />
+    <FxCompile Include="Src\Shader\PostEffect\Retrowave.hlsl" />
+    <FxCompile Include="Src\Shader\PostEffect\ScreenShake.hlsl" />
+    <FxCompile Include="Src\Shader\PostEffect\SnowStorm.hlsl" />
+    <FxCompile Include="Src\Shader\PostEffect\SpeedLines.hlsl" />
+    <FxCompile Include="Src\Shader\PostEffect\Strobe.hlsl" />
+    <FxCompile Include="Src\Shader\PostEffect\Swirl.hlsl" />
+    <FxCompile Include="Src\Shader\PostEffect\Wave.hlsl" />
   </ItemGroup>
 </Project>
