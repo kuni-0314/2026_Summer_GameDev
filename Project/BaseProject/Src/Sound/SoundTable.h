@@ -6,9 +6,10 @@
 // サウンドID
 enum class SoundID
 {
-
-	BGM_TITLE,		//タイトルBGM
-	BGM_TITLE2,
+	BGM_TITLE,
+	BGM_TITLE2,		//タイトルBGM
+	SE_TITLE_SELECT,//タイトル選択
+	SE_TITLE_DECISION,//タイトル決定
 	MAX
 
 };
@@ -35,6 +36,7 @@ public:
 	// サウンドテーブルのマップ
 	// サウンドID から サウンドパスを取得
 	static const std::unordered_map<SoundID, SoundData> Table;
+
 };
 
 

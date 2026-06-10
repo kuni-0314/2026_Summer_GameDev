@@ -144,12 +144,12 @@ void Application::Destroy(void)
 	SceneManager::GetInstance().Destroy();
 
 	ResourceManager::GetInstance().Destroy();
-	
+
+	InputManager::GetInstance()->Release();
+
 	// サウンド管理削除
 	AudioManager::GetInstance()->DeleteAll();
 	AudioManager::DeleteInstance();
-
-	InputManager::GetInstance()->Release();
 
 	// Effekseerを終了する。
 	Effkseer_End();

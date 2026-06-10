@@ -57,9 +57,6 @@ void EnemyManager::Update(void)
 			gameScene_->GetItemManger()->Create(ItemBase::TYPE::HP, hpPos, hitCollider_,
 				static_cast<int>(Player::COLLIDER_TYPE::CAPSULE), player_);
 
-			gameScene_->GetItemManger()->Create(ItemBase::TYPE::SKILL, skillPos, hitCollider_,
-				static_cast<int>(Player::COLLIDER_TYPE::CAPSULE), player_);
-
 
 			enemy->SetAlive(false);
 		}

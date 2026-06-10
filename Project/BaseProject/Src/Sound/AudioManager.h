@@ -57,5 +57,3 @@ private:
 	int seVolume_;		// se‰¹—Ê
 	int masterVolume_;	// master‰¹—Ê
 };
-
-

@@ -22,6 +22,15 @@ public:
 	//push画像Y座標
 	static constexpr int IMG_PUSH_POS_Y = 500;
 
+	//
+	static constexpr int IMG_CHOICE_POS_X = 120;
+
+	static constexpr int IMG_NOT_CHOICE_POS_X = 180;
+
+	static constexpr int IMG_CHOICE_POS_Y = 650;
+
+
+
 	//サブ惑星の大きさ
 	static constexpr float SCL_SUB_PLANET = 0.7f;
 	//サブ惑星の回転
@@ -92,6 +101,16 @@ private:
 	//画像ハンドルID
 	int imgTitle_;//タイトル
 	int imgPushSpace_;//PUSH
+	int imgGameStart_;//ゲームスタート
+	int imgNotGameStart_;//非選択ゲームスタート
+	int imgTutorial_;//チュートリアル
+	int imgNotTutorial_;//非選択チュートリアル
+	int imgOption_;//オプション
+	int imgNotOption_;//非選択オプション
+	int imgEnd_;//終了
+	int imgNotEnd_;//非選択終了
+
+	int imgPlayer_;//タイトルプレイヤー
 
 	int maxIndex = static_cast<int>(SELECT::EXIT);
 	int minIndex = static_cast<int>(SELECT::GAME);

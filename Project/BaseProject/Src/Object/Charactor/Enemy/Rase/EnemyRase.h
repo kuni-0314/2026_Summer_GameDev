@@ -15,7 +15,6 @@ public:
 	{
 		IDLE,
 		WALK,
-		RUN,
 		ATTACK,
 		END,
 		HIT
@@ -66,21 +65,16 @@ private:
 
 	//アニメーション登録番号
 	//待機
-	static constexpr int  ANIM_INDX_IDLE = 8;
-	//歩く
-	static constexpr int  ANIM_INDX_WALK = 13;
-	//攻撃
-	static constexpr int  ANIM_INDX_ATTACK = 1;
-	//エンド
-	static constexpr int  ANIM_INDX_END = 6;
+	static constexpr int  ANIM_INDX_FRY = 2;
 	//HIT
-	static constexpr int  ANIM_INDX_HIT = 11;
-	//RUN
-	static constexpr int  ANIM_INDX_RUN = 12;
+	static constexpr int  ANIM_INDX_HIT = 4;
+	//END
+	static constexpr int  ANIM_INDX_DEAD = 0;
+
 
 
 	// モデルの大きさ
-	static constexpr float SCALE = 0.5f;
+	static constexpr float SCALE = 0.3f;
 	// モデルのローカル回転
 	static constexpr VECTOR ROT = { 0.0f, 180.0f * DX_PI_F / 180.0f, 0.0f };
 
@@ -143,28 +137,21 @@ private:
 
 	// 状態遷移
 	void ChangeState(STATE state);
-	void ChangeStateNone(void);
 	void ChangeStateThink(void);
 	void ChangeStateIdle(void);
-	void ChangeStateWander(void);
 	void ChangeStateAttack(void);
 	void ChangeStateHit(void);
-	void ChangeStateDie(void);
 	void ChangeStateEnd(void);
-	void ChangeStateRun(void);
-	void ChangeStateWarnig(void);
+
 
 	// 更新系
-	void UpdateNone(void);
 	void UpdateThink(void);
 	void UpdateIdle(void);
-	void UpdateWander(void);
 	void UpdateAttack(void);
 	void UpdateHit(void);
 	void UpdateDie(void);
 	void UpdateEnd(void);
-	void UpdateRun(void);
-	void UpdateWarnig(void);
+
 
 
 

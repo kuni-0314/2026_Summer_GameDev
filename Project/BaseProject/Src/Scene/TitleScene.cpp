@@ -7,8 +7,6 @@
 #include "../Common/Quaternion.h"
 #include "TitleScene.h"
 #include "../Application.h"
-#include "../Object/Common/AnimationController.h"
-#include "../Object/Actor/SkyDome/SkyDome.h"
 #include "../Sound/AudioManager.h"
 
 
@@ -39,49 +37,24 @@ void TitleScene::Init(void)
 	imgTitle_ = resMng_.Load(ResourceManager::SRC::TITLE).handleId_;
 	imgPushSpace_ = resMng_.Load(ResourceManager::SRC::TITLE_PUSH).handleId_;
 
+	imgPlayer_ = resMng_.Load(ResourceManager::SRC::TITLE_PLAYER).handleId_;
 
-	// メイン惑星
-	bigPlanet_.SetModel(resMng_.Load(ResourceManager::SRC::PIT_FALL_PLANET).handleId_);
-	bigPlanet_.scl = AsoUtility::VECTOR_ONE;
-	bigPlanet_.quaRot = Quaternion::Identity();
-	bigPlanet_.quaRotLocal = Quaternion::Identity();
-	bigPlanet_.pos = AsoUtility::VECTOR_ZERO;
+	//選択画像読み込み
+	imgGameStart_ = resMng_.Load(ResourceManager::SRC::TITLE_GAMESTART).handleId_;
+	imgNotGameStart_ = resMng_.Load(ResourceManager::SRC::TITLE_NOT_GAMESTART).handleId_;
+	imgTutorial_ = resMng_.Load(ResourceManager::SRC::TITLE_TUTORIAL).handleId_;
+	imgNotTutorial_ = resMng_.Load(ResourceManager::SRC::TITLE_NOT_TUTORIAL).handleId_;
+	imgOption_ = resMng_.Load(ResourceManager::SRC::TITLE_OPTION).handleId_;
+	imgNotOption_ = resMng_.Load(ResourceManager::SRC::TITLE_NOT_OPTION).handleId_;
+	imgEnd_ = resMng_.Load(ResourceManager::SRC::TITLE_END).handleId_;
+	imgNotEnd_ = resMng_.Load(ResourceManager::SRC::TITLE_NOT_END).handleId_;
 
-	bigPlanet_.Update();
-
-	//サブ惑星初期化
-	subPlanet_.SetModel(resMng_.Load(ResourceManager::SRC::SPHERE_PLANET).handleId_);
-	subPlanet_.scl = { SCL_SUB_PLANET,SCL_SUB_PLANET,SCL_SUB_PLANET };
-	subPlanet_.quaRot = Quaternion::Euler(ROT_SUB_PLANET);
-	subPlanet_.quaRotLocal = Quaternion::Identity();// VGet{AsoUtility::Deg2RadF(90.0f),0.0f,0.0f};
-	subPlanet_.pos = POS_SUB_PLANET;
-
-	subPlanet_.Update();
-
-	//プレイヤー初期化
-	player_.SetModel(resMng_.Load(ResourceManager::SRC::PLAYER).handleId_);
-	player_.scl = { SCL_PLAYER ,SCL_PLAYER ,SCL_PLAYER };
-	player_.quaRot = Quaternion::Euler(ROT_PLAYER);
-	player_.quaRotLocal = Quaternion::Euler(ROT_LOCAL_PLAYER);
-	player_.pos = POS_PLAYER;
-
-	player_.Update();
-
-	//アニメーションコントローラー
-	animationController_ = new AnimationController(player_.modelId);
-	animationController_->Add(0, 20.0f,Application::PATH_MODEL + "Player/Run.mv1");
-	animationController_->Play(0, true);
-
-	//スカイドーム
-	skyDome_ = new SkyDome(empty_);
-	skyDome_->Init();
-	
 	//初期選択コマンド
 	select_ = SELECT::GAME;
 	
 	AudioManager::GetInstance()->LoadSceneSound(LoadScene::TITLE);
-	AudioManager::GetInstance()->PlayBGM(SoundID::BGM_TITLE2);
-	AudioManager::GetInstance()->SetBgmVolume(100);
+	AudioManager::GetInstance()->PlayBGM(SoundID::BGM_TITLE);
+	AudioManager::GetInstance()->SetBgmVolume(120);
 
 }
 
@@ -90,52 +63,20 @@ void TitleScene::Update(void)
 	
 	auto const ins = InputManager::GetInstance();
 
-	if (!IsSelect_)
-	{
-		if (ins->IsTrgDown(KEY_INPUT_SPACE))
-		{
-			pushAlive_ = true;
-			IsSelect_ = true;
-		}
+	IsSelect_ = true;
 
+	SelectUpdate();
 	
-		count++;
-		if (count % 70 < 30)
-		{
-			pushAlive_ = true;
-		}
-		else
-		{
-			pushAlive_ = false;
-		}	
-	}
-	else 
-	{
-		SelectUpdate();
-	}
-
-
-
-	//サブ惑星の回転
-	subPlanet_.quaRot = subPlanet_.quaRot.Quaternion::Mult(
-		Quaternion::Euler(0.0f, AsoUtility::Deg2RadF(-1.2f), 0.0f));
-	subPlanet_.Update();//Updateがない場合は回転しない
-
-	animationController_->Update();
-
-	skyDome_->Update();
 }
 
 
 void TitleScene::Draw(void)
 {
-	skyDome_->Draw();//スカイドーム描画
+	DrawGraph(Application::SCREEN_SIZE_X/2 +100, 100, imgPlayer_, true);
 
-	// モデル描画//ここ
-	MV1DrawModel(bigPlanet_.modelId);//メイン惑星描画
-	MV1DrawModel(subPlanet_.modelId);//サブ惑星描画
-	MV1DrawModel(player_.modelId);//player描画
+	DrawGraph(50,20, imgTitle_, TRUE);
 
+<<<<<<< HEAD
 
 	DrawGraph(Application::SCREEN_SIZE_X/3,IMG_TITLE_POS_Y, imgTitle_, true);
 
@@ -145,7 +86,46 @@ void TitleScene::Draw(void)
 		{
 			DrawGraph(Application::SCREEN_SIZE_X / 3, IMG_PUSH_POS_Y, imgPushSpace_, true);
 		}
+=======
+	//ゲームスタート
+	if (selectCount_ == static_cast <int>(SELECT::GAME))
+	{
+		DrawGraph(IMG_CHOICE_POS_X, IMG_CHOICE_POS_Y, imgGameStart_, TRUE);
+>>>>>>> origin/ﾎｱ菫ｮ豁｣
 	}
+	else
+	{
+		DrawGraph(IMG_NOT_CHOICE_POS_X, IMG_CHOICE_POS_Y, imgNotGameStart_, TRUE);
+	}
+	//チュートリアル
+	if (selectCount_ == static_cast <int>(SELECT::TUTORIAL))
+	{
+		DrawGraph(IMG_CHOICE_POS_X	, IMG_CHOICE_POS_Y + 100, imgTutorial_, TRUE);
+	}
+	else
+	{
+		DrawGraph(IMG_NOT_CHOICE_POS_X, IMG_CHOICE_POS_Y + 100, imgNotTutorial_, TRUE);
+	}
+	//オプション
+	if (selectCount_ == static_cast <int>(SELECT::OPTION))
+	{
+		DrawGraph(IMG_CHOICE_POS_X, IMG_CHOICE_POS_Y + 200, imgOption_, TRUE);
+	}
+	else
+	{
+		DrawGraph(IMG_NOT_CHOICE_POS_X, IMG_CHOICE_POS_Y + 200, imgNotOption_, TRUE);
+	}
+	//終了
+	if (selectCount_ == static_cast <int>(SELECT::EXIT))
+	{
+		DrawGraph(IMG_CHOICE_POS_X, IMG_CHOICE_POS_Y + 300, imgEnd_, TRUE);
+	}
+	else
+	{
+		DrawGraph(IMG_NOT_CHOICE_POS_X, IMG_CHOICE_POS_Y + 300, imgNotEnd_, TRUE);
+	}
+	
+
 	
 
 	SelectDraw((SELECT)selectCount_);
@@ -153,13 +133,10 @@ void TitleScene::Draw(void)
 
 void TitleScene::Release(void)
 {
-	//アニメーションコントローラー解放
-	animationController_->Release();
-	delete animationController_;
 
-	//スカイドーム解放
-	skyDome_->Release();
-	delete skyDome_;
+
+	DeleteGraph(imgTitle_);
+	DeleteGraph(imgGameStart_);
 }
 
 void TitleScene::SelectChange(SELECT next)
@@ -206,6 +183,9 @@ void TitleScene::SelectUpdate(void)
 
 	if (ins->IsTrgDown(KEY_INPUT_UP))
 	{
+		//選択SE
+		AudioManager::GetInstance()->SetSeVolume(150);
+		AudioManager::GetInstance()->PlaySE(SoundID::SE_TITLE_SELECT);
 		selectCount_--;
 		if (selectCount_ < minIndex)
 		{
@@ -215,6 +195,9 @@ void TitleScene::SelectUpdate(void)
 
 	if (ins->IsTrgDown(KEY_INPUT_DOWN))
 	{
+		//選択SE
+		AudioManager::GetInstance()->SetSeVolume(150);
+		AudioManager::GetInstance()->PlaySE(SoundID::SE_TITLE_SELECT);
 		selectCount_++;
 		if (selectCount_ > maxIndex)
 		{
@@ -223,6 +206,9 @@ void TitleScene::SelectUpdate(void)
 	}
 	if (ins->IsTrgDown(KEY_INPUT_SPACE))//決定
 	{
+		//決定SE
+		AudioManager::GetInstance()->SetSeVolume(200);
+		AudioManager::GetInstance()->PlaySE(SoundID::SE_TITLE_DECISION);
 		SelectChange((SELECT)selectCount_);
 	}
 	
