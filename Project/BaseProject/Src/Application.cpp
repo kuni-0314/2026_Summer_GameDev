@@ -7,6 +7,7 @@
 #include "Manager/SceneManager.h"
 #include "Application.h"
 #include "Common/FpsController.h"
+#include "Sound/AudioManager.h"
 
 #ifdef _DEBUG
 #define new new(_NORMAL_BLOCK, __FILE__, __LINE__)
@@ -19,8 +20,8 @@ const std::string Application::PATH_MODEL = "Data/Model/";
 const std::string Application::PATH_EFFECT = "Data/Effect/";
 const std::string Application::PATH_SHADER = "Data/Shader/";
 const std::string Application::PATH_CSV = "Data/Csv/";
-const std::string Application::PATH_SOUND_SE = "Data/Sound/SE";
-const std::string Application::PATH_SOUND_BGM = "Data/Sound/BGM";
+const std::string Application::PATH_SOUND_SE = "Data/Sound/SE/";
+const std::string Application::PATH_SOUND_BGM = "Data/Sound/BGM/";
 
 
 void Application::CreateInstance(void)
@@ -84,10 +85,16 @@ void Application::Init(void)
 	// 設定する数値によって、ランダムの出方が変わる
 	SRand(date.Year + date.Mon + date.Day + date.Hour + date.Min + date.Sec);
 
+
+	//サウンド管理初期化
+	AudioManager::CreateInstance();
+	AudioManager::GetInstance()->Init();
+
 	// 入力制御初期化
 	SetUseDirectInputFlag(true);
 	InputManager::CreateInstance();
 	InputManager::GetInstance()->Init();
+
 
 	// リソース管理初期化
 	ResourceManager::CreateInstance();
@@ -133,11 +140,16 @@ void Application::Destroy(void)
 	delete fpsController_;
 	fpsController_ = nullptr;
 
-	InputManager::GetInstance()->Release();
-	ResourceManager::GetInstance().Destroy();
-	
 	// シーン管理解放
 	SceneManager::GetInstance().Destroy();
+
+	ResourceManager::GetInstance().Destroy();
+	
+	// サウンド管理削除
+	AudioManager::GetInstance()->DeleteAll();
+	AudioManager::DeleteInstance();
+
+	InputManager::GetInstance()->Release();
 
 	// Effekseerを終了する。
 	Effkseer_End();

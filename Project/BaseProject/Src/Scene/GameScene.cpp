@@ -120,11 +120,11 @@ void GameScene::Update(void)
 	{
 		sceMng_.ChangeScene(SceneManager::SCENE_ID::OVER);
 	}
-	bool end = enemyManager_->GetEnemyDead();
-	if (end)
-	{
-		sceMng_.ChangeScene(SceneManager::SCENE_ID::CLEAR);
-	}
+	//bool end = enemyManager_->GetEnemyDead();
+	//if (end)
+	//{
+	//	sceMng_.ChangeScene(SceneManager::SCENE_ID::CLEAR);
+	//}
 
 	stage_->Update();
 	skyDome_->Update();

@@ -3,6 +3,7 @@
 #include "../../Application.h"
 #include "../../Utility/AsoUtility.h"
 #include "../Item/HP/HpItem.h"
+#include "../Item/ItemSkill/SkillItem.h"
 #include "../Charactor/Enemy/EnemyBase.h"
 #include "../Charactor/Player/Player.h"
 #include "ItemManger.h"
@@ -66,6 +67,7 @@ void ItemManger::AddHitCollider(const ColliderBase* hitCollider)
 ItemBase* ItemManger::Create(const ItemBase::TYPE& type, VECTOR pos, const ColliderBase* hitCollider, const int key, const Player* player)
 {
 	ItemBase* item = nullptr;
+	const ColliderBase* playerCollide = nullptr;
 	switch (type)
 	{
 	case ItemBase::TYPE::HP:
@@ -74,8 +76,14 @@ ItemBase* ItemManger::Create(const ItemBase::TYPE& type, VECTOR pos, const Colli
 		item->Init();
 		item->SetPos(pos);
 		item->AddHitCollider(hitCollider);
-		const ColliderBase* playerCollide = player->GetOwnCollider(key);
-
+		playerCollide = player->GetOwnCollider(key);
+		break;
+	case ItemBase::TYPE::SKILL:
+		item = new SkillItem(const_cast<Player*>(player));
+		item->Init();
+		item->SetPos(pos);
+		item->AddHitCollider(hitCollider);
+		playerCollide = player->GetOwnCollider(key);
 		break;
 	}
 

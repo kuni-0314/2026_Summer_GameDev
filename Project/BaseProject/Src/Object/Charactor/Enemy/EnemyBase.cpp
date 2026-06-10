@@ -8,7 +8,6 @@ EnemyBase::EnemyBase(const EnemyBase::EnemyData& data,Player*player)
 	CharactorBase(),
 	player_(player),
 	type_(data.type),
-	//hp_(data.hp),
 	defaultPos_(data.defaultPos),
 	movableRange_(data.movableRange),
 	power_(data.power)

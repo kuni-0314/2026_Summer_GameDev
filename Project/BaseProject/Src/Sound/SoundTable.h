@@ -8,6 +8,7 @@ enum class SoundID
 {
 
 	BGM_TITLE,		//ƒ^ƒCƒgƒ‹BGM
+	BGM_TITLE2,
 	MAX
 
 };

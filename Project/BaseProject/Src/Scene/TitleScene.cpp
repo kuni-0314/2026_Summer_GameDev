@@ -9,6 +9,7 @@
 #include "../Application.h"
 #include "../Object/Common/AnimationController.h"
 #include "../Object/Actor/SkyDome/SkyDome.h"
+#include "../Sound/AudioManager.h"
 
 
 TitleScene::TitleScene(void)
@@ -78,6 +79,9 @@ void TitleScene::Init(void)
 	//初期選択コマンド
 	select_ = SELECT::GAME;
 	
+	AudioManager::GetInstance()->LoadSceneSound(LoadScene::TITLE);
+	AudioManager::GetInstance()->PlayBGM(SoundID::BGM_TITLE2);
+	AudioManager::GetInstance()->SetBgmVolume(100);
 
 }
 
@@ -165,6 +169,7 @@ void TitleScene::SelectChange(SELECT next)
 	switch (next)
 	{
 	case SELECT::GAME:
+		AudioManager::GetInstance()->StopBGM();
 		sceMng_.ChangeScene(SceneManager::SCENE_ID::GAME);
 		break;
 	case SELECT::TUTORIAL:

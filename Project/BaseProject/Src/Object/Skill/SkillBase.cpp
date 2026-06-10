@@ -1,6 +1,15 @@
 #include "SkillBase.h"
 
-SkillBase::SkillBase(void)
+
+SkillBase::SkillBase(const SkillBase::SkillData& data, Player* player)
+	:player_(player),
+	type_(data.type),
+	attribute_(data.attribute),
+	physAtkMag_(data.physAtkMag),
+	physDefMag_(data.physDefMag),
+	magicAtkMag_(data.magicAtkMag),
+	magicDefMag_(data.magicDefMag),
+	recoveryMag_(data.recoveryMag)
 {
 }
 

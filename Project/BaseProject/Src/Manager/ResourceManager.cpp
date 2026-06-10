@@ -62,8 +62,8 @@ void ResourceManager::Init(void)
 	resourcesMap_.emplace(SRC::PLAYER_SHADOW, res);
 
 	//エネミーラット
-	res = new RES(RES_T::MODEL, PATH_MDL + "Enemy/Robot/Robot.mv1");
-	resourcesMap_.emplace(SRC::ENEMY_ROBOT, res);	//mapに登録
+	res = new RES(RES_T::MODEL, PATH_MDL + "Enemy/Rase/Rase.mv1");
+	resourcesMap_.emplace(SRC::ENEMY_RASE, res);	//mapに登録
 
 	//敵の視野
 	res = new RES(RES_T::MODEL, PATH_MDL + "Enemy/Robot/Cone.mv1");
@@ -81,9 +81,13 @@ void ResourceManager::Init(void)
 	res = new RES(RES_T::MODEL, PATH_MDL + "Stage/MainStage/StageWall/StageWall.mv1");
 	resourcesMap_.emplace(SRC::BATTLE_WALL, res);	//mapに登録
 
-	//ゲームステージ
+	//アイテムHP
 	res = new RES(RES_T::MODEL, PATH_MDL + "Item/HpItem.mv1");
 	resourcesMap_.emplace(SRC::ITEM_HP, res);	//mapに登録
+
+	//アイテムスキル
+	res = new RES(RES_T::MODEL, PATH_MDL + "Item/SkillItem.mv1");
+	resourcesMap_.emplace(SRC::ITEM_SKILL, res);	//mapに登録
 }
 
 void ResourceManager::Release(void)
