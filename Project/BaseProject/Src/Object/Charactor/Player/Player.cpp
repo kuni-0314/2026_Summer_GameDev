@@ -175,31 +175,31 @@ void Player::InitAnimation(void)
 
 	// 攻撃アニメーション
 	animationController_->Add(static_cast<int>(ANIM_TYPE::ATK_N1)
-		, 60.0f, Application::PATH_MODEL + "Player/Slash/Slash1.mv1");
+		, 60.0f, Application::PATH_MODEL + "NewPlayer/Attack1.mv1");
 	animationController_->Add(static_cast<int>(ANIM_TYPE::ATK_N2)
-		, 70.0f, Application::PATH_MODEL + "Player/Slash/Slash2.mv1");
+		, 70.0f, Application::PATH_MODEL + "NewPlayer/Attack1.mv1");
 	animationController_->Add(static_cast<int>(ANIM_TYPE::ATK_N3)
-		, 60.0f, Application::PATH_MODEL + "Player/Slash/Slash3.mv1");
+		, 60.0f, Application::PATH_MODEL + "NewPlayer/Attack1.mv1");
 	animationController_->Add(static_cast<int>(ANIM_TYPE::ATK_N4)
-		, 50.0f, Application::PATH_MODEL + "Player/Kick/RollKick.mv1");
+		, 50.0f, Application::PATH_MODEL + "NewPlayer/Attack1.mv1");
 	animationController_->Add(static_cast<int>(ANIM_TYPE::ATK_N5)
-		, 40.0f, Application::PATH_MODEL + "Player/Slash/Slash4.mv1");
+		, 40.0f, Application::PATH_MODEL + "NewPlayer/Attack1.mv1");
 	animationController_->Add(static_cast<int>(ANIM_TYPE::ATK_H)
-		, 40.0f, Application::PATH_MODEL + "Player/Slash/Rush.mv1");
+		, 40.0f, Application::PATH_MODEL + "NewPlayer/Attack1.mv1");
 	animationController_->Add(static_cast<int>(ANIM_TYPE::ATK_D)
-		, 40.0f, Application::PATH_MODEL + "Player/Slide.mv1");
+		, 40.0f, Application::PATH_MODEL + "NewPlayer/Attack1.mv1");
 	animationController_->Add(static_cast<int>(ANIM_TYPE::ATK_A1)
-		, 60.0f, Application::PATH_MODEL + "Player/Slash/Slash1.mv1");//tmp
+		, 60.0f, Application::PATH_MODEL + "NewPlayer/Attack1.mv1");//tmp
 	animationController_->Add(static_cast<int>(ANIM_TYPE::ATK_A2)
-		, 70.0f, Application::PATH_MODEL + "Player/Slash/Slash2.mv1");//tmp
+		, 70.0f, Application::PATH_MODEL + "NewPlayer/Attack1.mv1");//tmp
 	animationController_->Add(static_cast<int>(ANIM_TYPE::ATK_A3)
-		, 60.0f, Application::PATH_MODEL + "Player/Slash/Slash3.mv1");//tmp
+		, 60.0f, Application::PATH_MODEL + "NewPlayer/Attack1.mv1");//tmp
 	animationController_->Add(static_cast<int>(ANIM_TYPE::ATK_A4)
-		, 50.0f, Application::PATH_MODEL + "Player/Slash/Slash4.mv1");//tmp
+		, 50.0f, Application::PATH_MODEL + "NewPlayer/Attack1.mv11");//tmp
 	animationController_->Add(static_cast<int>(ANIM_TYPE::ATK_A5)
-		, 60.0f, Application::PATH_MODEL + "Player/Slash/Slash1.mv1");//tmp
+		, 60.0f, Application::PATH_MODEL + "NewPlayer/Attack1.mv11");//tmp
 	animationController_->Add(static_cast<int>(ANIM_TYPE::ATK_F)
-		, 40.0f, Application::PATH_MODEL + "Player/Slash/Slash1.mv1");//tmp
+		, 40.0f, Application::PATH_MODEL + "NewPlayer/Attack1.mv1");//tmp
 
 	//初期アニメーション再生
 	animationController_->Play(static_cast<int>(ANIM_TYPE::IDLE), true);
