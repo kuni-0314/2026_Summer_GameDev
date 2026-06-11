@@ -68,7 +68,7 @@ void ResourceManager::Init(void)
 	res = new RES(RES_T::MODEL, PATH_MDL + "Stage/SpherePlanet/SpherePlanet.mv1");
 	resourcesMap_.emplace(SRC::SPHERE_PLANET, res);	//mapに登録
 	//プレイヤーモデル
-	res = new RES(RES_T::MODEL, PATH_MDL + "Player/Idle.mv1");
+	res = new RES(RES_T::MODEL, PATH_MDL + "NewPlayer/Idle.mv1");
 	resourcesMap_.emplace(SRC::PLAYER, res);	//mapに登録
 
 	//スカイドームモデル

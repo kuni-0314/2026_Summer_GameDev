@@ -163,15 +163,15 @@ void Player::InitAnimation(void)
 
 	// 走るアニメーション
 	animationController_->Add(static_cast<int>(ANIM_TYPE::RUN)
-		, 20.0f, Application::PATH_MODEL + "Player/Walk.mv1");
+		, 20.0f, Application::PATH_MODEL + "NewPlayer/Walk.mv1");
 
 	// ダッシュアニメーション
 	animationController_->Add(static_cast<int>(ANIM_TYPE::FAST_RUN)
-		, 40.0f, Application::PATH_MODEL + "Player/Run.mv1");
+		, 40.0f, Application::PATH_MODEL + "NewPlayer/Run.mv1");
 
 	//ジャンプアニメーション
 	animationController_->Add(static_cast<int>(ANIM_TYPE::JUMP)
-		, 60.0f, Application::PATH_MODEL + "Player/Jump.mv1");
+		, 60.0f, Application::PATH_MODEL + "NewPlayer/Jump.mv1");
 
 	// 攻撃アニメーション
 	animationController_->Add(static_cast<int>(ANIM_TYPE::ATK_N1)

@@ -72,6 +72,15 @@ void TitleScene::Update(void)
 
 void TitleScene::Draw(void)
 {
+	//mainScreen_ = SceneManager::GetInstance().GetMainScreen();
+	//SetDrawScreen(mainScreen_);
+	SetDrawScreen(DX_SCREEN_BACK);
+	ClearDrawScreen();
+
+	static int x = 10;
+	DrawPixel(x++, 10, 0xffffff);
+
+
 	DrawGraph(Application::SCREEN_SIZE_X / 2 + 100, 100, imgPlayer_, true);
 
 	DrawGraph(50, 20, imgTitle_, TRUE);
@@ -125,18 +134,6 @@ void TitleScene::Release(void)
 
 	DeleteGraph(imgTitle_);
 	DeleteGraph(imgGameStart_);
-
-	//‘I‘ð‰æ‘œ‰ð•ú
-	DeleteGraph(imgGameStart_);
-	DeleteGraph(imgNotGameStart_);
-	DeleteGraph(imgEnd_);
-	DeleteGraph(imgNotEnd_);
-	DeleteGraph(imgOption_);
-	DeleteGraph(imgNotOption_);
-	DeleteGraph(imgTutorial_);
-	DeleteGraph(imgNotTutorial_);
-
-
 }
 
 void TitleScene::SelectChange(SELECT next)
