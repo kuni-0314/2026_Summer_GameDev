@@ -11,23 +11,23 @@ public:
 		TAG tag, const Transform* follow,
 		const VECTOR& localPosTop, const VECTOR& localPosDown, float radius);
 	// デストラクタ
-	~ColliderCapsule(void);
+	~ColliderCapsule();
 	// 親Transformからの相対位置を取得
-	const VECTOR& GetLocalPosTop(void) const;
-	const VECTOR & GetLocalPosDown(void) const;
+	const VECTOR& GetLocalPosTop() const;
+	const VECTOR & GetLocalPosDown() const;
 	// 親Transformからの相対位置をセット
 	void SetLocalPosTop(const VECTOR& pos);
 	void SetLocalPosDown(const VECTOR& pos);
 	// ワールド座標を取得
-	VECTOR GetPosTop(void) const;
-	VECTOR GetPosDown(void) const;
+	VECTOR GetPosTop() const;
+	VECTOR GetPosDown() const;
 	// 半径
-	float GetRadius(void) const;
+	float GetRadius() const;
 	void SetRadius(float radius);
 	// 高さ
-	float GetHeight(void) const;
+	float GetHeight() const;
 	// カプセルの中心座標
-	VECTOR GetCenter(void) const;
+	VECTOR GetCenter() const;
 
 	VECTOR GetPosPushBackAlongNormal(
 		const MV1_COLL_RESULT_POLY& hitColPoly,

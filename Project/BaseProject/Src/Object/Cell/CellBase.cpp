@@ -27,11 +27,11 @@ CellBase::CellBase(Field* field, CELL_TYPE type, Vector2 pos, int size, int acti
 {
 }
 
-CellBase::~CellBase(void)
+CellBase::~CellBase()
 {
 }
 
-void CellBase::Init(void)
+void CellBase::Init()
 {
 	switch (type_)
 	{
@@ -53,7 +53,7 @@ void CellBase::Init(void)
 	}
 }
 
-void CellBase::Update(void)
+void CellBase::Update()
 {
 	// セル内にマウスカーソルがあるかどうか
 	int mouseX, mouseY;
@@ -77,7 +77,7 @@ void CellBase::Update(void)
 	}
 }
 
-void CellBase::Draw(void)
+void CellBase::Draw()
 {
 	DrawBox(
 		pos_.x,
@@ -97,7 +97,7 @@ void CellBase::Draw(void)
 	);
 }
 
-void CellBase::Release(void)
+void CellBase::Release()
 {
 }
 
@@ -108,7 +108,7 @@ void CellBase::SetType(CELL_TYPE type)
 	Init();
 }
 
-bool CellBase::IsMouseOver(void) const
+bool CellBase::IsMouseOver() const
 {
 	int mouseX, mouseY;
 	GetMousePoint(&mouseX, &mouseY);

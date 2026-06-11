@@ -7,16 +7,16 @@
 #include "../Object/Actor/Stage/Stage.h"
 #include "../Object/Collider/Model/ColliderModel.h"
 #include "DebugScene.h"
-DebugScene::DebugScene(void)
+DebugScene::DebugScene()
 	:
 	SceneBase(),
 	stage_(nullptr)
 {
 }
-DebugScene::~DebugScene(void)
+DebugScene::~DebugScene()
 {
 }
-void DebugScene::Init(void)
+void DebugScene::Init()
 {
 	// ステージ生成
 	stage_ = new Stage();
@@ -26,14 +26,14 @@ void DebugScene::Init(void)
 	camera->ChangeMode(Camera::MODE::FREE);
 
 }
-void DebugScene::Update(void)
+void DebugScene::Update()
 {
 	// ステージ更新
 	stage_->Update();
 	// デパッグポイントの配置
 	PlaceDebugPoint();
 }
-void DebugScene::Draw(void)
+void DebugScene::Draw()
 {
 	// ステージ描画
 	stage_->Draw();
@@ -54,7 +54,7 @@ void DebugScene::Draw(void)
 		y += 20;
 	}
 }
-void DebugScene::Release(void)
+void DebugScene::Release()
 {
 	// ステージ解放
 	stage_->Release();
@@ -62,7 +62,7 @@ void DebugScene::Release(void)
 	// デバッグポイント群
 	points_.clear();
 }
-void DebugScene::PlaceDebugPoint(void)
+void DebugScene::PlaceDebugPoint()
 {
 	const auto ins = InputManager::GetInstance();
 	// クリックした場所にデバッグポイントを配置
@@ -117,7 +117,7 @@ void DebugScene::PlaceDebugPoint(void)
 	}
 }
 
-void DebugScene::SavePoints(void)
+void DebugScene::SavePoints()
 {
 	std::ofstream ofs("Data/Csv/PointSave.txt");
 	if (!ofs) {

@@ -9,16 +9,16 @@ public:
 	ColliderSphere(
 		TAG tag, const Transform* follow, const VECTOR& localPos, float radius);
 	// デストラクタ
-	~ColliderSphere(void);
+	~ColliderSphere();
 	// 親Transformからの相対位置を取得
-	const VECTOR& GetLocalPos(void) const;
+	const VECTOR& GetLocalPos() const;
 	// 親Transformからの相対位置をセット
 	void SetLocalPos(const VECTOR& localPos);
 	// ワールド座標を取得
-	VECTOR GetPos(void) const;
+	VECTOR GetPos() const;
 	void SetPos(const VECTOR& pos);
 	// 半径
-	float GetRadius(void) const;
+	float GetRadius() const;
 	void SetRadius(float radius);
 
 	// 指定された回数と距離で三角形の法線方向に押し戻した座標を取得

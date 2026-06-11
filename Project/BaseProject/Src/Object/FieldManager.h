@@ -11,16 +11,16 @@ class FieldManager
 public:
 
 	FieldManager(GameScene* gameScene);
-	~FieldManager(void);
+	~FieldManager();
 
-	void Init(void);
-	void Update(void);
-	void Draw(void);
-	void Release(void);
+	void Init();
+	void Update();
+	void Draw();
+	void Release();
 
-	int GetMaxFieldCell(void) const;		// 最大フィールドセル数を取得
-	int GetCurrentActionCount(void) const;	// 現在の行動回数を取得
-	int GetTotalActionCount(void) const;	// 総行動回数を取得
+	int GetMaxFieldCell() const;		// 最大フィールドセル数を取得
+	int GetCurrentActionCount() const;	// 現在の行動回数を取得
+	int GetTotalActionCount() const;	// 総行動回数を取得
 	
 private:
 	std::unique_ptr<Field> playerField_;

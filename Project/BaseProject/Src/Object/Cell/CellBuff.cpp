@@ -10,17 +10,17 @@ CellBuff::CellBuff(Field* field, Vector2 pos, int size, int actionCount)
 {
 }
 
-CellBuff::~CellBuff(void)
+CellBuff::~CellBuff()
 {
 }
 
-void CellBuff::Init(void)
+void CellBuff::Init()
 {
 	CellBase::Init();
 	// バフセル固有の初期化処理をここに追加
 }
 
-void CellBuff::Update(void)
+void CellBuff::Update()
 {
 	CellBase::Update();
 	// バフセル固有の更新処理をここに追加

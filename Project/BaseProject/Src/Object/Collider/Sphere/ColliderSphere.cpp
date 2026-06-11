@@ -10,11 +10,11 @@ ColliderSphere::ColliderSphere(
 {
 }
 
-ColliderSphere::~ColliderSphere(void)
+ColliderSphere::~ColliderSphere()
 {
 }
 
-const VECTOR& ColliderSphere::GetLocalPos(void) const
+const VECTOR& ColliderSphere::GetLocalPos() const
 {
 	return localPos_;
 }
@@ -24,7 +24,7 @@ void ColliderSphere::SetLocalPos(const VECTOR& localPos)
 	localPos_ = localPos;
 }
 
-VECTOR ColliderSphere::GetPos(void) const
+VECTOR ColliderSphere::GetPos() const
 {
 	return GetRotPos(localPos_) ;
 }
@@ -34,7 +34,7 @@ void ColliderSphere::SetPos(const VECTOR& pos)
 	localPos_ = pos;
 }
 
-float ColliderSphere::GetRadius(void) const
+float ColliderSphere::GetRadius() const
 {
 	return radius_;
 }

@@ -20,11 +20,11 @@ EnemyRat::EnemyRat(const EnemyBase::EnemyData& data, Player* player)
 {
 }
 
-EnemyRat::~EnemyRat(void)
+EnemyRat::~EnemyRat()
 {
 }
 
-void EnemyRat::Draw(void)
+void EnemyRat::Draw()
 {
 
 	// 基底クラスの描画処理
@@ -51,7 +51,7 @@ void EnemyRat::Draw(void)
 
 
 
-void EnemyRat::InitLoad(void)
+void EnemyRat::InitLoad()
 {
 	//基底クラスのリソースロード
 	CharactorBase::InitLoad();
@@ -60,7 +60,7 @@ void EnemyRat::InitLoad(void)
 
 }
 
-void EnemyRat::InitTransform(void)
+void EnemyRat::InitTransform()
 {
 	//大きさ、座標等の初期化
 	transform_.scl = { SCALE ,SCALE ,SCALE };
@@ -71,7 +71,7 @@ void EnemyRat::InitTransform(void)
 	transform_.Update();
 }
 
-void EnemyRat::InitCollider(void)
+void EnemyRat::InitCollider()
 {
 	// 主に地面との衝突で仕様する線分コライダ
 	ColliderLine* colLine = new ColliderLine(
@@ -91,7 +91,7 @@ void EnemyRat::InitCollider(void)
 
 
 
-void EnemyRat::InitAnimation(void)
+void EnemyRat::InitAnimation()
 {
 	//アニメーションコントローラー
 	animationController_ = new AnimationController(transform_.modelId);
@@ -122,7 +122,7 @@ void EnemyRat::InitAnimation(void)
 
 }
 
-void EnemyRat::InitPost(void)
+void EnemyRat::InitPost()
 {
 	// 状態遷移初期処理登録
 	stateChanges_.emplace(static_cast<int>(STATE::NONE),
@@ -149,7 +149,7 @@ void EnemyRat::InitPost(void)
 	ChangeState(STATE::THINK);
 }
 
-void EnemyRat::UpdateProcess(void)
+void EnemyRat::UpdateProcess()
 {
 	stateUpdate_();
 
@@ -191,7 +191,7 @@ void EnemyRat::UpdateProcess(void)
 	}
 }
 
-void EnemyRat::UpdateProcessPost(void)
+void EnemyRat::UpdateProcessPost()
 {
 	EnemyBase::UpdateProcessPost();
 
@@ -214,11 +214,11 @@ void EnemyRat::ChangeState(STATE state)
 	EnemyBase::ChangeState(static_cast<int>(state_));
 }
 
-void EnemyRat::ChangeStateNone(void)
+void EnemyRat::ChangeStateNone()
 {
 	stateUpdate_ = std::bind(&EnemyRat::UpdateNone, this);
 }
-void EnemyRat::ChangeStateThink(void)
+void EnemyRat::ChangeStateThink()
 {
 
 	stateUpdate_ = std::bind(&EnemyRat::UpdateThink, this);
@@ -251,7 +251,7 @@ void EnemyRat::ChangeStateThink(void)
 	}
 	
 }
-void EnemyRat::ChangeStateIdle(void)
+void EnemyRat::ChangeStateIdle()
 {
 	stateUpdate_ = std::bind(&EnemyRat::UpdateIdle, this);
 
@@ -264,7 +264,7 @@ void EnemyRat::ChangeStateIdle(void)
 		static_cast<int>(ANIM_TYPE::IDLE), true);
 
 }
-void EnemyRat::ChangeStateWander(void)
+void EnemyRat::ChangeStateWander()
 {
 	stateUpdate_ = std::bind(&EnemyRat::UpdateWander, this);
 
@@ -280,7 +280,7 @@ void EnemyRat::ChangeStateWander(void)
 	animationController_->Play(
 		static_cast<int>(ANIM_TYPE::WALK), true);
 }
-void EnemyRat::ChangeStateAttack(void)
+void EnemyRat::ChangeStateAttack()
 {
 	stateUpdate_ = std::bind(&EnemyRat::UpdateAttack, this);
 
@@ -296,7 +296,7 @@ void EnemyRat::ChangeStateAttack(void)
 	animationController_->Play(
 		static_cast<int>(ANIM_TYPE::ATTACK), false);
 }
-void EnemyRat::ChangeStateHit(void)
+void EnemyRat::ChangeStateHit()
 {
 	stateUpdate_ = std::bind(&EnemyRat::UpdateHit, this);
 	movePow_ = AsoUtility::VECTOR_ZERO;
@@ -305,7 +305,7 @@ void EnemyRat::ChangeStateHit(void)
 	animationController_->Play(
 		static_cast<int>(ANIM_TYPE::HIT), false);
 }
-void EnemyRat::ChangeStateDie(void)
+void EnemyRat::ChangeStateDie()
 {
 	stateUpdate_ = std::bind(&EnemyRat::UpdateDie, this);
 	movePow_ = AsoUtility::VECTOR_ZERO;
@@ -314,13 +314,13 @@ void EnemyRat::ChangeStateDie(void)
 	animationController_->Play(
 		static_cast<int>(ANIM_TYPE::END), false);
 }
-void EnemyRat::ChangeStateEnd(void)
+void EnemyRat::ChangeStateEnd()
 {
 	stateUpdate_ = std::bind(&EnemyRat::UpdateEnd, this);
 	
 }
 
-void EnemyRat::ChangeStateRun(void)
+void EnemyRat::ChangeStateRun()
 {
 	stateUpdate_ = std::bind(&EnemyRat::UpdateRun, this);
 	// ランダムな移動時間
@@ -332,7 +332,7 @@ void EnemyRat::ChangeStateRun(void)
 		static_cast<int>(ANIM_TYPE::RUN), true);
 }
 
-void EnemyRat::ChangeStateWarnig(void)
+void EnemyRat::ChangeStateWarnig()
 {
 	stateUpdate_ = std::bind(&EnemyRat::UpdateWarnig, this);
 
@@ -347,15 +347,15 @@ void EnemyRat::ChangeStateWarnig(void)
 		static_cast<int>(ANIM_TYPE::WALK), true);
 }
 
-void EnemyRat::UpdateNone(void)
+void EnemyRat::UpdateNone()
 {
 }
 
-void EnemyRat::UpdateThink(void)
+void EnemyRat::UpdateThink()
 {
 }
 
-void EnemyRat::UpdateIdle(void)
+void EnemyRat::UpdateIdle()
 {
 	step_ -= scnMng_.GetDeltaTime();
 	if (step_ < 0.0f)
@@ -367,7 +367,7 @@ void EnemyRat::UpdateIdle(void)
 	movePow_ = AsoUtility::VECTOR_ZERO;
 }
 
-void EnemyRat::UpdateWander(void)
+void EnemyRat::UpdateWander()
 {
 	step_ -= scnMng_.GetDeltaTime();
 
@@ -396,7 +396,7 @@ void EnemyRat::UpdateWander(void)
 	movePow_ = VScale(moveDir_, moveSpeed_);
 }
 
-void EnemyRat::UpdateAttack(void)
+void EnemyRat::UpdateAttack()
 {
 	// 前進しながら攻撃
 	movePow_ = VScale(moveDir_, ATTACK_MOVE_SPEED);
@@ -424,7 +424,7 @@ void EnemyRat::UpdateAttack(void)
 	movePow_ = AsoUtility::VECTOR_ZERO;
 }
 
-void EnemyRat::UpdateHit(void)
+void EnemyRat::UpdateHit()
 {
 	
 	if (animationController_->IsEnd())
@@ -435,7 +435,7 @@ void EnemyRat::UpdateHit(void)
 
 }
 
-void EnemyRat::UpdateDie(void)
+void EnemyRat::UpdateDie()
 {
 	if (animationController_->IsEnd())
 	{
@@ -446,13 +446,13 @@ void EnemyRat::UpdateDie(void)
 
 }
 
-void EnemyRat::UpdateEnd(void)
+void EnemyRat::UpdateEnd()
 {
 
 	
 }
 
-void EnemyRat::UpdateRun(void)
+void EnemyRat::UpdateRun()
 {
 	step_ -= scnMng_.GetDeltaTime();
 
@@ -480,7 +480,7 @@ void EnemyRat::UpdateRun(void)
 	movePow_ = VScale(moveDir_, moveSpeed_);
 }
 
-void EnemyRat::UpdateWarnig(void)
+void EnemyRat::UpdateWarnig()
 {
 
 	// 時間減少

@@ -21,7 +21,7 @@ PixelMaterial::~PixelMaterial()
 	DeleteShaderConstantBuffer(constBuf_);
 }
 
-void PixelMaterial::Begin(void)
+void PixelMaterial::Begin()
 {
 	// オリジナルシェーダ設定(ON)
 	MV1SetUseOrigShader(true);
@@ -30,7 +30,7 @@ void PixelMaterial::Begin(void)
 	SetUsePixelShader(shader_);
 }
 
-void PixelMaterial::End(void)
+void PixelMaterial::End()
 {
 	// ピクセルシェーダ解除
 	SetUsePixelShader(-1);
@@ -44,7 +44,7 @@ void PixelMaterial::SetTexture(int slot, int textureHandle)
 	SetUseTextureToShader(slot, textureHandle);
 }
 
-FLOAT4* PixelMaterial::GetConstantBuffer(void)
+FLOAT4* PixelMaterial::GetConstantBuffer()
 {
 	return (FLOAT4*)GetBufferShaderConstantBuffer(constBuf_);
 }

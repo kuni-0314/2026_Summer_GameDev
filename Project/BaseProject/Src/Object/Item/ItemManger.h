@@ -14,17 +14,17 @@ public:
 	// コンストラクタ
 	// デストラクタ
 	ItemManger();
-	~ItemManger(void);
+	~ItemManger();
 	// 初期化
-	void Init(void);
+	void Init();
 	// 更新
-	void Update(void);
+	void Update();
 	// 描画
-	void Draw(void);
+	void Draw();
 	// 解放
-	void Release(void);
+	void Release();
 	//エネミー
-	const std::vector<ItemBase*>& GetItems(void) const { return items_; }
+	const std::vector<ItemBase*>& GetItems() const { return items_; }
 	// 衝突対象となるコライダを登録
 	void AddHitCollider(const ColliderBase* hitCollider);
 

@@ -13,7 +13,7 @@ class ActorBase
 public:
 
 
-	enum class COLLIDER_TYPE
+	enum class COLLIDER_TYPE : std::uint8_t
 	{
 		LINE,
 		CAPSULE,
@@ -26,27 +26,27 @@ public:
 	};
 
 	// コンストラクタ
-	ActorBase(void);
+	ActorBase();
 
 	// デストラクタ
-	virtual ~ActorBase(void);
+	virtual ~ActorBase();
 
 	// 初期化
-	void Init(void);
+	void Init();
 
 	// 更新
-	virtual void Update(void) = 0;
+	virtual void Update() = 0;
 
 	// 描画
-	virtual void Draw(void);
+	virtual void Draw();
 
 	// 解放
-	virtual void Release(void);
+	virtual void Release();
 
 	// 大きさ、回転、座標等の取得
-	const Transform& GetTransform(void) const;
+	const Transform& GetTransform() const;
 	// 自身の衝突情報取得
-	const std::map<int, ColliderBase*>& GetOwnColliders(void) const
+	const std::map<int, ColliderBase*>& GetOwnColliders() const
 	{
 		return ownColliders_;
 	}
@@ -56,7 +56,7 @@ public:
 	// 衝突対象となるコライダを登録
 	void AddHitCollider(const ColliderBase* hitCollider);
 	// 衝突対象となるコライダをクリア
-	void ClearHitCollider(void);
+	void ClearHitCollider();
 
 	// 生存状態の取得
 	bool IsAlive() const { return isAlive_; }
@@ -77,19 +77,19 @@ protected:
 	std::vector<const ColliderBase*> hitColliders_;
 
 	// リソースロード
-	virtual void InitLoad(void) = 0;
+	virtual void InitLoad() = 0;
 
 	// 大きさ、回転、座標の初期化
-	virtual void InitTransform(void) = 0;
+	virtual void InitTransform() = 0;
 
 	// 衝突判定の初期化
-	virtual void InitCollider(void) = 0;
+	virtual void InitCollider() = 0;
 
 	// アニメーションの初期化
-	virtual void InitAnimation(void) = 0;
+	virtual void InitAnimation() = 0;
 
 	// 初期化後の個別処理
-	virtual void InitPost(void) = 0;
+	virtual void InitPost() = 0;
 
 	//変数
 	bool isAlive_;

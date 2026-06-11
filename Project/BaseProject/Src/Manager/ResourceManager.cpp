@@ -5,7 +5,7 @@
 
 ResourceManager* ResourceManager::instance_ = nullptr;
 
-void ResourceManager::CreateInstance(void)
+void ResourceManager::CreateInstance()
 {
 	if (instance_ == nullptr)
 	{
@@ -14,12 +14,12 @@ void ResourceManager::CreateInstance(void)
 	instance_->Init();
 }
 
-ResourceManager& ResourceManager::GetInstance(void)
+ResourceManager& ResourceManager::GetInstance()
 {
 	return *instance_;
 }
 
-void ResourceManager::Init(void)
+void ResourceManager::Init()
 {
 
 	// „§‚µ‚Ü‚¹‚ñ‚ªA‚Ç‚¤‚µ‚Ä‚àg‚¢‚½‚¢•û‚Í
@@ -111,7 +111,7 @@ void ResourceManager::Init(void)
 	resourcesMap_.emplace(SRC::ITEM_SKILL, res);	//map‚É“o˜^
 }
 
-void ResourceManager::Release(void)
+void ResourceManager::Release()
 {
 	for (auto& p : loadedMap_)
 	{
@@ -121,7 +121,7 @@ void ResourceManager::Release(void)
 	loadedMap_.clear();
 }
 
-void ResourceManager::Destroy(void)
+void ResourceManager::Destroy()
 {
 	Release();
 	for (auto& res : resourcesMap_)
@@ -158,7 +158,7 @@ int ResourceManager::LoadModelDuplicate(SRC src)
 	return duId;
 }
 
-ResourceManager::ResourceManager(void)
+ResourceManager::ResourceManager()
 {
 }
 

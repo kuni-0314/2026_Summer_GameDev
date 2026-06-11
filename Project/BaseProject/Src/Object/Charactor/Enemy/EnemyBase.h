@@ -30,11 +30,11 @@ public:
 	// コンストラクタ
 	EnemyBase(const EnemyBase::EnemyData& data,Player* player);
 	// デストラクタ
-	virtual ~EnemyBase(void) override;
+	virtual ~EnemyBase() override;
 	
 
 	//描画
-	virtual void Draw(void) override;
+	virtual void Draw() override;
 
 
 protected:
@@ -50,20 +50,20 @@ protected:
 	// 状態管理
 	int stateBase_;
 	// 状態管理(状態遷移時初期処理)
-	std::map<int, std::function<void(void)>> stateChanges_;
+	std::map<int, std::function<void()>> stateChanges_;
 	// 状態管理(更新ステップ)
-	std::function<void(void)> stateUpdate_;
+	std::function<void()> stateUpdate_;
 
 	// リソースロード
-	void InitLoad(void) override {}
+	void InitLoad() override {}
 	// 大きさ、回転、座標の初期化
-	void InitTransform(void) override {}
+	void InitTransform() override {}
 	// 衝突判定の初期化
-	void InitCollider(void) override {}
+	void InitCollider() override {}
 	// アニメーションの初期化
-	void InitAnimation(void) override {}
+	void InitAnimation() override {}
 	// 初期化後の個別処理
-	void InitPost(void) override {}
+	void InitPost() override {}
 
 
 	// 状態遷移
@@ -71,12 +71,12 @@ protected:
 
 
 	// 更新系
-	virtual void UpdateProcessPost(void) override {}
+	virtual void UpdateProcessPost() override {}
 	// 移動可能範囲判定
-	bool InMovableRange(void) const;
+	bool InMovableRange() const;
 
 	//視線ベクトル
-	void LookPlayer(void);
+	void LookPlayer();
 
 };
 

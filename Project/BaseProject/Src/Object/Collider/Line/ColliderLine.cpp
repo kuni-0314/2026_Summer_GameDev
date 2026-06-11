@@ -10,7 +10,7 @@ ColliderLine::ColliderLine(
 	localPosEnd_(localPosEnd)
 {
 }
-ColliderLine::~ColliderLine(void)
+ColliderLine::~ColliderLine()
 {
 }
 void ColliderLine::SetLocalPosStart(const VECTOR& pos)
@@ -21,19 +21,19 @@ void ColliderLine::SetLocalPosEnd(const VECTOR& pos)
 {
 	localPosEnd_ = pos;
 }
-const VECTOR& ColliderLine::GetLocalPosStart(void) const
+const VECTOR& ColliderLine::GetLocalPosStart() const
 {
 	return localPosStart_;
 }
-const VECTOR& ColliderLine::GetLocalPosEnd(void) const
+const VECTOR& ColliderLine::GetLocalPosEnd() const
 {
 	return localPosEnd_;
 }
-VECTOR ColliderLine::GetPosStart(void) const
+VECTOR ColliderLine::GetPosStart() const
 {
 	return GetRotPos(localPosStart_);
 }
-VECTOR ColliderLine::GetPosEnd(void) const
+VECTOR ColliderLine::GetPosEnd() const
 {
 	return GetRotPos(localPosEnd_);
 }

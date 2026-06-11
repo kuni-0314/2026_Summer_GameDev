@@ -19,6 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Src\Manager\PostEffectManager.cpp" />
     <ClCompile Include="Src\Object\Charactor\Enemy\Rase\EnemyRase.cpp" />
     <ClCompile Include="Src\Object\Item\ItemSkill\SkillItem.cpp" />
     <ClCompile Include="Src\Object\Skill\SkillBase.cpp" />
@@ -88,6 +89,7 @@
     <ClCompile Include="Src\Object\Weapon\WeaponBase.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Src\Manager\PostEffectManager.h" />
     <ClInclude Include="Src\Object\Charactor\Enemy\Rase\EnemyRase.h" />
     <ClInclude Include="Src\Object\Item\ItemSkill\SkillItem.h" />
     <ClInclude Include="Src\Object\Skill\SkillBase.h" />

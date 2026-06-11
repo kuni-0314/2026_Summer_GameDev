@@ -29,17 +29,17 @@ public:
 	// コンストラクタ
 	ColliderBase(SHAPE shape, TAG tag, const Transform* follow);
 	// デストラクタ
-	virtual ~ColliderBase(void);
+	virtual ~ColliderBase();
 	// 描画
-	void Draw(void);
+	void Draw();
 	// 追従先の取得
-	const Transform* GetFollow(void) const { return follow_; };
+	const Transform* GetFollow() const { return follow_; };
 	// 追従先の再設定
 	void SetFollow(Transform* follow);
 	// 形状
-	SHAPE GetShape(void) const { return shape_; }
+	SHAPE GetShape() const { return shape_; }
 	// 衝突種別
-	TAG GetTag(void) const { return tag_; }
+	TAG GetTag() const { return tag_; }
 
 	// 指定された回数と距離で三角形の法線方向に押し戻す
 	virtual VECTOR GetPosPushBackAlongNormal(

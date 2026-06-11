@@ -23,12 +23,12 @@ void SceneManager::CreateInstance()
 	instance_->Init();
 }
 
-SceneManager& SceneManager::GetInstance(void)
+SceneManager& SceneManager::GetInstance()
 {
 	return *instance_;
 }
 
-void SceneManager::Init(void)
+void SceneManager::Init()
 {
 
 	sceneId_ = SCENE_ID::TITLE;
@@ -59,7 +59,7 @@ void SceneManager::Init(void)
 
 }
 
-void SceneManager::Init3D(void)
+void SceneManager::Init3D()
 {
 
 	// ”wŒiFİ’è
@@ -90,7 +90,7 @@ void SceneManager::Init3D(void)
 
 }
 
-void SceneManager::Update(void)
+void SceneManager::Update()
 {
 
 	if (scene_ == nullptr)
@@ -122,7 +122,7 @@ void SceneManager::Update(void)
 
 }
 
-void SceneManager::Draw(void)
+void SceneManager::Draw()
 {
 	SetDrawScreen(mainScreen_);
 	ClearDrawScreen();
@@ -140,7 +140,7 @@ void SceneManager::Draw(void)
 	DrawGraph(0, 0, mainScreen_, true);
 }
 
-void SceneManager::Destroy(void)
+void SceneManager::Destroy()
 {
 
 	// ƒV[ƒ“‚Ì‰ğ•ú
@@ -178,28 +178,28 @@ void SceneManager::ChangeScene(SCENE_ID nextId)
 
 }
 
-SceneManager::SCENE_ID SceneManager::GetSceneID(void)
+SceneManager::SCENE_ID SceneManager::GetSceneID()
 {
 	return sceneId_;
 }
 
-float SceneManager::GetDeltaTime(void) const
+float SceneManager::GetDeltaTime() const
 {	
 	//return 1.0f / 60.0f;
 	return deltaTime_;
 }
 
-Camera* SceneManager::GetCamera(void) const
+Camera* SceneManager::GetCamera() const
 {
 	return camera_;
 }
 
-int SceneManager::GetMainScreen(void) const
+int SceneManager::GetMainScreen() const
 {
 	return mainScreen_;
 }
 
-SceneManager::SceneManager(void)
+SceneManager::SceneManager()
 {
 
 	sceneId_ = SCENE_ID::NONE;
@@ -217,7 +217,7 @@ SceneManager::SceneManager(void)
 
 }
 
-void SceneManager::ResetDeltaTime(void)
+void SceneManager::ResetDeltaTime()
 {
 	deltaTime_ = 0.016f;
 	preTime_ = std::chrono::system_clock::now();
@@ -266,7 +266,7 @@ void SceneManager::DoChangeScene(SCENE_ID sceneId)
 
 }
 
-void SceneManager::Fade(void)
+void SceneManager::Fade()
 {
 
 	Fader::STATE fState = fader_->GetState();

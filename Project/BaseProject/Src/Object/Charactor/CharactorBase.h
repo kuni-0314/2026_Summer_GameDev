@@ -31,16 +31,16 @@ public:
 	};
 
 	// コンストラクタ
-	CharactorBase(void);
+	CharactorBase();
 	// デストラクタ
-	virtual ~CharactorBase(void) override;
+	virtual ~CharactorBase() override;
 
 	//更新
-	virtual void Update(void) override;
+	virtual void Update() override;
 
-	virtual void Draw(void) override;
+	virtual void Draw() override;
 
-	virtual void Release(void) override;
+	virtual void Release() override;
 
 	// ダメージ処理
 	void Damege(int damege);
@@ -91,30 +91,30 @@ protected:
 	int hp_;
 
 	// リソースロード
-	virtual void InitLoad(void) override;
+	virtual void InitLoad() override;
 
-	virtual void InitAnimation(void) override;
+	virtual void InitAnimation() override;
 
 	// 更新系
-	virtual void UpdateProcess(void) = 0;
-	virtual void UpdateProcessPost(void) = 0;
+	virtual void UpdateProcess() = 0;
+	virtual void UpdateProcessPost() = 0;
 	// 移動方向に応じた遅延回転
-	void DelayRotate(void);
+	void DelayRotate();
 
 	// 重力計算
-	void CalcGravityPow(void);
+	void CalcGravityPow();
 
 
 	// 衝突判定
-	virtual void  CollisionReserve(void) {}
-	void Collision(void);
-	void CollisionGravity(void);
+	virtual void  CollisionReserve() {}
+	void Collision();
+	void CollisionGravity();
 	//カプセル型当たり判定（flag:trueなら高精度処理を行う）
-	void CollisionCapsule(void);
+	void CollisionCapsule();
 
 
 	// 丸影描画
-	void DrawShadow(void);
+	void DrawShadow();
 
 	AnimationController* animationController_;
 

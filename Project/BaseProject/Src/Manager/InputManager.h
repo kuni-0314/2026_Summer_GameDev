@@ -45,27 +45,27 @@ public:
 		MAX,
 	};
 
-	static void CreateInstance(void);			// インスタンス生成
-	static InputManager* GetInstance(void);		// インスタンス取得
-	static void DeleteInstance(void);			// インスタンス削除
+	static void CreateInstance();			// インスタンス生成
+	static InputManager* GetInstance();		// インスタンス取得
+	static void DeleteInstance();			// インスタンス削除
 
-	bool Init(void);	// 初期化（初回のみ実行）
-	void Update(void);	// 更新
-	bool Release(void);	// 解放
+	bool Init();	// 初期化（初回のみ実行）
+	void Update();	// 更新
+	bool Release();	// 解放
 
-	void Clear(void);			// 判定を行うキーをクリア
+	void Clear();			// 判定を行うキーをクリア
 	bool IsNew(int key);		// キーが押されているか
 	bool IsTrgDown(int key);	// キーが今押されたか
 	bool IsTrgUp(int key);		// キーは離されたか
 	bool IsHold(int key, int holdTime);	// キーが指定時間以上押されているか
 	int GetLastHoldTime(int key);	// キーが最後に離されるまで押されていた時間を取得
 
-	void ClearMouse(void);				// 判定を行うマウスボタンをクリア
+	void ClearMouse();				// 判定を行うマウスボタンをクリア
 	bool IsMouseNew(int button);		// マウスボタンが押されているか
 	bool IsMouseTrgDown(int button);	// マウスボタンが今押されたか
 	bool IsMouseTrgUp(int button);		// マウスボタンは離されたか
 	bool IsMouseHold(int button, int holdTime);	// マウスボタンが指定時間以上押されているか
-	int GetMouseWheel(void);			// マウスホイールの回転量を取得
+	int GetMouseWheel();			// マウスホイールの回転量を取得
 	void GetMousePos(int& x, int& y);	// マウスの座標を取得
 	int GetMouseLastHoldTime(int button);	// マウスボタンが最後に離されるまで押されていた時間を取得
 
@@ -116,10 +116,10 @@ public:
 	}
 
 private:
-	InputManager(void);		// コンストラクタ
-	~InputManager(void);	// デストラクタ
+	InputManager();		// コンストラクタ
+	~InputManager();	// デストラクタ
 
-	void UpdateGamePad(void);	// ゲームパッドの更新
+	void UpdateGamePad();	// ゲームパッドの更新
 
 	// キーの入力状態の情報
 	struct Info

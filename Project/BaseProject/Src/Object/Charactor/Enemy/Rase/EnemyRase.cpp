@@ -19,24 +19,24 @@ EnemyRase::EnemyRase(const EnemyBase::EnemyData& data, Player* player)
 {
 }
 
-EnemyRase::~EnemyRase(void)
+EnemyRase::~EnemyRase()
 {
 }
 
-void EnemyRase::Draw(void)
+void EnemyRase::Draw()
 {
 	// 基底クラスの描画処理
 	CharactorBase::Draw();
 }
 
-void EnemyRase::InitLoad(void)
+void EnemyRase::InitLoad()
 {
 	//基底クラスのリソースロード
 	CharactorBase::InitLoad();
 	transform_.SetModel(resMng_.LoadModelDuplicate(ResourceManager::SRC::ENEMY_RASE));
 }
 
-void EnemyRase::InitTransform(void)
+void EnemyRase::InitTransform()
 {
 	//大きさ、座標等の初期化
 	transform_.scl = { SCALE ,SCALE ,SCALE };
@@ -47,7 +47,7 @@ void EnemyRase::InitTransform(void)
 	transform_.Update();
 }
 
-void EnemyRase::InitCollider(void)
+void EnemyRase::InitCollider()
 {
 	// 主に地面との衝突で仕様する線分コライダ
 	ColliderLine* colLine = new ColliderLine(
@@ -63,7 +63,7 @@ void EnemyRase::InitCollider(void)
 	ownColliders_.emplace(static_cast<int>(COLLIDER_TYPE::CAPSULE), colCapsule);
 }
 
-void EnemyRase::InitAnimation(void)
+void EnemyRase::InitAnimation()
 {
 	//アニメーションコントローラー
 	animationController_ = new AnimationController(transform_.modelId);
@@ -75,13 +75,13 @@ void EnemyRase::InitAnimation(void)
 	animationController_->AddInFbx(type, 20.0f, ANIM_INDX_FRY);
 }
 
-void EnemyRase::InitPost(void)
+void EnemyRase::InitPost()
 {
 	// 初期状態設定
 	ChangeState(STATE::IDLE);
 }
 
-void EnemyRase::UpdateProcess(void)
+void EnemyRase::UpdateProcess()
 {
 	//// プレイヤーをまだ発見していない
 	//int rand = GetRand(100);
@@ -92,7 +92,7 @@ void EnemyRase::UpdateProcess(void)
 
 }
 
-void EnemyRase::UpdateProcessPost(void)
+void EnemyRase::UpdateProcessPost()
 {
 }
 
@@ -102,7 +102,7 @@ void EnemyRase::ChangeState(STATE state)
 	EnemyBase::ChangeState(static_cast<int>(state_));
 }
 
-void EnemyRase::ChangeStateIdle(void)
+void EnemyRase::ChangeStateIdle()
 {
 	stateUpdate_ = std::bind(&EnemyRase::UpdateIdle, this);
 
@@ -116,19 +116,19 @@ void EnemyRase::ChangeStateIdle(void)
 
 }
 
-void EnemyRase::ChangeStateAttack(void)
+void EnemyRase::ChangeStateAttack()
 {
 }
 
-void EnemyRase::ChangeStateHit(void)
+void EnemyRase::ChangeStateHit()
 {
 }
 
-void EnemyRase::ChangeStateEnd(void)
+void EnemyRase::ChangeStateEnd()
 {
 }
 
-void EnemyRase::ChangeStateThink(void)
+void EnemyRase::ChangeStateThink()
 {
 	stateUpdate_ = std::bind(&EnemyRase::UpdateThink, this);
 
@@ -142,7 +142,7 @@ void EnemyRase::ChangeStateThink(void)
 
 }
 
-void EnemyRase::UpdateIdle(void)
+void EnemyRase::UpdateIdle()
 {
 	step_ -= scnMng_.GetDeltaTime();
 	if (step_ < 0.0f)
@@ -154,23 +154,23 @@ void EnemyRase::UpdateIdle(void)
 	movePow_ = AsoUtility::VECTOR_ZERO;
 }
 
-void EnemyRase::UpdateAttack(void)
+void EnemyRase::UpdateAttack()
 {
 }
 
-void EnemyRase::UpdateHit(void)
+void EnemyRase::UpdateHit()
 {
 }
 
-void EnemyRase::UpdateDie(void)
+void EnemyRase::UpdateDie()
 {
 }
 
-void EnemyRase::UpdateEnd(void)
+void EnemyRase::UpdateEnd()
 {
 }
 
-void EnemyRase::UpdateThink(void)
+void EnemyRase::UpdateThink()
 {
 	ChangeState(STATE::IDLE);
 }

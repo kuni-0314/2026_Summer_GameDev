@@ -18,11 +18,11 @@ ItemBase::ItemBase()
 	movePow_(AsoUtility::VECTOR_ZERO)
 {
 }
-ItemBase::~ItemBase(void)
+ItemBase::~ItemBase()
 {
 }
 
-void ItemBase::InitLoad(void)
+void ItemBase::InitLoad()
 {
 	// 丸影画像
 	imgShadow_ = resMng_.Load(ResourceManager::SRC::PLAYER_SHADOW).handleId_;
@@ -32,7 +32,7 @@ void ItemBase::InitLoad(void)
 }
 
 
-void ItemBase::Update(void)
+void ItemBase::Update()
 {
 	// 移動前座標を更新
 	prevPos_ = transform_.pos;
@@ -56,7 +56,7 @@ void ItemBase::Update(void)
 
 }
 
-void ItemBase::Draw(void)
+void ItemBase::Draw()
 {
 	//基底クラスの描画処理
 	ActorBase::Draw();
@@ -64,14 +64,14 @@ void ItemBase::Draw(void)
 	DrawShadow();
 }
 
-void ItemBase::Release(void)
+void ItemBase::Release()
 {
 
 	//基底クラスの開放
 	ActorBase::Release();
 }
 
-bool ItemBase::InSearchModel(void)
+bool ItemBase::InSearchModel()
 {
 	bool ret = false;//判定結果
 
@@ -116,7 +116,7 @@ bool ItemBase::InSearchModel(void)
 
 
 
-void ItemBase::DelayRotate(void)
+void ItemBase::DelayRotate()
 {
 	// 移動方向から回転に変換する
 	Quaternion goalRot = Quaternion::LookRotation(moveDir_);
@@ -125,7 +125,7 @@ void ItemBase::DelayRotate(void)
 		Quaternion::Slerp(transform_.quaRot, goalRot, 0.2f);
 }
 
-void ItemBase::CalcGravityPow(void)
+void ItemBase::CalcGravityPow()
 {
 	// 重力方向
 	VECTOR dirGravity = AsoUtility::DIR_D;
@@ -144,7 +144,7 @@ void ItemBase::CalcGravityPow(void)
 
 }
 
-void ItemBase::Collision(void)
+void ItemBase::Collision()
 {
 	// 衝突(カプセル)
 	CollisionCapsule();
@@ -157,7 +157,7 @@ void ItemBase::Collision(void)
 
 }
 
-void ItemBase::CollisionGravity(void)
+void ItemBase::CollisionGravity()
 {
 	// 線分コライダ
 	int lineType = static_cast<int>(COLLIDER_TYPE::LINE);
@@ -186,7 +186,7 @@ void ItemBase::CollisionGravity(void)
 
 }
 
-void ItemBase::CollisionCapsule(void)
+void ItemBase::CollisionCapsule()
 {
 	// カプセルコライダ
 	int capsuleType = static_cast<int>(COLLIDER_TYPE::CAPSULE);
@@ -266,7 +266,7 @@ void ItemBase::CollisionCapsule(void)
 	}
 }
 
-void ItemBase::DrawShadow(void)
+void ItemBase::DrawShadow()
 {
 
 

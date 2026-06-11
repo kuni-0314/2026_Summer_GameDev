@@ -12,14 +12,14 @@ ColliderCapsule::ColliderCapsule(
 	radius_(radius)
 {
 }
-ColliderCapsule::~ColliderCapsule(void)
+ColliderCapsule::~ColliderCapsule()
 {
 }
-const VECTOR& ColliderCapsule::GetLocalPosTop(void) const
+const VECTOR& ColliderCapsule::GetLocalPosTop() const
 {
 	return localPosTop_;
 }
-const VECTOR& ColliderCapsule::GetLocalPosDown(void) const
+const VECTOR& ColliderCapsule::GetLocalPosDown() const
 {
 	return localPosDown_;
 }
@@ -31,15 +31,15 @@ void ColliderCapsule::SetLocalPosDown(const VECTOR& pos)
 {
 	localPosDown_ = pos;
 }
-VECTOR ColliderCapsule::GetPosTop(void) const
+VECTOR ColliderCapsule::GetPosTop() const
 {
 	return GetRotPos(localPosTop_);
 }
-VECTOR ColliderCapsule::GetPosDown(void) const
+VECTOR ColliderCapsule::GetPosDown() const
 {
 	return GetRotPos(localPosDown_);
 }
-float ColliderCapsule::GetRadius(void) const
+float ColliderCapsule::GetRadius() const
 {
 	return radius_;
 }
@@ -47,11 +47,11 @@ void ColliderCapsule::SetRadius(float radius)
 {
 	radius_ = radius;
 }
-float ColliderCapsule::GetHeight(void) const
+float ColliderCapsule::GetHeight() const
 {
 	return localPosTop_.y;
 }
-VECTOR ColliderCapsule::GetCenter(void) const
+VECTOR ColliderCapsule::GetCenter() const
 {
 	VECTOR top = GetPosTop();
 	VECTOR down = GetPosDown();

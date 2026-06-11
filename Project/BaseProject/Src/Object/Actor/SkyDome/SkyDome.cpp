@@ -14,7 +14,7 @@ SkyDome::SkyDome(const Transform& followTransform)
 {
 }
 
-SkyDome::~SkyDome(void)
+SkyDome::~SkyDome()
 {
 }
 
@@ -51,12 +51,12 @@ void SkyDome::Draw()
 	SetUseLighting(true);
 }
 
-void SkyDome::InitLoad(void)
+void SkyDome::InitLoad()
 {
 	transform_.SetModel(resMng_.Load(ResourceManager::SRC::SKY_DOME).handleId_);
 }
 
-void SkyDome::InitTransform(void)
+void SkyDome::InitTransform()
 {
 	transform_.scl = { SCL_SKYDOME ,SCL_SKYDOME ,SCL_SKYDOME };
 	transform_.quaRot = Quaternion::Identity();
@@ -66,15 +66,15 @@ void SkyDome::InitTransform(void)
 	transform_.Update();
 }
 
-void SkyDome::InitCollider(void)
+void SkyDome::InitCollider()
 {
 }
 
-void SkyDome::InitAnimation(void)
+void SkyDome::InitAnimation()
 {
 }
 
-void SkyDome::InitPost(void)
+void SkyDome::InitPost()
 {
 	// Zバッファ無効(突き抜け対策)
 	MV1SetUseZBuffer(transform_.modelId, false);
@@ -113,25 +113,25 @@ void SkyDome::ChangeState(STATE state)
 	}
 }
 
-void SkyDome::ChangeStateNone(void)
+void SkyDome::ChangeStateNone()
 {
 }
 
-void SkyDome::ChangeStateStay(void)
+void SkyDome::ChangeStateStay()
 {
 }
 
-void SkyDome::ChangeStateFollow(void)
+void SkyDome::ChangeStateFollow()
 {
 	transform_.pos = followTransform_.pos;
 	transform_.Update();
 }
 
-void SkyDome::UpdateNone(void)
+void SkyDome::UpdateNone()
 {
 }
 
-void SkyDome::UpdateStay(void)
+void SkyDome::UpdateStay()
 {
 
 	//モデルのY軸回転
@@ -140,7 +140,7 @@ void SkyDome::UpdateStay(void)
 	transform_.Update();
 }
 
-void SkyDome::UpdateFollow(void)
+void SkyDome::UpdateFollow()
 {
 	Quaternion rot = Quaternion::AngleAxis(AsoUtility::Deg2RadF(0.1f), AsoUtility::AXIS_Y);
 	transform_.quaRot = transform_.quaRot.Mult(rot);

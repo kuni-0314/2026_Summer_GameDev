@@ -7,24 +7,24 @@ class DebugScene : public SceneBase
 {
 public:
 	// コンストラクタ
-	DebugScene(void);
+	DebugScene();
 	// デストラクタ
-	~DebugScene(void) override;
+	~DebugScene() override;
 	// 初期化
-	void Init(void) override;
+	void Init() override;
 	// 更新
-	void Update(void) override;
+	void Update() override;
 	// 描画
-	void Draw(void) override;
+	void Draw() override;
 	// 解放
-	void Release(void) override;
+	void Release() override;
 private:
 	// ステージ
 	Stage* stage_;
 	// デバッグポイント群
 	std::vector<VECTOR> points_;
 	// デバッグポイントの配置
-	void PlaceDebugPoint(void);
+	void PlaceDebugPoint();
 	// デバッグポイントの保存
-	void SavePoints(void);
+	void SavePoints();
 };

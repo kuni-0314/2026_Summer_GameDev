@@ -70,39 +70,39 @@ public:
 	};
 
 	// コンストラクタ
-	Camera(void);
+	Camera();
 
 	// デストラクタ
-	~Camera(void)override;
+	~Camera()override;
 
 
 	// 更新
-	void Update(void)override;
+	void Update()override;
 
 	// 描画前のカメラ設定
-	void SetBeforeDraw(void);
+	void SetBeforeDraw();
 
 	// デバッグ用描画
-	void DrawDebug(void);
+	void DrawDebug();
 
 	// 解放
-	void Release(void)override;
+	void Release()override;
 
 	// 座標の取得
-	const VECTOR& GetPos(void) const;
+	const VECTOR& GetPos() const;
 
 	// 角度の取得
-	const VECTOR& GetAngles(void) const;
-	const Quaternion& GetQuaRot(void) const;
+	const VECTOR& GetAngles() const;
+	const Quaternion& GetQuaRot() const;
 	
 	// X回転を抜いたY軸のみのカメラ角度
-	const Quaternion& GetQuaRotY(void) const;
+	const Quaternion& GetQuaRotY() const;
 	
 	// 注視点の取得
-	const VECTOR& GetTargetPos(void) const;
+	const VECTOR& GetTargetPos() const;
 
 	// カメラの前方方向
-	VECTOR GetForward(void) const;
+	VECTOR GetForward() const;
 
 	// カメラモードの変更
 	void ChangeMode(MODE mode);
@@ -118,15 +118,15 @@ public:
 protected:
 
 	// リソースロード
-	void InitLoad(void) override {}
+	void InitLoad() override {}
 	// 大きさ、回転、座標の初期化
-	void InitTransform(void) override {}
+	void InitTransform() override {}
 	// 衝突判定の初期化
-	void InitCollider(void) override;
+	void InitCollider() override;
 	// アニメーションの初期化
-	void InitAnimation(void) override {}
+	void InitAnimation() override {}
 	// 初期化後の個別処理
-	void InitPost(void) override;
+	void InitPost() override;
 	
 	
 
@@ -163,14 +163,14 @@ private:
 
 	
 	// カメラを初期位置に戻す
-	void SetDefault(void);
+	void SetDefault();
 
 	// 追従対象との位置同期を取る
-	void SyncFollow(void);
+	void SyncFollow();
 
 	// カメラ操作
 	void ProcessRot(bool isLimit);
-	void ProcessMove(void);
+	void ProcessMove();
 
 	// カメラ回転(キーボード)
 	void RotKeyboard(bool isLimit);
@@ -182,14 +182,14 @@ private:
 	void RotMouse(bool isLimit);
 
 	// モード別更新ステップ
-	void SetBeforeDrawFixedPoint(void);
-	void SetBeforeDrawFree(void);
-	void SetBeforeDrawFollow(void);
-	void SetBeforeDrawMouse(void);
-	void SetBeforeDrawTargeting(void);
+	void SetBeforeDrawFixedPoint();
+	void SetBeforeDrawFree();
+	void SetBeforeDrawFollow();
+	void SetBeforeDrawMouse();
+	void SetBeforeDrawTargeting();
 
 	// 衝突判定
-	void Collision(void);
+	void Collision();
 
 	// イージング処理
 	VECTOR LerpVector(const VECTOR& current, const VECTOR& target, float rate);

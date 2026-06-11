@@ -38,30 +38,30 @@ public:
 	//-------------------------------------------
 
 	// インスタンスを明示的に生成
-	static void CreateInstance(void);
+	static void CreateInstance();
 
 	// インスタンスの取得
-	static Application& GetInstance(void);
+	static Application& GetInstance();
 
 	// 初期化
-	void Init(void);
+	void Init();
 
 	// ゲームループの開始
-	void Run(void);
+	void Run();
 
 	// リソースの破棄
-	void Destroy(void);
+	void Destroy();
 
 	// 初期化成功／失敗の判定
-	bool IsInitFail(void) const;
+	bool IsInitFail() const;
 
 	// 解放成功／失敗の判定
-	bool IsReleaseFail(void) const;
+	bool IsReleaseFail() const;
 
 	// 重力の取得
-	float GetGravityPow(void) const { return GRAVITY * GRAVITY_SCALE; }
+	float GetGravityPow() const { return GRAVITY * GRAVITY_SCALE; }
 
-	void End(void) { isEnd_ = true; };
+	void End() { isEnd_ = true; };
 
 
 private:
@@ -79,16 +79,16 @@ private:
 
 	// デフォルトコンストラクタをprivateにして、
 	// 外部から生成できない様にする
-	Application(void);
+	Application();
 
 	// コピーコンストラクタも同様
 	Application(const Application& instance) = default;
 
 	// デストラクタも同様
-	~Application(void) = default;
+	~Application() = default;
 
 	// エフェクシアの初期化
-	void InitEffekseer(void);
+	void InitEffekseer();
 
 	// FPS制御
 	FpsController* fpsController_;

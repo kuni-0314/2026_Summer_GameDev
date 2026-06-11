@@ -7,14 +7,14 @@ public:
 	// コンストラクタ
 	Sword(Transform* ownerTransform);
 	// デストラクタ
-	~Sword(void) override;
+	~Sword() override;
 
 	// 更新
-	void Update(void) override;
+	void Update() override;
 
 protected:
 	// 武器固有の初期化
-	void InitHitboxes(void) override;
+	void InitHitboxes() override;
 
 private:
 	// 攻撃タイプ（PlayerAttackState::ATTACK_TYPE と対応）
@@ -37,17 +37,17 @@ private:
 	};
 
 	// 各攻撃タイプの判定を設定
-	void SetupNormalAttack1(void);
-	void SetupNormalAttack2(void);
-	void SetupNormalAttack3(void);
-	void SetupNormalAttack4(void);
-	void SetupNormalAttack5(void);
-	void SetupHeavyAttack(void);
-	void SetupDashAttack(void);
-	void SetupAirAttack1(void);
-	void SetupAirAttack2(void);
-	void SetupAirAttack3(void);
-	void SetupAirAttack4(void);
-	void SetupAirAttack5(void);
-	void SetupFallAttack(void);
+	void SetupNormalAttack1();
+	void SetupNormalAttack2();
+	void SetupNormalAttack3();
+	void SetupNormalAttack4();
+	void SetupNormalAttack5();
+	void SetupHeavyAttack();
+	void SetupDashAttack();
+	void SetupAirAttack1();
+	void SetupAirAttack2();
+	void SetupAirAttack3();
+	void SetupAirAttack4();
+	void SetupAirAttack5();
+	void SetupFallAttack();
 };

@@ -39,19 +39,19 @@ public:
 	};
 
 	// 明示的にインステンスを生成する
-	static void CreateInstance(void);
+	static void CreateInstance();
 
 	// 静的インスタンスの取得
-	static ResourceManager& GetInstance(void);
+	static ResourceManager& GetInstance();
 
 	// 初期化
-	void Init(void);
+	void Init();
 
 	// 解放(シーン切替時に一旦解放)
-	void Release(void);
+	void Release();
 
 	// リソースの完全破棄
-	void Destroy(void);
+	void Destroy();
 
 	// リソースのロード
 	const Resource& Load(SRC src);
@@ -74,9 +74,9 @@ private:
 
 	// デフォルトコンストラクタをprivateにして、
 	// 外部から生成できない様にする
-	ResourceManager(void);
+	ResourceManager();
 	ResourceManager(const ResourceManager& manager) = default;
-	~ResourceManager(void) = default;
+	~ResourceManager() = default;
 
 	// 内部ロード
 	Resource& _Load(SRC src);

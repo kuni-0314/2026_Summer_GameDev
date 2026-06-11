@@ -12,16 +12,16 @@
 ItemManger::ItemManger()
 {
 }
-ItemManger::~ItemManger(void)
+ItemManger::~ItemManger()
 {
 }
-void ItemManger::Init(void)
+void ItemManger::Init()
 {
 
 
 
 }
-void ItemManger::Update(void)
+void ItemManger::Update()
 {
 	for (auto& item : items_)
 	{
@@ -41,7 +41,7 @@ void ItemManger::Update(void)
 		}
 	}
 }
-void ItemManger::Draw(void)
+void ItemManger::Draw()
 {
 	for (auto& item : items_)
 	{
@@ -50,7 +50,7 @@ void ItemManger::Draw(void)
 
 	}
 }
-void ItemManger::Release(void)
+void ItemManger::Release()
 {
 	for (auto& item : items_)
 	{

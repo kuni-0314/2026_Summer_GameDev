@@ -2,7 +2,7 @@
 #include "../../Utility/AsoUtility.h"
 #include "Transform.h"
 
-Transform::Transform(void)
+Transform::Transform()
 	:
 	modelId(-1),
 	scl(AsoUtility::VECTOR_ONE),
@@ -18,11 +18,11 @@ Transform::Transform(void)
 {
 }
 
-Transform::~Transform(void)
+Transform::~Transform()
 {
 }
 
-void Transform::Update(void)
+void Transform::Update()
 {
 
 	// ‘å‚«‚³
@@ -50,7 +50,7 @@ void Transform::Update(void)
 
 }
 
-void Transform::Release(void)
+void Transform::Release()
 {
 }
 
@@ -59,32 +59,32 @@ void Transform::SetModel(int model)
 	modelId = model;
 }
 
-VECTOR Transform::GetForward(void) const
+VECTOR Transform::GetForward() const
 {
 	return GetDir(AsoUtility::DIR_F);
 }
 
-VECTOR Transform::GetBack(void) const
+VECTOR Transform::GetBack() const
 {
 	return GetDir(AsoUtility::DIR_B);
 }
 
-VECTOR Transform::GetRight(void) const
+VECTOR Transform::GetRight() const
 {
 	return GetDir(AsoUtility::DIR_R);
 }
 
-VECTOR Transform::GetLeft(void) const
+VECTOR Transform::GetLeft() const
 {
 	return GetDir(AsoUtility::DIR_L);
 }
 
-VECTOR Transform::GetUp(void) const
+VECTOR Transform::GetUp() const
 {
 	return GetDir(AsoUtility::DIR_U);
 }
 
-VECTOR Transform::GetDown(void) const
+VECTOR Transform::GetDown() const
 {
 	return GetDir(AsoUtility::DIR_D);
 }

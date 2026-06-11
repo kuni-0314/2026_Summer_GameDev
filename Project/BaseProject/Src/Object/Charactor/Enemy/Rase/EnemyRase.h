@@ -38,23 +38,23 @@ public:
 	// コンストラクタ
 	EnemyRase(const EnemyBase::EnemyData& data, Player* player);
 	// デストラクタ
-	~EnemyRase(void) override;
+	~EnemyRase() override;
 
-	void Draw(void) override;
+	void Draw() override;
 protected:
 	// リソースロード
-	void InitLoad(void) override;
+	void InitLoad() override;
 	// 大きさ、回転、座標の初期化
-	void InitTransform(void) override;
+	void InitTransform() override;
 	// 衝突判定の初期化
-	void InitCollider(void) override;
+	void InitCollider() override;
 	// アニメーションの初期化
-	void InitAnimation(void) override;
+	void InitAnimation() override;
 	// 初期化後の個別処理
-	void InitPost(void) override;
+	void InitPost() override;
 	// 更新系
-	void UpdateProcess(void) override;
-	void UpdateProcessPost(void) override;
+	void UpdateProcess() override;
+	void UpdateProcessPost() override;
 
 
 private:
@@ -137,20 +137,20 @@ private:
 
 	// 状態遷移
 	void ChangeState(STATE state);
-	void ChangeStateThink(void);
-	void ChangeStateIdle(void);
-	void ChangeStateAttack(void);
-	void ChangeStateHit(void);
-	void ChangeStateEnd(void);
+	void ChangeStateThink();
+	void ChangeStateIdle();
+	void ChangeStateAttack();
+	void ChangeStateHit();
+	void ChangeStateEnd();
 
 
 	// 更新系
-	void UpdateThink(void);
-	void UpdateIdle(void);
-	void UpdateAttack(void);
-	void UpdateHit(void);
-	void UpdateDie(void);
-	void UpdateEnd(void);
+	void UpdateThink();
+	void UpdateIdle();
+	void UpdateAttack();
+	void UpdateHit();
+	void UpdateDie();
+	void UpdateEnd();
 
 
 

@@ -8,17 +8,17 @@ Sword::Sword(Transform* ownerTransform)
 {
 }
 
-Sword::~Sword(void)
+Sword::~Sword()
 {
 }
 
-void Sword::Update(void)
+void Sword::Update()
 {
 	// 親クラスの更新処理
 	WeaponBase::Update();
 }
 
-void Sword::InitHitboxes(void)
+void Sword::InitHitboxes()
 {
 	// 基本パラメータ
 	baseDamage_ = 10;
@@ -45,7 +45,7 @@ void Sword::InitHitboxes(void)
 	SetupFallAttack();
 }
 
-void Sword::SetupNormalAttack1(void)
+void Sword::SetupNormalAttack1()
 {
 	// 通常攻撃1: 縦斬り
 	HitboxInfo hitbox;
@@ -59,7 +59,7 @@ void Sword::SetupNormalAttack1(void)
 	hitboxInfoMap_[static_cast<int>(ATTACK_TYPE::NORMAL1)].push_back(hitbox);
 }
 
-void Sword::SetupNormalAttack2(void)
+void Sword::SetupNormalAttack2()
 {
 	// 通常攻撃2: 横斬り（範囲広め）
 	HitboxInfo hitbox;
@@ -73,7 +73,7 @@ void Sword::SetupNormalAttack2(void)
 	hitboxInfoMap_[static_cast<int>(ATTACK_TYPE::NORMAL2)].push_back(hitbox);
 }
 
-void Sword::SetupNormalAttack3(void)
+void Sword::SetupNormalAttack3()
 {
 	// 通常攻撃3: 斜め斬り上げ
 	HitboxInfo hitbox;
@@ -87,7 +87,7 @@ void Sword::SetupNormalAttack3(void)
 	hitboxInfoMap_[static_cast<int>(ATTACK_TYPE::NORMAL3)].push_back(hitbox);
 }
 
-void Sword::SetupNormalAttack4(void)
+void Sword::SetupNormalAttack4()
 {
 	// 通常攻撃4: 回転斬り（キック攻撃のため判定は足元）
 	HitboxInfo hitbox;
@@ -101,7 +101,7 @@ void Sword::SetupNormalAttack4(void)
 	hitboxInfoMap_[static_cast<int>(ATTACK_TYPE::NORMAL4)].push_back(hitbox);
 }
 
-void Sword::SetupNormalAttack5(void)
+void Sword::SetupNormalAttack5()
 {
 	// 通常攻撃5: フィニッシュ斬り（強力）
 	HitboxInfo hitbox;
@@ -115,7 +115,7 @@ void Sword::SetupNormalAttack5(void)
 	hitboxInfoMap_[static_cast<int>(ATTACK_TYPE::NORMAL5)].push_back(hitbox);
 }
 
-void Sword::SetupHeavyAttack(void)
+void Sword::SetupHeavyAttack()
 {
 	// 強攻撃: 突進斬り（範囲広く長時間）
 	HitboxInfo hitbox;
@@ -129,7 +129,7 @@ void Sword::SetupHeavyAttack(void)
 	hitboxInfoMap_[static_cast<int>(ATTACK_TYPE::HEAVY)].push_back(hitbox);
 }
 
-void Sword::SetupDashAttack(void)
+void Sword::SetupDashAttack()
 {
 	// ダッシュ攻撃: スライディング斬り（低めの位置）
 	HitboxInfo hitbox;
@@ -143,7 +143,7 @@ void Sword::SetupDashAttack(void)
 	hitboxInfoMap_[static_cast<int>(ATTACK_TYPE::DASH)].push_back(hitbox);
 }
 
-void Sword::SetupAirAttack1(void)
+void Sword::SetupAirAttack1()
 {
 	// 空中攻撃1
 	HitboxInfo hitbox;
@@ -157,7 +157,7 @@ void Sword::SetupAirAttack1(void)
 	hitboxInfoMap_[static_cast<int>(ATTACK_TYPE::AIR1)].push_back(hitbox);
 }
 
-void Sword::SetupAirAttack2(void)
+void Sword::SetupAirAttack2()
 {
 	// 空中攻撃2
 	HitboxInfo hitbox;
@@ -171,7 +171,7 @@ void Sword::SetupAirAttack2(void)
 	hitboxInfoMap_[static_cast<int>(ATTACK_TYPE::AIR2)].push_back(hitbox);
 }
 
-void Sword::SetupAirAttack3(void)
+void Sword::SetupAirAttack3()
 {
 	// 空中攻撃3
 	HitboxInfo hitbox;
@@ -185,7 +185,7 @@ void Sword::SetupAirAttack3(void)
 	hitboxInfoMap_[static_cast<int>(ATTACK_TYPE::AIR3)].push_back(hitbox);
 }
 
-void Sword::SetupAirAttack4(void)
+void Sword::SetupAirAttack4()
 {
 	// 空中攻撃4
 	HitboxInfo hitbox;
@@ -199,7 +199,7 @@ void Sword::SetupAirAttack4(void)
 	hitboxInfoMap_[static_cast<int>(ATTACK_TYPE::AIR4)].push_back(hitbox);
 }
 
-void Sword::SetupAirAttack5(void)
+void Sword::SetupAirAttack5()
 {
 	// 空中攻撃5: フィニッシュ
 	HitboxInfo hitbox;
@@ -213,7 +213,7 @@ void Sword::SetupAirAttack5(void)
 	hitboxInfoMap_[static_cast<int>(ATTACK_TYPE::AIR5)].push_back(hitbox);
 }
 
-void Sword::SetupFallAttack(void)
+void Sword::SetupFallAttack()
 {
 	// 落下攻撃: 下方向への強力な一撃
 	HitboxInfo hitbox;

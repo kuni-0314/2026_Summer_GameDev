@@ -44,45 +44,45 @@ public:
 	};
 
 	//コンストラクタ
-	Player(void);
+	Player();
 	//デストラクタ
-	~Player(void) override;
+	~Player() override;
 
-	void Update(void) override;
+	void Update() override;
 
 	
 
-	void Draw(void) override;
+	void Draw() override;
 	
 	void ChangeState(STATE newState);
  
-	AnimationController* GetAnimationController(void) const { return animationController_;}
-	VECTOR GetMovePow(void) const { return movePow_; }
+	AnimationController* GetAnimationController() const { return animationController_;}
+	VECTOR GetMovePow() const { return movePow_; }
 	void SetMovePow(const VECTOR& pow) { movePow_ = pow; }
 	void SetMoveSpeed(const float speed) { moveSpeed_ = speed; }
-	VECTOR GetMoveDir(void) const { return moveDir_; }
+	VECTOR GetMoveDir() const { return moveDir_; }
 	void SetMoveDir(const VECTOR& dir) { moveDir_ = dir; }
-	VECTOR GetJumpPow(void) const { return jumpPow_; }
+	VECTOR GetJumpPow() const { return jumpPow_; }
 	void SetJumpPow(const VECTOR& pow) { jumpPow_ = pow; }
-	float GetStepJump(void) const { return stepJump_; }
+	float GetStepJump() const { return stepJump_; }
 	void SetStepJump(const float step) { stepJump_ = step; }
-	bool IsJump(void) const { return isJump_; }
+	bool IsJump() const { return isJump_; }
 	void SetJump(const bool isJump) { isJump_ = isJump; }
-	bool IsAir(void) const { return isAir_; }
+	bool IsAir() const { return isAir_; }
 	void SetAir(const bool isAir) { isAir_ = isAir; }
-	bool IsJet(void) const { return isJet_; }
+	bool IsJet() const { return isJet_; }
 	void SetJet(const bool isJet) { isJet_ = isJet; }
-	float GetJetTime(void) const { return jetTime_; }
+	float GetJetTime() const { return jetTime_; }
 	void SetJetTime(const float time) { jetTime_ = time; }
-	int GetAttackCoolTime(void) const { return attackCoolTime_; }
+	int GetAttackCoolTime() const { return attackCoolTime_; }
 	void SetAttackCoolTime(const int time) { attackCoolTime_ = time; }
-	int GetComboTimer(void) const { return comboTimer_; }
+	int GetComboTimer() const { return comboTimer_; }
 	void SetComboTimer(const int time) { comboTimer_ = time; }
-	GameScene* GetGameScene(void) const { return gameScene_; }
+	GameScene* GetGameScene() const { return gameScene_; }
 	void SetGameScene(GameScene* gameScene) { gameScene_ = gameScene; }
-	bool GetApplyRootMotion(void) const { return applyRootMotion_; }
+	bool GetApplyRootMotion() const { return applyRootMotion_; }
 	void SetApplyRootMotion(const bool apply) { applyRootMotion_ = apply; }
-	VECTOR GetAnimStartModelPos(void) const { return animStartModelPos_; }
+	VECTOR GetAnimStartModelPos() const { return animStartModelPos_; }
 	void SetAnimStartModelPos(const VECTOR& pos) { animStartModelPos_ = pos; }
 
 
@@ -146,38 +146,38 @@ public:
 	// スライド補正用の最小移動量
 	static constexpr float MIN_MOVE_THRESHOLD = 0.01f;
 
-	VECTOR GetPos(void) const { return transform_.pos; }
+	VECTOR GetPos() const { return transform_.pos; }
 	void SetPos(const VECTOR& pos) { transform_.pos = pos; }
-	float GetCollRadius(void) const { return COL_CAPSULE_RADIUS; }
+	float GetCollRadius() const { return COL_CAPSULE_RADIUS; }
 
 
 protected:
 
 	// リソースロード
-	void InitLoad(void) override;
+	void InitLoad() override;
 
 	// 大きさ、回転、座標の初期化
-	void InitTransform(void) override;
+	void InitTransform() override;
 
 	// 衝突判定の初期化
-	void InitCollider(void) override;
+	void InitCollider() override;
 
 	// アニメーションの初期化
-	void InitAnimation(void) override;
+	void InitAnimation() override;
 
 	// 初期化後の後処理
-	void InitPost(void) override;
+	void InitPost() override;
 
 	//更新系
-	virtual void UpdateProcess(void) override;
-	virtual void UpdateProcessPost(void) override;
+	virtual void UpdateProcess() override;
+	virtual void UpdateProcessPost() override;
 
 private:
 
 	void GrantStatus(int index);
 	void RevokeStatus(int index);
 
-	void InitState(void);
+	void InitState();
 
 
 	Status status_;
@@ -222,5 +222,5 @@ private:
 	// 差分
 	VECTOR animDiffPos_;
 
-	void ApplyRootMotion(void);
+	void ApplyRootMotion();
 };

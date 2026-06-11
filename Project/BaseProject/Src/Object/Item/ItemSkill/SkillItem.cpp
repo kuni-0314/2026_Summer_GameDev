@@ -13,11 +13,11 @@ SkillItem::SkillItem(Player* player)
 {
 }
 
-SkillItem::~SkillItem(void)
+SkillItem::~SkillItem()
 {
 }
 
-void SkillItem::Update(void)
+void SkillItem::Update()
 {
     ItemBase::Update();
     //プレイヤーとの判定
@@ -27,7 +27,7 @@ void SkillItem::Update(void)
 
 }
 
-void SkillItem::Draw(void)
+void SkillItem::Draw()
 {
 
 
@@ -37,14 +37,14 @@ void SkillItem::Draw(void)
 
 }
 
-void SkillItem::InitLoad(void)
+void SkillItem::InitLoad()
 {
     //基底クラスのリソースロード
     transform_.SetModel(resMng_.LoadModelDuplicate(ResourceManager::SRC::ITEM_SKILL));
 
 }
 
-void SkillItem::InitTransform(void)
+void SkillItem::InitTransform()
 {
     //大きさ、座標等の初期化
     transform_.scl = { SCALE ,SCALE ,SCALE };
@@ -54,7 +54,7 @@ void SkillItem::InitTransform(void)
     transform_.Update();
 }
 
-void SkillItem::InitCollider(void)
+void SkillItem::InitCollider()
 {
     // 主に地面との衝突で仕様する線分コライダ
     ColliderLine* colLine = new ColliderLine(
@@ -77,15 +77,15 @@ void SkillItem::InitCollider(void)
         static_cast<int>(COLLIDER_TYPE::ITEM), colModel);
 }
 
-void SkillItem::InitAnimation(void)
+void SkillItem::InitAnimation()
 {
 }
 
-void SkillItem::InitPost(void)
+void SkillItem::InitPost()
 {
 }
 
-void SkillItem::UpdateProcess(void)
+void SkillItem::UpdateProcess()
 {
 
 	//transform_.rot.y +=  5 * DX_PI_F / 180.0f;
@@ -148,6 +148,6 @@ void SkillItem::UpdateProcess(void)
     transform_.Update();
 }
 
-void SkillItem::UpdateProcessPost(void)
+void SkillItem::UpdateProcessPost()
 {
 }

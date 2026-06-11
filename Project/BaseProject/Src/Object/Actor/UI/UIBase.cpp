@@ -1,6 +1,6 @@
 #include "UIBase.h"
 
-UIBase::UIBase(void)
+UIBase::UIBase()
 	:
 	ActorBase(),
 	img_(-1),
@@ -12,11 +12,11 @@ UIBase::UIBase(void)
 {
 }
 
-UIBase::~UIBase(void)
+UIBase::~UIBase()
 {
 }
 
-bool UIBase::IsActive(void) const
+bool UIBase::IsActive() const
 {
 	return isActive_;
 }
@@ -26,7 +26,7 @@ void UIBase::SetActive(bool active)
 	isActive_ = active;
 }
 
-float UIBase::GetStep(void) const
+float UIBase::GetStep() const
 {
 	return step_;
 }
@@ -45,31 +45,31 @@ void UIBase::SetAlpha(int alpha)
 	alpha_ = alpha;
 }
 
-void UIBase::InitLoad(void)
+void UIBase::InitLoad()
 {
 	// UIは画像リソースを使用
 	// 派生クラスで実装
 }
 
-void UIBase::InitTransform(void)
+void UIBase::InitTransform()
 {
 	// UIはTransform不要
 	// 空実装
 }
 
-void UIBase::InitCollider(void)
+void UIBase::InitCollider()
 {
 	// UIはコライダー不要
 	// 空実装
 }
 
-void UIBase::InitAnimation(void)
+void UIBase::InitAnimation()
 {
 	// UIはアニメーション不要
 	// 空実装
 }
 
-void UIBase::InitPost(void)
+void UIBase::InitPost()
 {
 	// 派生クラスで必要に応じて実装
 }

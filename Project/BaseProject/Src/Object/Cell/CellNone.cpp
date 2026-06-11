@@ -10,17 +10,17 @@ CellNone::CellNone(Field* field, Vector2 pos, int size, int actionCount)
 {
 }
 
-CellNone::~CellNone(void)
+CellNone::~CellNone()
 {
 }
 
-void CellNone::Init(void)
+void CellNone::Init()
 {
 	CellBase::Init();
 	// 通常セル固有の初期化処理をここに追加
 }
 
-void CellNone::Update(void)
+void CellNone::Update()
 {
 	CellBase::Update();
 	// 通常セル固有の更新処理をここに追加

@@ -6,7 +6,7 @@ ColliderModel::ColliderModel(TAG tag, const Transform* follow)
 	ColliderBase(SHAPE::MODEL, tag, follow)
 {
 }
-ColliderModel::~ColliderModel(void)
+ColliderModel::~ColliderModel()
 {
 }
 void ColliderModel::AddExcludeFrameIds(const std::string& name)
@@ -26,7 +26,7 @@ void ColliderModel::AddExcludeFrameIds(const std::string& name)
 		
 	}
 }
-void ColliderModel::ClearExcludeFrame(void)
+void ColliderModel::ClearExcludeFrame()
 {
 	excludeFrameIds_.clear();
 }
@@ -62,7 +62,7 @@ void ColliderModel::AddTargetFrameIds(const std::string& name)
 	}
 }
 
-void ColliderModel::ClearTargetFrame(void)
+void ColliderModel::ClearTargetFrame()
 {
 	targetFrameIds_.clear();
 }

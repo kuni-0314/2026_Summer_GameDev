@@ -49,22 +49,22 @@ public:
 
 
 	// コンストラクタ
-	TitleScene(void);
+	TitleScene();
 
 	// デストラクタ
-	~TitleScene(void) override;
+	~TitleScene() override;
 
 	// 初期化
-	void Init(void) override;
+	void Init() override;
 
 	// 更新
-	void Update(void) override;
+	void Update() override;
 
 	// 描画
-	void Draw(void) override;
+	void Draw() override;
 
 	// 解放
-	void Release(void) override;
+	void Release() override;
 
 	//　選択コマンドの変更
 	void SelectChange(SELECT next);
@@ -72,7 +72,7 @@ public:
 	// 選択コマンドの描画(仮（後で画像に変更））
 	void SelectDraw(SELECT next);
 
-	void SelectUpdate(void);
+	void SelectUpdate();
 
 
 private:
@@ -118,5 +118,7 @@ private:
 	bool pushAlive_ = true;
 
 	bool IsSelect_ = false;
+
+	int mainScreen_;
 
 };

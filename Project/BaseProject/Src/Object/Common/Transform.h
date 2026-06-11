@@ -38,37 +38,37 @@ public:
 
 
 	// コンストラクタ
-	Transform(void);
+	Transform();
 
 	// デストラクタ
-	~Transform(void);
+	~Transform();
 
 	// モデル制御の基本情報更新
-	void Update(void);
+	void Update();
 	
 	// 解放
-	void Release(void);
+	void Release();
 
 	// モデルのハンドルIDを設定
 	void SetModel(int modelHId);
 
 	// 前方方向を取得
-	VECTOR GetForward(void) const;
+	VECTOR GetForward() const;
 
 	// 後方方向を取得
-	VECTOR GetBack(void) const;
+	VECTOR GetBack() const;
 
 	// 右方向を取得
-	VECTOR GetRight(void) const;
+	VECTOR GetRight() const;
 
 	// 左方向を取得
-	VECTOR GetLeft(void) const;
+	VECTOR GetLeft() const;
 
 	// 上方向を取得
-	VECTOR GetUp(void) const;
+	VECTOR GetUp() const;
 
 	// 下方向を取得
-	VECTOR GetDown(void) const;
+	VECTOR GetDown() const;
 
 	// 対象方向を取得
 	VECTOR GetDir(const VECTOR& dir) const;

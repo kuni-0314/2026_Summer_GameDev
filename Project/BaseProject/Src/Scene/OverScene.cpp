@@ -8,19 +8,19 @@
 #include "../Common/Quaternion.h"
 #include "../Application.h"
 
-OverScene::OverScene(void)
+OverScene::OverScene()
 {
 }
 
-OverScene::~OverScene(void)
+OverScene::~OverScene()
 {
 }
 
-void OverScene::Init(void)
+void OverScene::Init()
 {
 }
 
-void OverScene::Update(void)
+void OverScene::Update()
 {
 	auto const ins = InputManager::GetInstance();
 
@@ -31,11 +31,11 @@ void OverScene::Update(void)
 
 }
 
-void OverScene::Draw(void)
+void OverScene::Draw()
 {
 	DrawString(100, 100, "Ç∞Ç•Å[ÇﬁÇ®Å[ÇŒÅ[", 0xffffff);
 }
 
-void OverScene::Release(void)
+void OverScene::Release()
 {
 }

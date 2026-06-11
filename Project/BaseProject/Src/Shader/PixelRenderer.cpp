@@ -21,7 +21,7 @@ void PixelRenderer::MakeSquareVertex(Vector2 pos, Vector2 size)
 	Make(pos, size);
 }
 
-void PixelRenderer::MakeSquareVertex(void)
+void PixelRenderer::MakeSquareVertex()
 {
 	Vector2 pos = Vector2(0, 0);
 	Vector2 size = Vector2(
@@ -45,7 +45,7 @@ void PixelRenderer::Draw(int x, int y)
 	DrawPolygonIndexed2DToShader(tempVertexs, NUM_VERTEX, indexes_, NUM_POLYGON);
 }
 
-void PixelRenderer::Draw(void)
+void PixelRenderer::Draw()
 {
 	// •`‰æ
 	DrawPolygonIndexed2DToShader(vertexs_, NUM_VERTEX, indexes_, NUM_POLYGON);

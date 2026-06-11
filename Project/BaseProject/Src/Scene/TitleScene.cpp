@@ -10,7 +10,7 @@
 #include "../Sound/AudioManager.h"
 
 
-TitleScene::TitleScene(void)
+TitleScene::TitleScene()
 	:
 	imgTitle_(-1),
 	imgPushSpace_(-1),
@@ -23,11 +23,11 @@ TitleScene::TitleScene(void)
 {
 }
 
-TitleScene::~TitleScene(void)
+TitleScene::~TitleScene()
 {
 }
 
-void TitleScene::Init(void)
+void TitleScene::Init()
 {
 
 	// íËì_ÉJÉÅÉâ
@@ -58,7 +58,7 @@ void TitleScene::Init(void)
 
 }
 
-void TitleScene::Update(void)
+void TitleScene::Update()
 {
 
 	auto const ins = InputManager::GetInstance();
@@ -70,8 +70,17 @@ void TitleScene::Update(void)
 }
 
 
-void TitleScene::Draw(void)
+void TitleScene::Draw()
 {
+	//mainScreen_ = SceneManager::GetInstance().GetMainScreen();
+	//SetDrawScreen(mainScreen_);
+	SetDrawScreen(DX_SCREEN_BACK);
+	ClearDrawScreen();
+
+	static int x = 10;
+	DrawPixel(x++, 10, 0xffffff);
+
+
 	DrawGraph(Application::SCREEN_SIZE_X / 2 + 100, 100, imgPlayer_, true);
 
 	DrawGraph(50, 20, imgTitle_, TRUE);
@@ -119,7 +128,7 @@ void TitleScene::Draw(void)
 	SelectDraw((SELECT)selectCount_);
 }
 
-void TitleScene::Release(void)
+void TitleScene::Release()
 {
 
 
@@ -163,7 +172,7 @@ void TitleScene::SelectDraw(SELECT next)
 	DrawFormatString(100, 100, GetColor(255, 255, 255), "ëIëíÜ: %s", name);
 }
 
-void TitleScene::SelectUpdate(void)
+void TitleScene::SelectUpdate()
 {
 	auto const ins = InputManager::GetInstance();
 

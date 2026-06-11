@@ -12,18 +12,18 @@ public:
 		TAG tag, const Transform* follow,
 		const VECTOR& localPosStart, const VECTOR& localPosEnd);
 	// デストラクタ
-	~ColliderLine(void) override;
+	~ColliderLine() override;
 	// ローカル座標での設定
 	void SetLocalPosStart(const VECTOR& pos);
 	void SetLocalPosEnd(const VECTOR& pos);
 
 	// ローカル座標の取得
-	const VECTOR& GetLocalPosStart(void) const;
-	const VECTOR& GetLocalPosEnd(void) const;
+	const VECTOR& GetLocalPosStart() const;
+	const VECTOR& GetLocalPosEnd() const;
 
 	// ワールド座標の取得
-	VECTOR GetPosStart(void) const;
-	VECTOR GetPosEnd(void) const;
+	VECTOR GetPosStart() const;
+	VECTOR GetPosEnd() const;
 
 	//ゲームに沿った処理を入れる
 	VECTOR GetPosPushBackAlongNormal(

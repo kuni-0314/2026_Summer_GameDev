@@ -22,7 +22,7 @@ public:
 	AnimationController(int modelId);
 
 	// デストラクタ
-	~AnimationController(void);
+	~AnimationController();
 
 	// 外部FBXからアニメーション追加
 	void Add(int type, float speed, const std::string path);
@@ -34,19 +34,19 @@ public:
 	void Play(int type, bool isLoop = true, bool isReset = false);
 
 	// 更新
-	void Update(void);
+	void Update();
 
 	// 解放
-	void Release(void);
+	void Release();
 
 	// 再生中のアニメーション
-	int GetPlayType(void) const;
+	int GetPlayType() const;
 
 	// 再生終了
-	bool IsEnd(void) const;
+	bool IsEnd() const;
 
 	// 再生中のアニメーション情報を取得
-	const Animation& GetPlayAnim(void) const;
+	const Animation& GetPlayAnim() const;
 
 private:
 

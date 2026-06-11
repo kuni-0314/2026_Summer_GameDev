@@ -7,13 +7,13 @@
 #include "../../../Utility/AsoUtility.h"
 #include "../../../Object/Collider/Model/ColliderModel.h"
 
-StageWall::StageWall(void)
+StageWall::StageWall()
 	:
 	ActorBase()
 {
 }
 
-StageWall::~StageWall(void)
+StageWall::~StageWall()
 {
 }
 
@@ -23,12 +23,12 @@ void StageWall::Update()
 
 
 
-void StageWall::InitLoad(void)
+void StageWall::InitLoad()
 {
  	transform_.SetModel(resMng_.Load(ResourceManager::SRC::BATTLE_WALL).handleId_);
 }
 
-void StageWall::InitTransform(void)
+void StageWall::InitTransform()
 {
 
 	transform_.scl = { SCL_MAIN_STAGE_X, SCL_MAIN_STAGE_Y, SCL_MAIN_STAGE_Z };
@@ -40,7 +40,7 @@ void StageWall::InitTransform(void)
 
 }
 
-void StageWall::InitCollider(void)
+void StageWall::InitCollider()
 {
 	// DxLib側の衝突情報セットアップ
 	MV1SetupCollInfo(transform_.modelId);
@@ -63,10 +63,10 @@ void StageWall::InitCollider(void)
 
 }
 
-void StageWall::InitAnimation(void)
+void StageWall::InitAnimation()
 {
 }
 
-void StageWall::InitPost(void)
+void StageWall::InitPost()
 {
 }

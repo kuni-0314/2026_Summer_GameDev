@@ -49,7 +49,7 @@ struct SkillData
 };
 
 
-void LoadCsvData(void)
+void LoadCsvData()
 {
 	// ƒtƒ@ƒCƒ‹‚Ì“Ç
 	std::ifstream ifs = std::ifstream(Application::PATH_CSV + "SkillTable.csv");

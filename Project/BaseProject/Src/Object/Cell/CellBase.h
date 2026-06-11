@@ -28,33 +28,33 @@ public:
 
 	CellBase(Field* field, CELL_TYPE type, Vector2 pos, int size);
 	CellBase(Field* field, CELL_TYPE type, Vector2 pos, int size, int actionCount);
-	virtual ~CellBase(void);
+	virtual ~CellBase();
 
-	virtual void Init(void);
-	virtual void Update(void);
-	virtual void Draw(void);
-	virtual void Release(void);
+	virtual void Init();
+	virtual void Update();
+	virtual void Draw();
+	virtual void Release();
 
 	// セルタイプを取得
-	CELL_TYPE GetType(void) const { return type_; }
+	CELL_TYPE GetType() const { return type_; }
 
 	// セルタイプを設定
 	void SetType(CELL_TYPE type);
 
 	// 行動回数を取得
-	int GetActionCount(void) const { return actionCount_; }
+	int GetActionCount() const { return actionCount_; }
 
 	// 行動回数を設定
 	void SetActionCount(int actionCount) { actionCount_ = actionCount; }
 
 	// アクティブ状態を取得
-	bool IsActive(void) const { return isActive_; }
+	bool IsActive() const { return isActive_; }
 
 	// アクティブ状態を設定
 	void SetActive(bool isActive) { isActive_ = isActive; }
 
 	// マウスカーソルがセル内にあるかチェック
-	bool IsMouseOver(void) const;
+	bool IsMouseOver() const;
 
 protected:
 

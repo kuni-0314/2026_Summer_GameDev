@@ -10,17 +10,17 @@ CellAttack::CellAttack(Field* field, Vector2 pos, int size, int actionCount)
 {
 }
 
-CellAttack::~CellAttack(void)
+CellAttack::~CellAttack()
 {
 }
 
-void CellAttack::Init(void)
+void CellAttack::Init()
 {
 	CellBase::Init();
 	// 攻撃セル固有の初期化処理をここに追加
 }
 
-void CellAttack::Update(void)
+void CellAttack::Update()
 {
 	CellBase::Update();
 	// 攻撃セル固有の更新処理をここに追加

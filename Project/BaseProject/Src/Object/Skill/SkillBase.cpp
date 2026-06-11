@@ -13,31 +13,31 @@ SkillBase::SkillBase(const SkillBase::SkillData& data, Player* player)
 {
 }
 
-SkillBase::~SkillBase(void)
+SkillBase::~SkillBase()
 {
 }
 
-void SkillBase::Init(void)
-{
-
-}
-
-void SkillBase::Update(void)
+void SkillBase::Init()
 {
 
 }
 
-void SkillBase::Draw(void)
+void SkillBase::Update()
 {
 
 }
 
-void SkillBase::Release(void)
+void SkillBase::Draw()
 {
 
 }
 
-void SkillBase::LoadSkillData(void)
+void SkillBase::Release()
+{
+
+}
+
+void SkillBase::LoadSkillData()
 {
 
 }

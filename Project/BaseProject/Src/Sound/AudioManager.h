@@ -5,9 +5,9 @@ class AudioManager
 {
 public:
 	// シングルトン（生成・取得・削除）
-	static void CreateInstance(void) { if (instance_ == nullptr) { instance_ = new AudioManager(); } }
-	static AudioManager* GetInstance(void) { return instance_; }
-	static void DeleteInstance(void) { if (instance_ != nullptr) { delete instance_; instance_ = nullptr; } }
+	static void CreateInstance() { if (instance_ == nullptr) { instance_ = new AudioManager(); } }
+	static AudioManager* GetInstance() { return instance_; }
+	static void DeleteInstance() { if (instance_ != nullptr) { delete instance_; instance_ = nullptr; } }
 
 private:
 	// 静的インスタンス
@@ -24,7 +24,7 @@ private:
 
 public:
 	// 初期化
-	void Init(void);
+	void Init();
 
 	// サウンド制御
 	// 指定したシーンのサウンドテーブルを読み込む
@@ -34,9 +34,9 @@ public:
 	void DeleteSceneSound(LoadScene scene);
 
 	void PlayBGM(SoundID id);		// BGMを再生
-	void StopBGM(void);				// BGMを止める
+	void StopBGM();				// BGMを止める
 	void PlaySE(SoundID id);		// SEを再生
-	void DeleteAll(void);			// 全てのサウンド削除
+	void DeleteAll();			// 全てのサウンド削除
 
 	// 音量設定
 	void SetBgmVolume(int volume);		// 0～255

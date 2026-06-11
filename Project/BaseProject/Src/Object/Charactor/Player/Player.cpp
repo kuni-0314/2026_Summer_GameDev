@@ -20,13 +20,13 @@
 #include "PlayerAttackState.h"
 
 
-Player::Player(void)
+Player::Player()
 	:
 	CharactorBase()
 {
 }
 
-Player::~Player(void)
+Player::~Player()
 {
 	for (auto& state : states_)
 	{
@@ -114,7 +114,7 @@ void Player::Update()
 
 }
 
-void Player::InitLoad(void)
+void Player::InitLoad()
 {
 	//基底クラスのリソースロード
 	CharactorBase::InitLoad();
@@ -122,7 +122,7 @@ void Player::InitLoad(void)
 	transform_.SetModel(resMng_.Load(ResourceManager::SRC::PLAYER).handleId_);
 }
 
-void Player::InitTransform(void)
+void Player::InitTransform()
 {
 
 	//大きさ、座標等の初期化
@@ -136,7 +136,7 @@ void Player::InitTransform(void)
 	
 }
 
-void Player::InitCollider(void)
+void Player::InitCollider()
 {
 	// 主に地面との衝突で仕様する線分コライダ
 	ColliderLine* colLine = new ColliderLine(
@@ -152,7 +152,7 @@ void Player::InitCollider(void)
 	ownColliders_.emplace(static_cast<int>(COLLIDER_TYPE::CAPSULE), colCapsule);
 }
 
-void Player::InitAnimation(void)
+void Player::InitAnimation()
 {
 	//アニメーションコントローラー
 	animationController_ = new AnimationController(transform_.modelId);
@@ -205,7 +205,7 @@ void Player::InitAnimation(void)
 	animationController_->Play(static_cast<int>(ANIM_TYPE::IDLE), true);
 }
 
-void Player::InitPost(void)
+void Player::InitPost()
 {
 	status_.level = DEFAULT_LEVEL;
 	status_.hp = DEFAULT_HP;
@@ -225,7 +225,7 @@ void Player::InitPost(void)
 	InitState();
 }
 
-void Player::UpdateProcess(void)
+void Player::UpdateProcess()
 {
 	// 状態別更新処理
 	if (currentState_ != nullptr)
@@ -241,12 +241,12 @@ void Player::UpdateProcess(void)
 	}
 }
 
-void Player::UpdateProcessPost(void)
+void Player::UpdateProcessPost()
 {
 
 }
 
-void Player::Draw(void)
+void Player::Draw()
 {
 	//基底クラスの描画処理
 	ActorBase::Draw();
@@ -435,7 +435,7 @@ void Player::RevokeStatus(int index)
 	}
 }
 
-void Player::InitState(void)
+void Player::InitState()
 {
 	states_[STATE::IDLE] = new PlayerIdleState();
 	states_[STATE::RUN] = new PlayerRunState();

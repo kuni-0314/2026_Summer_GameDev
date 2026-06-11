@@ -12,11 +12,11 @@ FieldManager::FieldManager(GameScene* gameScene)
 {
 }
 
-FieldManager::~FieldManager(void)
+FieldManager::~FieldManager()
 {
 }
 
-void FieldManager::Init(void)
+void FieldManager::Init()
 {
 	Vector2 fieldPos(100, 300);
 	playerField_ = std::make_unique<Field>(this, Field::FIELD_TYPE::PLAYER,
@@ -37,7 +37,7 @@ void FieldManager::Init(void)
 	imageCellRed_ = ResourceManager::GetInstance().Load(ResourceManager::SRC::CELL_RED).handleId_;
 }
 
-void FieldManager::Update(void)
+void FieldManager::Update()
 {
 	// セルの行動タイミングを設定
 	int maxCells = GetMaxFieldCell();
@@ -126,7 +126,7 @@ void FieldManager::Update(void)
 
 }
 
-void FieldManager::Draw(void)
+void FieldManager::Draw()
 {
 	playerField_->Draw();
 	enemyField_->Draw();
@@ -181,7 +181,7 @@ void FieldManager::Draw(void)
 
 }
 
-void FieldManager::Release(void)
+void FieldManager::Release()
 {
 	selectField_->Release();
 	selectField_.reset();
@@ -193,17 +193,17 @@ void FieldManager::Release(void)
 	playerField_.reset();
 }
 
-int FieldManager::GetMaxFieldCell(void) const
+int FieldManager::GetMaxFieldCell() const
 {
 	return max(PLAYER_FIELD_CELL_TOTAL, ENEMY_FIELD_CELL_TOTAL);
 }
 
-int FieldManager::GetCurrentActionCount(void) const
+int FieldManager::GetCurrentActionCount() const
 {
 	return currentActionCount_;
 }
 
-int FieldManager::GetTotalActionCount(void) const
+int FieldManager::GetTotalActionCount() const
 {
 	return PLAYER_FIELD_CELL_TOTAL + ENEMY_FIELD_CELL_TOTAL;
 }

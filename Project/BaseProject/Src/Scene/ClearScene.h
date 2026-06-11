@@ -8,22 +8,22 @@ public:
 
 
 	// コンストラクタ
-	ClearScene(void);
+	ClearScene();
 
 	// デストラクタ
-	~ClearScene(void) override;
+	~ClearScene() override;
 
 	// 初期化
-	void Init(void) override;
+	void Init() override;
 
 	// 更新
-	void Update(void) override;
+	void Update() override;
 
 	// 描画
-	void Draw(void) override;
+	void Draw() override;
 
 	// 解放
-	void Release(void) override;
+	void Release() override;
 
 
 private:

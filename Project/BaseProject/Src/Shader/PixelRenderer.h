@@ -20,7 +20,7 @@ public:
 	/// <summary>
 	/// フルスクリーン用の描画矩形の生成
 	/// </summary>
-	void MakeSquareVertex(void);
+	void MakeSquareVertex();
 
 	/// <summary>
 	/// 描画（指定座標）
@@ -32,7 +32,7 @@ public:
 	/// <summary>
 	/// 描画（頂点位置そのまま）
 	/// </summary>
-	void Draw(void);
+	void Draw();
 
 private:
 	// 生成

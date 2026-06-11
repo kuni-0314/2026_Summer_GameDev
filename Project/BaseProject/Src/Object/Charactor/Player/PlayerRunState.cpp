@@ -31,6 +31,10 @@ void PlayerRunState::Update(Player* player)
 		// キーボード操作
 		ins->GetInputDirXZ(dir, KEY_INPUT_W, KEY_INPUT_S, KEY_INPUT_A, KEY_INPUT_D);
 	}
+	else
+	{
+
+	}
 
 	// 方向入力がある場合
 	if (!AsoUtility::EqualsVZero(dir))

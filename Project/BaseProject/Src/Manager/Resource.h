@@ -18,20 +18,20 @@ public:
 	};
 
 	// コンストラクタ
-	Resource(void);
+	Resource();
 	// コンストラクタ
 	Resource(TYPE type, const std::string& path);
 	// コンストラクタ(IMGS用)
 	Resource(TYPE type, const std::string& path, int numX, int numY, int sizeX, int sizeY);
 
 	// デストラクタ
-	~Resource(void);
+	~Resource();
 
 	// 読み込み
-	void Load(void);
+	void Load();
 
 	// 解放
-	void Release(void);
+	void Release();
 
 	// 複数画像ハンドルを別配列にコピー
 	void CopyHandle(int* imgs) const;

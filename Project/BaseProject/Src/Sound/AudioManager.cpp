@@ -5,7 +5,7 @@
 
 AudioManager* AudioManager::instance_ = nullptr;
 
-AudioManager::AudioManager(void)
+AudioManager::AudioManager()
 {
 	currentBgm_ = static_cast<SoundID>(-1);
 	bgmVolume_ = 255;
@@ -19,7 +19,7 @@ AudioManager::~AudioManager()
 	DeleteAll();
 }
 
-void AudioManager::Init(void)
+void AudioManager::Init()
 {
 	// Œ»İÄ¶‚³‚ê‚Ä‚¢‚éBGM
 	currentBgm_ = static_cast<SoundID>(-1);
@@ -155,7 +155,7 @@ void AudioManager::PlaySE(SoundID id)
 	PlaySoundMem(it->second, DX_PLAYTYPE_BACK, true);
 }
 
-void AudioManager::DeleteAll(void)
+void AudioManager::DeleteAll()
 {
 	// ƒTƒEƒ“ƒh‚ª1‚Â‚à“Ç‚İ‚Ü‚ê‚Ä‚È‚¢‚È‚çˆ—‚µ‚È‚¢
 	if (handles_.empty())

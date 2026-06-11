@@ -23,17 +23,17 @@ EnemyManager::EnemyManager(GameScene* gamescene, Player* player)
 	player_(player)
 {
 }
-EnemyManager::~EnemyManager(void)
+EnemyManager::~EnemyManager()
 {
 }
-void EnemyManager::Init(void)
+void EnemyManager::Init()
 {
 
 	LoadCsvData();
 
 
 }
-void EnemyManager::Update(void)
+void EnemyManager::Update()
 {
 	for (auto& enemy : enemies_)
 	{
@@ -90,14 +90,14 @@ void EnemyManager::Update(void)
 	CheckAttackCollision();
 }
 
-void EnemyManager::Draw(void)
+void EnemyManager::Draw()
 {
 	for (auto& enemy : enemies_)
 	{
 		enemy->Draw();
 	}
 }
-void EnemyManager::Release(void)
+void EnemyManager::Release()
 {
 	for (auto& enemy : enemies_)
 	{
@@ -118,7 +118,7 @@ void EnemyManager::AddHitCollider(const ColliderBase* hitCollider)
 	}
 }
 
-void EnemyManager::LoadCsvData(void)
+void EnemyManager::LoadCsvData()
 {
 	// ファイルの読込
 	std::ifstream ifs = std::ifstream(Application::PATH_CSV + "EnemyData.csv");
@@ -235,7 +235,7 @@ VECTOR EnemyManager::GetEnemyPos(int id) const
 	return enemies_[id]->GetTransform().pos;
 }
 
-bool EnemyManager::GetEnemyDead(void)
+bool EnemyManager::GetEnemyDead()
 {
 	return isDead_;
 }
@@ -248,12 +248,12 @@ void EnemyManager::AddAttackCollider(const ColliderBase* attackCollider)
 	}
 }
 
-void EnemyManager::ClearAttackColliders(void)
+void EnemyManager::ClearAttackColliders()
 {
 	attackColliders_.clear();
 }
 
-void EnemyManager::CheckAttackCollision(void)
+void EnemyManager::CheckAttackCollision()
 {
 	// 攻撃コライダが登録されていない場合は処理しない
 	if (attackColliders_.empty())

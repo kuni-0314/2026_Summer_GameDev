@@ -22,7 +22,7 @@ public:
 	//コンストラクタ
 	SkyDome(const Transform& followTransform);
 	//デストラクタ
-	~SkyDome(void) override;
+	~SkyDome() override;
 
 	void Update() override;
 
@@ -32,19 +32,19 @@ public:
 protected:
 
 	// リソースロード
-	void InitLoad(void) override;
+	void InitLoad() override;
 
 	// 大きさ、回転、座標の初期化
-	void InitTransform(void) override;
+	void InitTransform() override;
 
 	// 衝突判定の初期化
-	void InitCollider(void) override;
+	void InitCollider() override;
 
 	// アニメーションの初期化
-	void InitAnimation(void) override;
+	void InitAnimation() override;
 
 	// 初期化後の個別処理
-	void InitPost(void) override;
+	void InitPost() override;
 
 private:
 
@@ -54,13 +54,13 @@ private:
 
 	void ChangeState(STATE state);
 
-	void ChangeStateNone(void);
-	void ChangeStateStay(void);
-	void ChangeStateFollow(void);
+	void ChangeStateNone();
+	void ChangeStateStay();
+	void ChangeStateFollow();
 
-	void UpdateNone(void);
-	void UpdateStay(void);
-	void UpdateFollow(void);
+	void UpdateNone();
+	void UpdateStay();
+	void UpdateFollow();
 
 	
 };

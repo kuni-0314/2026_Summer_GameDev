@@ -13,16 +13,16 @@
 //	// コンストラクタ
 //	SkillManager(GameScene* gamescene, Player* player);
 //	// デストラクタ
-//	~SkillManager(void);// 初期化
-//	void Init(void);
+//	~SkillManager();// 初期化
+//	void Init();
 //	// 更新
-//	void Update(void);
+//	void Update();
 //	// 描画
-//	void Draw(void);
+//	void Draw();
 //	// 解放
-//	void Release(void);
+//	void Release();
 //	// CSVからスキル情報の読取を行う
-//	void LoadCsvData(void);
+//	void LoadCsvData();
 //	
 //
 //private:

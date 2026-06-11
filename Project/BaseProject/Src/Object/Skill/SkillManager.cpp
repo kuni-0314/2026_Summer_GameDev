@@ -11,10 +11,10 @@
 //{
 //}
 //
-//SkillManager::~SkillManager(void)
+//SkillManager::~SkillManager()
 //{
 //}
-//void SkillManager::Init(void)
+//void SkillManager::Init()
 //{
 //
 //	LoadCsvData();
@@ -22,20 +22,20 @@
 //
 //}
 //
-//void SkillManager::Update(void)
+//void SkillManager::Update()
 //{
 //
 //}
 //
-//void SkillManager::Draw(void)
+//void SkillManager::Draw()
 //{
 //
 //}
-//void SkillManager::Release(void)
+//void SkillManager::Release()
 //{
 //
 //}
-//void SkillManager::LoadCsvData(void)
+//void SkillManager::LoadCsvData()
 //{
 //	// ÉtÉ@ÉCÉãÇÃì«çû
 //	std::ifstream ifs = std::ifstream(Application::PATH_CSV + "EnemyData.csv");

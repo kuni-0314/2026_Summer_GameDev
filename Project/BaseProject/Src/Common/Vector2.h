@@ -7,12 +7,12 @@ public:
 	int y;
 
 	// コンストラクタ
-	Vector2(void);
+	Vector2();
 
 	// コンストラクタ
 	Vector2(int vX, int vY);
 
 	// デストラクタ
-	~Vector2(void);
+	~Vector2();
 
 };

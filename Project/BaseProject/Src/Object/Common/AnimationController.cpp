@@ -11,7 +11,7 @@ AnimationController::AnimationController(int modelId)
 {
 }
 
-AnimationController::~AnimationController(void)
+AnimationController::~AnimationController()
 {
 }
 
@@ -80,7 +80,7 @@ void AnimationController::Play(int type, bool isLoop, bool isReset)
 
 }
 
-void AnimationController::Update(void)
+void AnimationController::Update()
 {
 
 	// 経過時間の取得
@@ -109,7 +109,7 @@ void AnimationController::Update(void)
 
 }
 
-void AnimationController::Release(void)
+void AnimationController::Release()
 {
 
 	// 外部FBXのモデル(アニメーション)解放
@@ -126,12 +126,12 @@ void AnimationController::Release(void)
 	
 }
 
-int AnimationController::GetPlayType(void) const
+int AnimationController::GetPlayType() const
 {
 	return playType_;
 }
 
-bool AnimationController::IsEnd(void) const
+bool AnimationController::IsEnd() const
 {
 
 	bool ret = false;
@@ -153,7 +153,7 @@ bool AnimationController::IsEnd(void) const
 
 }
 
-const AnimationController::Animation& AnimationController::GetPlayAnim(void) const
+const AnimationController::Animation& AnimationController::GetPlayAnim() const
 {
 	return playAnim_;
 }

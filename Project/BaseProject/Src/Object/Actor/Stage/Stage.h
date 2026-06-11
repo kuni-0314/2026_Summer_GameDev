@@ -19,9 +19,9 @@ public:
 
 
 	//コンストラクタ
-	Stage(void);
+	Stage();
 	//デストラクタ
-	~Stage(void) override;
+	~Stage() override;
 
 	void Update() override;
 
@@ -30,19 +30,19 @@ public:
 protected:
 
 	// リソースロード
-	void InitLoad(void) override;
+	void InitLoad() override;
 
 	// 大きさ、回転、座標の初期化
-	void InitTransform(void) override;
+	void InitTransform() override;
 
 	// 衝突判定の初期化
-	void InitCollider(void) override;
+	void InitCollider() override;
 
 	// アニメーションの初期化
-	void InitAnimation(void) override;
+	void InitAnimation() override;
 
 	// 初期化後の個別処理
-	void InitPost(void) override;
+	void InitPost() override;
 
 private:
 

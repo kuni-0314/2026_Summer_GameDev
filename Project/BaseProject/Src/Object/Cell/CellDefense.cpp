@@ -10,17 +10,17 @@ CellDefense::CellDefense(Field* field, Vector2 pos, int size, int actionCount)
 {
 }
 
-CellDefense::~CellDefense(void)
+CellDefense::~CellDefense()
 {
 }
 
-void CellDefense::Init(void)
+void CellDefense::Init()
 {
 	CellBase::Init();
 	// 防御セル固有の初期化処理をここに追加
 }
 
-void CellDefense::Update(void)
+void CellDefense::Update()
 {
 	CellBase::Update();
 	// 防御セル固有の更新処理をここに追加

@@ -44,15 +44,15 @@ public:
 	// コンストラクタ
 	SkillBase(const SkillBase::SkillData& data,Player*player);
 	//デストラクタ
-	~SkillBase(void);
+	~SkillBase();
 	
-	void Init(void);		// 初期化
-	void Update(void);		// 更新
-	void Draw(void);		// 描画
-	void Release(void);		// 解放
+	void Init();		// 初期化
+	void Update();		// 更新
+	void Draw();		// 描画
+	void Release();		// 解放
 
 protected:
-	void LoadSkillData(void);	// スキルデータファイルの読み込み
+	void LoadSkillData();	// スキルデータファイルの読み込み
 
 	//プレイヤー
 	Player* player_; 

@@ -24,7 +24,7 @@ const std::string Application::PATH_SOUND_SE = "Data/Sound/SE/";
 const std::string Application::PATH_SOUND_BGM = "Data/Sound/BGM/";
 
 
-void Application::CreateInstance(void)
+void Application::CreateInstance()
 {
 	if (instance_ == nullptr)
 	{
@@ -33,12 +33,12 @@ void Application::CreateInstance(void)
 	instance_->Init();
 }
 
-Application& Application::GetInstance(void)
+Application& Application::GetInstance()
 {
 	return *instance_;
 }
 
-void Application::Init(void)
+void Application::Init()
 {
 	// ÉÅÉÇÉäÉäÅ[ÉNåüèo
 	_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
@@ -104,7 +104,7 @@ void Application::Init(void)
 
 }
 
-void Application::Run(void)
+void Application::Run()
 {
 
 	InputManager* inputManager = InputManager::GetInstance();
@@ -134,7 +134,7 @@ void Application::Run(void)
 
 }
 
-void Application::Destroy(void)
+void Application::Destroy()
 {
 	// FPSêßå‰ÉÅÉÇÉäâï˙
 	delete fpsController_;
@@ -170,24 +170,24 @@ void Application::Destroy(void)
 	#endif
 }
 
-bool Application::IsInitFail(void) const
+bool Application::IsInitFail() const
 {
 	return isInitFail_;
 }
 
-bool Application::IsReleaseFail(void) const
+bool Application::IsReleaseFail() const
 {
 	return isReleaseFail_;
 }
 
-Application::Application(void)
+Application::Application()
 	:
 	isInitFail_(false),
 	isReleaseFail_(false)
 {
 }
 
-void Application::InitEffekseer(void)
+void Application::InitEffekseer()
 {
 	if (Effekseer_Init(8000) == -1)
 	{

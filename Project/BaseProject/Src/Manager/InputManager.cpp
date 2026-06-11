@@ -4,17 +4,17 @@
 InputManager* InputManager::instance_ = nullptr;
 
 // コンストラクタ
-InputManager::InputManager(void)
+InputManager::InputManager()
 {
 }
 
 // デストラクタ
-InputManager::~InputManager(void)
+InputManager::~InputManager()
 {
 }
 
 // インスタンス生成
-void InputManager::CreateInstance(void)
+void InputManager::CreateInstance()
 {
 	if (instance_ == nullptr)
 	{
@@ -27,7 +27,7 @@ void InputManager::CreateInstance(void)
 }
 
 // インスタンス取得
-InputManager* InputManager::GetInstance(void)
+InputManager* InputManager::GetInstance()
 {
 	if (instance_ == nullptr)
 	{
@@ -39,7 +39,7 @@ InputManager* InputManager::GetInstance(void)
 }
 
 // インスタンス削除
-void InputManager::DeleteInstance(void)
+void InputManager::DeleteInstance()
 {
 	if (instance_ == nullptr)
 	{
@@ -51,7 +51,7 @@ void InputManager::DeleteInstance(void)
 }
 
 // 初期化
-bool InputManager::Init(void)
+bool InputManager::Init()
 {
 	Add(KEY_INPUT_A);
 	Add(KEY_INPUT_B);
@@ -133,7 +133,7 @@ bool InputManager::Init(void)
 }
 
 // 更新
-void InputManager::Update(void)
+void InputManager::Update()
 {
 	// キーの更新
 	for (auto& pair : keyInfos_)
@@ -194,7 +194,7 @@ void InputManager::Update(void)
 }
 
 // 解放
-bool InputManager::Release(void)
+bool InputManager::Release()
 {
 	// キー情報のstd::mapを削除する
 	keyInfos_.clear();
@@ -206,7 +206,7 @@ bool InputManager::Release(void)
 }
 
 // 判定を行うキーをクリア
-void InputManager::Clear(void)
+void InputManager::Clear()
 {
 	keyInfos_.clear();
 }
@@ -290,7 +290,7 @@ int InputManager::GetGamepadLastHoldTime(PadInput button, int gamepadIndex)
 }
 
 // 判定を行うマウスボタンをクリア
-void InputManager::ClearMouse(void)
+void InputManager::ClearMouse()
 {
 	mouseInfos_.clear();
 }
@@ -314,7 +314,7 @@ bool InputManager::IsMouseTrgUp(int button)
 }
 
 // マウスホイールの回転量を取得
-int InputManager::GetMouseWheel(void)
+int InputManager::GetMouseWheel()
 {
 	return mouseWheel_;
 }
@@ -447,7 +447,7 @@ void InputManager::GetInputDirXZ(VECTOR& vec, int keyUp, int keyDown, int keyLef
 }
 
 // ゲームパッドの更新
-void InputManager::UpdateGamePad(void)
+void InputManager::UpdateGamePad()
 {
 	DINPUT_JOYSTATE dState;
 	XINPUT_STATE xState;

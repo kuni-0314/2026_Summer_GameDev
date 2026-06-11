@@ -18,10 +18,10 @@ EnemyRobot::EnemyRobot(const EnemyBase::EnemyData& data,Player*player)
 	nextWayPoint_(AsoUtility::VECTOR_ZERO)
 {
 }
-EnemyRobot::~EnemyRobot(void)
+EnemyRobot::~EnemyRobot()
 {
 }
-void EnemyRobot::InitLoad(void)
+void EnemyRobot::InitLoad()
 {
 	// 基底クラスのリソースロード
 	CharactorBase::InitLoad();
@@ -33,7 +33,7 @@ void EnemyRobot::InitLoad(void)
 	viewRangeTransform_.SetModel(
 		resMng_.LoadModelDuplicate(ResourceManager::SRC::VIEW_RANGE));
 }
-void EnemyRobot::InitTransform(void)
+void EnemyRobot::InitTransform()
 {
 	//ロボット
 	transform_.scl = VScale(AsoUtility::VECTOR_ONE, SCALE);
@@ -52,7 +52,7 @@ void EnemyRobot::InitTransform(void)
 		Quaternion::AngleAxis(VIEW_RANGE_LOCAL_ROT_X, AsoUtility::AXIS_X);
 	viewRangeTransform_.Update();
 }
-void EnemyRobot::InitCollider(void)
+void EnemyRobot::InitCollider()
 {
 	// 主に地面との衝突で仕様する線分コライダ
 	ColliderLine* colLine = new ColliderLine(
@@ -81,7 +81,7 @@ void EnemyRobot::InitCollider(void)
 		static_cast<int>(COLLIDER_TYPE::VIEW_RANGE), colModel);
 
 }
-void EnemyRobot::InitAnimation(void)
+void EnemyRobot::InitAnimation()
 {
 	animationController_ = new AnimationController(transform_.modelId);
 	// FBX内のアニメーション設定
@@ -101,7 +101,7 @@ void EnemyRobot::InitAnimation(void)
 	// 初期アニメーション再生
 	animationController_->Play(static_cast<int>(ANIM_TYPE::IDLE), true);
 }
-void EnemyRobot::InitPost(void)
+void EnemyRobot::InitPost()
 {
 	// 状態遷移初期処理登録
 	stateChanges_.emplace(static_cast<int>(STATE::NONE),
@@ -140,12 +140,12 @@ void EnemyRobot::InitPost(void)
 	// 初期状態設定
 	ChangeState(STATE::THINK);
 }
-void EnemyRobot::UpdateProcess(void)
+void EnemyRobot::UpdateProcess()
 {
 	// 状態別更新
 	stateUpdate_();
 }
-void EnemyRobot::UpdateProcessPost(void)
+void EnemyRobot::UpdateProcessPost()
 {
 	EnemyBase::UpdateProcessPost();
 
@@ -158,7 +158,7 @@ void EnemyRobot::UpdateProcessPost(void)
 
 	viewRangeTransform_.Update();
 }
-void EnemyRobot::Draw(void)
+void EnemyRobot::Draw()
 {
 	// 基底クラスの描画処理
 	CharactorBase::Draw();
@@ -184,11 +184,11 @@ void EnemyRobot::ChangeState(STATE state)
 	state_ = state;
 	EnemyBase::ChangeState(static_cast<int>(state_));
 }
-void EnemyRobot::ChangeStateNone(void)
+void EnemyRobot::ChangeStateNone()
 {
 	stateUpdate_ = std::bind(&EnemyRobot::UpdateNone, this);
 }
-void EnemyRobot::ChangeStateThink(void)
+void EnemyRobot::ChangeStateThink()
 {
 	stateUpdate_ = std::bind(&EnemyRobot::UpdateThink, this);
 
@@ -208,7 +208,7 @@ void EnemyRobot::ChangeStateThink(void)
 	//// 思考：最初はIDLEのみ
 	//ChangeState(STATE::IDLE);
 }
-void EnemyRobot::ChangeStateIdle(void)
+void EnemyRobot::ChangeStateIdle()
 {
 	stateUpdate_ = std::bind(&EnemyRobot::UpdateIdle, this);
 	// ランダムな待機時間
@@ -219,7 +219,7 @@ void EnemyRobot::ChangeStateIdle(void)
 	animationController_->Play(
 		static_cast<int>(ANIM_TYPE::IDLE), true);
 }
-void EnemyRobot::ChangeStatePatrol(void)
+void EnemyRobot::ChangeStatePatrol()
 {
 	stateUpdate_ = std::bind(&EnemyRobot::UpdatePatrol, this);
 
@@ -243,11 +243,11 @@ void EnemyRobot::ChangeStatePatrol(void)
 		static_cast<int>(ANIM_TYPE::WALK), true);
 
 }
-void EnemyRobot::ChangeStateSurprise(void)
+void EnemyRobot::ChangeStateSurprise()
 {
 	stateUpdate_ = std::bind(&EnemyRobot::UpdateSurprise, this);
 }
-void EnemyRobot::ChangeStateAlert(void)
+void EnemyRobot::ChangeStateAlert()
 {
 	stateUpdate_ = std::bind(&EnemyRobot::UpdateAlert, this);
 	// 移動量ゼロ
@@ -257,41 +257,41 @@ void EnemyRobot::ChangeStateAlert(void)
 		static_cast<int>(ANIM_TYPE::DANCE), true);
 
 }
-void EnemyRobot::ChangeStateChase(void)
+void EnemyRobot::ChangeStateChase()
 {
 	stateUpdate_ = std::bind(&EnemyRobot::UpdateChase, this);
 }
-void EnemyRobot::ChangeStateAttackKick(void)
+void EnemyRobot::ChangeStateAttackKick()
 {
 	stateUpdate_ = std::bind(&EnemyRobot::UpdateAttackKick, this);
 }
-void EnemyRobot::ChangeStateAttackShoot(void)
+void EnemyRobot::ChangeStateAttackShoot()
 {
 	stateUpdate_ = std::bind(&EnemyRobot::UpdateAttackShoot, this);
 }
-void EnemyRobot::ChangeStateEscape(void)
+void EnemyRobot::ChangeStateEscape()
 {
 	stateUpdate_ = std::bind(&EnemyRobot::UpdateEscape, this);
 }
-void EnemyRobot::ChangeStateDead(void)
+void EnemyRobot::ChangeStateDead()
 {
 	stateUpdate_ = std::bind(&EnemyRobot::UpdateDead, this);
 }
-void EnemyRobot::ChangeStateKnockBack(void)
+void EnemyRobot::ChangeStateKnockBack()
 {
 	stateUpdate_ = std::bind(&EnemyRobot::UpdateKnockBack, this);
 }
-void EnemyRobot::ChangeStateEnd(void)
+void EnemyRobot::ChangeStateEnd()
 {
 	stateUpdate_ = std::bind(&EnemyRobot::UpdateEnd, this);
 }
-void EnemyRobot::UpdateNone(void)
+void EnemyRobot::UpdateNone()
 {
 }
-void EnemyRobot::UpdateThink(void)
+void EnemyRobot::UpdateThink()
 {
 }
-void EnemyRobot::UpdateIdle(void)
+void EnemyRobot::UpdateIdle()
 {
 	step_ -= scnMng_.GetDeltaTime();
 	if (step_ < 0.0f)
@@ -307,7 +307,7 @@ void EnemyRobot::UpdateIdle(void)
 		ChangeState(STATE::ALERT);
 	}
 }
-void EnemyRobot::UpdatePatrol(void)
+void EnemyRobot::UpdatePatrol()
 {
 	// 巡回ポイントとの球体衝突判定(半径30.0fくらい)
 	if(AsoUtility::IsHitSphere(transform_.pos,nextWayPoint_,30.0f))
@@ -333,7 +333,7 @@ void EnemyRobot::UpdatePatrol(void)
 	}
 	
 }
-void EnemyRobot::SetMoveDirPatrol(void)
+void EnemyRobot::SetMoveDirPatrol()
 {
 	// 巡回先座標XZ
 	VECTOR tmpPos = nextWayPoint_;
@@ -346,7 +346,7 @@ void EnemyRobot::SetMoveDirPatrol(void)
 
 }
 
-bool EnemyRobot::InSearchConeModel(void)
+bool EnemyRobot::InSearchConeModel()
 {
 
 	bool ret = false;//判定結果
@@ -393,36 +393,36 @@ bool EnemyRobot::InSearchConeModel(void)
 	return ret;
 }
 
-void EnemyRobot::UpdateSurprise(void)
+void EnemyRobot::UpdateSurprise()
 {
 }
-void EnemyRobot::UpdateAlert(void)
+void EnemyRobot::UpdateAlert()
 {
 	if (!InSearchConeModel())
 	{
 		ChangeState(STATE::THINK);
 	}
 }
-void EnemyRobot::UpdateChase(void)
+void EnemyRobot::UpdateChase()
 {
 }
-void EnemyRobot::UpdateAttackKick(void)
+void EnemyRobot::UpdateAttackKick()
 {
 }
-void EnemyRobot::UpdateAttackShoot(void)
+void EnemyRobot::UpdateAttackShoot()
 {
 }
-void EnemyRobot::UpdateEscape(void)
+void EnemyRobot::UpdateEscape()
 {
 }
 
-void EnemyRobot::UpdateDead(void)
+void EnemyRobot::UpdateDead()
 {
 }
-void EnemyRobot::UpdateKnockBack(void)
+void EnemyRobot::UpdateKnockBack()
 {
 }
-void EnemyRobot::UpdateEnd(void)
+void EnemyRobot::UpdateEnd()
 {
 }
 

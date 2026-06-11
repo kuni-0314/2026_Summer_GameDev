@@ -3,7 +3,7 @@
 #include "../../Object/Collider/ColliderBase.h"
 #include "ActorBase.h"
 
-ActorBase::ActorBase(void)
+ActorBase::ActorBase()
 	: 
 	resMng_(ResourceManager::GetInstance()),
 	scnMng_(SceneManager::GetInstance()),
@@ -12,11 +12,11 @@ ActorBase::ActorBase(void)
 {
 }
 
-ActorBase::~ActorBase(void)
+ActorBase::~ActorBase()
 {
 }
 
-void ActorBase::Init(void)
+void ActorBase::Init()
 {
 
 	// リソースロード
@@ -36,7 +36,7 @@ void ActorBase::Init(void)
 
 }
 
-void ActorBase::Draw(void)
+void ActorBase::Draw()
 {
 	if (transform_.modelId != -1)
 	{
@@ -52,7 +52,7 @@ void ActorBase::Draw(void)
 #endif // _DEBUG
 }
 
-void ActorBase::Release(void)
+void ActorBase::Release()
 {
 	transform_.Release();
 
@@ -63,7 +63,7 @@ void ActorBase::Release(void)
 	}
 }
 
-const Transform& ActorBase::GetTransform(void) const
+const Transform& ActorBase::GetTransform() const
 {
 	return transform_;
 }
@@ -89,7 +89,7 @@ void ActorBase::AddHitCollider(const ColliderBase* hitCollider)
 	hitColliders_.emplace_back(hitCollider);
 }
 
-void ActorBase::ClearHitCollider(void)
+void ActorBase::ClearHitCollider()
 {
 	hitColliders_.clear();
 }

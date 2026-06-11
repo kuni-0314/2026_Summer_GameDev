@@ -9,19 +9,19 @@
 #include "../Application.h"
 
 
-ClearScene::ClearScene(void)
+ClearScene::ClearScene()
 {
 }
 
-ClearScene::~ClearScene(void)
+ClearScene::~ClearScene()
 {
 }
 
-void ClearScene::Init(void)
+void ClearScene::Init()
 {
 }
 
-void ClearScene::Update(void)
+void ClearScene::Update()
 {
 	auto const ins = InputManager::GetInstance();
 
@@ -32,11 +32,11 @@ void ClearScene::Update(void)
 	
 }
 
-void ClearScene::Draw(void)
+void ClearScene::Draw()
 {
 	DrawString(100, 100, "CLEAR", 0xffffff);
 }
 
-void ClearScene::Release(void)
+void ClearScene::Release()
 {
 }

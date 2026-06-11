@@ -13,11 +13,11 @@ HpItem::HpItem(Player* player)
 {
 }
 
-HpItem::~HpItem(void)
+HpItem::~HpItem()
 {
 }
 
-void HpItem::Update(void)
+void HpItem::Update()
 {
     ItemBase::Update();
     //プレイヤーとの判定
@@ -27,7 +27,7 @@ void HpItem::Update(void)
 
 }
 
-void HpItem::Draw(void)
+void HpItem::Draw()
 {
 
 
@@ -37,14 +37,14 @@ void HpItem::Draw(void)
 
 }
 
-void HpItem::InitLoad(void)
+void HpItem::InitLoad()
 {
     //基底クラスのリソースロード
     transform_.SetModel(resMng_.LoadModelDuplicate(ResourceManager::SRC::ITEM_HP));
 
 }
 
-void HpItem::InitTransform(void)
+void HpItem::InitTransform()
 {
     //大きさ、座標等の初期化
     transform_.scl = { SCALE ,SCALE ,SCALE };
@@ -54,7 +54,7 @@ void HpItem::InitTransform(void)
     transform_.Update();
 }
 
-void HpItem::InitCollider(void)
+void HpItem::InitCollider()
 {
     // 主に地面との衝突で仕様する線分コライダ
     ColliderLine* colLine = new ColliderLine(
@@ -77,15 +77,15 @@ void HpItem::InitCollider(void)
         static_cast<int>(COLLIDER_TYPE::ITEM), colModel);
 }
 
-void HpItem::InitAnimation(void)
+void HpItem::InitAnimation()
 {
 }
 
-void HpItem::InitPost(void)
+void HpItem::InitPost()
 {
 }
 
-void HpItem::UpdateProcess(void)
+void HpItem::UpdateProcess()
 {
     //プレイヤー座標取得
     VECTOR playerPos = player_->GetPos();
@@ -145,6 +145,6 @@ void HpItem::UpdateProcess(void)
     transform_.Update();
 }
 
-void HpItem::UpdateProcessPost(void)
+void HpItem::UpdateProcessPost()
 {
 }

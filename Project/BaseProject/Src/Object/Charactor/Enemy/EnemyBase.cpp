@@ -17,11 +17,11 @@ EnemyBase::EnemyBase(const EnemyBase::EnemyData& data, Player* player)
 
 	hp_ = data.hp;
 }
-EnemyBase::~EnemyBase(void)
+EnemyBase::~EnemyBase()
 {
 }
 
-void EnemyBase::Draw(void)
+void EnemyBase::Draw()
 {
 	CharactorBase::Draw();
 #ifdef _DEBUG
@@ -30,7 +30,7 @@ void EnemyBase::Draw(void)
 #endif // _DEBUG
 }
 
-bool EnemyBase::InMovableRange(void) const
+bool EnemyBase::InMovableRange() const
 {
 	bool ret = false;
 	// 初期位置からの距離
@@ -45,7 +45,7 @@ bool EnemyBase::InMovableRange(void) const
 
 }
 
-void EnemyBase::LookPlayer(void)
+void EnemyBase::LookPlayer()
 {
 
 	VECTOR playerPos = player_->GetPos();
@@ -83,7 +83,7 @@ void EnemyBase::ChangeState(int state)
 	else
 	{
 		// マッピングがない場合は明示的に空にする（保険）
-		stateUpdate_ = std::function<void(void)>{};
+		stateUpdate_ = std::function<void()>{};
 	}
 
 }

@@ -16,36 +16,36 @@ WeaponBase::WeaponBase(TYPE type, Transform* ownerTransform)
 {
 }
 
-WeaponBase::~WeaponBase(void)
+WeaponBase::~WeaponBase()
 {
 }
 
-void WeaponBase::InitLoad(void)
+void WeaponBase::InitLoad()
 {
 }
 
-void WeaponBase::InitTransform(void)
+void WeaponBase::InitTransform()
 {
 	transform_.pos = ownerTransform_->pos;
 	transform_.rot = ownerTransform_->rot;
 	transform_.scl = ownerTransform_->scl;
 }
 
-void WeaponBase::InitCollider(void)
+void WeaponBase::InitCollider()
 {
 }
 
-void WeaponBase::InitAnimation(void)
+void WeaponBase::InitAnimation()
 {
 }
 
-void WeaponBase::InitPost(void)
+void WeaponBase::InitPost()
 {
 	// 攻撃判定情報の初期化
 	InitHitboxes();
 }
 
-void WeaponBase::Update(void)
+void WeaponBase::Update()
 {
 	// 攻撃中の場合
 	if (isAttacking_)
@@ -64,7 +64,7 @@ void WeaponBase::Update(void)
 	transform_.Update();
 }
 
-void WeaponBase::Draw(void)
+void WeaponBase::Draw()
 {
 	ActorBase::Draw();
 
@@ -85,7 +85,7 @@ void WeaponBase::BeginAttack(int attackType)
 	activeHitboxes_.clear();
 }
 
-void WeaponBase::EndAttack(void)
+void WeaponBase::EndAttack()
 {
 	// 攻撃終了
 	isAttacking_ = false;
@@ -100,12 +100,12 @@ void WeaponBase::EndAttack(void)
 	activeHitboxes_.clear();
 }
 
-const std::vector<WeaponBase::HitboxInfo>& WeaponBase::GetActiveHitboxes(void) const
+const std::vector<WeaponBase::HitboxInfo>& WeaponBase::GetActiveHitboxes() const
 {
 	return activeHitboxes_;
 }
 
-VECTOR WeaponBase::GetWeaponTipPos(void) const
+VECTOR WeaponBase::GetWeaponTipPos() const
 {
 	// 武器先端のボーン座標を取得
 	if (weaponTipFrameIndex_ >= 0 && ownerTransform_ != nullptr)
@@ -127,7 +127,7 @@ VECTOR WeaponBase::GetWeaponTipPos(void) const
 	return VGet(0.0f, 0.0f, 0.0f);
 }
 
-VECTOR WeaponBase::GetWeaponBasePos(void) const
+VECTOR WeaponBase::GetWeaponBasePos() const
 {
 	// 武器根元のボーン座標を取得
 	if (weaponBaseFrameIndex_ >= 0 && ownerTransform_ != nullptr)
@@ -148,7 +148,7 @@ VECTOR WeaponBase::GetWeaponBasePos(void) const
 	return VGet(0.0f, 0.0f, 0.0f);
 }
 
-void WeaponBase::UpdateHitboxes(void)
+void WeaponBase::UpdateHitboxes()
 {
 	// 現在の攻撃タイプに対応する判定情報を取得
 	if (hitboxInfoMap_.find(currentAttackType_) == hitboxInfoMap_.end())
@@ -188,7 +188,7 @@ void WeaponBase::UpdateHitboxes(void)
 	}
 }
 
-void WeaponBase::UpdateTransformWeapon(void)
+void WeaponBase::UpdateTransformWeapon()
 {
 	// 武器が独立モデルの場合、所有者に追従させる
 	if (transform_.modelId != -1 && ownerTransform_ != nullptr)
@@ -198,7 +198,7 @@ void WeaponBase::UpdateTransformWeapon(void)
 	}
 }
 
-void WeaponBase::DrawDebug(void)
+void WeaponBase::DrawDebug()
 {
 	// アクティブな攻撃判定を描画
 	for (const auto& hitbox : activeHitboxes_)

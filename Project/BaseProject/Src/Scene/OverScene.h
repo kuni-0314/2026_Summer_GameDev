@@ -7,22 +7,22 @@ class OverScene : public SceneBase
 public:
 
 	// コンストラクタ
-	OverScene(void);
+	OverScene();
 
 	// デストラクタ
-	~OverScene(void) override;
+	~OverScene() override;
 
 	// 初期化
-	void Init(void) override;
+	void Init() override;
 
 	// 更新
-	void Update(void) override;
+	void Update() override;
 
 	// 描画
-	void Draw(void) override;
+	void Draw() override;
 
 	// 解放
-	void Release(void) override;
+	void Release() override;
 
 
 private:

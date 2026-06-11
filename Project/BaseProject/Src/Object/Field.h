@@ -18,19 +18,19 @@ public:
 	};
 
 	Field(FieldManager* fieldManager, FIELD_TYPE fieldType, int CELL_NUM_X, int CELL_NUM_Y, int CELL_SIZE, Vector2& pos);
-	virtual ~Field(void);
+	virtual ~Field();
 
-	virtual void Init(void);
-	virtual void Update(void);
-	virtual void Draw(void);
-	virtual void Release(void);
+	virtual void Init();
+	virtual void Update();
+	virtual void Draw();
+	virtual void Release();
 
 	void SetActionCount(const int index, const int actionCount);	// セルの行動回数を設定
 
 	void SetHoldingCellType(CellBase::CELL_TYPE cellType) { holdingCellType_ = cellType; }
-	CellBase::CELL_TYPE GetHoldingCellType(void) const { return holdingCellType_; }
+	CellBase::CELL_TYPE GetHoldingCellType() const { return holdingCellType_; }
 
-	bool IsInFieldMouse(void) const;	// マウスカーソルがフィールド内にあるかチェック
+	bool IsInFieldMouse() const;	// マウスカーソルがフィールド内にあるかチェック
 	void SetCellType(CellBase::CELL_TYPE cellType);	// フィールド内のセルのタイプを設定
 
 protected:
@@ -48,5 +48,5 @@ protected:
 	FieldManager* fieldManager_;
 
 	// 完成時には使わなくなる予定
-	void LoadFieldData(void);	// フィールドデータを読み込む
+	void LoadFieldData();	// フィールドデータを読み込む
 };

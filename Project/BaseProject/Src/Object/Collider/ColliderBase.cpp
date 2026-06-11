@@ -8,10 +8,10 @@ ColliderBase::ColliderBase(SHAPE shape, TAG tag, const Transform* follow)
 	isValid_(true)
 {
 }
-ColliderBase::~ColliderBase(void)
+ColliderBase::~ColliderBase()
 {
 }
-void ColliderBase::Draw(void)
+void ColliderBase::Draw()
 {
 	int color = COLOR_INVALID;
 	if (isValid_)

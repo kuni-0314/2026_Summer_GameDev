@@ -21,12 +21,12 @@ public:
 	/// <summary>
 	/// シェーダーの適用開始
 	/// </summary>
-	void Begin(void);
+	void Begin();
 
 	/// <summary>
 	/// シェーダーの適用終了
 	/// </summary>
-	void End(void);
+	void End();
 
 	/// <summary>
 	/// テクスチャの設定
@@ -39,7 +39,7 @@ public:
 	/// 定数バッファの取得
 	/// </summary>
 	/// <returns>定数バッファのポインタ</returns>
-	FLOAT4* GetConstantBuffer(void);
+	FLOAT4* GetConstantBuffer();
 
 	/// <summary>
 	/// 定数バッファの更新と適用

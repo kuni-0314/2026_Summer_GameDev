@@ -2,7 +2,7 @@
 #include <EffekseerForDXLib.h>
 #include "Resource.h"
 
-Resource::Resource(void)
+Resource::Resource()
 	:
 	type_(TYPE::NONE),
 	path_(""),
@@ -41,11 +41,11 @@ Resource::Resource(TYPE type, const std::string& path, int numX, int numY, int s
 {
 }
 
-Resource::~Resource(void)
+Resource::~Resource()
 {
 }
 
-void Resource::Load(void)
+void Resource::Load()
 {
 
 	switch (type_)
@@ -80,7 +80,7 @@ void Resource::Load(void)
 
 }
 
-void Resource::Release(void)
+void Resource::Release()
 {
 
 	switch (type_)

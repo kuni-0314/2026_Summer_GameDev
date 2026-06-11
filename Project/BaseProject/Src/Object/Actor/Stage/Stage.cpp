@@ -6,13 +6,13 @@
 #include "../../../Utility/AsoUtility.h"
 #include "../../../Object/Collider/Model/ColliderModel.h"
 
-Stage::Stage(void)
+Stage::Stage()
 	:
 	ActorBase()
 {
 }
 
-Stage::~Stage(void)
+Stage::~Stage()
 {
 }
 
@@ -22,12 +22,12 @@ void Stage::Update()
 
 
 
-void Stage::InitLoad(void)
+void Stage::InitLoad()
 {
 	transform_.SetModel(resMng_.Load(ResourceManager::SRC::BATTLE_STAGE).handleId_);
 }
 
-void Stage::InitTransform(void)
+void Stage::InitTransform()
 {
 
 	transform_.scl = { SCL_MAIN_STAGE_X, SCL_MAIN_STAGE_Y, SCL_MAIN_STAGE_Z };
@@ -39,7 +39,7 @@ void Stage::InitTransform(void)
 
 }
 
-void Stage::InitCollider(void)
+void Stage::InitCollider()
 {
 	// DxLib側の衝突情報セットアップ
 	MV1SetupCollInfo(transform_.modelId);
@@ -62,10 +62,10 @@ void Stage::InitCollider(void)
 
 }
 
-void Stage::InitAnimation(void)
+void Stage::InitAnimation()
 {
 }
 
-void Stage::InitPost(void)
+void Stage::InitPost()
 {
 }

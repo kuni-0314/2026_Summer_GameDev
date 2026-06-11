@@ -21,11 +21,11 @@ Field::Field(FieldManager* fieldManager, FIELD_TYPE fieldType, int CELL_NUM_X, i
 {
 }
 
-Field::~Field(void)
+Field::~Field()
 {
 }
 
-void Field::Init(void)
+void Field::Init()
 {
 	// CSVデータからセルを生成
 	LoadFieldData();
@@ -50,7 +50,7 @@ void Field::Init(void)
 	}
 }
 
-void Field::Update(void)
+void Field::Update()
 {
 	if (InputManager::GetInstance()->IsMouseTrgUp(MOUSE_INPUT_LEFT)
 		&& holdingCellType_ != CellBase::CELL_TYPE::NONE)
@@ -89,7 +89,7 @@ void Field::Update(void)
 	}
 }
 
-void Field::Draw(void)
+void Field::Draw()
 {
 	for (int i = 0; i < CELL_TOTAL; i++)
 	{
@@ -132,7 +132,7 @@ void Field::Draw(void)
 	}
 }
 
-void Field::Release(void)
+void Field::Release()
 {
 	cells_.clear();
 }
@@ -142,7 +142,7 @@ void Field::SetActionCount(const int index, const int actionCount)
 	cells_[index]->SetActionCount(actionCount);
 }
 
-bool Field::IsInFieldMouse(void) const
+bool Field::IsInFieldMouse() const
 {
 	int mouseX, mouseY;
 	GetMousePoint(&mouseX, &mouseY);
@@ -165,7 +165,7 @@ void Field::SetCellType(CellBase::CELL_TYPE cellType)
 	}
 }
 
-void Field::LoadFieldData(void)
+void Field::LoadFieldData()
 {
 	std::string filePath;
 	

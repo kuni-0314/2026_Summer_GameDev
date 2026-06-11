@@ -11,7 +11,7 @@
 #include "../Object/Actor/Stage/Stage.h"
 #include "Camera.h"
 
-Camera::Camera(void)
+Camera::Camera()
 	:
 	followTransform_(nullptr),
 	mode_(MODE::NONE),
@@ -34,16 +34,16 @@ Camera::Camera(void)
 		
 }
 
-Camera::~Camera(void)
+Camera::~Camera()
 {
 }
 
 
-void Camera::Update(void)
+void Camera::Update()
 {
 }
 
-void Camera::SetBeforeDraw(void)
+void Camera::SetBeforeDraw()
 {
 
 	// クリップ距離を設定する(SetDrawScreenでリセットされる)
@@ -79,14 +79,14 @@ void Camera::SetBeforeDraw(void)
 
 }
 
-void Camera::DrawDebug(void)
+void Camera::DrawDebug()
 {
 	//DrawSphere3D(debugTargetPos_, 10.0f, 16, 0xff00ff, 0xff00ff, true);	
 
 	//DrawFormatString(10, 200, 0xffffff, "camera angles: %f, %f, %f", angles_.x, angles_.y, angles_.z);
 }
 
-void Camera::Release(void)
+void Camera::Release()
 {
 	// コライダの解放
 	for (auto& pair : ownColliders_)
@@ -116,7 +116,7 @@ void Camera::SetTargetPos(const VECTOR& pos)
 	targetPos_ = pos;
 }
 
-void Camera::InitCollider(void)
+void Camera::InitCollider()
 {
 
 
@@ -133,37 +133,37 @@ void Camera::InitCollider(void)
 
 }
 
-void Camera::InitPost(void)
+void Camera::InitPost()
 {
 	ChangeMode(MODE::FIXED_POINT);
 }
 
-const VECTOR& Camera::GetPos(void) const
+const VECTOR& Camera::GetPos() const
 {
 	return transform_.pos;
 }
 
-const VECTOR& Camera::GetAngles(void) const
+const VECTOR& Camera::GetAngles() const
 {
 	return angles_;
 }
 
-const VECTOR& Camera::GetTargetPos(void) const
+const VECTOR& Camera::GetTargetPos() const
 {
 	return targetPos_;
 }
 
-const Quaternion& Camera::GetQuaRot(void) const
+const Quaternion& Camera::GetQuaRot() const
 {
 	return transform_.quaRot;
 }
 
-const Quaternion& Camera::GetQuaRotY(void) const
+const Quaternion& Camera::GetQuaRotY() const
 {
 	return rotY_;
 }
 
-VECTOR Camera::GetForward(void) const
+VECTOR Camera::GetForward() const
 {
 	return VNorm(VSub(targetPos_, transform_.pos));
 }
@@ -194,7 +194,7 @@ void Camera::ChangeMode(MODE mode)
 
 }
 
-void Camera::SetDefault(void)
+void Camera::SetDefault()
 {
 
 	// カメラの初期設定
@@ -212,7 +212,7 @@ void Camera::SetDefault(void)
 
 }
 
-void Camera::SyncFollow(void)
+void Camera::SyncFollow()
 {
 
 	// 追従対象のルートフレーム2のワールド座標を取得
@@ -260,7 +260,7 @@ void Camera::ProcessRot(bool isLimit)
 
 }
 
-void Camera::ProcessMove(void)
+void Camera::ProcessMove()
 {
 
 	auto ins = InputManager::GetInstance();
@@ -309,12 +309,12 @@ void Camera::ProcessMove(void)
 
 }
 
-void Camera::SetBeforeDrawFixedPoint(void)
+void Camera::SetBeforeDrawFixedPoint()
 {
 	// 何もしない
 }
 
-void Camera::SetBeforeDrawFree(void)
+void Camera::SetBeforeDrawFree()
 {
 
 	// カメラ操作(回転)
@@ -337,7 +337,7 @@ void Camera::SetBeforeDrawFree(void)
 
 }
 
-void Camera::SetBeforeDrawFollow(void)
+void Camera::SetBeforeDrawFollow()
 {
 
 	// カメラ操作(回転)
@@ -351,7 +351,7 @@ void Camera::SetBeforeDrawFollow(void)
 	
 }
 
-void Camera::SetBeforeDrawMouse(void)
+void Camera::SetBeforeDrawMouse()
 {
 
 	// マウスによるカメラ回転
@@ -393,7 +393,7 @@ void Camera::SetBeforeDrawMouse(void)
 
 }
 
-void Camera::SetBeforeDrawTargeting(void)
+void Camera::SetBeforeDrawTargeting()
 {
 	// 注視点はGameSceneで設定済み（敵の位置）
 	debugTargetPos_ = targetPos_;
@@ -429,7 +429,7 @@ void Camera::SetBeforeDrawTargeting(void)
 	Collision();
 }
 
-void Camera::Collision(void)
+void Camera::Collision()
 {
 	// プレイヤーのルートフレーム
 	VECTOR start = MV1GetFramePosition(followTransform_->modelId, 1);

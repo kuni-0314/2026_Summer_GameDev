@@ -15,22 +15,22 @@ public:
 	// コンストラクタ
 	EnemyManager(GameScene* gamescene, Player* player);
 	// デストラクタ
-	~EnemyManager(void);
+	~EnemyManager();
 	// 初期化
-	void Init(void);
+	void Init();
 	// 更新
-	void Update(void);
+	void Update();
 	// 描画
-	void Draw(void);
+	void Draw();
 	// 解放
-	void Release(void);
+	void Release();
 	// エネミー
-	const std::vector<EnemyBase*>& GetEemies(void) const { return enemies_; }
+	const std::vector<EnemyBase*>& GetEemies() const { return enemies_; }
 	// 衝突対象となるコライダを登録
 	void AddHitCollider(const ColliderBase* hitCollider);
 
 	// CSVから敵情報の読取を行う
-	void LoadCsvData(void);
+	void LoadCsvData();
 	// エネミー生成
 	EnemyBase* Create(const EnemyBase::EnemyData& data, const Player* player);
 
@@ -40,14 +40,14 @@ public:
 	// 指定IDのエネミーの座標を取得
 	VECTOR GetEnemyPos(int id) const;
 
-	bool GetEnemyDead(void);
+	bool GetEnemyDead();
 
-	void CheckAttackCollision(void);
+	void CheckAttackCollision();
 
 	// 攻撃コライダを追加
 	void AddAttackCollider(const ColliderBase* attackCollider);
 	// 攻撃コライダをクリア
-	void ClearAttackColliders(void);
+	void ClearAttackColliders();
 
 	// エネミーリストを取得（やっつけ用）
 	const std::vector<EnemyBase*>& GetEnemies() const { return enemies_; }

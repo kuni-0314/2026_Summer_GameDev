@@ -57,4 +57,20 @@ void PlayerIdleState::Update(Player* player)
 			return;
 		}
 	}
+	short x, y;
+	ins->GetLeftStick(0, x, y);
+	if (x != 0 || y != 0)
+	{
+		// ダッシュキーが入力されているか
+		if (ins->IsGamepadNew(InputManager::PadInput::LB, 0))
+		{
+			player->ChangeState(Player::STATE::FAST_RUN);
+			return;
+		}
+		else
+		{
+			player->ChangeState(Player::STATE::RUN);
+			return;
+		}
+	}
 }

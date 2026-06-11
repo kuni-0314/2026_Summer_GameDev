@@ -9,7 +9,7 @@
 #include "../../Object/Collider/Capsule/ColliderCapsule.h"
 #include "../../Manager/ResourceManager.h"
 
-CharactorBase::CharactorBase(void)
+CharactorBase::CharactorBase()
 	:
 	ActorBase(),
 	animationController_(nullptr),
@@ -19,11 +19,11 @@ CharactorBase::CharactorBase(void)
 	hp_(0)
 {
 }
-CharactorBase::~CharactorBase(void)
+CharactorBase::~CharactorBase()
 {
 }
 
-void CharactorBase::InitLoad(void)
+void CharactorBase::InitLoad()
 {
 	// 丸影画像
 	imgShadow_ = resMng_.Load(ResourceManager::SRC::PLAYER_SHADOW).handleId_;
@@ -32,12 +32,12 @@ void CharactorBase::InitLoad(void)
 
 }
 
-void CharactorBase::InitAnimation(void)
+void CharactorBase::InitAnimation()
 {
 	animationController_ = new AnimationController(transform_.modelId);
 }
 
-void CharactorBase::Update(void)
+void CharactorBase::Update()
 {
 	// 移動前座標を更新
 	prevPos_ = transform_.pos;
@@ -61,7 +61,7 @@ void CharactorBase::Update(void)
 
 }
 
-void CharactorBase::Draw(void)
+void CharactorBase::Draw()
 {
 	//基底クラスの描画処理
 	ActorBase::Draw();
@@ -70,7 +70,7 @@ void CharactorBase::Draw(void)
 
 }
 
-void CharactorBase::Release(void)
+void CharactorBase::Release()
 {
 	//アニメーションコントローラー解放
 	if (animationController_ != nullptr)
@@ -98,7 +98,7 @@ bool CharactorBase::IsAnimEnd()
 	return animationController_->IsEnd(); 
 }
 
-void CharactorBase::DelayRotate(void)
+void CharactorBase::DelayRotate()
 {
 	// 移動方向から回転に変換する
 	Quaternion goalRot = Quaternion::LookRotation(moveDir_);
@@ -107,7 +107,7 @@ void CharactorBase::DelayRotate(void)
 		Quaternion::Slerp(transform_.quaRot, goalRot, 0.2f);
 }
 
-void CharactorBase::CalcGravityPow(void)
+void CharactorBase::CalcGravityPow()
 {
 	// 重力方向
 	VECTOR dirGravity = AsoUtility::DIR_D;
@@ -126,7 +126,7 @@ void CharactorBase::CalcGravityPow(void)
 
 }
 
-void CharactorBase::Collision(void)
+void CharactorBase::Collision()
 {
 	// 衝突(カプセル)
 	CollisionCapsule();
@@ -137,7 +137,7 @@ void CharactorBase::Collision(void)
 	CollisionGravity();
 }
 
-void CharactorBase::CollisionGravity(void)
+void CharactorBase::CollisionGravity()
 {
 	// 線分コライダ
 	int lineType = static_cast<int>(COLLIDER_TYPE::LINE);
@@ -186,7 +186,7 @@ void CharactorBase::CollisionGravity(void)
 
 }
 
-void CharactorBase::CollisionCapsule(void)
+void CharactorBase::CollisionCapsule()
 {
 	// カプセルコライダ
 	int capsuleType = static_cast<int>(COLLIDER_TYPE::CAPSULE);
@@ -266,7 +266,7 @@ void CharactorBase::CollisionCapsule(void)
 	}
 }
 
-void CharactorBase::DrawShadow(void)
+void CharactorBase::DrawShadow()
 {
 
 	int i, j;

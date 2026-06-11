@@ -10,19 +10,19 @@ public:
 	// コンストラクタ
 	ColliderModel(TAG tag, const Transform* follow);
 	// デストラクタ
-	~ColliderModel(void) override;
+	~ColliderModel() override;
 
 	// 指定された文字を含むフレームを衝突判定から除外
 	void AddExcludeFrameIds(const std::string& name);
 	// 衝突判定から除外するフレームをクリアする
-	void ClearExcludeFrame(void);
+	void ClearExcludeFrame();
 	// 除外フレーム判定
 	bool IsExcludeFrame(int frameIdx) const;
 
 	//指定された文字を含むフレームを衝突判定対象とする
 	void AddTargetFrameIds(const std::string & name);
 	// 衝突判定の対象するフレームをクリアする
-	void ClearTargetFrame(void);
+	void ClearTargetFrame();
 	// 対象フレーム判定
 	bool IsTargetFrame(int frameIdx) const;
 
