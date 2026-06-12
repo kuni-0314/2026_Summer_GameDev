@@ -8,7 +8,7 @@ class PostEffectManager
 {
 public:
 	// エフェクトタイプの定義
-	enum class EffectType
+	enum class EFFECT_TYPE : std::uint8_t
 	{
 		NORMAL,
 		MONO,
@@ -64,31 +64,31 @@ public:
 	void Release();
 
 	// エフェクト適用
-	void ApplyEffect(EffectType type, int srcScreen, int dstScreen, float time = 0.0f);
-	void ApplyEffect(EffectType type, int srcScreen, int dstScreen, const EffectParams& customParams);
+	void ApplyEffect(const EFFECT_TYPE type, const int srcScreen, const int dstScreen, const float time = 0.0f);
+	void ApplyEffect(EFFECT_TYPE type, int srcScreen, int dstScreen, const EffectParams& customParams);
 
 	// カスタムパラメータ設定
-	void SetCustomParams(EffectType type, const EffectParams& params);
-	EffectParams GetDefaultParams(EffectType type, float time = 0.0f) const;
+	void SetCustomParams(const EFFECT_TYPE type, const EffectParams& params);
+	EffectParams GetDefaultParams(const EFFECT_TYPE type, float time = 0.0f) const;
 
 	// スクリーン管理
 	int CreatePostEffectScreen();
 	void DeletePostEffectScreen(int screen);
 
+	PostEffectManager(const PostEffectManager&) = delete;
+	PostEffectManager& operator=(const PostEffectManager&) = delete;
 private:
 	PostEffectManager() = default;
 	~PostEffectManager() = default;
-	PostEffectManager(const PostEffectManager&) = delete;
-	PostEffectManager& operator=(const PostEffectManager&) = delete;
 
 	// 初期化補助
-	void InitializeEffect(EffectType type, const char* shaderName);
-	void SetEffectParameters(EffectType type, FLOAT4& bufs, float time) const;
+	void InitializeEffect(EFFECT_TYPE type, const char* shaderName);
+	void SetEffectParameters(EFFECT_TYPE type, FLOAT4& bufs, float time) const;
 
 	// エフェクトマップ
-	std::unordered_map<EffectType, std::unique_ptr<PixelMaterial>> materials_;
-	std::unordered_map<EffectType, std::unique_ptr<PixelRenderer>> renderers_;
-	std::unordered_map<EffectType, EffectParams> customParams_;
+	std::unordered_map<EFFECT_TYPE, std::unique_ptr<PixelMaterial>> materials_;
+	std::unordered_map<EFFECT_TYPE, std::unique_ptr<PixelRenderer>> renderers_;
+	std::unordered_map<EFFECT_TYPE, EffectParams> customParams_;
 
 	// ピクセルシェーダ用オリジナル定数バッファの使用開始スロット
 	static constexpr int CONSTANT_BUF_SLOT_BEGIN_PS = 4;
@@ -96,4 +96,4 @@ private:
 	bool isInitialized_ = false;
 };
 
-using PEManager = PostEffectManager;
+using PstEfcManager = PostEffectManager;

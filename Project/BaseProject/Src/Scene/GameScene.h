@@ -102,7 +102,7 @@ private:
 	std::vector<AttackColliderData*> attackColliders_;
 
 	// シェーダー関連を簡略化
-	PostEffectManager::EffectType currentEffect_;
+	PostEffectManager::EFFECT_TYPE currentEffect_;
 	int postEffectScreen_;
 	float effectTime_;
 
