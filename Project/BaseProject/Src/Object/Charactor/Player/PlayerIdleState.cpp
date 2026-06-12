@@ -42,27 +42,41 @@ void PlayerIdleState::Update(Player* player)
 		return;
 	}
 
-	// 移動キーが入力されているか
-	if (ins->IsNew(KEY_INPUT_W) || ins->IsNew(KEY_INPUT_A) || ins->IsNew(KEY_INPUT_S) || ins->IsNew(KEY_INPUT_D))
+	// 入力デバイスの種類を判定
+	bool isGamepadConnected = (GetJoypadNum() > 0);
+	constexpr int GAMEPAD_INDEX = 0;
+
+	// 移動入力のチェック
+	bool hasMoveInput = false;
+	bool isDashInput = false;
+
+	if (isGamepadConnected)
 	{
-		// ダッシュキーが入力されているか
-		if (ins->IsNew(KEY_INPUT_LSHIFT))
-		{
-			player->ChangeState(Player::STATE::FAST_RUN);
-			return;
-		}
-		else
-		{
-			player->ChangeState(Player::STATE::RUN);
-			return;
-		}
+		// ゲームパッド：左スティックの入力チェック
+		short stickX = 0, stickY = 0;
+		ins->GetLeftStick(GAMEPAD_INDEX, stickX, stickY);
+
+		constexpr float STICK_DEADZONE = 0.2f;
+		constexpr float STICK_MAX = 32767.0f;
+		float normalizedX = stickX / STICK_MAX;
+		float normalizedY = stickY / STICK_MAX;
+
+		hasMoveInput = (abs(normalizedX) > STICK_DEADZONE || abs(normalizedY) > STICK_DEADZONE);
+		isDashInput = ins->IsGamepadNew(InputManager::PadInput::A, GAMEPAD_INDEX);
 	}
-	short x, y;
-	ins->GetLeftStick(0, x, y);
-	if (x != 0 || y != 0)
+	else
+	{
+		// キーボード：WASDキーの入力チェック
+		hasMoveInput = (ins->IsNew(KEY_INPUT_W) || ins->IsNew(KEY_INPUT_A) || 
+		                ins->IsNew(KEY_INPUT_S) || ins->IsNew(KEY_INPUT_D));
+		isDashInput = ins->IsNew(KEY_INPUT_LSHIFT);
+	}
+
+	// 移動キーが入力されているか
+	if (hasMoveInput)
 	{
 		// ダッシュキーが入力されているか
-		if (ins->IsGamepadNew(InputManager::PadInput::LB, 0))
+		if (isDashInput)
 		{
 			player->ChangeState(Player::STATE::FAST_RUN);
 			return;

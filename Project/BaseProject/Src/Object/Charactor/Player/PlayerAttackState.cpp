@@ -33,13 +33,6 @@ void PlayerAttackState::Enter(Player* player)
 		ATTACK_RADIUS,
 		ATTACK_POW[static_cast<int>(attackType_)],
 		60); 
-	
-	//if (player->IsAir())
-	//{
-	//	VECTOR movePow = player->GetMovePow();
-	//	movePow.y = 200.0f;
-	//	player->SetMovePow(movePow);
-	//}
 }
 
 void PlayerAttackState::Update(Player* player)
@@ -47,18 +40,18 @@ void PlayerAttackState::Update(Player* player)
 	// 攻撃アニメーション中は他の状態への遷移をチェックしない
 
 	// 移動量の減衰
-	//if (!AsoUtility::EqualsVZero(player->GetMovePow()))
-	//{
-	//	VECTOR movePow = player->GetMovePow();
-	//	movePow = VScale(movePow, Player::GROUND_MOVE_DEC_RATE);
-	//
-	//	if (VSize(movePow) < 0.01f)
-	//	{
-	//		movePow = { 0.0f, 0.0f, 0.0f };
-	//	}
-	//
-	//	player->SetMovePow(movePow);
-	//}
+	if (!AsoUtility::EqualsVZero(player->GetMovePow()))
+	{
+		VECTOR movePow = player->GetMovePow();
+		movePow = VScale(movePow, Player::GROUND_MOVE_DEC_RATE);
+	
+		if (VSize(movePow) < 0.01f)
+		{
+			movePow = { 0.0f, 0.0f, 0.0f };
+		}
+	
+		player->SetMovePow(movePow);
+	}
 
 	// 移動量の減衰を無効化(ルートモーションで制御)
 	// ダッシュ攻撃などの場合はルートモーションで移動を表現
@@ -70,11 +63,6 @@ void PlayerAttackState::Update(Player* player)
 	// アニメーション終了時
 	if (player->GetAnimationController()->IsEnd())
 	{
-		// ルートフレーム2の座標をプレイヤーの座標にする
-		//VECTOR framePos = MV1GetFramePosition(player->GetTransform().modelId, 2);
-		//framePos.y = player->GetPos().y;
-		//player->SetPos(framePos);
-		
 		// クールタイムをクリア（攻撃可能に）
 		player->SetAttackCoolTime(0);
 
@@ -97,54 +85,7 @@ void PlayerAttackState::Update(Player* player)
 
 void PlayerAttackState::Draw(Player* player)
 {
-	//// 攻撃球体の位置を計算して表示
-	//VECTOR attackPos = CalculateAttackPosition(player);
-	//DrawSphere3D(attackPos, ATTACK_RADIUS, 16, GetColor(255, 255, 0), GetColor(255, 255, 0), true);
-
-	//// 既存のUI描画
-	//bool state[5][5] = {};
-	//switch (attackType_)
-	//{
-	//case ATTACK_TYPE::NORMAL1: state[0][0] = true; break;
-	//case ATTACK_TYPE::NORMAL2: state[0][1] = true; break;
-	//case ATTACK_TYPE::NORMAL3: state[0][2] = true; break;
-	//case ATTACK_TYPE::NORMAL4: state[0][3] = true; break;
-	//case ATTACK_TYPE::NORMAL5: state[0][4] = true; break;
-	//case ATTACK_TYPE::HEAVY:   state[1][0] = true; break;
-	//case ATTACK_TYPE::DASH:    state[2][0] = true; break;
-	//case ATTACK_TYPE::AIR1:    state[3][0] = true; break;
-	//case ATTACK_TYPE::AIR2:    state[3][1] = true; break;
-	//case ATTACK_TYPE::AIR3:    state[3][2] = true; break;
-	//case ATTACK_TYPE::AIR4:    state[3][3] = true; break;
-	//case ATTACK_TYPE::AIR5:    state[3][4] = true; break;
-	//case ATTACK_TYPE::FALL:    state[4][0] = true; break;
-	//default: break;
-	//}
-
-	//const int size = 50;
-	//int color = 0xFFFF00;
-
-	//if (player->GetAttackCoolTime() > 0)
-	//{
-	//	color = 0xFF0000; // 赤：クールタイム中（アニメーション中）
-	//}
-	//else if (player->GetComboTimer() > 0)
-	//{
-	//	color = 0x00FF00; // 緑：コンボ可能
-	//}
-
-	//for (int y = 0; y < 5; y++)
-	//{
-	//	for (int x = 0; x < 5; x++)
-	//	{
-	//		DrawBox(size * x, size * y, size * (x + 1), size * (y + 1), 
-	//			color, state[y][x]);
-	//	}
-	//}
-
-	//DrawFormatString(0, 260, 0xFFFFFF, "CoolTime: %d", player->GetAttackCoolTime());
-	//DrawFormatString(0, 280, 0xFFFFFF, "ComboTimer: %d / %d", 
-	//	player->GetComboTimer(), COMBO_WINDOW_FRAME);
+	// デバッグ表示用（コメントアウト済み）
 }
 
 VECTOR PlayerAttackState::CalculateAttackPosition(Player* player)
@@ -165,8 +106,22 @@ PlayerAttackState::ATTACK_TYPE PlayerAttackState::GetNextAttackType(Player* play
 {
 	auto ins = InputManager::GetInstance();
 
+	// 入力デバイスの種類を判定
+	bool isGamepadConnected = (GetJoypadNum() > 0);
+	constexpr int GAMEPAD_INDEX = 0;
+
 	// 長押し判定
-	if (ins->GetMouseLastHoldTime(MOUSE_INPUT_LEFT) > 30)
+	bool isHeavyAttack = false;
+	if (isGamepadConnected)
+	{
+		isHeavyAttack = ins->GetGamepadLastHoldTime(static_cast<int>(InputManager::PadInput::X), GAMEPAD_INDEX) > 30;
+	}
+	else
+	{
+		isHeavyAttack = ins->GetMouseLastHoldTime(MOUSE_INPUT_LEFT) > 30;
+	}
+
+	if (isHeavyAttack)
 	{
 		if (player->IsAir())
 		{
@@ -185,10 +140,32 @@ PlayerAttackState::ATTACK_TYPE PlayerAttackState::GetNextAttackType(Player* play
 	}
 
 	// ダッシュ攻撃判定
-	if (!player->IsAir() && 
-		ins->IsNew(KEY_INPUT_LSHIFT) &&
-		(ins->IsNew(KEY_INPUT_W) || ins->IsNew(KEY_INPUT_A) || 
-		 ins->IsNew(KEY_INPUT_S) || ins->IsNew(KEY_INPUT_D)))
+	bool isDashAttack = false;
+	if (!player->IsAir())
+	{
+		if (isGamepadConnected)
+		{
+			// ゲームパッド：左スティック入力中
+			short stickX = 0, stickY = 0;
+			ins->GetLeftStick(GAMEPAD_INDEX, stickX, stickY);
+
+			constexpr float STICK_DEADZONE = 0.2f;
+			constexpr float STICK_MAX = 32767.0f;
+			float normalizedX = stickX / STICK_MAX;
+			float normalizedY = stickY / STICK_MAX;
+
+			isDashAttack = (abs(normalizedX) > STICK_DEADZONE || abs(normalizedY) > STICK_DEADZONE);
+		}
+		else
+		{
+			// キーボード：シフト + WASD
+			isDashAttack = ins->IsNew(KEY_INPUT_LSHIFT) &&
+				(ins->IsNew(KEY_INPUT_W) || ins->IsNew(KEY_INPUT_A) || 
+				 ins->IsNew(KEY_INPUT_S) || ins->IsNew(KEY_INPUT_D));
+		}
+	}
+
+	if (isDashAttack)
 	{
 		// アニメーション再生
 		player->GetAnimationController()->Play(
@@ -213,27 +190,22 @@ PlayerAttackState::ATTACK_TYPE PlayerAttackState::GetNextAttackType(Player* play
 		switch (attackType_)
 		{
 		case ATTACK_TYPE::AIR1:
-			// アニメーション再生
 			player->GetAnimationController()->Play(
 				static_cast<int>(Player::ANIM_TYPE::ATK_A2), false, true);
 			return ATTACK_TYPE::AIR2;
 		case ATTACK_TYPE::AIR2:
-			// アニメーション再生
 			player->GetAnimationController()->Play(
 				static_cast<int>(Player::ANIM_TYPE::ATK_A3), false, true);
 			return ATTACK_TYPE::AIR3;
 		case ATTACK_TYPE::AIR3:
-			// アニメーション再生
 			player->GetAnimationController()->Play(
 				static_cast<int>(Player::ANIM_TYPE::ATK_A4), false, true);
 			return ATTACK_TYPE::AIR4;
 		case ATTACK_TYPE::AIR4:
-			// アニメーション再生
 			player->GetAnimationController()->Play(
 				static_cast<int>(Player::ANIM_TYPE::ATK_A5), false, true);
 			return ATTACK_TYPE::AIR5;
 		default:
-			// アニメション再生
 			player->GetAnimationController()->Play(
 				static_cast<int>(Player::ANIM_TYPE::ATK_A1), false, true);
 			return ATTACK_TYPE::AIR1;
@@ -244,7 +216,6 @@ PlayerAttackState::ATTACK_TYPE PlayerAttackState::GetNextAttackType(Player* play
 		// 地上コンボ
 		if (!inCombo)
 		{
-			// アニメーション再生
 			player->GetAnimationController()->Play(
 				static_cast<int>(Player::ANIM_TYPE::ATK_N1), false, true);
 			return ATTACK_TYPE::NORMAL1;
@@ -252,27 +223,22 @@ PlayerAttackState::ATTACK_TYPE PlayerAttackState::GetNextAttackType(Player* play
 		switch (attackType_)
 		{
 		case ATTACK_TYPE::NORMAL1: 
-			// アニメーション再生
 			player->GetAnimationController()->Play(
 				static_cast<int>(Player::ANIM_TYPE::ATK_N2), false, true);
 			return ATTACK_TYPE::NORMAL2;
 		case ATTACK_TYPE::NORMAL2: 
-			// アニメーション再生
 			player->GetAnimationController()->Play(
 				static_cast<int>(Player::ANIM_TYPE::ATK_N3), false, true);
 			return ATTACK_TYPE::NORMAL3;
 		case ATTACK_TYPE::NORMAL3: 
-			// アニメーション再生
 			player->GetAnimationController()->Play(
 				static_cast<int>(Player::ANIM_TYPE::ATK_N4), false, true);
 			return ATTACK_TYPE::NORMAL4;
 		case ATTACK_TYPE::NORMAL4: 
-			// アニメーション再生
 			player->GetAnimationController()->Play(
 				static_cast<int>(Player::ANIM_TYPE::ATK_N5), false, true);
 			return ATTACK_TYPE::NORMAL5;
 		default: 
-			// アニメーション再生
 			player->GetAnimationController()->Play(
 				static_cast<int>(Player::ANIM_TYPE::ATK_N1), false, true);
 			return ATTACK_TYPE::NORMAL1;

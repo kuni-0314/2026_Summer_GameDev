@@ -25,22 +25,49 @@ void PlayerRunState::Update(Player* player)
 
 	VECTOR dir = AsoUtility::VECTOR_ZERO;
 
-	// ゲームパッドが接続されている数で処理を分ける
-	if (GetJoypadNum() == 0)
+	// 入力デバイスの種類を判定
+	bool isGamepadConnected = (GetJoypadNum() > 0);
+	constexpr int GAMEPAD_INDEX = 0;
+
+	if (isGamepadConnected)
+	{
+		// ゲームパッド操作
+		short stickX = 0, stickY = 0;
+		ins->GetLeftStick(GAMEPAD_INDEX, stickX, stickY);
+
+		// スティック入力を方向ベクトルに変換（デッドゾーン処理）
+		constexpr float STICK_DEADZONE = 0.2f;
+		constexpr float STICK_MAX = 32767.0f;
+		float normalizedX = stickX / STICK_MAX;
+		float normalizedY = stickY / STICK_MAX;
+
+		if (abs(normalizedX) > STICK_DEADZONE || abs(normalizedY) > STICK_DEADZONE)
+		{
+			dir.x = normalizedX;
+			dir.z = -normalizedY; // Y軸は反転
+		}
+	}
+	else
 	{
 		// キーボード操作
 		ins->GetInputDirXZ(dir, KEY_INPUT_W, KEY_INPUT_S, KEY_INPUT_A, KEY_INPUT_D);
 	}
-	else
-	{
-
-	}
-
+	
 	// 方向入力がある場合
 	if (!AsoUtility::EqualsVZero(dir))
 	{
-		// ダッシュキーが入力されているか
-		if (ins->IsNew(KEY_INPUT_LSHIFT))
+		// ダッシュ入力のチェック
+		bool isDashInput = false;
+		if (isGamepadConnected)
+		{
+			isDashInput = ins->IsGamepadNew(InputManager::PadInput::A, GAMEPAD_INDEX);
+		}
+		else
+		{
+			isDashInput = ins->IsNew(KEY_INPUT_LSHIFT);
+		}
+
+		if (isDashInput)
 		{
 			player->ChangeState(Player::STATE::FAST_RUN);
 			return;
@@ -49,14 +76,14 @@ void PlayerRunState::Update(Player* player)
 		// 移動速度を設定
 		player->SetMoveSpeed(Player::SPEED_MOVE);
 
-		//Y軸のみのカメラ角度を取得
+		// Y軸のみのカメラ角度を取得
 		Quaternion cameraRot = SceneManager::GetInstance().GetCamera()->GetQuaRotY();
 
-		//移動方向をカメラに合わせる
+		// 移動方向をカメラに合わせる
 		VECTOR moveDir = Quaternion::PosAxis(cameraRot, dir);
 		player->SetMoveDir(moveDir);
 
-		//移動量を計算
+		// 移動量を計算
 		player->SetMovePow(VScale(moveDir, Player::SPEED_MOVE));
 	}
 	else

@@ -74,13 +74,7 @@ public:
 	// スクリーン管理
 	int CreatePostEffectScreen();
 	void DeletePostEffectScreen(int screen);
-
-	PostEffectManager(const PostEffectManager&) = delete;
-	PostEffectManager& operator=(const PostEffectManager&) = delete;
 private:
-	PostEffectManager() = default;
-	~PostEffectManager() = default;
-
 	// 初期化補助
 	void InitializeEffect(EFFECT_TYPE type, const char* shaderName);
 	void SetEffectParameters(EFFECT_TYPE type, FLOAT4& bufs, float time) const;
@@ -94,6 +88,14 @@ private:
 	static constexpr int CONSTANT_BUF_SLOT_BEGIN_PS = 4;
 
 	bool isInitialized_ = false;
+
+	// コンストラクタ・デストラクタは非公開
+public:
+	PostEffectManager(const PostEffectManager&) = delete;
+	PostEffectManager& operator=(const PostEffectManager&) = delete;
+private:
+	PostEffectManager() = default;
+	~PostEffectManager() = default;
 };
 
 using PstEfcManager = PostEffectManager;

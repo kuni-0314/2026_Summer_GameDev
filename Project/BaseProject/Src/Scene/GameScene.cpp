@@ -68,7 +68,7 @@ void GameScene::Init()
 	PostEffectManager::GetInstance().Init();
 	postEffectScreen_ = PostEffectManager::GetInstance().CreatePostEffectScreen();
 	
-	currentEffect_ = PostEffectManager::EFFECT_TYPE::VIGNETTE;
+	currentEffect_ = PostEffectManager::EFFECT_TYPE::NORMAL;
 }
 
 void GameScene::Update()

@@ -168,7 +168,6 @@ void Player::InitAnimation()
 	// ダッシュアニメーション
 	animationController_->Add(static_cast<int>(ANIM_TYPE::FAST_RUN)
 		, 40.0f, Application::PATH_MODEL + "NewPlayer/Run.mv1");
-
 	//ジャンプアニメーション
 	animationController_->Add(static_cast<int>(ANIM_TYPE::JUMP)
 		, 60.0f, Application::PATH_MODEL + "NewPlayer/Jump.mv1");
@@ -269,14 +268,14 @@ void Player::Draw()
 	currentState_->Draw(this);
 
 	// ステータス情報を描画（選択中の項目を黄色でハイライト）
-	//unsigned int color = 0xFFFFFF;
-	//unsigned int highlightColor = 0xFFFF00;
+	unsigned int color = 0xFFFFFF;
+	unsigned int highlightColor = 0xFFFF00;
 
 	//DrawFormatString(x, y, color, "Level  : %d", status_.level);
 	//y += lineHeight;
 
-	//DrawFormatString(x, y, (currentGrantStatusIndex_ == 2) ? highlightColor : color, "HP     : %d", status_.hp);
-	//y += lineHeight;
+	DrawFormatString(x, y, (currentGrantStatusIndex_ == 2) ? highlightColor : color, "MovePow : %f", movePow_.x);
+	y += lineHeight;
 
 	//DrawFormatString(x, y, (currentGrantStatusIndex_ == 3) ? highlightColor : color, "MP     : %d", status_.mp);
 	//y += lineHeight;
