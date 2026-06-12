@@ -5,6 +5,7 @@
 #include "../../../Object/Collider/ColliderBase.h"
 #include "../../../Utility/AsoUtility.h"
 #include "../../../Object/Common/AnimationController.h"
+#include "../../../Sound/AudioManager.h"
 
 void PlayerAttackState::Enter(Player* player)
 {
@@ -40,6 +41,9 @@ void PlayerAttackState::Enter(Player* player)
 	//	movePow.y = 200.0f;
 	//	player->SetMovePow(movePow);
 	//}
+
+	AudioManager::GetInstance()->LoadSceneSound(LoadScene::GAME);
+
 }
 
 void PlayerAttackState::Update(Player* player)
@@ -47,18 +51,18 @@ void PlayerAttackState::Update(Player* player)
 	// 攻撃アニメーション中は他の状態への遷移をチェックしない
 
 	// 移動量の減衰
-	//if (!AsoUtility::EqualsVZero(player->GetMovePow()))
-	//{
-	//	VECTOR movePow = player->GetMovePow();
-	//	movePow = VScale(movePow, Player::GROUND_MOVE_DEC_RATE);
-	//
-	//	if (VSize(movePow) < 0.01f)
-	//	{
-	//		movePow = { 0.0f, 0.0f, 0.0f };
-	//	}
-	//
-	//	player->SetMovePow(movePow);
-	//}
+	if (!AsoUtility::EqualsVZero(player->GetMovePow()))
+	{
+		VECTOR movePow = player->GetMovePow();
+		movePow = VScale(movePow, Player::GROUND_MOVE_DEC_RATE);
+	
+		if (VSize(movePow) < 0.01f)
+		{
+			movePow = { 0.0f, 0.0f, 0.0f };
+		}
+	
+		player->SetMovePow(movePow);
+	}
 
 	// 移動量の減衰を無効化(ルートモーションで制御)
 	// ダッシュ攻撃などの場合はルートモーションで移動を表現
@@ -168,6 +172,10 @@ PlayerAttackState::ATTACK_TYPE PlayerAttackState::GetNextAttackType(Player* play
 	// 長押し判定
 	if (ins->GetMouseLastHoldTime(MOUSE_INPUT_LEFT) > 30)
 	{
+		AudioManager::GetInstance()->LoadSceneSound(LoadScene::TITLE);
+	
+		
+
 		if (player->IsAir())
 		{
 			// アニメーション再生
@@ -190,10 +198,19 @@ PlayerAttackState::ATTACK_TYPE PlayerAttackState::GetNextAttackType(Player* play
 		(ins->IsNew(KEY_INPUT_W) || ins->IsNew(KEY_INPUT_A) || 
 		 ins->IsNew(KEY_INPUT_S) || ins->IsNew(KEY_INPUT_D)))
 	{
+
+
 		// アニメーション再生
 		player->GetAnimationController()->Play(
 			static_cast<int>(Player::ANIM_TYPE::ATK_D), false, true);
+
+		AudioManager::GetInstance()->SetSeVolume(150);
+		AudioManager::GetInstance()->PlaySE(SoundID::SE_ATTACK_1);
+
 		return ATTACK_TYPE::DASH;
+
+	
+	
 	}
 
 	// コンボ継続判定
@@ -248,6 +265,8 @@ PlayerAttackState::ATTACK_TYPE PlayerAttackState::GetNextAttackType(Player* play
 			player->GetAnimationController()->Play(
 				static_cast<int>(Player::ANIM_TYPE::ATK_N1), false, true);
 			return ATTACK_TYPE::NORMAL1;
+			AudioManager::GetInstance()->SetSeVolume(150);
+			AudioManager::GetInstance()->PlaySE(SoundID::SE_ATTACK_1);
 		}
 		switch (attackType_)
 		{
@@ -255,6 +274,8 @@ PlayerAttackState::ATTACK_TYPE PlayerAttackState::GetNextAttackType(Player* play
 			// アニメーション再生
 			player->GetAnimationController()->Play(
 				static_cast<int>(Player::ANIM_TYPE::ATK_N2), false, true);
+			AudioManager::GetInstance()->SetSeVolume(150);
+			AudioManager::GetInstance()->PlaySE(SoundID::SE_ATTACK_1);
 			return ATTACK_TYPE::NORMAL2;
 		case ATTACK_TYPE::NORMAL2: 
 			// アニメーション再生

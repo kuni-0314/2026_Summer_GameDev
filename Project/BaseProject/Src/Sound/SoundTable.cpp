@@ -30,7 +30,8 @@ namespace SoundTable_Game
 {
 	static const std::unordered_map<SoundID, std::string> Table =
 	{
-		
+		{ SoundID::SE_ATTACK_1,"Data/Sound/SE/Attack1.wav"},
+		{ SoundID::SE_HEAL,"Data/Sound/SE/Heal.wav"}
 	};
 }
 

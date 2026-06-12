@@ -14,6 +14,7 @@
 #include "../Object/Collider/Sphere/ColliderSphere.h"
 #include "../Shader/PixelMaterial.h"
 #include "../Shader/PixelRenderer.h"
+#include "../Sound/AudioManager.h"]
 #include "GameScene.h"
 
 GameScene::GameScene(void)
@@ -69,6 +70,11 @@ void GameScene::Init(void)
 
 	postEffectScreen_ = MakeScreen(
 		Application::SCREEN_SIZE_X, Application::SCREEN_SIZE_Y, true);
+
+	AudioManager::GetInstance()->LoadSceneSound(LoadScene::TITLE);
+	/*AudioManager::GetInstance()->PlayBGM(SoundID::BGM_TITLE);
+	AudioManager::GetInstance()->SetBgmVolume(120);*/
+
 
 	// マテリアルとレンダラーを作成
 		// フルスクリーン用の頂点を生成
@@ -242,7 +248,7 @@ void GameScene::Init(void)
 	renderers_[CRT] = std::make_unique<PixelRenderer>(*materials_[CRT]);
 	renderers_[CRT]->MakeSquareVertex();
 	
-	currentEffect_ = MONO;
+	currentEffect_ = NORMAL;
 }
 
 void GameScene::Update(void)
@@ -357,8 +363,8 @@ void GameScene::Draw(void)
 	// この時点でmainScreenには3D描画が完了している
 	// （ただし、camera_->DrawDebug()やfader_->Draw()はまだ描画されていない）
 	
-	// ステップ2: mainScreenの内容を一時的に保存
-	// 新しいスクリーンを作成して、mainScreenの内容をコピー
+	 //ステップ2: mainScreenの内容を一時的に保存
+	 //新しいスクリーンを作成して、mainScreenの内容をコピー
 	int tempScreen = MakeScreen(Application::SCREEN_SIZE_X, Application::SCREEN_SIZE_Y, false);
 	
 	// mainScreenの内容をtempScreenにコピー
@@ -369,14 +375,11 @@ void GameScene::Draw(void)
 	// ステップ3: ポストエフェクト処理
 	SetDrawScreen(postEffectScreen_);
 	ClearDrawScreen();
-
 	materials_[currentEffect_]->Begin();
 	materials_[currentEffect_]->SetTexture(0, tempScreen);
-
 	FLOAT4* constBufsPtr = materials_[currentEffect_]->GetConstantBuffer();
 	static float time = 0.0f;
 	time += SceneManager::GetInstance().GetDeltaTime();
-
 	ApplyEffect(currentEffect_, mainScreen, postEffectScreen_, time);
 	
 	// ステップ4: ポストエフェクト結果をmainScreenに描画

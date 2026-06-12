@@ -5,6 +5,7 @@
 #include "../../Collider/Capsule/ColliderCapsule.h"
 #include "../../../Utility/AsoUtility.h"
 #include "../../Charactor/Player/Player.h"
+#include "../../../Sound/AudioManager.h"
 #include "HpItem.h"
 
 
@@ -42,6 +43,7 @@ void HpItem::InitLoad(void)
     //基底クラスのリソースロード
     transform_.SetModel(resMng_.LoadModelDuplicate(ResourceManager::SRC::ITEM_HP));
 
+    AudioManager::GetInstance()->LoadSceneSound(LoadScene::GAME);
 }
 
 void HpItem::InitTransform(void)
@@ -138,6 +140,8 @@ void HpItem::UpdateProcess(void)
         if (transform_.scl.x < SCL_REDUCTION_MIN)
         {
             player_->HealHp(HEAL_HP);
+            AudioManager::GetInstance()->SetSeVolume(150);
+            AudioManager::GetInstance()->PlaySE(SoundID::SE_HEAL);
 
             isAlive_ = false;
         }
