@@ -24,3 +24,6 @@ bld/
 
 # DxLibのログファイル
 Log.txt
+
+# シェーダー
+.cso

@@ -138,6 +138,7 @@ void HpItem::UpdateProcess()
         if (transform_.scl.x < SCL_REDUCTION_MIN)
         {
             player_->HealHp(HEAL_HP);
+
             isAlive_ = false;
         }
     }

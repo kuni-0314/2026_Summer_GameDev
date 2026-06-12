@@ -168,6 +168,7 @@ void Player::InitAnimation()
 	// ダッシュアニメーション
 	animationController_->Add(static_cast<int>(ANIM_TYPE::FAST_RUN)
 		, 40.0f, Application::PATH_MODEL + "NewPlayer/Run.mv1");
+
 	//ジャンプアニメーション
 	animationController_->Add(static_cast<int>(ANIM_TYPE::JUMP)
 		, 60.0f, Application::PATH_MODEL + "NewPlayer/Jump.mv1");

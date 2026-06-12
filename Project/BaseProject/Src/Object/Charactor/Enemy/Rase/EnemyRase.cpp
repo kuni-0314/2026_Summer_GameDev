@@ -15,7 +15,9 @@
 EnemyRase::EnemyRase(const EnemyBase::EnemyData& data, Player* player)
 	:EnemyBase(data, player),
 	state_(STATE::NONE),
-	step_(0.0f)
+	step_(0.0f),
+	hoverTime_(0.0f),
+	baseHeight_(0.0f)
 {
 }
 
@@ -73,22 +75,35 @@ void EnemyRase::InitAnimation()
 	//待機
 	type = static_cast<int>(ANIM_TYPE::IDLE);
 	animationController_->AddInFbx(type, 20.0f, ANIM_INDX_FRY);
+
+	animationController_->Play(static_cast<int>(ANIM_TYPE::IDLE), true);
 }
 
 void EnemyRase::InitPost()
 {
 	// 初期状態設定
 	ChangeState(STATE::IDLE);
+
+	stateChanges_.emplace(static_cast<int>(STATE::IDLE),
+		std::bind(&EnemyRase::ChangeStateIdle, this));
+	stateChanges_.emplace(static_cast<int>(STATE::THINK),
+		std::bind(&EnemyRase::ChangeStateThink, this));
+
+	//基準の高さ保存
+	baseHeight_ = transform_.pos.y;
 }
 
 void EnemyRase::UpdateProcess()
 {
-	//// プレイヤーをまだ発見していない
-	//int rand = GetRand(100);
-	//if (rand < 70)
-	//{
-	//	transform_.pos.y += rand;
-	//}
+	hoverTime_ += scnMng_.GetDeltaTime();
+
+	//上下の揺れ
+	transform_.pos.y =
+		baseHeight_ +
+		sinf(hoverTime_ * HOVER_SPEED) * HOVER_HEIGHT;
+
+	transform_.pos.x += sinf(hoverTime_ * 0.7f) * 0.2f;
+	
 
 }
 

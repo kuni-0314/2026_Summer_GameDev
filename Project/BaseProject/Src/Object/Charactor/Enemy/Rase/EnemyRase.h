@@ -107,6 +107,11 @@ private:
 
 	static constexpr float ATTACK_MOVE_SPEED = 3.0f;
 
+	//揺れ幅
+	const float HOVER_HEIGHT = 20.0f; 
+	//揺れる速さ
+	const float HOVER_SPEED = 2.0f;
+
 	//攻撃判定
 	bool isAttack_;
 	//生存判定
@@ -115,6 +120,19 @@ private:
 	bool look_ = false;
 	//連続攻撃判定
 	bool attackHit_ = false;;
+
+
+
+		// 更新ステップ
+	float step_;// 状態管理(更新ステップ)
+	//プレイヤーとの距離
+	float distance_;
+	//経過時間
+	float hoverTime_;  
+	//基準高さ
+	float baseHeight_;    
+
+
 
 	// 状態
 	STATE state_;
@@ -128,11 +146,6 @@ private:
 	float playerRad_;
 
 
-
-	// 更新ステップ
-	float step_;// 状態管理(更新ステップ)
-
-	float distance_;
 
 
 	// 状態遷移
