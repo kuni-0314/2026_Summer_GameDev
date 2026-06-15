@@ -10,7 +10,10 @@
 #include "../../../../Object/Item/HP/HpItem.h"
 #include "../../../../Object/Item/ItemManger.h"
 #include "../../Player/Player.h"
+#include "../Shot/ShotBase.h"
+#include "../Shot/ShotStraight.h"
 #include "EnemyRase.h"
+
 
 EnemyRase::EnemyRase(const EnemyBase::EnemyData& data, Player* player)
 	:EnemyBase(data, player),
@@ -29,6 +32,25 @@ void EnemyRase::Draw(void)
 {
 	// 基底クラスの描画処理
 	CharactorBase::Draw();
+
+	STATE next = state_;
+
+	const char* name = "";
+
+	if (next == STATE::THINK) name = "THINK";
+	else if (next == STATE::ATTACK) name = "ATTACK";
+	else if (next == STATE::IDLE) name = "IDLE";
+	else if (next == STATE::MOVE) name = "MOVE";
+
+	DrawFormatString(0, 400, GetColor(255, 255, 255), "STATE: %s", name);
+}
+
+void EnemyRase::Release(void)
+{
+	for (ShotBase* shot : shots_)
+	{
+		shot->Release();
+	}
 }
 
 void EnemyRase::InitLoad(void)
@@ -81,27 +103,46 @@ void EnemyRase::InitAnimation(void)
 
 void EnemyRase::InitPost(void)
 {
-	// 初期状態設定
-	ChangeState(STATE::IDLE);
+
+	//基準の高さ保存
+	baseHeight_ = transform_.pos.y;
+
 
 	stateChanges_.emplace(static_cast<int>(STATE::IDLE),
 		std::bind(&EnemyRase::ChangeStateIdle, this));
 	stateChanges_.emplace(static_cast<int>(STATE::THINK),
 		std::bind(&EnemyRase::ChangeStateThink, this));
+	stateChanges_.emplace(static_cast<int>(STATE::MOVE),
+		std::bind(&EnemyRase::ChangeStateMove, this));
+	stateChanges_.emplace(static_cast<int>(STATE::ATTACK),
+		std::bind(&EnemyRase::ChangeStateAttack, this));
+	stateChanges_.emplace(static_cast<int>(STATE::WAIT),
+		std::bind(&EnemyRase::ChangeStateWait, this));
 
-	//基準の高さ保存
-	baseHeight_ = transform_.pos.y;
+
+	// 初期状態設定
+	ChangeState(STATE::THINK);
+	
 }
 
 void EnemyRase::UpdateProcess(void)
 {
-	hoverTime_ += scnMng_.GetDeltaTime();
+	playerPos_ = player_->GetPos();
+	playerRad_ = player_->GetCollRadius();
+
+	// プレイヤー方向
+	toPlayer_ = VSub(playerPos_, transform_.pos);
+
+	//プレイヤーとの距離測定
+	distance_ = VSize(toPlayer_);
+
+	LookPlayer();
 
 	//上下の揺れ
+	hoverTime_ += scnMng_.GetDeltaTime();
 	transform_.pos.y =
-		baseHeight_ +
-		sinf(hoverTime_ * HOVER_SPEED) * HOVER_HEIGHT;
-
+		baseHeight_ +sinf(hoverTime_ * HOVER_SPEED) * HOVER_HEIGHT;
+	//ちょっとした横揺れ
 	transform_.pos.x += sinf(hoverTime_ * 0.7f) * 0.2f;
 	
 
@@ -109,6 +150,7 @@ void EnemyRase::UpdateProcess(void)
 
 void EnemyRase::UpdateProcessPost(void)
 {
+	stateUpdate_();
 }
 
 void EnemyRase::ChangeState(STATE state)
@@ -133,6 +175,43 @@ void EnemyRase::ChangeStateIdle(void)
 
 void EnemyRase::ChangeStateAttack(void)
 {
+	stateUpdate_ = std::bind(&EnemyRase::UpdateAttack, this);
+
+	// 有効な弾を取得する
+	ShotBase* shot = GetValidShot();
+	shot->CreateShot(shot->GetPos(), toPlayer_);
+
+	// ランダムな待機時間
+	step_ = 3.0f + static_cast<float>(GetRand(3));
+	// 移動量ゼロ
+	movePow_ = AsoUtility::VECTOR_ZERO;
+	// 待機アニメーション再生
+	animationController_->Play(static_cast<int>(ANIM_TYPE::IDLE), true);
+}
+
+void EnemyRase::ChangeStateMove(void)
+{
+	stateUpdate_ = std::bind(&EnemyRase::UpdateMove, this);
+
+	// ランダムな待機時間
+	step_ = 3.0f + static_cast<float>(GetRand(3));
+	// 移動スピード
+	moveSpeed_ = 3.0f;
+	// 待機アニメーション再生
+	animationController_->Play(static_cast<int>(ANIM_TYPE::IDLE), true);
+}
+
+void EnemyRase::ChangeStateWait(void)
+{
+	stateUpdate_ = std::bind(&EnemyRase::UpdateWait, this);
+
+	// ランダムな待機時間
+	step_ = 3.0f + static_cast<float>(GetRand(3));
+	// 移動量ゼロ
+	movePow_ = AsoUtility::VECTOR_ZERO;
+	// 待機アニメーション再生
+	animationController_->Play(static_cast<int>(ANIM_TYPE::IDLE), true);
+
 }
 
 void EnemyRase::ChangeStateHit(void)
@@ -152,8 +231,7 @@ void EnemyRase::ChangeStateThink(void)
 	// 移動量ゼロ
 	movePow_ = AsoUtility::VECTOR_ZERO;
 	// 待機アニメーション再生
-	animationController_->Play(
-		static_cast<int>(ANIM_TYPE::IDLE), true);
+	animationController_->Play(static_cast<int>(ANIM_TYPE::IDLE), true);
 
 }
 
@@ -171,6 +249,41 @@ void EnemyRase::UpdateIdle(void)
 
 void EnemyRase::UpdateAttack(void)
 {
+	
+	
+
+	// 移動量ゼロ
+	movePow_ = AsoUtility::VECTOR_ZERO;
+}
+
+void EnemyRase::UpdateMove(void)
+{
+	//攻撃範囲に入るまで移動
+	if (distance_ < SWICH_DISTANCE)
+	{
+		ChangeState(STATE::ATTACK);
+	}
+
+	// 移動する ← 追加
+	movePow_ = VScale(moveDir_, moveSpeed_);
+}
+
+void EnemyRase::UpdateWait(void)
+{
+}
+
+void EnemyRase::UpdateThink(void)
+{
+	
+	//攻撃するか否や
+	if (distance_ < SWICH_DISTANCE)
+	{
+		ChangeState(STATE::ATTACK);
+	}
+	else
+	{
+		ChangeState(STATE::MOVE);
+	}
 }
 
 void EnemyRase::UpdateHit(void)
@@ -185,7 +298,37 @@ void EnemyRase::UpdateEnd(void)
 {
 }
 
-void EnemyRase::UpdateThink(void)
+ShotBase* EnemyRase::GetValidShot(void)
 {
-	ChangeState(STATE::IDLE);
+	size_t size = shots_.size();
+	for (int i = 0; i < size; i++)
+	{
+		// 未使用(生存していない)
+		if (!shots_[i]->IsAlive())
+		{
+			return shots_[i];
+		}
+	}
+	// 新しい弾のインスタンスを生成する
+	ShotBase* shot = new ShotStraight(ShotBase::TYPE::STRAIGHT, AttackModelId_);
+	// 可変長配列に追加
+	shots_.push_back(shot);
+	return shot;
 }
+
+void EnemyRase::UpdateShot(void)
+{
+	for (ShotBase* shot : shots_)
+	{
+		shot->Update();
+	}
+}
+
+void EnemyRase::DrawShot(void)
+{
+	for (ShotBase* shot : shots_)
+	{
+		shot->Draw();
+	}
+}
+

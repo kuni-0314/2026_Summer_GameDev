@@ -3,9 +3,10 @@
 #include <DxLib.h>
 #include <functional>
 #include "../EnemyBase.h"
+
 class Player;
 class ItemManger;
-
+class ShotBase;
 
 class EnemyRase : public EnemyBase
 {
@@ -26,12 +27,11 @@ public:
 		NONE,
 		THINK,
 		IDLE,
-		RUN,
-		WANDER,
+		MOVE,
 		ATTACK,
+		WAIT,
 		HIT,
 		DIE,
-		WARNIG,
 		END
 	};
 
@@ -41,6 +41,8 @@ public:
 	~EnemyRase(void) override;
 
 	void Draw(void) override;
+
+	void Release(void) override;
 protected:
 	// リソースロード
 	void InitLoad(void) override;
@@ -59,9 +61,10 @@ protected:
 
 private:
 
-
-
 	ItemManger* itemManager_;
+
+	// 弾
+	std::vector<ShotBase*> shots_;
 
 	//アニメーション登録番号
 	//待機
@@ -71,8 +74,6 @@ private:
 	//END
 	static constexpr int  ANIM_INDX_DEAD = 0;
 
-
-
 	// モデルの大きさ
 	static constexpr float SCALE = 0.3f;
 	// モデルのローカル回転
@@ -80,19 +81,14 @@ private:
 
 	// 衝突判定用線分開始
 	static constexpr VECTOR COL_LINE_START_LOCAL_POS = { 0.0f, 80.0f, 0.0f };
-
 	// 衝突判定用線分終了
 	static constexpr VECTOR COL_LINE_END_LOCAL_POS = { 0.0f, -10.0f, 0.0f };
-
 	// 衝突判定用カプセル上部球体
 	static constexpr VECTOR COL_CAPSULE_TOP_LOCAL_POS = { 0.0f, 110.0f, 0.0f };
-
 	// 衝突判定用カプセル下部球体
 	static constexpr VECTOR COL_CAPSULE_DOWN_LOCAL_POS = { 0.0f, 30.0f, 0.0f };
-
 	// 衝突判定用カプセル球体半径
 	static constexpr float COL_CAPSULE_RADIUS = 20.0f;
-
 	// 衝突判定用カプセル球体半径
 	static constexpr float COL_SPHERE_RADIUS = 50.0f;
 
@@ -102,8 +98,8 @@ private:
 	// 行動切り替え用カプセル球体半径
 	static constexpr float COL_SWICH_RADIUS = 250.0f;
 
-	// RUN切り替え距離
-	static constexpr float RUN_SWICH_DISTANCE = 400.0f;
+	// 攻撃切り替え距離
+	static constexpr float SWICH_DISTANCE = 250.0f;
 
 	static constexpr float ATTACK_MOVE_SPEED = 3.0f;
 
@@ -121,9 +117,9 @@ private:
 	//連続攻撃判定
 	bool attackHit_ = false;;
 
+	int AttackModelId_;
 
-
-		// 更新ステップ
+	// 更新ステップ
 	float step_;// 状態管理(更新ステップ)
 	//プレイヤーとの距離
 	float distance_;
@@ -131,9 +127,8 @@ private:
 	float hoverTime_;  
 	//基準高さ
 	float baseHeight_;    
-
-
-
+	//プレイヤー判定球の半径
+	float playerRad_;
 	// 状態
 	STATE state_;
 
@@ -142,10 +137,6 @@ private:
 	VECTOR toPlayer_;
 	//プレイヤー座標
 	VECTOR playerPos_;
-	//プレイヤー判定球の半径
-	float playerRad_;
-
-
 
 
 	// 状態遷移
@@ -153,20 +144,28 @@ private:
 	void ChangeStateThink(void);
 	void ChangeStateIdle(void);
 	void ChangeStateAttack(void);
+	void ChangeStateMove(void);
+	void ChangeStateWait(void);
 	void ChangeStateHit(void);
 	void ChangeStateEnd(void);
-
 
 	// 更新系
 	void UpdateThink(void);
 	void UpdateIdle(void);
 	void UpdateAttack(void);
+	void UpdateMove(void);
+	void UpdateWait(void);
 	void UpdateHit(void);
 	void UpdateDie(void);
 	void UpdateEnd(void);
 
+	//有効な弾を取得
+	ShotBase* GetValidShot(void);
 
-
+	//弾の更新
+	void UpdateShot(void);
+	//弾の描画
+	void DrawShot(void);
 
 };
 

@@ -107,8 +107,8 @@ void ResourceManager::Init(void)
 	resourcesMap_.emplace(SRC::ITEM_HP, res);	//map‚É“o˜^
 
 	//ƒAƒCƒeƒ€ƒXƒLƒ‹
-	res = new RES(RES_T::MODEL, PATH_MDL + "Item/SkillItem.mv1");
-	resourcesMap_.emplace(SRC::ITEM_SKILL, res);	//map‚É“o˜^
+	res = new RES(RES_T::MODEL, PATH_MDL + "Enemy/Rase/Fireball.mv1");
+	resourcesMap_.emplace(SRC::ENEMY_RASE_BALL, res);	//map‚É“o˜^
 }
 
 void ResourceManager::Release(void)

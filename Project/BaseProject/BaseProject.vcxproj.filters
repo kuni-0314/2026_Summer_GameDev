@@ -15,8 +15,6 @@
     <ClCompile Include="Src\Object\Item\HP\HpItem.cpp" />
     <ClCompile Include="Src\Object\Item\ItemManger.cpp" />
     <ClCompile Include="Src\Object\Item\ItemBase.cpp" />
-    <ClCompile Include="Src\Object\SkillBase.cpp" />
-    <ClCompile Include="Src\Object\Skill\SkillManger.cpp" />
     <ClCompile Include="Src\Object\Field.cpp" />
     <ClCompile Include="Src\Object\FieldManager.cpp" />
     <ClCompile Include="Src\Object\Cell\CellAttack.cpp" />
@@ -66,6 +64,12 @@
     <ClCompile Include="Src\Object\Weapon\Sword\Sword.cpp" />
     <ClCompile Include="Src\Shader\PixelMaterial.cpp" />
     <ClCompile Include="Src\Shader\PixelRenderer.cpp" />
+    <ClCompile Include="Src\Object\Charactor\Enemy\Rase\EnemyRase.cpp" />
+    <ClCompile Include="Src\Object\Item\ItemSkill\SkillItem.cpp" />
+    <ClCompile Include="Src\Object\Skill\SkillBase.cpp" />
+    <ClCompile Include="Src\Object\Skill\SkillManager.cpp" />
+    <ClCompile Include="Src\Object\Charactor\Enemy\Shot\ShotBase.cpp" />
+    <ClCompile Include="Src\Object\Charactor\Enemy\Shot\ShotStraight.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Src\Sound\SoundTable.h" />
@@ -82,8 +86,6 @@
     <ClInclude Include="Src\Object\Item\HP\HpItem.h" />
     <ClInclude Include="Src\Object\Item\ItemManger.h" />
     <ClInclude Include="Src\Object\Item\ItemBase.h" />
-    <ClInclude Include="Src\Object\SkillBase.h" />
-    <ClInclude Include="Src\Object\Skill\SkillManger.h" />
     <ClInclude Include="Src\Object\Field.h" />
     <ClInclude Include="Src\Object\FieldManager.h" />
     <ClInclude Include="Src\Object\Cell\CellAttack.h" />
@@ -133,6 +135,12 @@
     <ClInclude Include="Src\Object\Weapon\Sword\Sword.h" />
     <ClInclude Include="Src\Shader\PixelRenderer.h" />
     <ClInclude Include="Src\Shader\PixelMaterial.h" />
+    <ClInclude Include="Src\Object\Charactor\Enemy\Rase\EnemyRase.h" />
+    <ClInclude Include="Src\Object\Item\ItemSkill\SkillItem.h" />
+    <ClInclude Include="Src\Object\Skill\SkillBase.h" />
+    <ClInclude Include="Src\Object\Skill\SkillManager.h" />
+    <ClInclude Include="Src\Object\Charactor\Enemy\Shot\ShotBase.h" />
+    <ClInclude Include="Src\Object\Charactor\Enemy\Shot\ShotStraight.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Src\Shader\PostEffect\ChromaticAberration.hlsl" />

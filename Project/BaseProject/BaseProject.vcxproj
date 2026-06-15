@@ -19,6 +19,8 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Src\Object\Charactor\Enemy\Shot\ShotStraight.cpp" />
+    <ClCompile Include="Src\Object\Charactor\Enemy\Shot\ShotBase.cpp" />
     <ClCompile Include="Src\Object\Charactor\Enemy\Rase\EnemyRase.cpp" />
     <ClCompile Include="Src\Object\Item\ItemSkill\SkillItem.cpp" />
     <ClCompile Include="Src\Object\Skill\SkillBase.cpp" />
@@ -88,6 +90,8 @@
     <ClCompile Include="Src\Object\Weapon\WeaponBase.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Src\Object\Charactor\Enemy\Shot\ShotStraight.h" />
+    <ClInclude Include="Src\Object\Charactor\Enemy\Shot\ShotBase.h" />
     <ClInclude Include="Src\Object\Charactor\Enemy\Rase\EnemyRase.h" />
     <ClInclude Include="Src\Object\Item\ItemSkill\SkillItem.h" />
     <ClInclude Include="Src\Object\Skill\SkillBase.h" />

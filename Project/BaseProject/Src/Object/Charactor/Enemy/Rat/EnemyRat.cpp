@@ -284,13 +284,8 @@ void EnemyRat::ChangeStateAttack(void)
 {
 	stateUpdate_ = std::bind(&EnemyRat::UpdateAttack, this);
 
-
-	// プレイヤー方向へ固定
-	if (VSize(toPlayer_) > 0.01f)
-	{
-		moveDir_ = VNorm(toPlayer_);
-	}
-	
+	// 移動スピード
+	moveSpeed_ = 3.0f;
 
 	// 攻撃アニメーション再生
 	animationController_->Play(
@@ -387,10 +382,6 @@ void EnemyRat::UpdateWander(void)
 			ChangeState(STATE::THINK);
 		}
 	}
-
-
-	
-	
 
 	// 移動する ← 追加
 	movePow_ = VScale(moveDir_, moveSpeed_);

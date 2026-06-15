@@ -31,10 +31,11 @@ public:
 	EnemyBase(const EnemyBase::EnemyData& data,Player* player);
 	// デストラクタ
 	virtual ~EnemyBase(void) override;
-	
 
 	//描画
 	virtual void Draw(void) override;
+
+	void Release(void) override;
 
 
 protected:

@@ -30,6 +30,12 @@ void EnemyBase::Draw(void)
 #endif // _DEBUG
 }
 
+void EnemyBase::Release(void)
+{
+	CharactorBase::Release();
+}
+
+
 bool EnemyBase::InMovableRange(void) const
 {
 	bool ret = false;
