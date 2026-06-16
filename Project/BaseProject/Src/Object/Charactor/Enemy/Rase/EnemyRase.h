@@ -2,11 +2,12 @@
 #pragma once
 #include <DxLib.h>
 #include <functional>
+#include <memory>
 #include "../EnemyBase.h"
 
 class Player;
 class ItemManger;
-class ShotBase;
+
 
 class EnemyRase : public EnemyBase
 {
@@ -35,8 +36,20 @@ public:
 		END
 	};
 
+	//弾のパラメーター(
+	struct SHOT
+	{
+		bool isAlive_ = false;
+		float speed = 8.0f;
+		int life = 180;
+		float homingPower = 0.05f;
+		VECTOR dir_;
+		Transform shotTransform_;
+	
+	};
+
 	// コンストラクタ
-	EnemyRase(const EnemyBase::EnemyData& data, Player* player);
+	EnemyRase(const EnemyBase::EnemyData& data, int attackModel,Player* player);
 	// デストラクタ
 	~EnemyRase(void) override;
 
@@ -63,8 +76,9 @@ private:
 
 	ItemManger* itemManager_;
 
-	// 弾
-	std::vector<ShotBase*> shots_;
+
+	std::vector<SHOT> shots_;
+
 
 	//アニメーション登録番号
 	//待機
@@ -76,6 +90,9 @@ private:
 
 	// モデルの大きさ
 	static constexpr float SCALE = 0.3f;
+
+	// モデルの大きさ
+	static constexpr float SHOT_SCALE = 0.1f;
 	// モデルのローカル回転
 	static constexpr VECTOR ROT = { 0.0f, 180.0f * DX_PI_F / 180.0f, 0.0f };
 
@@ -99,7 +116,7 @@ private:
 	static constexpr float COL_SWICH_RADIUS = 250.0f;
 
 	// 攻撃切り替え距離
-	static constexpr float SWICH_DISTANCE = 250.0f;
+	static constexpr float SWICH_DISTANCE = 300.0f;
 
 	static constexpr float ATTACK_MOVE_SPEED = 3.0f;
 
@@ -107,6 +124,8 @@ private:
 	const float HOVER_HEIGHT = 20.0f; 
 	//揺れる速さ
 	const float HOVER_SPEED = 2.0f;
+
+	int shotmodel_;
 
 	//攻撃判定
 	bool isAttack_;
@@ -117,7 +136,8 @@ private:
 	//連続攻撃判定
 	bool attackHit_ = false;;
 
-	int AttackModelId_;
+	bool shotFired_;
+
 
 	// 更新ステップ
 	float step_;// 状態管理(更新ステップ)
@@ -159,12 +179,11 @@ private:
 	void UpdateDie(void);
 	void UpdateEnd(void);
 
-	//有効な弾を取得
-	ShotBase* GetValidShot(void);
+	//弾発射時
+	void AttackShot(void);
 
-	//弾の更新
+	//弾用更新・描画
 	void UpdateShot(void);
-	//弾の描画
 	void DrawShot(void);
 
 };

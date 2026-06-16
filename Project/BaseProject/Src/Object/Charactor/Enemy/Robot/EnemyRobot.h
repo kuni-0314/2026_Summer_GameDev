@@ -35,7 +35,7 @@ public:
 		WALK = 15,
 	};
 	// コンストラクタ
-	EnemyRobot(const EnemyBase::EnemyData& data,Player*player);
+	EnemyRobot(const EnemyBase::EnemyData& data, int attackModel,Player*player);
 	// デストラクタ
 	~EnemyRobot(void) override;
 protected:

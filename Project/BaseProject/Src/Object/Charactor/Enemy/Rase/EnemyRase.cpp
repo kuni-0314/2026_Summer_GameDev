@@ -15,8 +15,8 @@
 #include "EnemyRase.h"
 
 
-EnemyRase::EnemyRase(const EnemyBase::EnemyData& data, Player* player)
-	:EnemyBase(data, player),
+EnemyRase::EnemyRase(const EnemyBase::EnemyData& data, int attackModel, Player* player)
+	:EnemyBase(data, attackModel, player),
 	state_(STATE::NONE),
 	step_(0.0f),
 	hoverTime_(0.0f),
@@ -33,6 +33,9 @@ void EnemyRase::Draw(void)
 	// 基底クラスの描画処理
 	CharactorBase::Draw();
 
+	//弾の描画
+	DrawShot();
+
 	STATE next = state_;
 
 	const char* name = "";
@@ -47,10 +50,7 @@ void EnemyRase::Draw(void)
 
 void EnemyRase::Release(void)
 {
-	for (ShotBase* shot : shots_)
-	{
-		shot->Release();
-	}
+	
 }
 
 void EnemyRase::InitLoad(void)
@@ -58,6 +58,9 @@ void EnemyRase::InitLoad(void)
 	//基底クラスのリソースロード
 	CharactorBase::InitLoad();
 	transform_.SetModel(resMng_.LoadModelDuplicate(ResourceManager::SRC::ENEMY_RASE));
+	//弾のロード
+	shotmodel_ = resMng_.LoadModelDuplicate(ResourceManager::SRC::ENEMY_RASE_BALL);
+
 }
 
 void EnemyRase::InitTransform(void)
@@ -69,6 +72,7 @@ void EnemyRase::InitTransform(void)
 	//transform_.pos = { 0.0f, 100.0f, 1500.0f };
 
 	transform_.Update();
+
 }
 
 void EnemyRase::InitCollider(void)
@@ -107,7 +111,7 @@ void EnemyRase::InitPost(void)
 	//基準の高さ保存
 	baseHeight_ = transform_.pos.y;
 
-
+	
 	stateChanges_.emplace(static_cast<int>(STATE::IDLE),
 		std::bind(&EnemyRase::ChangeStateIdle, this));
 	stateChanges_.emplace(static_cast<int>(STATE::THINK),
@@ -141,16 +145,22 @@ void EnemyRase::UpdateProcess(void)
 	//上下の揺れ
 	hoverTime_ += scnMng_.GetDeltaTime();
 	transform_.pos.y =
-		baseHeight_ +sinf(hoverTime_ * HOVER_SPEED) * HOVER_HEIGHT;
+		baseHeight_ + sinf(hoverTime_ * HOVER_SPEED) * HOVER_HEIGHT;
 	//ちょっとした横揺れ
 	transform_.pos.x += sinf(hoverTime_ * 0.7f) * 0.2f;
-	
 
+	for (auto& shot : shots_)
+	{
+		shot.shotTransform_.Update();
+	}
 }
 
 void EnemyRase::UpdateProcessPost(void)
 {
 	stateUpdate_();
+	//弾の更新
+	UpdateShot();
+
 }
 
 void EnemyRase::ChangeState(STATE state)
@@ -175,11 +185,11 @@ void EnemyRase::ChangeStateIdle(void)
 
 void EnemyRase::ChangeStateAttack(void)
 {
+	
+
 	stateUpdate_ = std::bind(&EnemyRase::UpdateAttack, this);
 
-	// 有効な弾を取得する
-	ShotBase* shot = GetValidShot();
-	shot->CreateShot(shot->GetPos(), toPlayer_);
+	shotFired_ = false;
 
 	// ランダムな待機時間
 	step_ = 3.0f + static_cast<float>(GetRand(3));
@@ -249,9 +259,11 @@ void EnemyRase::UpdateIdle(void)
 
 void EnemyRase::UpdateAttack(void)
 {
-	
-	
-
+	if (!shotFired_)
+	{
+		AttackShot();
+		shotFired_ = true;
+	}
 	// 移動量ゼロ
 	movePow_ = AsoUtility::VECTOR_ZERO;
 }
@@ -298,37 +310,78 @@ void EnemyRase::UpdateEnd(void)
 {
 }
 
-ShotBase* EnemyRase::GetValidShot(void)
+void EnemyRase::AttackShot(void)
 {
-	size_t size = shots_.size();
-	for (int i = 0; i < size; i++)
-	{
-		// 未使用(生存していない)
-		if (!shots_[i]->IsAlive())
-		{
-			return shots_[i];
-		}
-	}
-	// 新しい弾のインスタンスを生成する
-	ShotBase* shot = new ShotStraight(ShotBase::TYPE::STRAIGHT, AttackModelId_);
-	// 可変長配列に追加
+	SHOT shot;
+
+	//弾生存フラグ
+	shot.isAlive_ = true;
+
+
+	//弾の大きさ、座標等の初期化
+	shot.shotTransform_.scl = { SHOT_SCALE ,SHOT_SCALE ,SHOT_SCALE };
+	shot.shotTransform_.quaRot = Quaternion::Identity();
+	shot.shotTransform_.quaRotLocal = Quaternion::Euler(ROT);
+
+	shot.shotTransform_.Update();
+
+	shot.shotTransform_.modelId = shotmodel_;
+
+	//モデルのセット
+	shot.shotTransform_.SetModel(MV1DuplicateModel(shot.shotTransform_.modelId));
+
+	//らせの座標位置を取得
+	shot.shotTransform_.pos = transform_.pos;
+
+	//弾向き
+	shot.dir_ = VNorm(toPlayer_);
+
 	shots_.push_back(shot);
-	return shot;
 }
 
 void EnemyRase::UpdateShot(void)
 {
-	for (ShotBase* shot : shots_)
+	for (auto& shot : shots_)
 	{
-		shot->Update();
+		if (!shot.isAlive_) continue;
+
+		VECTOR targetDir =
+			VNorm(VSub(player_->GetPos(),
+					shot.shotTransform_.pos));
+
+		shot.dir_ =
+			VNorm(VAdd(VScale(shot.dir_,1.0f - shot.homingPower),
+				VScale(targetDir,shot.homingPower)));
+
+		shot.shotTransform_.pos =
+			VAdd(shot.shotTransform_.pos,
+				VScale(shot.dir_, shot.speed));
+
+		shot.life--;
+
+		if (shot.life <= 0)
+		{
+			shot.isAlive_ = false;
+			ChangeState(STATE::THINK);
+		}
 	}
 }
 
 void EnemyRase::DrawShot(void)
 {
-	for (ShotBase* shot : shots_)
+	for (auto& shot : shots_)
 	{
-		shot->Draw();
+		if (!shot.isAlive_)continue;
+
+		shot.shotTransform_.Update();
+
+		//描画
+		MV1SetPosition(shotmodel_, shot.shotTransform_.pos);
+		MV1DrawModel(shot.shotTransform_.modelId);
 	}
 }
+
+
+
+
 

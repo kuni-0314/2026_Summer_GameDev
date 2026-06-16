@@ -1,22 +1,28 @@
 #include "../../../Utility/AsoUtility.h"
 #include "../../../Manager/InputManager.h"
 #include "../../Charactor/Player/Player.h"
+#include "../Enemy/Shot/ShotBase.h"
+#include "../Enemy/Shot/ShotStraight.h"
 #include "EnemyBase.h"
 
-EnemyBase::EnemyBase(const EnemyBase::EnemyData& data, Player* player)
+
+EnemyBase::EnemyBase(const EnemyBase::EnemyData& data, int attackModel, Player* player)
 	:
-	CharactorBase(),
-	player_(player),
-	type_(data.type),
-	defaultPos_(data.defaultPos),
-	movableRange_(data.movableRange),
-	power_(data.power)
+CharactorBase(),
+player_(player),
+type_(data.type),
+defaultPos_(data.defaultPos),
+movableRange_(data.movableRange),
+power_(data.power),
+attackModle_(attackModel)
 {
+
 	// 初期座標の設定
 	transform_.pos = data.defaultPos;
 
 	hp_ = data.hp;
 }
+
 EnemyBase::~EnemyBase(void)
 {
 }
@@ -24,6 +30,7 @@ EnemyBase::~EnemyBase(void)
 void EnemyBase::Draw(void)
 {
 	CharactorBase::Draw();
+
 #ifdef _DEBUG
 	// 移動可能範囲のデバッグ描画
 	//DrawSphere3D(defaultPos_, 500.0f, 16, 0x000099, 0x000099, false);
@@ -93,7 +100,4 @@ void EnemyBase::ChangeState(int state)
 	}
 
 }
-
-
-
 

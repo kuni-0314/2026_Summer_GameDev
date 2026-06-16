@@ -8,9 +8,9 @@
 #include "../../../Charactor/Player/Player.h"
 #include "EnemyRobot.h"
 
-EnemyRobot::EnemyRobot(const EnemyBase::EnemyData& data,Player*player)
+EnemyRobot::EnemyRobot(const EnemyBase::EnemyData& data, int attackModel,Player*player)
 	:
-	EnemyBase(data,player),
+	EnemyBase(data, attackModel,player),
 	state_(STATE::NONE),
 	step_(0.0f),
 	wayPoints_(),

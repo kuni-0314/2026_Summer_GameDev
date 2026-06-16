@@ -36,7 +36,7 @@ public:
 	};
 
 	// コンストラクタ
-	EnemyRat(const EnemyBase::EnemyData& data, Player* player);
+	EnemyRat(const EnemyBase::EnemyData& data, int attackModel, Player* player);
 	// デストラクタ
 	~EnemyRat(void) override;
 

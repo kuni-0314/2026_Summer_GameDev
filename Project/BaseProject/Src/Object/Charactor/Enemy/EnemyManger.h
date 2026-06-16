@@ -66,7 +66,13 @@ private:
 	// 攻撃コライダのリスト
 	std::vector<const ColliderBase*> attackColliders_;
 
+	// 攻撃エフェクト用のモデルハンドルID
+	int attackModel_;
+
 	bool isDead_ = false;
+
+	// 視野範囲用トランスフォーム
+	Transform attackTransform_;
 
 };
 

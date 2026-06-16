@@ -3,7 +3,8 @@
 #include <DxLib.h>
 
 ShotBase::ShotBase(TYPE type, int baseModelId)
-    :ActorBase()
+    :ActorBase(),
+    isAlive_(false)
 {
     modelId_ = MV1DuplicateModel(baseModelId);
     type_ = type;
@@ -15,6 +16,7 @@ ShotBase::~ShotBase(void)
 
 void ShotBase::CreateShot(VECTOR pos, VECTOR dir)
 {
+
     // ’e‚Ì”­ËˆÊ’u‚ğİ’è
     pos_ = pos;
     // ’e‚Ì”­Ë•ûŒü‚Ìİ’è

@@ -3,12 +3,12 @@
 #include "../CharactorBase.h"
 #include <DxLib.h>
 class Player;
+class ShotBase;
+class ShotStraight;
 
 class EnemyBase : public CharactorBase
 {
 public:
-
-
 
 	// 種別
 	enum class TYPE
@@ -28,7 +28,7 @@ public:
 	};
 
 	// コンストラクタ
-	EnemyBase(const EnemyBase::EnemyData& data,Player* player);
+	EnemyBase(const EnemyBase::EnemyData& data,int attackModel,Player* player);
 	// デストラクタ
 	virtual ~EnemyBase(void) override;
 
@@ -43,10 +43,13 @@ protected:
 	Player* player_;
 	// 種別
 	TYPE type_;
+
 	// 初期位置
 	const VECTOR defaultPos_;
 	float movableRange_;
 	int power_;
+	//攻撃用モデル(魔法の弾とか）
+	int attackModle_;
 
 	// 状態管理
 	int stateBase_;
@@ -54,6 +57,7 @@ protected:
 	std::map<int, std::function<void(void)>> stateChanges_;
 	// 状態管理(更新ステップ)
 	std::function<void(void)> stateUpdate_;
+
 
 	// リソースロード
 	void InitLoad(void) override {}
@@ -66,10 +70,8 @@ protected:
 	// 初期化後の個別処理
 	void InitPost(void) override {}
 
-
 	// 状態遷移
 	void ChangeState(int state);
-
 
 	// 更新系
 	virtual void UpdateProcessPost(void) override {}
@@ -78,6 +80,7 @@ protected:
 
 	//視線ベクトル
 	void LookPlayer(void);
+
 
 };
 

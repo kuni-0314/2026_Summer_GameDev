@@ -13,8 +13,8 @@
 #include "../../Player/Player.h"
 
 
-EnemyRat::EnemyRat(const EnemyBase::EnemyData& data, Player* player)
-	:EnemyBase(data, player),
+EnemyRat::EnemyRat(const EnemyBase::EnemyData& data, int attackModel, Player* player)
+	:EnemyBase(data, attackModel, player),
 	state_(STATE::NONE),
 	step_(0.0f)
 {
