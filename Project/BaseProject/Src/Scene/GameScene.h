@@ -25,6 +25,13 @@ public:
 		int lifeTime;
 	};
 
+	// 
+	enum CAM_MODE
+	{
+		MANUAL,
+		TARGETING,
+	};;
+
 	// コンストラクタ
 	GameScene();
 
@@ -83,6 +90,9 @@ private:
 
 	// ターゲット位置
 	VECTOR targetPos_;
+
+	// カメラモード
+	CAM_MODE camMode_;
 
 	// エフェクトをトグル(追加/削除)
 	void ToggleEffect(PostEffectManager::EFFECT_TYPE effectType);

@@ -60,8 +60,8 @@ void Camera::SetBeforeDraw()
 	case Camera::MODE::FOLLOW:
 		SetBeforeDrawFollow();
 		break;
-	case Camera::MODE::CONTROL:
-		SetBeforeDrawControl();
+	case Camera::MODE::MANUAL:
+		SetBeforeDrawManual();
 		break;
 	case Camera::MODE::TARGETING:
 		SetBeforeDrawTargeting();
@@ -186,7 +186,7 @@ void Camera::ChangeMode(MODE mode)
 		break;
 	case Camera::MODE::FOLLOW:
 		break;
-	case Camera::MODE::CONTROL:
+	case Camera::MODE::MANUAL:
 		// マウスカーソルを画面中央に固定
 		SetMouseDispFlag(false);
 		break;
@@ -351,7 +351,7 @@ void Camera::SetBeforeDrawFollow()
 	
 }
 
-void Camera::SetBeforeDrawControl()
+void Camera::SetBeforeDrawManual()
 {
 
 	// マウスによるカメラ回転

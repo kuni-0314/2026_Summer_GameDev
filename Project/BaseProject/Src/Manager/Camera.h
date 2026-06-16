@@ -65,7 +65,7 @@ public:
 		FIXED_POINT,
 		FREE,
 		FOLLOW,
-		CONTROL,
+		MANUAL,
 		TARGETING
 	};
 
@@ -185,7 +185,7 @@ private:
 	void SetBeforeDrawFixedPoint();
 	void SetBeforeDrawFree();
 	void SetBeforeDrawFollow();
-	void SetBeforeDrawControl();
+	void SetBeforeDrawManual();
 	void SetBeforeDrawTargeting();
 
 	// è’ìÀîªíË

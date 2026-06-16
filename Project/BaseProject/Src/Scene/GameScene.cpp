@@ -66,7 +66,6 @@ void GameScene::Init()
 	itemManger_->AddHitCollider(stageCollider);
 
 	// カメラ設定
-	sceMng_.GetCamera()->ChangeMode(Camera::MODE::CONTROL);
 	Camera* camera = sceMng_.GetCamera();
 	camera->SetFollow(&player_->GetTransform());
 	camera->AddHitCollider(stageCollider);
@@ -78,6 +77,9 @@ void GameScene::Init()
 
 	currentEffect_ = PostEffectManager::EFFECT_TYPE::NORMAL;
 	multiEffectMode_ = false;
+
+	camMode_ = CAM_MODE::MANUAL;
+	sceMng_.GetCamera()->ChangeMode(Camera::MODE::MANUAL);
 }
 
 void GameScene::Update()
@@ -96,6 +98,23 @@ void GameScene::Update()
 	player_->Update();
 	enemyManager_->Update();
 	itemManger_->Update();
+	
+	if (!enemyManager_->GetEnemyDead())
+	{
+		if (ins->IsGamepadTrgDown(InputManager::PadInput::RB, 0))
+		{
+			if (camMode_ == CAM_MODE::MANUAL)
+			{
+				camMode_ = CAM_MODE::TARGETING;
+				sceMng_.GetCamera()->ChangeMode(Camera::MODE::TARGETING);
+			}
+			else
+			{
+				camMode_ = CAM_MODE::MANUAL;
+				sceMng_.GetCamera()->ChangeMode(Camera::MODE::MANUAL);
+			}
+		}
+	}
 
 	// ターゲット切り替え
 	if (ins->IsTrgDown(KEY_INPUT_LEFT) && targetEnemyId_ > 0) targetEnemyId_--;
