@@ -114,11 +114,24 @@ void GameScene::Update()
 				sceMng_.GetCamera()->ChangeMode(Camera::MODE::MANUAL);
 			}
 		}
+
+		if (camMode_ == CAM_MODE::TARGETING && ins->IsGamepadTriggerTrgDown(true, 0))
+		{
+			//最大まで言ったら0に
+			if (targetEnemyId_ > enemyManager_->GetEnemies().size() - 1)
+			{
+				targetEnemyId_ = 0;
+			}
+			else
+			{
+				targetEnemyId_++;
+			}
+		}
 	}
 
 	// ターゲット切り替え
-	if (ins->IsTrgDown(KEY_INPUT_LEFT) && targetEnemyId_ > 0) targetEnemyId_--;
-	if (ins->IsTrgDown(KEY_INPUT_RIGHT)) targetEnemyId_++;
+	//if (ins->IsTrgDown(KEY_INPUT_LEFT) && targetEnemyId_ > 0) targetEnemyId_--;
+	//if (ins->IsTrgDown(KEY_INPUT_RIGHT)) targetEnemyId_++;
 
 	targetPos_ = enemyManager_->GetEnemyPos(targetEnemyId_);
 	SceneManager::GetInstance().GetCamera()->SetTargetPos(targetPos_);
@@ -294,6 +307,13 @@ void GameScene::Draw()
 	int y = 10;
 	DrawFormatString(10, y, 0xFFFF00, "Mode: %s (NumPad5 to toggle)", 
 		multiEffectMode_ ? "Multi" : "Single");
+	y += 20;
+
+	// トリガー値を表示
+	const auto& ins = InputManager::GetInstance();
+	int leftTrigger = ins->GetGamepadTriggerValue(true, 0);
+	int rightTrigger = ins->GetGamepadTriggerValue(false, 0);
+	DrawFormatString(10, y, 0xFFFF00, "Left Trigger: %d, Right Trigger: %d", leftTrigger, rightTrigger);
 	y += 20;
 
 	if (!multiEffectMode_)

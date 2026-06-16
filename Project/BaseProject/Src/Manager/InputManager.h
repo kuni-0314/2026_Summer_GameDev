@@ -25,6 +25,7 @@ class InputManager
 {
 public:
 	// パッドボタン
+	// トリガーは特殊なので除外
 	enum class PadInput
 	{
 		Up,
@@ -77,6 +78,10 @@ public:
 	bool IsGamepadNew(PadInput button, int gamepadIndex);		// ゲームパッドボタンが押されているか
 	bool IsGamepadTrgDown(PadInput button, int gamepadIndex);	// ゲームパッドボタンが今押されたか
 	bool IsGamepadTrgUp(PadInput button, int gamepadIndex);		// ゲームパッドボタンは離されたか
+	bool IsGamepadTriggerNew(bool isLeft, int gamepadIndex);	// トリガーが押されているか
+	bool IsGamepadTriggerTrgDown(bool isLeft, int gamepadIndex);	// トリガーが今押されたか
+	bool IsGamepadTriggerTrgUp(bool isLeft, int gamepadIndex);	// トリガーは離されたか
+	int GetGamepadTriggerValue(bool isLeft, int gamepadIndex);	// トリガーの値を取得
 	bool IsGamepadHold(int button, int gamepadIndex, int holdTime);	// ゲームパッドボタンが指定時間以上押されているか
 	bool IsGamepadHold(PadInput button, int gamepadIndex, int holdTime);	// ゲームパッドボタンが指定時間以上押されているか
 	int GetGamepadLastHoldTime(int button, int gamepadIndex);	// ゲームパッドボタンが最後に離されるまで押されていた時間を取得
@@ -96,6 +101,9 @@ public:
 	// スティック入力からXZ平面上の方向ベクトルを取得
 	static constexpr float DEFAULT_STICK_DEADZONE = 0.2f;	// デッドゾーンのデフォルト値
 	void GetStickDirXZ(VECTOR& vec, int gamepadIndex, bool isLeftStick, float deadzone = DEFAULT_STICK_DEADZONE);
+
+	// トリガー入力
+	static constexpr float TRIGGER_THRESHOLD = 30.0f;	// トリガーが押されたとみなす値の閾値
 
 	// 対象のボタンのうち指定したボタンだけが押された瞬間を判定
 	// MainButtonとOtherButtonsの型にはIntまたはPadInputを指定すること
@@ -168,13 +176,23 @@ private:
 			int holdTime;
 			int lastHoldTime;
 		};
+		struct TriggerInfo
+		{
+			unsigned char value;
+			bool buttonOld;
+			bool buttonNew;
+			bool buttonTrgDown;
+			bool buttonTrgUp;
+			int holdTime;
+			int lastHoldTime;
+		};
 		ButtonInfo inputs[static_cast<int>(PadInput::MAX)];
 		short AKeyLX;
 		short AKeyLY;
 		short AKeyRX;
 		short AKeyRY;
-		unsigned char LTrigger;
-		unsigned char RTrigger;
+		TriggerInfo LTrigger;
+		TriggerInfo RTrigger;
 		bool isStickAsDpad;
 	};
 

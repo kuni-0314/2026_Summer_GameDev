@@ -389,6 +389,54 @@ bool InputManager::IsGamepadTrgUp(PadInput button, int gamepadIndex)
 	return gamepadInfos_[gamepadIndex].inputs[static_cast<int>(button)].buttonTrgUp;
 }
 
+bool InputManager::IsGamepadTriggerNew(bool isLeft, int gamepadIndex)
+{
+	if (isLeft)
+	{
+		return gamepadInfos_[gamepadIndex].LTrigger.buttonNew;
+	}
+	else
+	{
+		return gamepadInfos_[gamepadIndex].RTrigger.buttonNew;
+	}
+}
+
+bool InputManager::IsGamepadTriggerTrgDown(bool isLeft, int gamepadIndex)
+{
+	if (isLeft)
+	{
+		return gamepadInfos_[gamepadIndex].LTrigger.buttonTrgDown;
+	}
+	else
+	{
+		return gamepadInfos_[gamepadIndex].RTrigger.buttonTrgDown;
+	}
+}
+
+bool InputManager::IsGamepadTriggerTrgUp(bool isLeft, int gamepadIndex)
+{
+	if (isLeft)
+	{
+		return gamepadInfos_[gamepadIndex].LTrigger.buttonTrgUp;
+	}
+	else
+	{
+		return gamepadInfos_[gamepadIndex].RTrigger.buttonTrgUp;
+	}
+}
+
+int InputManager::GetGamepadTriggerValue(bool isLeft, int gamepadIndex)
+{
+	if (isLeft)
+	{
+		return gamepadInfos_[gamepadIndex].LTrigger.value;
+	}
+	else
+	{
+		return gamepadInfos_[gamepadIndex].RTrigger.value;
+	}
+}
+
 // スティックの値を取得
 void InputManager::GetStick(int gamepadIndex, short& leftX, short& leftY, short& rightX, short& rightY)
 {
@@ -568,8 +616,50 @@ void InputManager::UpdateGamePad()
 		pad[i].AKeyLY = xState.ThumbLY;
 		pad[i].AKeyRX = xState.ThumbRX;
 		pad[i].AKeyRY = xState.ThumbRY;
-		pad[i].LTrigger = xState.LeftTrigger;
-		pad[i].RTrigger = xState.RightTrigger;
+		
+		// トリガーの更新
+		pad[i].LTrigger.value = xState.LeftTrigger;
+		pad[i].RTrigger.value = xState.RightTrigger;
+		
+		// 左トリガーの更新
+		pad[i].LTrigger.buttonOld = pad[i].LTrigger.buttonNew;
+		pad[i].LTrigger.buttonNew = xState.LeftTrigger > TRIGGER_THRESHOLD;
+		pad[i].LTrigger.buttonTrgDown = (!pad[i].LTrigger.buttonOld && pad[i].LTrigger.buttonNew);
+		pad[i].LTrigger.buttonTrgUp = (pad[i].LTrigger.buttonOld && !pad[i].LTrigger.buttonNew);
+		
+		// holdTimeの更新
+		if (pad[i].LTrigger.buttonNew)
+		{
+			pad[i].LTrigger.holdTime++;
+		}
+		else
+		{
+			if (pad[i].LTrigger.buttonTrgUp)
+			{
+				pad[i].LTrigger.lastHoldTime = pad[i].LTrigger.holdTime;
+			}
+			pad[i].LTrigger.holdTime = 0;
+		}
+		
+		// 右トリガーの更新
+		pad[i].RTrigger.buttonOld = pad[i].RTrigger.buttonNew;
+		pad[i].RTrigger.buttonNew = xState.RightTrigger > TRIGGER_THRESHOLD;
+		pad[i].RTrigger.buttonTrgDown = (!pad[i].RTrigger.buttonOld && pad[i].RTrigger.buttonNew);
+		pad[i].RTrigger.buttonTrgUp = (pad[i].RTrigger.buttonOld && !pad[i].RTrigger.buttonNew);
+		
+		// holdTimeの更新
+		if (pad[i].RTrigger.buttonNew)
+		{
+			pad[i].RTrigger.holdTime++;
+		}
+		else
+		{
+			if (pad[i].RTrigger.buttonTrgUp)
+			{
+				pad[i].RTrigger.lastHoldTime = pad[i].RTrigger.holdTime;
+			}
+			pad[i].RTrigger.holdTime = 0;
+		}
 	}
 }
 

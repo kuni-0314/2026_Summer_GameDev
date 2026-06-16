@@ -25,7 +25,7 @@ public:
 	// 解放
 	void Release();
 	// エネミー
-	const std::vector<EnemyBase*>& GetEemies() const { return enemies_; }
+	const std::vector<EnemyBase*>& GetEnemies() const { return enemies_; }
 	// 衝突対象となるコライダを登録
 	void AddHitCollider(const ColliderBase* hitCollider);
 
@@ -49,8 +49,8 @@ public:
 	// 攻撃コライダをクリア
 	void ClearAttackColliders();
 
-	// エネミーリストを取得（やっつけ用）
-	const std::vector<EnemyBase*>& GetEnemies() const { return enemies_; }
+	//// エネミーリストを取得（やっつけ用）
+	//const std::vector<EnemyBase*>& GetEnemies() const { return enemies_; }
 
 private:
 	//プレイヤー
