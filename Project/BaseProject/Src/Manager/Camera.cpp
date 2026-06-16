@@ -60,8 +60,8 @@ void Camera::SetBeforeDraw()
 	case Camera::MODE::FOLLOW:
 		SetBeforeDrawFollow();
 		break;
-	case Camera::MODE::MOUSE:
-		SetBeforeDrawMouse();
+	case Camera::MODE::CONTROL:
+		SetBeforeDrawControl();
 		break;
 	case Camera::MODE::TARGETING:
 		SetBeforeDrawTargeting();
@@ -186,7 +186,7 @@ void Camera::ChangeMode(MODE mode)
 		break;
 	case Camera::MODE::FOLLOW:
 		break;
-	case Camera::MODE::MOUSE:
+	case Camera::MODE::CONTROL:
 		// マウスカーソルを画面中央に固定
 		SetMouseDispFlag(false);
 		break;
@@ -351,7 +351,7 @@ void Camera::SetBeforeDrawFollow()
 	
 }
 
-void Camera::SetBeforeDrawMouse()
+void Camera::SetBeforeDrawControl()
 {
 
 	// マウスによるカメラ回転
@@ -390,6 +390,10 @@ void Camera::SetBeforeDrawMouse()
 		// カメラの上方向更新
 		transform_.quaRot.GetUp();
 	}
+
+	// ゲームパッド操作
+	RotGamePad(true);
+
 
 }
 

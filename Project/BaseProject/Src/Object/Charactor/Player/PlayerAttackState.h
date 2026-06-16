@@ -17,7 +17,7 @@ public:
 		NORMAL4,
 		NORMAL5,
 		HEAVY,
-		DASH,
+		//DASH,
 		AIR1,
 		AIR2,
 		AIR3,
@@ -36,7 +36,7 @@ public:
 		10.0f,	// NORMAL4
 		30.0f,	// NORMAL5
 		50.0f,	// HEAVY
-		25.0f,  // DASH
+		//25.0f,  // DASH
 		8.0f,   // AIR1
 		10.0f,  // AIR2
 		12.0f,  // AIR3

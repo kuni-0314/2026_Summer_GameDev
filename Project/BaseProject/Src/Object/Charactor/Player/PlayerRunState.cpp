@@ -9,8 +9,28 @@
 
 void PlayerRunState::Enter(Player* player)
 {
+	auto ins = InputManager::GetInstance();
+
+	// スティックの傾きを取得
+	float leftStickX = ins->GetLeftStickX(player->GetPadNum());
+	float leftStickY = ins->GetLeftStickY(player->GetPadNum());
+
+	// 取得した傾きの値は-32768～32767の範囲なので、-1.0f～1.0fの範囲に正規化
+	float normLeftStickX = leftStickX / 32768.0f;
+	float normLeftStickY = leftStickY / 32768.0f;
+
+	// スティックの傾きの大きさを計算
+	float pow = VSize({ normLeftStickX, 0.0f, normLeftStickY });
+
 	// 初期アニメーション再生
-	player->GetAnimationController()->Play(static_cast<int>(Player::ANIM_TYPE::RUN), true);
+	if (pow > 0.85f)
+	{
+		player->GetAnimationController()->Play(static_cast<int>(Player::ANIM_TYPE::FAST_RUN), true);
+	}
+	else
+	{
+		player->GetAnimationController()->Play(static_cast<int>(Player::ANIM_TYPE::RUN), true);
+	}
 }
 
 void PlayerRunState::Update(Player* player)
@@ -23,28 +43,45 @@ void PlayerRunState::Update(Player* player)
 		return;
 	}
 
-	VECTOR dir = AsoUtility::VECTOR_ZERO;
+	// スティックの傾きを取得
+	float leftStickX = ins->GetLeftStickX(player->GetPadNum());
+	float leftStickY = ins->GetLeftStickY(player->GetPadNum());
 
-	// 入力デバイスの種類を判定
+	// 取得した傾きの値は-32768～32767の範囲なので、-1.0f～1.0fの範囲に正規化
+	float normLeftStickX = leftStickX / 32768.0f;
+	float normLeftStickY = leftStickY / 32768.0f;
+
+	// スティックの傾きの大きさを計算
+	float pow = VSize({ normLeftStickX, 0.0f, normLeftStickY });
+
+	// アニメーション再生
+	if (pow > 0.85f)
+	{
+		player->GetAnimationController()->Play(static_cast<int>(Player::ANIM_TYPE::FAST_RUN), true);
+	}
+	else
+	{
+		player->GetAnimationController()->Play(static_cast<int>(Player::ANIM_TYPE::RUN), true);
+	}
+
+	VECTOR dir = AsoUtility::VECTOR_ZERO;
+	bool enableKAM = ins->IsEnableKeyAndMouse();
 	bool isGamepadConnected = (GetJoypadNum() > 0);
-	constexpr int GAMEPAD_INDEX = 0;
 
 	if (isGamepadConnected)
 	{
-		// ゲームパッド操作
-		short stickX = 0, stickY = 0;
-		ins->GetLeftStick(GAMEPAD_INDEX, stickX, stickY);
-
-		// スティック入力を方向ベクトルに変換（デッドゾーン処理）
-		constexpr float STICK_DEADZONE = 0.2f;
-		constexpr float STICK_MAX = 32767.0f;
-		float normalizedX = stickX / STICK_MAX;
-		float normalizedY = stickY / STICK_MAX;
-
-		if (abs(normalizedX) > STICK_DEADZONE || abs(normalizedY) > STICK_DEADZONE)
+		if (enableKAM)
 		{
-			dir.x = normalizedX;
-			dir.z = -normalizedY; // Y軸は反転
+			// ゲームパッド操作
+			ins->GetStickDirXZ(dir, player->GetPadNum(), true, ins->DEFAULT_STICK_DEADZONE);
+
+			// キーボード操作
+			ins->GetInputDirXZ(dir, KEY_INPUT_W, KEY_INPUT_S, KEY_INPUT_A, KEY_INPUT_D);
+		}
+		else
+		{
+			// ゲームパッド操作
+			ins->GetStickDirXZ(dir, player->GetPadNum(), true, ins->DEFAULT_STICK_DEADZONE);
 		}
 	}
 	else
@@ -57,21 +94,21 @@ void PlayerRunState::Update(Player* player)
 	if (!AsoUtility::EqualsVZero(dir))
 	{
 		// ダッシュ入力のチェック
-		bool isDashInput = false;
-		if (isGamepadConnected)
-		{
-			isDashInput = ins->IsGamepadNew(InputManager::PadInput::A, GAMEPAD_INDEX);
-		}
-		else
-		{
-			isDashInput = ins->IsNew(KEY_INPUT_LSHIFT);
-		}
+		//bool isDashInput = false;
+		//if (isGamepadConnected)
+		//{
+		//	isDashInput = ins->IsGamepadNew(InputManager::PadInput::A, GAMEPAD_INDEX);
+		//}
+		//else
+		//{
+		//	isDashInput = ins->IsNew(KEY_INPUT_LSHIFT);
+		//}
 
-		if (isDashInput)
-		{
-			player->ChangeState(Player::STATE::FAST_RUN);
-			return;
-		}
+		//if (isDashInput)
+		//{
+		//	player->ChangeState(Player::STATE::FAST_RUN);
+		//	return;
+		//}
 		
 		// 移動速度を設定
 		player->SetMoveSpeed(Player::SPEED_MOVE);

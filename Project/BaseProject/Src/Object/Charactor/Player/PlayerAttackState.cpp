@@ -68,7 +68,6 @@ void PlayerAttackState::Update(Player* player)
 
 		// コンボタイマーを設定
 		if (attackType_ == ATTACK_TYPE::HEAVY || 
-			attackType_ == ATTACK_TYPE::DASH || 
 			attackType_ == ATTACK_TYPE::FALL)
 		{
 			player->SetComboTimer(0);
@@ -140,38 +139,38 @@ PlayerAttackState::ATTACK_TYPE PlayerAttackState::GetNextAttackType(Player* play
 	}
 
 	// ダッシュ攻撃判定
-	bool isDashAttack = false;
-	if (!player->IsAir())
-	{
-		if (isGamepadConnected)
-		{
-			// ゲームパッド：左スティック入力中
-			short stickX = 0, stickY = 0;
-			ins->GetLeftStick(GAMEPAD_INDEX, stickX, stickY);
+	//bool isDashAttack = false;
+	//if (!player->IsAir())
+	//{
+	//	if (isGamepadConnected)
+	//	{
+	//		// ゲームパッド：左スティック入力中
+	//		short stickX = 0, stickY = 0;
+	//		ins->GetLeftStick(GAMEPAD_INDEX, stickX, stickY);
 
-			constexpr float STICK_DEADZONE = 0.2f;
-			constexpr float STICK_MAX = 32767.0f;
-			float normalizedX = stickX / STICK_MAX;
-			float normalizedY = stickY / STICK_MAX;
+	//		constexpr float STICK_DEADZONE = 0.2f;
+	//		constexpr float STICK_MAX = 32767.0f;
+	//		float normalizedX = stickX / STICK_MAX;
+	//		float normalizedY = stickY / STICK_MAX;
 
-			isDashAttack = (abs(normalizedX) > STICK_DEADZONE || abs(normalizedY) > STICK_DEADZONE);
-		}
-		else
-		{
-			// キーボード：シフト + WASD
-			isDashAttack = ins->IsNew(KEY_INPUT_LSHIFT) &&
-				(ins->IsNew(KEY_INPUT_W) || ins->IsNew(KEY_INPUT_A) || 
-				 ins->IsNew(KEY_INPUT_S) || ins->IsNew(KEY_INPUT_D));
-		}
-	}
+	//		isDashAttack = (abs(normalizedX) > STICK_DEADZONE || abs(normalizedY) > STICK_DEADZONE);
+	//	}
+	//	else
+	//	{
+	//		// キーボード：シフト + WASD
+	//		isDashAttack = ins->IsNew(KEY_INPUT_LSHIFT) &&
+	//			(ins->IsNew(KEY_INPUT_W) || ins->IsNew(KEY_INPUT_A) || 
+	//			 ins->IsNew(KEY_INPUT_S) || ins->IsNew(KEY_INPUT_D));
+	//	}
+	//}
 
-	if (isDashAttack)
-	{
-		// アニメーション再生
-		player->GetAnimationController()->Play(
-			static_cast<int>(Player::ANIM_TYPE::ATK_D), false, true);
-		return ATTACK_TYPE::DASH;
-	}
+	//if (isDashAttack)
+	//{
+	//	// アニメーション再生
+	//	player->GetAnimationController()->Play(
+	//		static_cast<int>(Player::ANIM_TYPE::ATK_D), false, true);
+	//	return ATTACK_TYPE::DASH;
+	//}
 
 	// コンボ継続判定
 	bool inCombo = player->GetComboTimer() > 0;

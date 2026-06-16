@@ -28,12 +28,12 @@ void PlayerJetState::Update(Player* player)
 		}
 		else if (ins->IsNew(KEY_INPUT_W) || ins->IsNew(KEY_INPUT_A) || ins->IsNew(KEY_INPUT_S) || ins->IsNew(KEY_INPUT_D))
 		{
-			if (ins->IsNew(KEY_INPUT_LSHIFT))
-			{
-				// 移動キーとダッシュキーが入力されている場合
-				player->ChangeState(Player::STATE::FAST_RUN);
-			}
-			else
+			//if (ins->IsNew(KEY_INPUT_LSHIFT))
+			//{
+			//	// 移動キーとダッシュキーが入力されている場合
+			//	player->ChangeState(Player::STATE::FAST_RUN);
+			//}
+			//else
 			{
 				// 移動キーが入力されている場合
 				player->ChangeState(Player::STATE::RUN);

@@ -44,8 +44,8 @@ public:
 	static constexpr VECTOR FOLLOW_TARGET_LOCAL_POS = { 0.0f, 0.0f, 500.0f };
 
 	// カメラのX回転上限度角
-	static constexpr float LIMIT_X_UP_RAD = 40.0f * (DX_PI_F / 180.0f);
-	static constexpr float LIMIT_X_DW_RAD = -1.0f * (DX_PI_F / 180.0f);;
+	static constexpr float LIMIT_X_UP_RAD = 70.0f * (DX_PI_F / 180.0f);
+	static constexpr float LIMIT_X_DW_RAD = 30.0f * (DX_PI_F / 180.0f);;
 
 	// MOUSEモード用定数
 	static constexpr VECTOR MOUSE_CAMERA_LOCAL_POS = { 0.0f, 200.0f, -300.0f };
@@ -65,7 +65,7 @@ public:
 		FIXED_POINT,
 		FREE,
 		FOLLOW,
-		MOUSE,
+		CONTROL,
 		TARGETING
 	};
 
@@ -185,7 +185,7 @@ private:
 	void SetBeforeDrawFixedPoint();
 	void SetBeforeDrawFree();
 	void SetBeforeDrawFollow();
-	void SetBeforeDrawMouse();
+	void SetBeforeDrawControl();
 	void SetBeforeDrawTargeting();
 
 	// 衝突判定

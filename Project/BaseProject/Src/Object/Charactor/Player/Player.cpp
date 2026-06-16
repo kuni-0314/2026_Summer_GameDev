@@ -20,8 +20,9 @@
 #include "PlayerAttackState.h"
 
 
-Player::Player()
+Player::Player(int padNum)
 	:
+	padNum_(padNum),
 	CharactorBase()
 {
 }
@@ -262,7 +263,7 @@ void Player::Draw()
 	//SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
 
 	// ƒ^ƒCƒgƒ‹
-	DrawFormatString(x, y, 0xFFFFFF, "=== Player Status ===");
+	//DrawFormatString(x, y, 0xFFFFFF, "=== Player Status ===");
 	y += lineHeight;
 
 	currentState_->Draw(this);
@@ -274,8 +275,8 @@ void Player::Draw()
 	//DrawFormatString(x, y, color, "Level  : %d", status_.level);
 	//y += lineHeight;
 
-	DrawFormatString(x, y, (currentGrantStatusIndex_ == 2) ? highlightColor : color, "MovePow : %f", movePow_.x);
-	y += lineHeight;
+	//DrawFormatString(x, y, (currentGrantStatusIndex_ == 2) ? highlightColor : color, "MovePow : %f", movePow_.x);
+	//y += lineHeight;
 
 	//DrawFormatString(x, y, (currentGrantStatusIndex_ == 3) ? highlightColor : color, "MP     : %d", status_.mp);
 	//y += lineHeight;
@@ -301,7 +302,7 @@ void Player::Draw()
 	//DrawFormatString(x, y, color, "PendingPoints   : %d", pendingPoints_);
 
 	//y += lineHeight;
-	DrawFormatString(x, y, 0xffffff, "jumpPow   : %f.", jumpPow_.y);
+	//DrawFormatString(x, y, 0xffffff, "jumpPow   : %f.", jumpPow_.y);
 
 	VECTOR lineStart = transform_.pos;
 	VECTOR lineEnd = { transform_.pos.x, transform_.pos.y + jumpPow_.y * 10.0f, transform_.pos.z };
@@ -330,7 +331,7 @@ void Player::Draw()
 	DrawSphere3D(lineZ, 5.0f, 16, 0x0000FF, 0x0000FF, true);
 	DrawSphere3D(rot, 5.0f, 16, 0xFFFF00, 0xFFFF00, true);
 
-	DrawFormatString(0, 500, 0xffffff, "<Player> HP : %d", hp_);
+	//DrawFormatString(0, 500, 0xffffff, "<Player> HP : %d", hp_);
 }
 
 void Player::ChangeState(STATE newState)
@@ -437,7 +438,7 @@ void Player::InitState()
 {
 	states_[STATE::IDLE] = new PlayerIdleState();
 	states_[STATE::RUN] = new PlayerRunState();
-	states_[STATE::FAST_RUN] = new PlayerFastRunState();
+	//states_[STATE::FAST_RUN] = new PlayerFastRunState();
 	states_[STATE::JUMP] = new PlayerJumpState();
 	states_[STATE::JET] = new PlayerJetState();
 	states_[STATE::FALL] = new PlayerFallState();

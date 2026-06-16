@@ -3,20 +3,17 @@
 #include "../Manager/SceneManager.h"
 #include "../Manager/InputManager.h"
 #include "../Manager/Camera.h"
+#include "../Manager/PostEffectManager.h"
 #include "../Object/Actor/Stage/Stage.h"
 #include "../Object/Actor/Stage/StageWall.h"
 #include "../Object/Actor/SkyDome/SkyDome.h"
 #include "../Object/Charactor/Player/Player.h"
 #include "../Object/Charactor/Enemy/EnemyManger.h"
 #include "../Object/Item/ItemManger.h"
-#include "../Object/FieldManager.h"
 #include "../Object/Collider/ColliderBase.h"
 #include "../Object/Collider/Sphere/ColliderSphere.h"
-#include "../Shader/PixelMaterial.h"
-#include "../Shader/PixelRenderer.h"
 #include "GameScene.h"
-#include "../Manager/PostEffectManager.h"
-
+// 別プロジェクト
 GameScene::GameScene()
 	: SceneBase(),
 	stage_(nullptr),
@@ -24,7 +21,12 @@ GameScene::GameScene()
 	player_(nullptr),
 	enemyManager_(nullptr),
 	stageWall_(nullptr),
-	itemManger_(nullptr)
+	itemManger_(nullptr),
+	postEffectScreen_(-1),
+	currentEffect_(PostEffectManager::EFFECT_TYPE::NORMAL),
+	multiEffectMode_(false),
+	effectTime_(0.0f),
+	targetEnemyId_(0)
 {
 }
 
@@ -34,12 +36,14 @@ GameScene::~GameScene()
 
 void GameScene::Init()
 {
+	// ステージ初期化
 	stage_ = new Stage();
 	stage_->Init();
 
 	stageWall_ = std::make_unique<StageWall>();
 
-	player_ = new Player();
+	// プレイヤー初期化
+	player_ = new Player(0);	// 何かしら定数作って
 	player_->Init();
 	player_->SetGameScene(this);
 
@@ -47,18 +51,22 @@ void GameScene::Init()
 		stage_->GetOwnCollider(static_cast<int>(Stage::COLLIDER_TYPE::MODEL));
 	player_->AddHitCollider(stageCollider);
 
-	enemyManager_ = new EnemyManager(this,player_);
+	// 敵マネージャー初期化
+	enemyManager_ = new EnemyManager(this, player_);
 	enemyManager_->Init();
 	enemyManager_->AddHitCollider(stageCollider);
 
+	// スカイドーム初期化
 	skyDome_ = new SkyDome(player_->GetTransform());
 	skyDome_->Init();
 
+	// アイテムマネージャー初期化
 	itemManger_ = new ItemManger();
 	itemManger_->Init();
 	itemManger_->AddHitCollider(stageCollider);
 
-	sceMng_.GetCamera()->ChangeMode(Camera::MODE::MOUSE);
+	// カメラ設定
+	sceMng_.GetCamera()->ChangeMode(Camera::MODE::CONTROL);
 	Camera* camera = sceMng_.GetCamera();
 	camera->SetFollow(&player_->GetTransform());
 	camera->AddHitCollider(stageCollider);
@@ -67,81 +75,86 @@ void GameScene::Init()
 	// ポストエフェクトマネージャーの初期化
 	PostEffectManager::GetInstance().Init();
 	postEffectScreen_ = PostEffectManager::GetInstance().CreatePostEffectScreen();
-	
+
 	currentEffect_ = PostEffectManager::EFFECT_TYPE::NORMAL;
+	multiEffectMode_ = false;
 }
 
 void GameScene::Update()
 {
 	auto const ins = InputManager::GetInstance();
+
+	// ゲームオーバー判定
 	if (player_->GetHp() <= 0)
 	{
 		sceMng_.ChangeScene(SceneManager::SCENE_ID::OVER);
 	}
-	//bool end = enemyManager_->GetEnemyDead();
-	//if (end)
-	//{
-	//	sceMng_.ChangeScene(SceneManager::SCENE_ID::CLEAR);
-	//}
 
+	// 各オブジェクトの更新
 	stage_->Update();
 	skyDome_->Update();
 	player_->Update();
 	enemyManager_->Update();
 	itemManger_->Update();
 
+	// ターゲット切り替え
 	if (ins->IsTrgDown(KEY_INPUT_LEFT) && targetEnemyId_ > 0) targetEnemyId_--;
 	if (ins->IsTrgDown(KEY_INPUT_RIGHT)) targetEnemyId_++;
 
 	targetPos_ = enemyManager_->GetEnemyPos(targetEnemyId_);
 	SceneManager::GetInstance().GetCamera()->SetTargetPos(targetPos_);
 
-	if (ins->IsTrgDown(MOUSE_INPUT_LEFT)) {
+	// デバッグ用即死攻撃
+	if (ins->IsTrgDown(MOUSE_INPUT_LEFT))
+	{
 		auto enemies = enemyManager_->GetEnemies();
-		for (auto enemy : enemies) {
+		for (auto enemy : enemies)
+		{
 			if (!enemy->IsAlive()) continue;
 			VECTOR playerPos = player_->GetTransform().pos;
 			VECTOR enemyPos = enemy->GetTransform().pos;
 			float dist = VSize(VSub(playerPos, enemyPos));
-			if (dist < 300.0f) {
+			if (dist < 300.0f)
+			{
 				enemy->Damege(99999);
 			}
 		}
 	}
 
+	// 攻撃コライダーの更新
 	for (int i = 0; i < attackColliders_.size(); i++)
 	{
 		auto data = attackColliders_[i];
 		if (data->collider != nullptr)
 		{
 			data->lifeTime--;
-			
+
 			ColliderSphere* sphere = dynamic_cast<ColliderSphere*>(data->collider);
 			if (sphere != nullptr)
 			{
 				Transform* transform = const_cast<Transform*>(data->collider->GetFollow());
 				transform->pos = player_->GetTransform().pos;
-				
+
 				auto enemies = enemyManager_->GetEnemies();
 				for (auto enemy : enemies)
 				{
 					if (!enemy->IsAlive()) continue;
-					
+
 					VECTOR enemyPos = enemy->GetTransform().pos;
 					VECTOR spherePos = sphere->GetPos();
 					float distance = VSize(VSub(enemyPos, spherePos));
-					
+
 					if (distance < sphere->GetRadius())
 					{
 						enemy->Damege(static_cast<int>(data->damage));
 					}
 				}
 			}
-			
+
 			if (data->lifeTime <= 0)
 			{
 				enemyManager_->ClearAttackColliders();
-				
+
 				delete data->collider->GetFollow();
 				delete data->collider;
 				delete data;
@@ -156,19 +169,67 @@ void GameScene::Update()
 		}
 	}
 
-	//if (ins->IsTrgDown(KEY_INPUT_NUMPAD4))
-	//{
-	//	currentEffect_ = (currentEffect_ - 1 + EFFECT::MAX) % EFFECT::MAX;
-	//}
-	//if (ins->IsTrgDown(KEY_INPUT_NUMPAD6))
-	//{
-	//	currentEffect_ = (currentEffect_ + 1) % EFFECT::MAX;
-	//}
+	// エフェクト時間更新
+	effectTime_ += sceMng_.GetDeltaTime();
+
+	// モード切り替え (テンキー5)
+	if (ins->IsTrgDown(KEY_INPUT_NUMPAD5))
+	{
+		multiEffectMode_ = !multiEffectMode_;
+	}
+
+	// 単一エフェクトモード
+	if (!multiEffectMode_)
+	{
+		// エフェクト切り替え (テンキー4/6)
+		if (ins->IsTrgDown(KEY_INPUT_NUMPAD4))
+		{
+			int current = static_cast<int>(currentEffect_);
+			current = (current - 1 + static_cast<int>(PostEffectManager::EFFECT_TYPE::MAX)) %
+				static_cast<int>(PostEffectManager::EFFECT_TYPE::MAX);
+			currentEffect_ = static_cast<PostEffectManager::EFFECT_TYPE>(current);
+		}
+		if (ins->IsTrgDown(KEY_INPUT_NUMPAD6))
+		{
+			int current = static_cast<int>(currentEffect_);
+			current = (current + 1) % static_cast<int>(PostEffectManager::EFFECT_TYPE::MAX);
+			currentEffect_ = static_cast<PostEffectManager::EFFECT_TYPE>(current);
+		}
+	}
+	// 複数エフェクトモード
+	else
+	{
+		// Enterキーで現在のエフェクトをトグル
+		if (ins->IsTrgDown(KEY_INPUT_RETURN))
+		{
+			ToggleEffect(currentEffect_);
+		}
+
+		// エフェクト選択 (テンキー4/6)
+		if (ins->IsTrgDown(KEY_INPUT_NUMPAD4))
+		{
+			int current = static_cast<int>(currentEffect_);
+			current = (current - 1 + static_cast<int>(PostEffectManager::EFFECT_TYPE::MAX)) %
+				static_cast<int>(PostEffectManager::EFFECT_TYPE::MAX);
+			currentEffect_ = static_cast<PostEffectManager::EFFECT_TYPE>(current);
+		}
+		if (ins->IsTrgDown(KEY_INPUT_NUMPAD6))
+		{
+			int current = static_cast<int>(currentEffect_);
+			current = (current + 1) % static_cast<int>(PostEffectManager::EFFECT_TYPE::MAX);
+			currentEffect_ = static_cast<PostEffectManager::EFFECT_TYPE>(current);
+		}
+
+		// 全クリア (テンキー0)
+		if (ins->IsTrgDown(KEY_INPUT_NUMPAD0))
+		{
+			activeEffects_.clear();
+		}
+	}
 }
 
 void GameScene::Draw()
 {
-	a_++;
 	int mainScreen = SceneManager::GetInstance().GetMainScreen();
 
 	// 3D描画
@@ -178,32 +239,79 @@ void GameScene::Draw()
 	itemManger_->Draw();
 	enemyManager_->Draw();
 
-	// ポストエフェクト適用
+	// 一時スクリーンにメイン画面をコピー
 	int tempScreen = MakeScreen(Application::SCREEN_SIZE_X, Application::SCREEN_SIZE_Y, false);
 	SetDrawScreen(tempScreen);
 	ClearDrawScreen();
 	DrawGraph(0, 0, mainScreen, false);
 
-	// マネージャーを使ってエフェクトを適用
-	PostEffectManager::GetInstance().ApplyEffect(currentEffect_, tempScreen, postEffectScreen_, effectTime_);
+	// エフェクト適用
+	if (!multiEffectMode_)
+	{
+		// 単一エフェクトモード
+		PostEffectManager::GetInstance().ApplyEffect(
+			currentEffect_,
+			tempScreen,
+			postEffectScreen_,
+			effectTime_
+		);
+	}
+	else
+	{
+		// 複数エフェクトモード
+		PostEffectManager::GetInstance().ApplyEffects(
+			activeEffects_,
+			tempScreen,
+			postEffectScreen_,
+			effectTime_
+		);
+	}
 
+	// 最終結果をメイン画面に描画
 	SetDrawScreen(mainScreen);
 	DrawGraph(0, 0, postEffectScreen_, false);
 
 	// デバッグ表示
-	DrawFormatString(10, 10, 0xFFFF00, "Effect: %d", static_cast<int>(currentEffect_));
-	
+	int y = 10;
+	DrawFormatString(10, y, 0xFFFF00, "Mode: %s (NumPad5 to toggle)", 
+		multiEffectMode_ ? "Multi" : "Single");
+	y += 20;
+
+	if (!multiEffectMode_)
+	{
+		DrawFormatString(10, y, 0xFFFF00, "Current Effect: %s (NumPad4/6)", 
+			GetEffectName(currentEffect_));
+	}
+	else
+	{
+		DrawFormatString(10, y, 0xFFFF00, "Select: %s (Enter to toggle)", 
+			GetEffectName(currentEffect_));
+		y += 20;
+		DrawFormatString(10, y, 0xFFFF00, "Active Effects: %d (NumPad0 to clear)", 
+			static_cast<int>(activeEffects_.size()));
+		y += 20;
+		
+		for (const auto& effect : activeEffects_)
+		{
+			DrawFormatString(10, y, 0x00FF00, "  - %s", GetEffectName(effect));
+			y += 18;
+		}
+	}
+
+	// 一時スクリーン削除
 	DeleteGraph(tempScreen);
 }
 
 void GameScene::Release()
 {
+	// ポストエフェクトスクリーン解放
 	if (postEffectScreen_ != -1)
 	{
-		DeleteGraph(postEffectScreen_);
+		PostEffectManager::GetInstance().DeletePostEffectScreen(postEffectScreen_);
 		postEffectScreen_ = -1;
 	}
 
+	// 攻撃コライダー解放
 	for (auto data : attackColliders_)
 	{
 		if (data->collider != nullptr)
@@ -216,6 +324,7 @@ void GameScene::Release()
 	}
 	attackColliders_.clear();
 
+	// アイテムマネージャー解放
 	if (itemManger_ != nullptr)
 	{
 		itemManger_->Release();
@@ -223,6 +332,7 @@ void GameScene::Release()
 		itemManger_ = nullptr;
 	}
 
+	// 敵マネージャー解放
 	if (enemyManager_ != nullptr)
 	{
 		enemyManager_->Release();
@@ -230,173 +340,114 @@ void GameScene::Release()
 		enemyManager_ = nullptr;
 	}
 
-	stage_->Release();
-	delete stage_;
+	// ステージ解放
+	if (stage_ != nullptr)
+	{
+		stage_->Release();
+		delete stage_;
+		stage_ = nullptr;
+	}
 
-	stageWall_->Release();
+	// ステージの壁解放
+	if (stageWall_ != nullptr)
+	{
+		stageWall_->Release();
+		stageWall_.reset();
+	}
 
-	skyDome_->Release();
-	delete skyDome_;
+	// スカイドーム解放
+	if (skyDome_ != nullptr)
+	{
+		skyDome_->Release();
+		delete skyDome_;
+		skyDome_ = nullptr;
+	}
 
-	player_->Release();
-	delete player_;
+	// プレイヤー解放
+	if (player_ != nullptr)
+	{
+		player_->Release();
+		delete player_;
+		player_ = nullptr;
+	}
 }
 
-void GameScene::CreateAttackCollider(ColliderBase::TAG tag, VECTOR pos, float radius, float Damage, int lifeTime)
+void GameScene::CreateAttackCollider(ColliderBase::TAG tag, VECTOR pos, float radius, float damage, int lifeTime)
 {
 	Transform* transform = new Transform();
 	transform->pos = pos;
-	
+
 	ColliderBase* collider = new ColliderSphere(tag, transform, pos, radius);
-	
+
 	AttackColliderData* data = new AttackColliderData();
 	data->collider = collider;
-	data->damage = Damage;
+	data->damage = damage;
 	data->lifeTime = lifeTime;
-	
+
 	attackColliders_.push_back(data);
-	
+
 	enemyManager_->AddAttackCollider(collider);
 }
 
-void GameScene::SetEffectParameters(int effectType, FLOAT4& bufs, float time)
+void GameScene::ToggleEffect(PostEffectManager::EFFECT_TYPE effectType)
+{
+	// NORMALは追加しない
+	if (effectType == PostEffectManager::EFFECT_TYPE::NORMAL)
+	{
+		return;
+	}
+
+	// 既にリストにあれば削除
+	auto it = std::find(activeEffects_.begin(), activeEffects_.end(), effectType);
+	if (it != activeEffects_.end())
+	{
+		activeEffects_.erase(it);
+	}
+	else
+	{
+		// なければ追加
+		activeEffects_.push_back(effectType);
+	}
+}
+
+const char* GameScene::GetEffectName(PostEffectManager::EFFECT_TYPE effectType)
 {
 	switch (effectType)
 	{
-	case NORMAL:
-		bufs.x = time;
-		break;
-	case MONO:
-		break;
-	case SEPIA:
-		break;
-	case INVERT:
-		break;
-	case MOSAIC:
-		bufs.x = 16.0f;
-		bufs.y = 10.0f;
-		break;
-	case CHROM_ABR:
-		bufs.x = 10.0f;
-		break;
-	case VIGNETTE:
-		bufs.x = 0.6f;
-		bufs.y = 0.7f;
-		break;
-	case SCANLINE:
-		bufs.x = 100.0f;
-		bufs.y = 0.3f;
-		break;
-	case POSTERIZE:
-		bufs.x = 4.0f;
-		break;
-	case GLITCH:
-		bufs.x = time;
-		break;
-	case EMBOSS:
-		bufs.x = 0.001f;
-		bufs.y = 0.001f;
-		break;
-	case RETROWAVE:
-		bufs.x = 0.5f;
-		break;
-	case BLOOM:
-		bufs.x = 0.6f;
-		bufs.y = 0.8f;
-		break;
-	case RIPPLE:
-		bufs.x = time;
-		bufs.y = 2.0f;
-		bufs.z = 1.5f;
-		break;
-	case RGB_SPLIT:
-		bufs.x = 0.025f;
-		bufs.y = 0.05f;
-		bufs.z = 0.025f;
-		break;
-	case PIXELATE:
-		bufs.x = 0.002f;
-		break;
-	case SWIRL:
-		bufs.x = time;
-		bufs.y = 1.0f;
-		bufs.z = 1.0f;
-		break;
-	case RADIAL_BLUR:
-		bufs.x = -0.1f;
-		break;
-	case HUE_SHIFT:
-		bufs.x = time;
-		break;
-	case WAVE:
-		bufs.x = time;
-		bufs.y = 0.1f;
-		bufs.z = 2.0f;
-		break;
-	case EDGE_DETECT:
-		bufs.x = 0.15f;
-		break;
-	case OLD_FILM:
-		bufs.x = time;
-		break;
-	case NIGHT_VISION:
-		bufs.x = time;
-		break;
-	case LIQUID_DIST:
-		bufs.x = time;
-		bufs.y = 0.1f;
-		bufs.z = 3.0f;
-		break;
-	case PINHOLE:
-		bufs.x = 0.5f;
-		bufs.y = 2.0f;
-		break;
-	case SPEED_LINES:
-		bufs.x = time;
-		bufs.y = 100.0f;
-		bufs.z = 100.0f;
-		break;
-	case FROSTED_GLASS:
-		bufs.x = 1.0f;
-		bufs.y = 1.0f;
-		break;
-	case DOT_MATRIX:
-		bufs.x = 100.0f;
-		bufs.y = 1.0f;
-		break;
-	case DEPTH_FOG:
-		bufs.x = 0.0f;
-		bufs.y = 1.0f;
-		bufs.z = 1.0f;
-		break;
-	case DIGITAL_RAIN:
-		bufs.x = time;
-		bufs.y = 3.0f;
-		bufs.z = 64.0f;
-		break;
-	case STROBE:
-		bufs.x = time;
-		bufs.y = 1.0f;
-		bufs.z = 2.0f;
-		break;
-	case SNOW_STORM:
-		bufs.x = time;
-		bufs.y = 40.0f;
-		bufs.z = -1.0f;
-		break;
-	case SCREEN_SHAKE:
-		bufs.x = time;
-		bufs.y = 0.01f;
-		bufs.z = 0.01f;
-		bufs.w = 0.01f;
-		break;
-	case CRT:
-		bufs.x = time;
-		bufs.y = 1.0f;
-		bufs.z = 0.5f;
-		bufs.w = 0.25f;
-		break;
-	default:
-		break;
+	case PostEffectManager::EFFECT_TYPE::NORMAL: return "Normal";
+	case PostEffectManager::EFFECT_TYPE::MONO: return "Mono";
+	case PostEffectManager::EFFECT_TYPE::SEPIA: return "Sepia";
+	case PostEffectManager::EFFECT_TYPE::INVERT: return "Invert";
+	case PostEffectManager::EFFECT_TYPE::MOSAIC: return "Mosaic";
+	case PostEffectManager::EFFECT_TYPE::CHROM_ABR: return "ChromaticAberration";
+	case PostEffectManager::EFFECT_TYPE::VIGNETTE: return "Vignette";
+	case PostEffectManager::EFFECT_TYPE::SCANLINE: return "Scanline";
+	case PostEffectManager::EFFECT_TYPE::POSTERIZE: return "Posterize";
+	case PostEffectManager::EFFECT_TYPE::GLITCH: return "Glitch";
+	case PostEffectManager::EFFECT_TYPE::EMBOSS: return "Emboss";
+	case PostEffectManager::EFFECT_TYPE::RETROWAVE: return "RetroWave";
+	case PostEffectManager::EFFECT_TYPE::BLOOM: return "Bloom";
+	case PostEffectManager::EFFECT_TYPE::RIPPLE: return "Ripple";
+	case PostEffectManager::EFFECT_TYPE::RGB_SPLIT: return "RGBSplit";
+	case PostEffectManager::EFFECT_TYPE::PIXELATE: return "Pixelate";
+	case PostEffectManager::EFFECT_TYPE::SWIRL: return "Swirl";
+	case PostEffectManager::EFFECT_TYPE::RADIAL_BLUR: return "RadialBlur";
+	case PostEffectManager::EFFECT_TYPE::HUE_SHIFT: return "HueShift";
+	case PostEffectManager::EFFECT_TYPE::WAVE: return "Wave";
+	case PostEffectManager::EFFECT_TYPE::EDGE_DETECT: return "EdgeDetection";
+	case PostEffectManager::EFFECT_TYPE::OLD_FILM: return "OldFilm";
+	case PostEffectManager::EFFECT_TYPE::NIGHT_VISION: return "NightVision";
+	case PostEffectManager::EFFECT_TYPE::LIQUID_DIST: return "LiquidDistortion";
+	case PostEffectManager::EFFECT_TYPE::PINHOLE: return "Pinhole";
+	case PostEffectManager::EFFECT_TYPE::SPEED_LINES: return "SpeedLines";
+	case PostEffectManager::EFFECT_TYPE::FROSTED_GLASS: return "FrostedGlass";
+	case PostEffectManager::EFFECT_TYPE::DOT_MATRIX: return "DotMatrix";
+	case PostEffectManager::EFFECT_TYPE::DEPTH_FOG: return "DepthFog";
+	case PostEffectManager::EFFECT_TYPE::DIGITAL_RAIN: return "DigitalRain";
+	case PostEffectManager::EFFECT_TYPE::STROBE: return "Strobe";
+	case PostEffectManager::EFFECT_TYPE::SNOW_STORM: return "SnowStorm";
+	case PostEffectManager::EFFECT_TYPE::SCREEN_SHAKE: return "ScreenShake";
+	case PostEffectManager::EFFECT_TYPE::CRT: return "CRT";
+	default: return "Unknown";
 	}
 }

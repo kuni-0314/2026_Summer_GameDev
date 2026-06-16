@@ -13,7 +13,7 @@ public:
 	{
 		IDLE,
 		RUN, 
-		FAST_RUN, 
+		//FAST_RUN, 
 		JUMP, 
 		JET, 
 		FALL,
@@ -44,7 +44,7 @@ public:
 	};
 
 	//コンストラクタ
-	Player();
+	Player(int padNum);
 	//デストラクタ
 	~Player() override;
 
@@ -150,6 +150,8 @@ public:
 	void SetPos(const VECTOR& pos) { transform_.pos = pos; }
 	float GetCollRadius() const { return COL_CAPSULE_RADIUS; }
 
+	int GetPadNum() const { return padNum_; }
+
 
 protected:
 
@@ -179,6 +181,7 @@ private:
 
 	void InitState();
 
+	const int padNum_;
 
 	Status status_;
 	int pendingPoints_;

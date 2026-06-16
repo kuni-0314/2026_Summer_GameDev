@@ -18,18 +18,54 @@ void PlayerAirborneState::Update(Player* player)
 		return;
 	}
 
+	bool enableKAM = ins->IsEnableKeyAndMouse();
+	bool isGamepadConnected = (GetJoypadNum() > 0);
+
 	// ジャンプキーが入力されているか
+	bool isJumpKeyPressed = false;
 	if (player->IsJump())
 	{
-		if (ins->IsNew(KEY_INPUT_SPACE))
+		if (isGamepadConnected)
 		{
-			if (player->GetStepJump() < Player::TIME_JUMP_INPUT)
+			if (enableKAM)
 			{
-				player->SetJumpPow(VAdd(player->GetJumpPow(), VScale(AsoUtility::DIR_U, Player::POW_JUMP_KEEP)));
-				player->SetStepJump(player->GetStepJump() + SceneManager::GetInstance().GetDeltaTime());
+				if (ins->IsNew(KEY_INPUT_SPACE) || ins->IsGamepadNew(InputManager::PadInput::A, player->GetPadNum()))
+				{
+					if (player->GetStepJump() < Player::TIME_JUMP_INPUT)
+					{
+						player->SetJumpPow(VAdd(player->GetJumpPow(), VScale(AsoUtility::DIR_U, Player::POW_JUMP_KEEP)));
+						player->SetStepJump(player->GetStepJump() + SceneManager::GetInstance().GetDeltaTime());
+					}
+					isJumpKeyPressed = true;
+				}
+			}
+			else
+			{
+				if (ins->IsGamepadNew(InputManager::PadInput::A, player->GetPadNum()))
+				{
+					if (player->GetStepJump() < Player::TIME_JUMP_INPUT)
+					{
+						player->SetJumpPow(VAdd(player->GetJumpPow(), VScale(AsoUtility::DIR_U, Player::POW_JUMP_KEEP)));
+						player->SetStepJump(player->GetStepJump() + SceneManager::GetInstance().GetDeltaTime());
+					}
+					isJumpKeyPressed = true;
+				}
 			}
 		}
 		else
+		{
+			if (ins->IsNew(KEY_INPUT_SPACE))
+			{
+				if (player->GetStepJump() < Player::TIME_JUMP_INPUT)
+				{
+					player->SetJumpPow(VAdd(player->GetJumpPow(), VScale(AsoUtility::DIR_U, Player::POW_JUMP_KEEP)));
+					player->SetStepJump(player->GetStepJump() + SceneManager::GetInstance().GetDeltaTime());
+				}
+				isJumpKeyPressed = true;
+			}
+		}
+		
+		if (!isJumpKeyPressed)
 		{
 			VECTOR jumpPow = player->GetJumpPow();
 			if (jumpPow.y > 0.0f)
@@ -50,8 +86,23 @@ void PlayerAirborneState::Update(Player* player)
 
 	VECTOR dir = AsoUtility::VECTOR_ZERO;
 
-	// ゲームパッドが接続されている数で処理を分ける
-	if (GetJoypadNum() == 0)
+	if (isGamepadConnected)
+	{
+		if (enableKAM)
+		{
+			// ゲームパッド操作
+			ins->GetStickDirXZ(dir, player->GetPadNum(), true, ins->DEFAULT_STICK_DEADZONE);
+
+			// キーボード操作
+			ins->GetInputDirXZ(dir, KEY_INPUT_W, KEY_INPUT_S, KEY_INPUT_A, KEY_INPUT_D);
+		}
+		else
+		{
+			// ゲームパッド操作
+			ins->GetStickDirXZ(dir, player->GetPadNum(), true, ins->DEFAULT_STICK_DEADZONE);
+		}
+	}
+	else
 	{
 		// キーボード操作
 		ins->GetInputDirXZ(dir, KEY_INPUT_W, KEY_INPUT_S, KEY_INPUT_A, KEY_INPUT_D);
@@ -96,12 +147,12 @@ void PlayerAirborneState::Update(Player* player)
 		if (!player->IsJump())
 		{
 			// ダッシュキーが入力されているか
-			if (ins->IsNew(KEY_INPUT_LSHIFT))
-			{
-				player->ChangeState(Player::STATE::FAST_RUN);
-				return;
-			}
-			else
+			//if (ins->IsNew(KEY_INPUT_LSHIFT))
+			//{
+			//	player->ChangeState(Player::STATE::FAST_RUN);
+			//	return;
+			//}
+			//else
 			{
 				player->ChangeState(Player::STATE::RUN);
 				return;

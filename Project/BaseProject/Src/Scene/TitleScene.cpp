@@ -178,7 +178,7 @@ void TitleScene::SelectUpdate()
 
 	//選択コマンド変更
 
-	if (ins->IsTrgDown(KEY_INPUT_UP))
+	if (ins->IsTrgDown(KEY_INPUT_UP) || ins->IsGamepadTrgUp(InputManager::PadInput::Up, 0))
 	{
 		//選択SE
 		AudioManager::GetInstance()->SetSeVolume(150);
@@ -186,11 +186,11 @@ void TitleScene::SelectUpdate()
 		selectCount_--;
 		if (selectCount_ < minIndex)
 		{
-			selectCount_ = minIndex; // 一番下へ
+			selectCount_ = maxIndex; // 一番下へ
 		}
 	}
 
-	if (ins->IsTrgDown(KEY_INPUT_DOWN))
+	if (ins->IsTrgDown(KEY_INPUT_DOWN) || ins->IsGamepadTrgDown(InputManager::PadInput::Down, 0))
 	{
 		//選択SE
 		AudioManager::GetInstance()->SetSeVolume(150);
@@ -198,10 +198,10 @@ void TitleScene::SelectUpdate()
 		selectCount_++;
 		if (selectCount_ > maxIndex)
 		{
-			selectCount_ = maxIndex; // 一番上へ
+			selectCount_ = minIndex; // 一番上へ
 		}
 	}
-	if (ins->IsTrgDown(KEY_INPUT_SPACE))//決定
+	if (ins->IsTrgDown(KEY_INPUT_SPACE) || ins->IsGamepadTrgDown(InputManager::PadInput::A, 0))//決定
 	{
 		//決定SE
 		AudioManager::GetInstance()->SetSeVolume(200);

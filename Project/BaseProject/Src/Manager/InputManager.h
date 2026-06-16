@@ -1,4 +1,5 @@
 #pragma once
+#include <initializer_list>
 #include <DxLib.h>
 #include <map>
 
@@ -55,6 +56,7 @@ public:
 
 	void Clear();			// 判定を行うキーをクリア
 	bool IsNew(int key);		// キーが押されているか
+	bool IsNew(std::initializer_list<int> keys, bool isAnd = false);	// キーが押されているか
 	bool IsTrgDown(int key);	// キーが今押されたか
 	bool IsTrgUp(int key);		// キーは離されたか
 	bool IsHold(int key, int holdTime);	// キーが指定時間以上押されているか
@@ -81,15 +83,19 @@ public:
 	int GetGamepadLastHoldTime(PadInput button, int gamepadIndex);	// ゲームパッドボタンが最後に離されるまで押されていた時間を取得
 
 	void GetStick(int gamepadIndex, short& leftX, short& leftY, short& rightX, short& rightY);	// スティックの値を取得
-	void GetLeftStick(int gamepadIndex, short& x, short& y);	// 左スティックの値を取得
-	void GetRightStick(int gamepadIndex, short& x, short& y);	// 右スティックの値を取得
+	void GetLeftStick(int gamepadIndex, short& x, short& y, float deadzone = DEFAULT_STICK_DEADZONE);	// 左スティックの値を取得
+	void GetRightStick(int gamepadIndex, short& x, short& y, float deadzone = DEFAULT_STICK_DEADZONE);	// 右スティックの値を取得
 	short GetLeftStickX(int gamepadIndex);		// 左スティックのX軸を取得
 	short GetLeftStickY(int gamepadIndex);		// 左スティックのY軸を取得
 	short GetRightStickX(int gamepadIndex);		// 右スティックのX軸を取得
 	short GetRightStickY(int gamepadIndex);		// 右スティックのY軸を取得
 
-	// 入力キーからXZ平面上の方向ベクトルを取得
+	// キー入力からXZ平面上の方向ベクトルを取得
 	void GetInputDirXZ(VECTOR& vec, int keyUp, int keyDown, int keyLeft, int keyRight);
+
+	// スティック入力からXZ平面上の方向ベクトルを取得
+	static constexpr float DEFAULT_STICK_DEADZONE = 0.2f;	// デッドゾーンのデフォルト値
+	void GetStickDirXZ(VECTOR& vec, int gamepadIndex, bool isLeftStick, float deadzone = DEFAULT_STICK_DEADZONE);
 
 	// 対象のボタンのうち指定したボタンだけが押された瞬間を判定
 	// MainButtonとOtherButtonsの型にはIntまたはPadInputを指定すること
@@ -114,6 +120,9 @@ public:
 
 		return (pattern1 || pattern2);
 	}
+
+	void SetKeyAndMouseEnabled(bool enabled) { isKeyAndMouseEnabled_ = enabled; }	// キーとマウスの両方を有効/無効にする
+	bool IsEnableKeyAndMouse() const { return isKeyAndMouseEnabled_; }	// キーとマウスの両方が有効か
 
 private:
 	InputManager();		// コンストラクタ
@@ -179,6 +188,8 @@ private:
 	std::map<int, Info> keyInfos_;			// キーと情報紐付け
 	std::map<int, MouseInfo> mouseInfos_;	// マウスボタンと情報の紐付け
 	PadInfo gamepadInfos_[GAMEPAD_NUM_MAX];	// ゲームパッドボタンと情報の紐付け
+
+	bool isKeyAndMouseEnabled_;	// キーとマウスの両方が有効か
 
 	// インスタンス
 	static InputManager* instance_;	// 自己

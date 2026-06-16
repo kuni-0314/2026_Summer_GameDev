@@ -7,19 +7,25 @@ bool PlayerState::CheckTransitions(Player* player)
 	auto ins = InputManager::GetInstance();
 
 	// 入力デバイスの種類を判定
+	bool enableKAM = ins->IsEnableKeyAndMouse();
 	bool isGamepadConnected = (GetJoypadNum() > 0);
-	constexpr int GAMEPAD_INDEX = 0;
 
 	// 攻撃入力のチェック（クールタイム無しの時）
 	bool isAttackInput = false;
 	if (isGamepadConnected)
 	{
-		// ゲームパッド：Xボタン
-		isAttackInput = ins->IsGamepadTrgUp(InputManager::PadInput::X, GAMEPAD_INDEX);
+		if (enableKAM)
+		{
+			isAttackInput = ins->IsGamepadTrgUp(InputManager::PadInput::X, player->GetPadNum());
+			isAttackInput = isAttackInput || ins->IsMouseTrgUp(MOUSE_INPUT_LEFT);
+		}
+		else
+		{
+			isAttackInput = ins->IsGamepadTrgUp(InputManager::PadInput::X, player->GetPadNum());
+		}
 	}
 	else
 	{
-		// キーボード：マウス左ボタン
 		isAttackInput = ins->IsMouseTrgUp(MOUSE_INPUT_LEFT);
 	}
 
@@ -33,13 +39,19 @@ bool PlayerState::CheckTransitions(Player* player)
 	bool isJetInput = false;
 	if (isGamepadConnected)
 	{
-		// ゲームパッド：Bボタン
-		isJetInput = ins->IsGamepadTrgDown(InputManager::PadInput::B, GAMEPAD_INDEX);
+		if (enableKAM)
+		{
+			isJetInput = ins->IsGamepadTrgDown(InputManager::PadInput::B, player->GetPadNum());
+			isJetInput = isJetInput || ins->IsMouseTrgDown(MOUSE_INPUT_RIGHT);
+		}
+		else
+		{
+			isJetInput = ins->IsGamepadTrgDown(InputManager::PadInput::B, player->GetPadNum());
+		}
 	}
 	else
 	{
-		// キーボード：Eキー
-		isJetInput = ins->IsTrgDown(KEY_INPUT_E);
+		isJetInput = ins->IsMouseTrgDown(MOUSE_INPUT_RIGHT);
 	}
 
 	if (isJetInput)
@@ -52,17 +64,19 @@ bool PlayerState::CheckTransitions(Player* player)
 	bool isJumpInput = false;
 	if (isGamepadConnected)
 	{
-		// ゲームパッド：Aボタン（ダッシュと兼用）
-		// 地上にいる時のみジャンプ可能
-		if (!player->IsAir() && !player->IsJump())
+		if (enableKAM)
 		{
-			isJumpInput = ins->IsGamepadTrgDown(InputManager::PadInput::A, GAMEPAD_INDEX);
+			isJumpInput = ins->IsGamepadNew(InputManager::PadInput::A, player->GetPadNum());
+			isJumpInput = isJumpInput || ins->IsNew(KEY_INPUT_SPACE);
+		}
+		else
+		{
+			isJumpInput = ins->IsGamepadNew(InputManager::PadInput::A, player->GetPadNum());
 		}
 	}
 	else
 	{
-		// キーボード：スペースキー
-		isJumpInput = ins->IsTrgDown(KEY_INPUT_SPACE);
+		isJumpInput = ins->IsNew(KEY_INPUT_SPACE);
 	}
 
 	if (!player->IsAir() && !player->IsJump() && isJumpInput)

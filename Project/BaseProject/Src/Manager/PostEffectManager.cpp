@@ -13,41 +13,41 @@ void PostEffectManager::Init()
 {
 	if (isInitialized_) return;
 
-	// 各エフェクトの初期化
-	InitializeEffect(EFFECT_TYPE::NORMAL, "Normal.cso");
-	InitializeEffect(EFFECT_TYPE::MONO, "Monotone.cso");
-	InitializeEffect(EFFECT_TYPE::SEPIA, "Sepia.cso");
-	InitializeEffect(EFFECT_TYPE::INVERT, "Invert.cso");
-	InitializeEffect(EFFECT_TYPE::MOSAIC, "Mosaic.cso");
-	InitializeEffect(EFFECT_TYPE::CHROM_ABR, "ChromaticAberration.cso");
-	InitializeEffect(EFFECT_TYPE::VIGNETTE, "Vignette.cso");
-	InitializeEffect(EFFECT_TYPE::SCANLINE, "Scanline.cso");
-	InitializeEffect(EFFECT_TYPE::POSTERIZE, "Posterize.cso");
-	InitializeEffect(EFFECT_TYPE::GLITCH, "Glitch.cso");
-	InitializeEffect(EFFECT_TYPE::EMBOSS, "Emboss.cso");
-	InitializeEffect(EFFECT_TYPE::RETROWAVE, "RetroWave.cso");
-	InitializeEffect(EFFECT_TYPE::BLOOM, "Bloom.cso");
-	InitializeEffect(EFFECT_TYPE::RIPPLE, "Ripple.cso");
-	InitializeEffect(EFFECT_TYPE::RGB_SPLIT, "RGBSplit.cso");
-	InitializeEffect(EFFECT_TYPE::PIXELATE, "Pixelate.cso");
-	InitializeEffect(EFFECT_TYPE::SWIRL, "Swirl.cso");
-	InitializeEffect(EFFECT_TYPE::RADIAL_BLUR, "RadialBlur.cso");
-	InitializeEffect(EFFECT_TYPE::HUE_SHIFT, "HueShift.cso");
-	InitializeEffect(EFFECT_TYPE::WAVE, "Wave.cso");
-	InitializeEffect(EFFECT_TYPE::EDGE_DETECT, "EdgeDetection.cso");
-	InitializeEffect(EFFECT_TYPE::OLD_FILM, "OldFilm.cso");
-	InitializeEffect(EFFECT_TYPE::NIGHT_VISION, "NightVision.cso");
-	InitializeEffect(EFFECT_TYPE::LIQUID_DIST, "LiquidDistortion.cso");
-	InitializeEffect(EFFECT_TYPE::PINHOLE, "Pinhole.cso");
-	InitializeEffect(EFFECT_TYPE::SPEED_LINES, "SpeedLines.cso");
-	InitializeEffect(EFFECT_TYPE::FROSTED_GLASS, "FrostedGlass.cso");
-	InitializeEffect(EFFECT_TYPE::DOT_MATRIX, "DotMatrix.cso");
-	InitializeEffect(EFFECT_TYPE::DEPTH_FOG, "DepthFog.cso");
-	InitializeEffect(EFFECT_TYPE::DIGITAL_RAIN, "DigitalRain.cso");
-	InitializeEffect(EFFECT_TYPE::STROBE, "Strobe.cso");
-	InitializeEffect(EFFECT_TYPE::SNOW_STORM, "SnowStorm.cso");
-	InitializeEffect(EFFECT_TYPE::SCREEN_SHAKE, "ScreenShake.cso");
-	InitializeEffect(EFFECT_TYPE::CRT, "CRT.cso");
+	// 各エフェクトの初期化(第3引数はFLOAT4の個数)
+	InitializeEffect(EFFECT_TYPE::NORMAL, "Normal.cso", 1);
+	InitializeEffect(EFFECT_TYPE::MONO, "Monotone.cso", 1);
+	InitializeEffect(EFFECT_TYPE::SEPIA, "Sepia.cso", 1);
+	InitializeEffect(EFFECT_TYPE::INVERT, "Invert.cso", 1);
+	InitializeEffect(EFFECT_TYPE::MOSAIC, "Mosaic.cso", 1);
+	InitializeEffect(EFFECT_TYPE::CHROM_ABR, "ChromaticAberration.cso", 1);
+	InitializeEffect(EFFECT_TYPE::VIGNETTE, "Vignette.cso", 1);
+	InitializeEffect(EFFECT_TYPE::SCANLINE, "Scanline.cso", 1);
+	InitializeEffect(EFFECT_TYPE::POSTERIZE, "Posterize.cso", 1);
+	InitializeEffect(EFFECT_TYPE::GLITCH, "Glitch.cso", 1);
+	InitializeEffect(EFFECT_TYPE::EMBOSS, "Emboss.cso", 1);
+	InitializeEffect(EFFECT_TYPE::RETROWAVE, "RetroWave.cso", 1);
+	InitializeEffect(EFFECT_TYPE::BLOOM, "Bloom.cso", 1);
+	InitializeEffect(EFFECT_TYPE::RIPPLE, "Ripple.cso", 1);
+	InitializeEffect(EFFECT_TYPE::RGB_SPLIT, "RGBSplit.cso", 1);
+	InitializeEffect(EFFECT_TYPE::PIXELATE, "Pixelate.cso", 1);
+	InitializeEffect(EFFECT_TYPE::SWIRL, "Swirl.cso", 1);
+	InitializeEffect(EFFECT_TYPE::RADIAL_BLUR, "RadialBlur.cso", 1);
+	InitializeEffect(EFFECT_TYPE::HUE_SHIFT, "HueShift.cso", 1);
+	InitializeEffect(EFFECT_TYPE::WAVE, "Wave.cso", 1);
+	InitializeEffect(EFFECT_TYPE::EDGE_DETECT, "EdgeDetection.cso", 1);
+	InitializeEffect(EFFECT_TYPE::OLD_FILM, "OldFilm.cso", 1);
+	InitializeEffect(EFFECT_TYPE::NIGHT_VISION, "NightVision.cso", 1);
+	InitializeEffect(EFFECT_TYPE::LIQUID_DIST, "LiquidDistortion.cso", 1);
+	InitializeEffect(EFFECT_TYPE::PINHOLE, "Pinhole.cso", 1);
+	InitializeEffect(EFFECT_TYPE::SPEED_LINES, "SpeedLines.cso", 1);
+	InitializeEffect(EFFECT_TYPE::FROSTED_GLASS, "FrostedGlass.cso", 1);
+	InitializeEffect(EFFECT_TYPE::DOT_MATRIX, "DotMatrix.cso", 1);
+	InitializeEffect(EFFECT_TYPE::DEPTH_FOG, "DepthFog.cso", 1);
+	InitializeEffect(EFFECT_TYPE::DIGITAL_RAIN, "DigitalRain.cso", 1);
+	InitializeEffect(EFFECT_TYPE::STROBE, "Strobe.cso", 1);
+	InitializeEffect(EFFECT_TYPE::SNOW_STORM, "SnowStorm.cso", 1);
+	InitializeEffect(EFFECT_TYPE::SCREEN_SHAKE, "ScreenShake.cso", 2);
+	InitializeEffect(EFFECT_TYPE::CRT, "CRT.cso", 1);
 
 	isInitialized_ = true;
 }
@@ -57,12 +57,20 @@ void PostEffectManager::Release()
 	materials_.clear();
 	renderers_.clear();
 	customParams_.clear();
+	
+	// 一時スクリーンを解放
+	for (int screen : tempScreens_)
+	{
+		DeletePostEffectScreen(screen);
+	}
+	tempScreens_.clear();
+	
 	isInitialized_ = false;
 }
 
-void PostEffectManager::InitializeEffect(const EFFECT_TYPE type, const char* shaderName)
+void PostEffectManager::InitializeEffect(const EFFECT_TYPE type, const char* shaderName, int paramCount)
 {
-	materials_[type] = std::make_unique<PixelMaterial>(shaderName, 1);
+	materials_[type] = std::make_unique<PixelMaterial>(shaderName, paramCount);
 	renderers_[type] = std::make_unique<PixelRenderer>(*materials_[type]);
 	renderers_[type]->MakeSquareVertex();
 }
@@ -78,27 +86,29 @@ void PostEffectManager::ApplyEffect(const EFFECT_TYPE type, const int srcScreen,
 	materials_[type]->SetTexture(0, srcScreen);
 
 	FLOAT4* constBufsPtr = materials_[type]->GetConstantBuffer();
-	FLOAT4 bufs = {};
+	EffectParams params;
 	
 	// カスタムパラメータがあればそれを使用、なければデフォルト
 	if (customParams_.contains(type))
 	{
-		//const auto& custom = customParams_[type];
-		const auto& [x, y, z, w] = customParams_[type];
-		bufs.x = x;
-		bufs.y = y;
-		bufs.z = z;
-		bufs.w = w;
+		params = customParams_[type];
 	}
 	else
 	{
-		SetEffectParameters(type, bufs, time);
+		SetEffectParameters(type, params, time);
 	}
 
-	constBufsPtr->x = bufs.x;
-	constBufsPtr->y = bufs.y;
-	constBufsPtr->z = bufs.z;
-	constBufsPtr->w = bufs.w;
+	// 定数バッファに設定
+	// GPU用バッファのスロット数と、実際に設定されたパラメータ数の小さい方まで処理
+	const int bufferSlotCount = materials_[type]->constBufFloat4Size_;
+	const int paramCount = static_cast<int>(params.Size());
+	const int copyCount = min(bufferSlotCount, paramCount);
+	
+	for (int i = 0; i < copyCount; ++i)
+	{
+		// C++のvectorから → GPUバッファへ順番にコピー
+		constBufsPtr[i] = params[i];
+	}
 
 	materials_[type]->UpdateConstantBuffer(CONSTANT_BUF_SLOT_BEGIN_PS);
 	renderers_[type]->Draw();
@@ -113,6 +123,46 @@ void PostEffectManager::ApplyEffect(const EFFECT_TYPE type, const int srcScreen,
 	customParams_.erase(type); // 一時的なパラメータなので削除
 }
 
+void PostEffectManager::ApplyEffects(const std::vector<EFFECT_TYPE>& effectTypes, 
+                                     const int srcScreen, 
+                                     const int dstScreen, 
+                                     const float time)
+{
+	if (!isInitialized_) return;
+	
+	// エフェクトがない場合は元画像をコピー
+	if (effectTypes.empty())
+	{
+		SetDrawScreen(dstScreen);
+		ClearDrawScreen();
+		DrawGraph(0, 0, srcScreen, TRUE);
+		return;
+	}
+
+	// エフェクトが1つだけの場合
+	if (effectTypes.size() == 1)
+	{
+		ApplyEffect(effectTypes[0], srcScreen, dstScreen, time);
+		return;
+	}
+
+	// 必要な一時スクリーン数を確保 (エフェクト数 - 1)
+	const int tempScreenCount = static_cast<int>(effectTypes.size()) - 1;
+	EnsureTempScreens(tempScreenCount);
+
+	// 最初のエフェクト: srcScreen → tempScreens_[0]
+	ApplyEffect(effectTypes[0], srcScreen, tempScreens_[0], time);
+
+	// 中間のエフェクト: tempScreens_[i-1] → tempScreens_[i]
+	for (size_t i = 1; i < effectTypes.size() - 1; ++i)
+	{
+		ApplyEffect(effectTypes[i], tempScreens_[i - 1], tempScreens_[i], time);
+	}
+
+	// 最後のエフェクト: tempScreens_[last-1] → dstScreen
+	ApplyEffect(effectTypes.back(), tempScreens_[tempScreenCount - 1], dstScreen, time);
+}
+
 void PostEffectManager::SetCustomParams(const EFFECT_TYPE type, const EffectParams& params)
 {
 	customParams_[type] = params;
@@ -121,12 +171,7 @@ void PostEffectManager::SetCustomParams(const EFFECT_TYPE type, const EffectPara
 PostEffectManager::EffectParams PostEffectManager::GetDefaultParams(const EFFECT_TYPE type, const float time) const
 {
 	EffectParams params;
-	FLOAT4 bufs = {};
-	SetEffectParameters(type, bufs, time);
-	params.x = bufs.x;
-	params.y = bufs.y;
-	params.z = bufs.z;
-	params.w = bufs.w;
+	SetEffectParameters(type, params, time);
 	return params;
 }
 
@@ -143,144 +188,193 @@ void PostEffectManager::DeletePostEffectScreen(int screen)
 	}
 }
 
-void PostEffectManager::SetEffectParameters(EFFECT_TYPE type, FLOAT4& bufs, float time) const
+void PostEffectManager::EnsureTempScreens(int count)
 {
+	// 既存のスクリーンより多く必要な場合は追加作成
+	while (static_cast<int>(tempScreens_.size()) < count)
+	{
+		tempScreens_.push_back(CreatePostEffectScreen());
+	}
+}
+
+void PostEffectManager::SetEffectParameters(EFFECT_TYPE type, EffectParams& params, float time) const
+{
+	FLOAT4 buf = {};
+	
 	switch (type)
 	{
 	case EFFECT_TYPE::NORMAL:
-		bufs.x = time;
+		buf.x = time;
+		params.params.push_back(buf);
 		break;
 	case EFFECT_TYPE::MONO:
+		params.params.push_back(buf);
 		break;
 	case EFFECT_TYPE::SEPIA:
+		params.params.push_back(buf);
 		break;
 	case EFFECT_TYPE::INVERT:
+		params.params.push_back(buf);
 		break;
 	case EFFECT_TYPE::MOSAIC:
-		bufs.x = 16.0f;
-		bufs.y = 10.0f;
+		buf.x = 16.0f;
+		buf.y = 10.0f;
+		params.params.push_back(buf);
 		break;
 	case EFFECT_TYPE::CHROM_ABR:
-		bufs.x = 10.0f;
+		buf.x = 10.0f;
+		params.params.push_back(buf);
 		break;
 	case EFFECT_TYPE::VIGNETTE:
-		bufs.x = 0.6f;
-		bufs.y = 0.7f;
+		buf.x = 0.6f;
+		buf.y = 0.7f;
+		params.params.push_back(buf);
 		break;
 	case EFFECT_TYPE::SCANLINE:
-		bufs.x = 100.0f;
-		bufs.y = 0.3f;
+		buf.x = 100.0f;
+		buf.y = 0.3f;
+		params.params.push_back(buf);
 		break;
 	case EFFECT_TYPE::POSTERIZE:
-		bufs.x = 4.0f;
+		buf.x = 4.0f;
+		params.params.push_back(buf);
 		break;
 	case EFFECT_TYPE::GLITCH:
-		bufs.x = time;
+		buf.x = time;
+		params.params.push_back(buf);
 		break;
 	case EFFECT_TYPE::EMBOSS:
-		bufs.x = 0.001f;
-		bufs.y = 0.001f;
+		buf.x = 0.001f;
+		buf.y = 0.001f;
+		params.params.push_back(buf);
 		break;
 	case EFFECT_TYPE::RETROWAVE:
-		bufs.x = 0.5f;
+		buf.x = 0.5f;
+		params.params.push_back(buf);
 		break;
 	case EFFECT_TYPE::BLOOM:
-		bufs.x = 0.6f;
-		bufs.y = 0.8f;
+		buf.x = 0.6f;
+		buf.y = 0.8f;
+		params.params.push_back(buf);
 		break;
 	case EFFECT_TYPE::RIPPLE:
-		bufs.x = time;
-		bufs.y = 2.0f;
-		bufs.z = 1.5f;
+		buf.x = time;
+		buf.y = 2.0f;
+		buf.z = 1.5f;
+		params.params.push_back(buf);
 		break;
 	case EFFECT_TYPE::RGB_SPLIT:
-		bufs.x = 0.025f;
-		bufs.y = 0.05f;
-		bufs.z = 0.025f;
+		buf.x = 0.025f;
+		buf.y = 0.05f;
+		buf.z = 0.025f;
+		params.params.push_back(buf);
 		break;
 	case EFFECT_TYPE::PIXELATE:
-		bufs.x = 0.002f;
+		buf.x = 0.002f;
+		params.params.push_back(buf);
 		break;
 	case EFFECT_TYPE::SWIRL:
-		bufs.x = time;
-		bufs.y = 1.0f;
-		bufs.z = 1.0f;
+		buf.x = time;
+		buf.y = 1.0f;
+		buf.z = 1.0f;
+		params.params.push_back(buf);
 		break;
 	case EFFECT_TYPE::RADIAL_BLUR:
-		bufs.x = -0.1f;
+		buf.x = -0.1f;
+		params.params.push_back(buf);
 		break;
 	case EFFECT_TYPE::HUE_SHIFT:
-		bufs.x = time;
+		buf.x = time;
+		params.params.push_back(buf);
 		break;
 	case EFFECT_TYPE::WAVE:
-		bufs.x = time;
-		bufs.y = 0.1f;
-		bufs.z = 2.0f;
+		buf.x = time;
+		buf.y = 0.1f;
+		buf.z = 2.0f;
+		params.params.push_back(buf);
 		break;
 	case EFFECT_TYPE::EDGE_DETECT:
-		bufs.x = 0.15f;
+		buf.x = 0.15f;
+		params.params.push_back(buf);
 		break;
 	case EFFECT_TYPE::OLD_FILM:
-		bufs.x = time;
+		buf.x = time;
+		params.params.push_back(buf);
 		break;
 	case EFFECT_TYPE::NIGHT_VISION:
-		bufs.x = time;
+		buf.x = time;
+		params.params.push_back(buf);
 		break;
 	case EFFECT_TYPE::LIQUID_DIST:
-		bufs.x = time;
-		bufs.y = 0.1f;
-		bufs.z = 3.0f;
+		buf.x = time;
+		buf.y = 0.1f;
+		buf.z = 3.0f;
+		params.params.push_back(buf);
 		break;
 	case EFFECT_TYPE::PINHOLE:
-		bufs.x = 0.5f;
-		bufs.y = 2.0f;
+		buf.x = 0.5f;
+		buf.y = 2.0f;
+		params.params.push_back(buf);
 		break;
 	case EFFECT_TYPE::SPEED_LINES:
-		bufs.x = time;
-		bufs.y = 100.0f;
-		bufs.z = 100.0f;
+		buf.x = time;
+		buf.y = 100.0f;
+		buf.z = 100.0f;
+		params.params.push_back(buf);
 		break;
 	case EFFECT_TYPE::FROSTED_GLASS:
-		bufs.x = 1.0f;
-		bufs.y = 1.0f;
+		buf.x = 1.0f;
+		buf.y = 1.0f;
+		params.params.push_back(buf);
 		break;
 	case EFFECT_TYPE::DOT_MATRIX:
-		bufs.x = 100.0f;
-		bufs.y = 1.0f;
+		buf.x = 100.0f;
+		buf.y = 1.0f;
+		params.params.push_back(buf);
 		break;
 	case EFFECT_TYPE::DEPTH_FOG:
-		bufs.x = 0.0f;
-		bufs.y = 1.0f;
-		bufs.z = 1.0f;
+		buf.x = 0.0f;
+		buf.y = 1.0f;
+		buf.z = 1.0f;
+		params.params.push_back(buf);
 		break;
 	case EFFECT_TYPE::DIGITAL_RAIN:
-		bufs.x = time;
-		bufs.y = 3.0f;
-		bufs.z = 64.0f;
+		buf.x = time;
+		buf.y = 3.0f;
+		buf.z = 64.0f;
+		params.params.push_back(buf);
 		break;
 	case EFFECT_TYPE::STROBE:
-		bufs.x = time;
-		bufs.y = 1.0f;
-		bufs.z = 2.0f;
+		buf.x = time;
+		buf.y = 1.0f;
+		buf.z = 2.0f;
+		params.params.push_back(buf);
 		break;
 	case EFFECT_TYPE::SNOW_STORM:
-		bufs.x = time;
-		bufs.y = 40.0f;
-		bufs.z = -1.0f;
+		buf.x = time;
+		buf.y = 40.0f;
+		buf.z = -1.0f;
+		params.params.push_back(buf);
 		break;
 	case EFFECT_TYPE::SCREEN_SHAKE:
-		bufs.x = time;
-		bufs.y = 0.01f;
-		bufs.z = 0.01f;
-		bufs.w = 0.01f;
+		buf.x = time;
+		buf.y = 0.01f;
+		buf.z = 0.01f;
+		buf.w = 0.01f;
+		params.params.push_back(buf);
+		buf = {};
+		buf.x = 100.0f;
+		params.params.push_back(buf);
 		break;
 	case EFFECT_TYPE::CRT:
-		bufs.x = time;
-		bufs.y = 1.0f;
-		bufs.z = 0.5f;
-		bufs.w = 0.25f;
+		buf.x = time;
+		buf.y = 1.0f;
+		buf.z = 0.5f;
+		buf.w = 0.25f;
+		params.params.push_back(buf);
 		break;
 	default:
+		params.params.push_back(buf);
 		break;
 	}
 }

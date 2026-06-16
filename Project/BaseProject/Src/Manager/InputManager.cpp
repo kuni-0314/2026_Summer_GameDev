@@ -88,7 +88,7 @@ bool InputManager::Init()
 
 	Add(KEY_INPUT_SPACE);	// シーン遷移
 
-	//Add(KEY_INPUT_RETURN);	// 攻撃
+	Add(KEY_INPUT_RETURN);	// 攻撃
 
 	Add(KEY_INPUT_RSHIFT);		// ダッシュ
 	Add(KEY_INPUT_BACKSLASH);
@@ -215,6 +215,29 @@ void InputManager::Clear()
 bool InputManager::IsNew(int key)
 {
 	return keyInfos_[key].keyNew;
+}
+
+// キーが押されているか
+bool InputManager::IsNew(std::initializer_list<int> keys, bool isAnd)
+{
+	// 1フレームで指定のキーを同時押しするとか難しいだろうけどね
+	bool result = isAnd ? true : false;
+
+	for (int key : keys)
+	{
+		bool isKeyNew = IsNew(key);
+		if (isAnd)
+		{
+			result = result && isKeyNew;
+			if (!result) break; // 1つでも押されていないキーがあれば終了
+		}
+		else
+		{
+			result = result || isKeyNew;
+			if (result) break; // 1つでも押されているキーがあれば終了
+		}
+	}
+	return result;
 }
 
 // キーが今押されたか
@@ -384,7 +407,7 @@ void InputManager::GetStick(int gamepadIndex, short& leftX, short& leftY, short&
 }
 
 // 左スティックの値を取得
-void InputManager::GetLeftStick(int gamepadIndex, short& x, short& y)
+void InputManager::GetLeftStick(int gamepadIndex, short& x, short& y, float deadzone)
 {
 	if (gamepadIndex < 0 || gamepadIndex >= GAMEPAD_NUM_MAX)
 	{
@@ -392,12 +415,24 @@ void InputManager::GetLeftStick(int gamepadIndex, short& x, short& y)
 		y = 0;
 		return;
 	}
-	x = gamepadInfos_[gamepadIndex].AKeyLX;
-	y = gamepadInfos_[gamepadIndex].AKeyLY;
+
+	constexpr float STICK_MAX = 32767.0f;
+	float normalizedX = gamepadInfos_[gamepadIndex].AKeyLX / STICK_MAX;
+	float normalizedY = gamepadInfos_[gamepadIndex].AKeyLY / STICK_MAX;
+	if (abs(normalizedX) > deadzone || abs(normalizedY) > deadzone)
+	{
+		x = gamepadInfos_[gamepadIndex].AKeyLX;
+		y = gamepadInfos_[gamepadIndex].AKeyLY;
+	}
+	else
+	{
+		x = 0;
+		y = 0;
+	}
 }
 
 // 右スティックの値を取得
-void InputManager::GetRightStick(int gamepadIndex, short& x, short& y)
+void InputManager::GetRightStick(int gamepadIndex, short& x, short& y, float deadzone)
 {
 	if (gamepadIndex < 0 || gamepadIndex >= GAMEPAD_NUM_MAX)
 	{
@@ -405,8 +440,19 @@ void InputManager::GetRightStick(int gamepadIndex, short& x, short& y)
 		y = 0;
 		return;
 	}
-	x = gamepadInfos_[gamepadIndex].AKeyRX;
-	y = gamepadInfos_[gamepadIndex].AKeyRY;
+	constexpr float STICK_MAX = 32767.0f;
+	float normalizedX = gamepadInfos_[gamepadIndex].AKeyRX / STICK_MAX;
+	float normalizedY = gamepadInfos_[gamepadIndex].AKeyRY / STICK_MAX;
+	if (abs(normalizedX) > deadzone || abs(normalizedY) > deadzone)
+	{
+		x = gamepadInfos_[gamepadIndex].AKeyRX;
+		y = gamepadInfos_[gamepadIndex].AKeyRY;
+	}
+	else
+	{
+		x = 0;
+		y = 0;
+	}
 }
 
 // 左スティックのX軸を取得
@@ -444,6 +490,31 @@ void InputManager::GetInputDirXZ(VECTOR& vec, int keyUp, int keyDown, int keyLef
 	if (IsNew(keyDown)) vec.z = -1.0f;
 	if (IsNew(keyLeft)) vec.x = -1.0f;
 	if (IsNew(keyRight)) vec.x = 1.0f;
+}
+
+void InputManager::GetStickDirXZ(VECTOR& vec, int gamepadIndex, bool isLeftStick, float deadzone)
+{
+	// スティック入力を方向ベクトルに変換（デッドゾーン処理）
+	constexpr float STICK_MAX = 32767.0f;
+	float normalizedX;
+	float normalizedY;
+	if (isLeftStick)
+	{
+		normalizedX = gamepadInfos_[gamepadIndex].AKeyLX / STICK_MAX;
+		normalizedY = gamepadInfos_[gamepadIndex].AKeyLY / STICK_MAX;
+	}
+	else
+	{
+		normalizedX = gamepadInfos_[gamepadIndex].AKeyRX / STICK_MAX;
+		normalizedY = gamepadInfos_[gamepadIndex].AKeyRY / STICK_MAX;
+	}
+
+	if (abs(normalizedX) > deadzone || abs(normalizedY) > deadzone)
+	{
+		vec.x = normalizedX;
+		//vec.y = normalizedY;
+		vec.z = normalizedY;
+	}
 }
 
 // ゲームパッドの更新
