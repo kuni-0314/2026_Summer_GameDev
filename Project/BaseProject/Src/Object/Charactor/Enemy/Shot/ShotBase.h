@@ -68,6 +68,8 @@ protected:
 	int cntAlive_;
 	// 弾の衝突判定用半径
 	float collisionRadius_;
+
+
 	// パラメータ設定
 	virtual void SetParam(void) = 0;
 	// 弾の生存期間の減少

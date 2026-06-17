@@ -18,6 +18,7 @@ public:
 		IDLE,
 		WALK,
 		ATTACK,
+		CHARGE,
 		END,
 		HIT
 	};
@@ -31,6 +32,7 @@ public:
 		MOVE,
 		ATTACK,
 		WAIT,
+		CHARGE,
 		HIT,
 		DIE,
 		END
@@ -40,7 +42,7 @@ public:
 	struct SHOT
 	{
 		bool isAlive_ = false;
-		float speed = 8.0f;
+		float speed = 4.0f;
 		int life = 180;
 		float homingPower = 0.05f;
 		VECTOR dir_;
@@ -76,7 +78,6 @@ private:
 
 	ItemManger* itemManager_;
 
-
 	std::vector<SHOT> shots_;
 
 
@@ -87,6 +88,11 @@ private:
 	static constexpr int  ANIM_INDX_HIT = 4;
 	//END
 	static constexpr int  ANIM_INDX_DEAD = 0;
+	//チャージ
+	static constexpr int  ANIM_INDX_CHARGE = 5;
+	
+	//弾待機カウント
+	static constexpr int  SHOT_CHARGE_COUNT = 60;
 
 	// モデルの大きさ
 	static constexpr float SCALE = 0.3f;
@@ -116,7 +122,7 @@ private:
 	static constexpr float COL_SWICH_RADIUS = 250.0f;
 
 	// 攻撃切り替え距離
-	static constexpr float SWICH_DISTANCE = 300.0f;
+	static constexpr float SWICH_DISTANCE = 350.0f;
 
 	static constexpr float ATTACK_MOVE_SPEED = 3.0f;
 
@@ -126,6 +132,8 @@ private:
 	const float HOVER_SPEED = 2.0f;
 
 	int shotmodel_;
+
+	int shotCharge_;
 
 	//攻撃判定
 	bool isAttack_;
@@ -168,6 +176,7 @@ private:
 	void ChangeStateWait(void);
 	void ChangeStateHit(void);
 	void ChangeStateEnd(void);
+	void ChangeStateCharge(void);
 
 	// 更新系
 	void UpdateThink(void);
@@ -178,6 +187,7 @@ private:
 	void UpdateHit(void);
 	void UpdateDie(void);
 	void UpdateEnd(void);
+	void UpdateCharge(void);
 
 	//弾発射時
 	void AttackShot(void);

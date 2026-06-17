@@ -23,7 +23,8 @@ public:
 		ENEMY,
 		VIEW_RANGE,
 		ENEMY_ATTACK,
-		ITEM
+		ITEM,
+		ENEMY_RASE_ATTACK
 
 	};
 	// コンストラクタ

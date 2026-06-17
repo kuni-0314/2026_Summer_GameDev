@@ -47,6 +47,8 @@ protected:
 	// 初期位置
 	const VECTOR defaultPos_;
 	float movableRange_;
+
+	float playerRad_;
 	int power_;
 	//攻撃用モデル(魔法の弾とか）
 	int attackModle_;

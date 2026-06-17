@@ -129,8 +129,7 @@ private:
 	VECTOR toPlayer_;
 	//プレイヤー座標
 	VECTOR playerPos_;
-	//プレイヤー判定球の半径
-	float playerRad_;
+
 
 
 

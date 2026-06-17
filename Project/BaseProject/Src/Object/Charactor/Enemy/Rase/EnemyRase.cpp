@@ -4,6 +4,7 @@
 #include "../../../Collider/Capsule/ColliderCapsule.h"
 #include "../../../Collider/Sphere/ColliderSphere.h"
 #include "../../../Collider/Line/ColliderLine.h"
+#include "../../../Collider/Model/ColliderModel.h"
 #include "../../../Common/AnimationController.h"
 #include "../../../../Utility/AsoUtility.h"
 #include "../../../../Manager/InputManager.h"
@@ -44,6 +45,7 @@ void EnemyRase::Draw(void)
 	else if (next == STATE::ATTACK) name = "ATTACK";
 	else if (next == STATE::IDLE) name = "IDLE";
 	else if (next == STATE::MOVE) name = "MOVE";
+	else if (next == STATE::CHARGE) name = "CHARGE";
 
 	DrawFormatString(0, 400, GetColor(255, 255, 255), "STATE: %s", name);
 }
@@ -89,6 +91,7 @@ void EnemyRase::InitCollider(void)
 		COL_CAPSULE_TOP_LOCAL_POS, COL_CAPSULE_DOWN_LOCAL_POS,
 		COL_CAPSULE_RADIUS);
 	ownColliders_.emplace(static_cast<int>(COLLIDER_TYPE::CAPSULE), colCapsule);
+
 }
 
 void EnemyRase::InitAnimation(void)
@@ -101,6 +104,12 @@ void EnemyRase::InitAnimation(void)
 	//待機
 	type = static_cast<int>(ANIM_TYPE::IDLE);
 	animationController_->AddInFbx(type, 20.0f, ANIM_INDX_FRY);
+	//攻撃待機
+	type = static_cast<int>(ANIM_TYPE::CHARGE);
+	animationController_->AddInFbx(type, 20.0f, ANIM_INDX_CHARGE);
+
+	type = static_cast<int>(ANIM_TYPE::HIT);
+	animationController_->AddInFbx(type, 20.0f, ANIM_INDX_HIT);
 
 	animationController_->Play(static_cast<int>(ANIM_TYPE::IDLE), true);
 }
@@ -122,7 +131,17 @@ void EnemyRase::InitPost(void)
 		std::bind(&EnemyRase::ChangeStateAttack, this));
 	stateChanges_.emplace(static_cast<int>(STATE::WAIT),
 		std::bind(&EnemyRase::ChangeStateWait, this));
+	stateChanges_.emplace(static_cast<int>(STATE::CHARGE),
+		std::bind(&EnemyRase::ChangeStateCharge, this));
+	stateChanges_.emplace(static_cast<int>(STATE::HIT),
+		std::bind(&EnemyRase::ChangeStateHit, this));
+	stateChanges_.emplace(static_cast<int>(STATE::CHARGE),
+		std::bind(&EnemyRase::ChangeStateCharge, this));
+	stateChanges_.emplace(static_cast<int>(STATE::DIE),
+		std::bind(&EnemyRase::ChangeStateEnd, this));
 
+	shotCharge_ =  SHOT_CHARGE_COUNT;
+	;
 
 	// 初期状態設定
 	ChangeState(STATE::THINK);
@@ -152,6 +171,18 @@ void EnemyRase::UpdateProcess(void)
 	for (auto& shot : shots_)
 	{
 		shot.shotTransform_.Update();
+	}
+
+
+	auto const ins = InputManager::GetInstance();
+
+	// 1キー or マウス左クリックでプレイヤーが近くにいる場合
+	if (ins->IsTrgDown(KEY_INPUT_1) ||
+		(ins->IsMouseTrgDown(MOUSE_INPUT_LEFT) && VSize(VSub(playerPos_, transform_.pos)) < 300.0f))
+	{
+		Damege(1);
+		ChangeState(STATE::HIT);
+
 	}
 }
 
@@ -226,10 +257,34 @@ void EnemyRase::ChangeStateWait(void)
 
 void EnemyRase::ChangeStateHit(void)
 {
+	stateUpdate_ = std::bind(&EnemyRase::UpdateHit, this);
+
+	// ランダムな待機時間
+	step_ = 3.0f + static_cast<float>(GetRand(3));
+	// まだプレイヤーの攻撃が実装されいないのでその場で
+	movePow_ = AsoUtility::VECTOR_ZERO;
+	// 待機アニメーション再生
+	animationController_->Play(static_cast<int>(ANIM_TYPE::HIT), false);
 }
 
 void EnemyRase::ChangeStateEnd(void)
 {
+	stateUpdate_ = std::bind(&EnemyRase::UpdateDie, this);
+
+}
+
+void EnemyRase::ChangeStateCharge(void)
+{
+	stateUpdate_ = std::bind(&EnemyRase::UpdateCharge, this);
+
+	shotFired_ = false;
+
+	// ランダムな待機時間
+	step_ = 3.0f + static_cast<float>(GetRand(3));
+	// 移動量ゼロ
+	movePow_ = AsoUtility::VECTOR_ZERO;
+	// 待機アニメーション再生
+	animationController_->Play(static_cast<int>(ANIM_TYPE::CHARGE), true);
 }
 
 void EnemyRase::ChangeStateThink(void)
@@ -273,7 +328,7 @@ void EnemyRase::UpdateMove(void)
 	//攻撃範囲に入るまで移動
 	if (distance_ < SWICH_DISTANCE)
 	{
-		ChangeState(STATE::ATTACK);
+		ChangeState(STATE::CHARGE);
 	}
 
 	// 移動する ← 追加
@@ -290,7 +345,7 @@ void EnemyRase::UpdateThink(void)
 	//攻撃するか否や
 	if (distance_ < SWICH_DISTANCE)
 	{
-		ChangeState(STATE::ATTACK);
+		ChangeState(STATE::CHARGE);
 	}
 	else
 	{
@@ -300,14 +355,44 @@ void EnemyRase::UpdateThink(void)
 
 void EnemyRase::UpdateHit(void)
 {
+	if (hp_ <= 0)
+	{
+		ChangeState(STATE::DIE);
+		return;
+	}
+
+	if (animationController_->IsEnd())
+	{
+		ChangeState(STATE::THINK);
+		return;
+	}
 }
 
 void EnemyRase::UpdateDie(void)
 {
+	if (animationController_->IsEnd())
+	{
+		MV1DeleteModel(transform_.modelId);
+		ChangeState(STATE::END);
+	}
+	movePow_ = AsoUtility::VECTOR_ZERO;
 }
 
 void EnemyRase::UpdateEnd(void)
 {
+}
+
+void EnemyRase::UpdateCharge(void)
+{
+	shotCharge_--;
+
+	if (shotCharge_ <= 0)
+	{
+		ChangeState(STATE::ATTACK);
+		shotCharge_ = SHOT_CHARGE_COUNT;
+	}
+	// 移動量ゼロ
+	movePow_ = AsoUtility::VECTOR_ZERO;
 }
 
 void EnemyRase::AttackShot(void)
@@ -345,23 +430,40 @@ void EnemyRase::UpdateShot(void)
 	{
 		if (!shot.isAlive_) continue;
 
-		VECTOR targetDir =
-			VNorm(VSub(player_->GetPos(),
+		if (AsoUtility::IsHitSpheres(shot.shotTransform_.pos, COL_SPHERE_RADIUS, playerPos_, playerRad_))
+		{
+			player_->Damege(1);
+			shot.life = 0;
+		}
+
+		shot.speed += 0.05;
+
+		if (shot.life > 60)
+		{
+			VECTOR targetDir =
+				VNorm(VSub(player_->GetPos(),
 					shot.shotTransform_.pos));
 
-		shot.dir_ =
-			VNorm(VAdd(VScale(shot.dir_,1.0f - shot.homingPower),
-				VScale(targetDir,shot.homingPower)));
+			shot.dir_ =
+				VNorm(VAdd(VScale(shot.dir_, 1.0f - shot.homingPower),
+					VScale(targetDir, shot.homingPower)));
+		}
 
 		shot.shotTransform_.pos =
 			VAdd(shot.shotTransform_.pos,
 				VScale(shot.dir_, shot.speed));
+
+		if (shot.shotTransform_.pos.y <= 0)
+		{
+			shot.shotTransform_.pos.y = 0;
+		}
 
 		shot.life--;
 
 		if (shot.life <= 0)
 		{
 			shot.isAlive_ = false;
+			shot.speed = 3.0f;
 			ChangeState(STATE::THINK);
 		}
 	}
