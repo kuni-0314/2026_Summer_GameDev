@@ -3,6 +3,7 @@
 class GameScene;
 class AnimationController;
 class PlayerState;
+class SwordBase;
 
 class Player : public CharactorBase
 {
@@ -225,5 +226,6 @@ private:
 	// ç∑ï™
 	VECTOR animDiffPos_;
 
-	void ApplyRootMotion();
+	// åï
+	SwordBase* sword_;
 };

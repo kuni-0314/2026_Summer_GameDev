@@ -36,6 +36,11 @@ public:
 		BATTLE_WALL,		//ステージ壁
 		ITEM_HP,			//体力アイテム
 		ITEM_SKILL,			//スキルアイテム
+		KEY_BLADE_1,	//キーブレード１
+		KEY_BLADE_2,	//キーブレード２
+		KEY_BLADE_3,	//キーブレード３
+
+		MAX
 	};
 
 	// 明示的にインステンスを生成する

@@ -15,8 +15,6 @@
     <ClCompile Include="Src\Object\Item\HP\HpItem.cpp" />
     <ClCompile Include="Src\Object\Item\ItemManger.cpp" />
     <ClCompile Include="Src\Object\Item\ItemBase.cpp" />
-    <ClCompile Include="Src\Object\SkillBase.cpp" />
-    <ClCompile Include="Src\Object\Skill\SkillManger.cpp" />
     <ClCompile Include="Src\Object\Field.cpp" />
     <ClCompile Include="Src\Object\FieldManager.cpp" />
     <ClCompile Include="Src\Object\Cell\CellAttack.cpp" />
@@ -62,10 +60,17 @@
     <ClCompile Include="Src\Object\Actor\Stage\StageWall.cpp" />
     <ClCompile Include="Src\Scene\ClearScene.cpp" />
     <ClCompile Include="Src\Scene\OverScene.cpp" />
-    <ClCompile Include="Src\Object\Weapon\WeaponBase.cpp" />
-    <ClCompile Include="Src\Object\Weapon\Sword\Sword.cpp" />
+    <ClCompile Include="Src\Object\Weapon\Sword\SwordBase.cpp" />
+    <ClCompile Include="Src\Object\Weapon\Sword\KeyBlade1.cpp" />
     <ClCompile Include="Src\Shader\PixelMaterial.cpp" />
     <ClCompile Include="Src\Shader\PixelRenderer.cpp" />
+    <ClCompile Include="Src\Manager\PostEffectManager.cpp" />
+    <ClCompile Include="Src\Object\Charactor\Enemy\Rase\EnemyRase.cpp" />
+    <ClCompile Include="Src\Object\Item\ItemSkill\SkillItem.cpp" />
+    <ClCompile Include="Src\Object\Skill\SkillBase.cpp" />
+    <ClCompile Include="Src\Object\Skill\SkillManager.cpp" />
+    <ClCompile Include="Src\Object\Weapon\Sword\KeyBlade2.cpp" />
+    <ClCompile Include="Src\Object\Weapon\Sword\KeyBlade3.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Src\Sound\SoundTable.h" />
@@ -82,8 +87,6 @@
     <ClInclude Include="Src\Object\Item\HP\HpItem.h" />
     <ClInclude Include="Src\Object\Item\ItemManger.h" />
     <ClInclude Include="Src\Object\Item\ItemBase.h" />
-    <ClInclude Include="Src\Object\SkillBase.h" />
-    <ClInclude Include="Src\Object\Skill\SkillManger.h" />
     <ClInclude Include="Src\Object\Field.h" />
     <ClInclude Include="Src\Object\FieldManager.h" />
     <ClInclude Include="Src\Object\Cell\CellAttack.h" />
@@ -129,10 +132,17 @@
     <ClInclude Include="Src\Object\Actor\Stage\StageWall.h" />
     <ClInclude Include="Src\Scene\ClearScene.h" />
     <ClInclude Include="Src\Scene\OverScene.h" />
-    <ClInclude Include="Src\Object\Weapon\WeaponBase.h" />
-    <ClInclude Include="Src\Object\Weapon\Sword\Sword.h" />
+    <ClInclude Include="Src\Object\Weapon\Sword\SwordBase.h" />
+    <ClInclude Include="Src\Object\Weapon\Sword\KeyBlade1.h" />
     <ClInclude Include="Src\Shader\PixelRenderer.h" />
     <ClInclude Include="Src\Shader\PixelMaterial.h" />
+    <ClInclude Include="Src\Manager\PostEffectManager.h" />
+    <ClInclude Include="Src\Object\Charactor\Enemy\Rase\EnemyRase.h" />
+    <ClInclude Include="Src\Object\Item\ItemSkill\SkillItem.h" />
+    <ClInclude Include="Src\Object\Skill\SkillBase.h" />
+    <ClInclude Include="Src\Object\Skill\SkillManager.h" />
+    <ClInclude Include="Src\Object\Weapon\Sword\KeyBlade2.h" />
+    <ClInclude Include="Src\Object\Weapon\Sword\KeyBlade3.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Src\Shader\PostEffect\ChromaticAberration.hlsl" />

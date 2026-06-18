@@ -11,6 +11,9 @@
 #include "../../../Object/Collider/ColliderBase.h"
 #include "../../../Object/Collider/Line/ColliderLine.h"
 #include "../../../Object/Collider/Capsule/ColliderCapsule.h"
+#include "../../Weapon/Sword/KeyBlade1.h"
+#include "../../Weapon/Sword/KeyBlade2.h"
+#include "../../Weapon/Sword/KeyBlade3.h"
 #include "PlayerIdleState.h"
 #include "PlayerRunState.h"
 #include "PlayerFastRunState.h"
@@ -117,10 +120,10 @@ void Player::Update()
 
 void Player::InitLoad()
 {
+	transform_.SetModel(resMng_.LoadModelDuplicate(ResourceManager::SRC::PLAYER));
+
 	//基底クラスのリソースロード
 	CharactorBase::InitLoad();
-
-	transform_.SetModel(resMng_.Load(ResourceManager::SRC::PLAYER).handleId_);
 }
 
 void Player::InitTransform()
@@ -160,46 +163,46 @@ void Player::InitAnimation()
 
 	// 待機状態アニメーション
 	animationController_->Add(static_cast<int>(ANIM_TYPE::IDLE)
-		, 20.0f, Application::PATH_MODEL + "NewPlayer/Idle.mv1");
+		, 20.0f, Application::PATH_MODEL + "Player/Idle.mv1");
 
 	// 走るアニメーション
 	animationController_->Add(static_cast<int>(ANIM_TYPE::RUN)
-		, 20.0f, Application::PATH_MODEL + "NewPlayer/Walk.mv1");
+		, 20.0f, Application::PATH_MODEL + "Player/Walk.mv1");
 
 	// ダッシュアニメーション
 	animationController_->Add(static_cast<int>(ANIM_TYPE::FAST_RUN)
-		, 40.0f, Application::PATH_MODEL + "NewPlayer/Run.mv1");
+		, 40.0f, Application::PATH_MODEL + "Player/Run.mv1");
 	//ジャンプアニメーション
 	animationController_->Add(static_cast<int>(ANIM_TYPE::JUMP)
-		, 60.0f, Application::PATH_MODEL + "NewPlayer/Jump.mv1");
+		, 60.0f, Application::PATH_MODEL + "Player/Jump.mv1");
 
 	// 攻撃アニメーション
 	animationController_->Add(static_cast<int>(ANIM_TYPE::ATK_N1)
-		, 60.0f, Application::PATH_MODEL + "NewPlayer/Attack1.mv1");
+		, 60.0f, Application::PATH_MODEL + "Player/Attack1.mv1");
 	animationController_->Add(static_cast<int>(ANIM_TYPE::ATK_N2)
-		, 70.0f, Application::PATH_MODEL + "NewPlayer/Attack1.mv1");
+		, 70.0f, Application::PATH_MODEL + "Player/Attack1.mv1");
 	animationController_->Add(static_cast<int>(ANIM_TYPE::ATK_N3)
-		, 60.0f, Application::PATH_MODEL + "NewPlayer/Attack1.mv1");
+		, 60.0f, Application::PATH_MODEL + "Player/Attack1.mv1");
 	animationController_->Add(static_cast<int>(ANIM_TYPE::ATK_N4)
-		, 50.0f, Application::PATH_MODEL + "NewPlayer/Attack1.mv1");
+		, 50.0f, Application::PATH_MODEL + "Player/Attack1.mv1");
 	animationController_->Add(static_cast<int>(ANIM_TYPE::ATK_N5)
-		, 40.0f, Application::PATH_MODEL + "NewPlayer/Attack1.mv1");
+		, 40.0f, Application::PATH_MODEL + "Player/Attack1.mv1");
 	animationController_->Add(static_cast<int>(ANIM_TYPE::ATK_H)
-		, 40.0f, Application::PATH_MODEL + "NewPlayer/Attack1.mv1");
+		, 40.0f, Application::PATH_MODEL + "Player/Attack1.mv1");
 	animationController_->Add(static_cast<int>(ANIM_TYPE::ATK_D)
-		, 40.0f, Application::PATH_MODEL + "NewPlayer/Attack1.mv1");
+		, 40.0f, Application::PATH_MODEL + "Player/Attack1.mv1");
 	animationController_->Add(static_cast<int>(ANIM_TYPE::ATK_A1)
-		, 60.0f, Application::PATH_MODEL + "NewPlayer/Attack1.mv1");//tmp
+		, 60.0f, Application::PATH_MODEL + "Player/Attack1.mv1");//tmp
 	animationController_->Add(static_cast<int>(ANIM_TYPE::ATK_A2)
-		, 70.0f, Application::PATH_MODEL + "NewPlayer/Attack1.mv1");//tmp
+		, 70.0f, Application::PATH_MODEL + "Player/Attack1.mv1");//tmp
 	animationController_->Add(static_cast<int>(ANIM_TYPE::ATK_A3)
-		, 60.0f, Application::PATH_MODEL + "NewPlayer/Attack1.mv1");//tmp
+		, 60.0f, Application::PATH_MODEL + "Player/Attack1.mv1");//tmp
 	animationController_->Add(static_cast<int>(ANIM_TYPE::ATK_A4)
-		, 50.0f, Application::PATH_MODEL + "NewPlayer/Attack1.mv1");//tmp
+		, 50.0f, Application::PATH_MODEL + "Player/Attack1.mv1");//tmp
 	animationController_->Add(static_cast<int>(ANIM_TYPE::ATK_A5)
-		, 60.0f, Application::PATH_MODEL + "NewPlayer/Attack1.mv1");//tmp
+		, 60.0f, Application::PATH_MODEL + "Player/Attack1.mv1");//tmp
 	animationController_->Add(static_cast<int>(ANIM_TYPE::ATK_F)
-		, 40.0f, Application::PATH_MODEL + "NewPlayer/Attack1.mv1");//tmp
+		, 40.0f, Application::PATH_MODEL + "Player/Attack1.mv1");//tmp
 	//初期アニメーション再生
 	animationController_->Play(static_cast<int>(ANIM_TYPE::IDLE), true);
 }
@@ -222,6 +225,10 @@ void Player::InitPost()
 	maxHp_ = hp_;
 
 	InitState();
+
+	// 武器初期化
+	sword_ = new KeyBlade3(transform_);
+	sword_->Init();
 }
 
 void Player::UpdateProcess()
@@ -242,15 +249,28 @@ void Player::UpdateProcess()
 
 void Player::UpdateProcessPost()
 {
-
+	if (sword_ != nullptr)
+	{
+		sword_->Update();
+	}
 }
 
 void Player::Draw()
 {
+
+
+
 	//基底クラスの描画処理
 	ActorBase::Draw();
 	// 丸影の描画
 	DrawShadow();
+
+	// プレイヤーの武器描画
+	if (sword_ != nullptr)
+	{
+		sword_->Draw();
+	}
+
 
 	// ステータス描画
 	int x = 20;

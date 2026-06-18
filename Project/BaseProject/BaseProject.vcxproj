@@ -19,11 +19,13 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Src\Object\Weapon\Sword\KeyBlade3.cpp" />
+    <ClCompile Include="Src\Object\Weapon\Sword\KeyBlade2.cpp" />
     <ClCompile Include="Src\Manager\PostEffectManager.cpp" />
     <ClCompile Include="Src\Object\Charactor\Enemy\Rase\EnemyRase.cpp" />
     <ClCompile Include="Src\Object\Item\ItemSkill\SkillItem.cpp" />
     <ClCompile Include="Src\Object\Skill\SkillBase.cpp" />
-    <ClCompile Include="Src\Object\Weapon\Sword\Sword.cpp" />
+    <ClCompile Include="Src\Object\Weapon\Sword\KeyBlade1.cpp" />
     <ClCompile Include="Src\Scene\OverScene.cpp" />
     <ClCompile Include="Src\Scene\ClearScene.cpp" />
     <ClCompile Include="Src\Shader\PixelMaterial.cpp" />
@@ -86,14 +88,16 @@
     <ClCompile Include="Src\Object\Actor\Stage\Stage.cpp" />
     <ClCompile Include="Src\Object\Actor\UI\UIBase.cpp" />
     <ClCompile Include="Src\Object\Actor\Stage\StageWall.cpp" />
-    <ClCompile Include="Src\Object\Weapon\WeaponBase.cpp" />
+    <ClCompile Include="Src\Object\Weapon\Sword\SwordBase.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Src\Object\Weapon\Sword\KeyBlade3.h" />
+    <ClInclude Include="Src\Object\Weapon\Sword\KeyBlade2.h" />
     <ClInclude Include="Src\Manager\PostEffectManager.h" />
     <ClInclude Include="Src\Object\Charactor\Enemy\Rase\EnemyRase.h" />
     <ClInclude Include="Src\Object\Item\ItemSkill\SkillItem.h" />
     <ClInclude Include="Src\Object\Skill\SkillBase.h" />
-    <ClInclude Include="Src\Object\Weapon\Sword\Sword.h" />
+    <ClInclude Include="Src\Object\Weapon\Sword\KeyBlade1.h" />
     <ClInclude Include="Src\Scene\OverScene.h" />
     <ClInclude Include="Src\Scene\ClearScene.h" />
     <ClInclude Include="Src\Shader\PixelMaterial.h" />
@@ -156,7 +160,7 @@
     <ClInclude Include="Src\Object\Actor\Stage\Stage.h" />
     <ClInclude Include="Src\Object\Actor\UI\UIBase.h" />
     <ClInclude Include="Src\Object\Actor\Stage\StageWall.h" />
-    <ClInclude Include="Src\Object\Weapon\WeaponBase.h" />
+    <ClInclude Include="Src\Object\Weapon\Sword\SwordBase.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Src\Shader\PostEffect\Bloom.hlsl">

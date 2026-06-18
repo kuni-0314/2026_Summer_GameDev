@@ -12,6 +12,7 @@ class SkyDome;
 class Player;
 class EnemyManager;
 class ItemManger;
+class SwordBase;
 //class ColliderBase;
 
 class GameScene : public SceneBase
@@ -66,6 +67,9 @@ private:
 
 	// アイテムマネージャー
 	ItemManger* itemManger_;
+
+	// 武器
+	//WeaponBase* weapon_;
 
 	// 攻撃コライダーリスト
 	std::vector<AttackColliderData*> attackColliders_;

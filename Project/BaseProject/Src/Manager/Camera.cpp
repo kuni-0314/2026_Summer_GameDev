@@ -581,6 +581,7 @@ void Camera::RotGamePad(bool isLimit)
 	// アナログキーの入力値から方向を取得
 	short rightX, rightY;
 	ins->GetRightStick(0, rightX, rightY);
+	//rightY = -rightY; // 上方向を正にするために反転
 
 	// アナログスティックの入力値を正規化して方向ベクトルを作成
 	VECTOR dir = AsoUtility::VECTOR_ZERO;

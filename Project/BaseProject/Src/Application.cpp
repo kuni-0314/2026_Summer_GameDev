@@ -94,6 +94,7 @@ void Application::Init()
 	SetUseDirectInputFlag(true);
 	InputManager::CreateInstance();
 	InputManager::GetInstance()->Init();
+	InputManager::GetInstance()->SetKeyAndMouseEnabled(true);
 
 
 	// ƒŠƒ\[ƒXŠÇ—‰Šú‰»

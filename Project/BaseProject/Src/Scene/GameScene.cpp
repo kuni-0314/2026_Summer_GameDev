@@ -10,6 +10,7 @@
 #include "../Object/Charactor/Player/Player.h"
 #include "../Object/Charactor/Enemy/EnemyManger.h"
 #include "../Object/Item/ItemManger.h"
+#include "../Object/Weapon/Sword/KeyBlade1.h"
 #include "../Object/Collider/ColliderBase.h"
 #include "../Object/Collider/Sphere/ColliderSphere.h"
 #include "GameScene.h"
@@ -50,6 +51,10 @@ void GameScene::Init()
 	const ColliderBase* stageCollider =
 		stage_->GetOwnCollider(static_cast<int>(Stage::COLLIDER_TYPE::MODEL));
 	player_->AddHitCollider(stageCollider);
+
+	// 武器初期化
+	//weapon_ = new KeyBlade1(player_->GetTransform());
+	//weapon_->Init();
 
 	// 敵マネージャー初期化
 	enemyManager_ = new EnemyManager(this, player_);
@@ -96,6 +101,7 @@ void GameScene::Update()
 	stage_->Update();
 	skyDome_->Update();
 	player_->Update();
+	//weapon_->Update();
 	enemyManager_->Update();
 	itemManger_->Update();
 	
@@ -268,6 +274,7 @@ void GameScene::Draw()
 	skyDome_->Draw();
 	stage_->Draw();
 	player_->Draw();
+	//weapon_->Draw();
 	itemManger_->Draw();
 	enemyManager_->Draw();
 
@@ -409,6 +416,14 @@ void GameScene::Release()
 		delete player_;
 		player_ = nullptr;
 	}
+
+	// 武器解放
+	//if (weapon_ != nullptr)
+	//{
+	//	weapon_->Release();
+	//	delete weapon_;
+	//	weapon_ = nullptr;
+	//}
 }
 
 void GameScene::CreateAttackCollider(ColliderBase::TAG tag, VECTOR pos, float radius, float damage, int lifeTime)

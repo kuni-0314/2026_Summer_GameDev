@@ -67,9 +67,20 @@ void ResourceManager::Init()
 	//サブの惑星モデル
 	res = new RES(RES_T::MODEL, PATH_MDL + "Stage/SpherePlanet/SpherePlanet.mv1");
 	resourcesMap_.emplace(SRC::SPHERE_PLANET, res);	//mapに登録
+
 	//プレイヤーモデル
-	res = new RES(RES_T::MODEL, PATH_MDL + "NewPlayer/Idle.mv1");
+	res = new RES(RES_T::MODEL, PATH_MDL + "Player/Idle.mv1");
 	resourcesMap_.emplace(SRC::PLAYER, res);	//mapに登録
+
+	// キーブレード１モデル
+	res = new RES(RES_T::MODEL, PATH_MDL + "Weapon/KeyBlade1.mv1");
+	resourcesMap_.emplace(SRC::KEY_BLADE_1, res);	//mapに登録
+	// キーブレード２モデル
+	res = new RES(RES_T::MODEL, PATH_MDL + "Weapon/KeyBlade2.mv1");
+	resourcesMap_.emplace(SRC::KEY_BLADE_2, res);	//mapに登録	
+	// キーブレード３モデル
+	res = new RES(RES_T::MODEL, PATH_MDL + "Weapon/KeyBlade3.mv1");
+	resourcesMap_.emplace(SRC::KEY_BLADE_3, res);	//mapに登録
 
 	//スカイドームモデル
 	res = new RES(RES_T::MODEL, PATH_MDL + "SkyDome/SkyDome.mv1");

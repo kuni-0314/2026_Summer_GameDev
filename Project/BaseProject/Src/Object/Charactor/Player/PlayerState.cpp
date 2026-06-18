@@ -66,17 +66,17 @@ bool PlayerState::CheckTransitions(Player* player)
 	{
 		if (enableKAM)
 		{
-			isJumpInput = ins->IsGamepadNew(InputManager::PadInput::A, player->GetPadNum());
-			isJumpInput = isJumpInput || ins->IsNew(KEY_INPUT_SPACE);
+			isJumpInput = ins->IsGamepadTrgDown(InputManager::PadInput::A, player->GetPadNum());
+			isJumpInput = isJumpInput || ins->IsTrgDown(KEY_INPUT_SPACE);
 		}
 		else
 		{
-			isJumpInput = ins->IsGamepadNew(InputManager::PadInput::A, player->GetPadNum());
+			isJumpInput = ins->IsGamepadTrgDown(InputManager::PadInput::A, player->GetPadNum());
 		}
 	}
 	else
 	{
-		isJumpInput = ins->IsNew(KEY_INPUT_SPACE);
+		isJumpInput = ins->IsTrgDown(KEY_INPUT_SPACE);
 	}
 
 	if (!player->IsAir() && !player->IsJump() && isJumpInput)
