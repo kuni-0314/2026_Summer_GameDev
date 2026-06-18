@@ -51,9 +51,12 @@ void GameScene::Init(void)
 		stage_->GetOwnCollider(static_cast<int>(Stage::COLLIDER_TYPE::MODEL));
 	player_->AddHitCollider(stageCollider);
 
+
+
 	enemyManager_ = new EnemyManager(this,player_);
 	enemyManager_->Init();
 	enemyManager_->AddHitCollider(stageCollider);
+
 
 	skyDome_ = new SkyDome(player_->GetTransform());
 	skyDome_->Init();

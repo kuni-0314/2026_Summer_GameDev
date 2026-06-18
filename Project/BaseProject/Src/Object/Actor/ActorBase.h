@@ -27,19 +27,14 @@ public:
 
 	// コンストラクタ
 	ActorBase(void);
-
 	// デストラクタ
 	virtual ~ActorBase(void);
-
 	// 初期化
 	void Init(void);
-
 	// 更新
 	virtual void Update(void) = 0;
-
 	// 描画
 	virtual void Draw(void);
-
 	// 解放
 	virtual void Release(void);
 

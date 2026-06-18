@@ -23,9 +23,7 @@ public:
 
 	//更新
 	virtual void Update(void) override;
-
 	virtual void Draw(void) override;
-
 	virtual void Release(void) override;
 
 	void SetPos(const VECTOR& pos) { transform_.pos = pos; };
@@ -34,7 +32,6 @@ public:
 	bool InSearchModel(void);
 
 protected:
-
 
 	// 最大落下速度
 	static constexpr float MAX_FALL_SPEED = -30.0f;
@@ -54,32 +51,25 @@ protected:
 
 
 	bool isPlayer_;
-
 	// ジャンプの入力受付時間
 	float stepJump_;
 	//移動スピード
 	float moveSpeed_;
-
-
 	//モデルID
 	int modelId_;
-
 	// 丸影画像
 	int imgShadow_;
 
 	// リソースロード
 	virtual void InitLoad(void) override;
-
 	// 更新系
 	virtual void UpdateProcess(void) = 0;
 	virtual void UpdateProcessPost(void) = 0;
 
 	// 移動方向に応じた遅延回転
 	void DelayRotate(void);
-
 	// 重力計算
 	void CalcGravityPow(void);
-
 
 	// 衝突判定
 	virtual void  CollisionReserve(void) {}
@@ -90,7 +80,6 @@ protected:
 
 	// 丸影描画
 	void DrawShadow(void);
-
 
 
 private:

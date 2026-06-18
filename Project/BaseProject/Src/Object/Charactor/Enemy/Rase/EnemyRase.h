@@ -42,9 +42,9 @@ public:
 	struct SHOT
 	{
 		bool isAlive_ = false;
-		float speed = 4.0f;
+		float speed = 4.5f;
 		int life = 180;
-		float homingPower = 0.05f;
+		float homingPower = 0.1f;
 		VECTOR dir_;
 		Transform shotTransform_;
 	

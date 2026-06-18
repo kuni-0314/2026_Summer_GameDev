@@ -36,7 +36,6 @@ public:
 	// ローカル回転
 	Quaternion quaRotLocal;
 
-
 	// コンストラクタ
 	Transform(void);
 

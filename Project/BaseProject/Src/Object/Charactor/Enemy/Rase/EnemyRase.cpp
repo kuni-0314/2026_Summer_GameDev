@@ -216,8 +216,6 @@ void EnemyRase::ChangeStateIdle(void)
 
 void EnemyRase::ChangeStateAttack(void)
 {
-	
-
 	stateUpdate_ = std::bind(&EnemyRase::UpdateAttack, this);
 
 	shotFired_ = false;

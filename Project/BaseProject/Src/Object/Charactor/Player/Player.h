@@ -223,4 +223,5 @@ private:
 	VECTOR animDiffPos_;
 
 	void ApplyRootMotion(void);
+
 };
