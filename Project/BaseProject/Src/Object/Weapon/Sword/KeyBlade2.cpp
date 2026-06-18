@@ -44,10 +44,21 @@ void KeyBlade2::InitPost()
 
 void KeyBlade2::Update()
 {
-	// Y軸周りに回転（Quaternionを使用）
-	Quaternion rotY = Quaternion::AngleAxis(0.5f * DX_PI_F / 180.0f, AsoUtility::AXIS_Y);
-	transform_.quaRot = transform_.quaRot.Mult(rotY);
+	// フレーム22のワールドマトリクスを取得
+	MATRIX mat = MV1GetFrameLocalWorldMatrix(ownerTransform_.modelId, 22);
 
+	// 位置補正（プレイヤーの向きに合わせて微調整）
+	MATRIX offset = MMult(MGetTranslate(VGet(0.0f, 0.0f, -3.0f)), mat);
+
+	// 位置を適用
+	transform_.pos = VGet(offset.m[3][0], offset.m[3][1], offset.m[3][2]);
+
+	// 回転をQuaternionに変換
+	Quaternion rot = Quaternion::GetRotation(mat);
+
+	// 回転補正
+	rot = rot.Mult(Quaternion::Euler(0.0f * DX_PI_F / 180.0f, 8.0f * DX_PI_F / 180.0f, -60.0f * DX_PI_F / 180.0f));
+	transform_.quaRot = rot;
 
 	// 親クラスの更新処理
 	SwordBase::Update();

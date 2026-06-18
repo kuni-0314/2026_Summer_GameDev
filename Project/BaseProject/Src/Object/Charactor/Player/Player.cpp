@@ -227,7 +227,7 @@ void Player::InitPost()
 	InitState();
 
 	// •Ší‰Šú‰»
-	sword_ = new KeyBlade1(transform_);
+	sword_ = new KeyBlade3(transform_);
 	sword_->Init();
 }
 
