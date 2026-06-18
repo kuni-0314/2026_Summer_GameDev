@@ -21,6 +21,8 @@ Camera::Camera()
 	targetPosGoal_(AsoUtility::VECTOR_ZERO),
 	posGoal_(AsoUtility::VECTOR_ZERO),
 	anglesGoal_(AsoUtility::VECTOR_ZERO),
+	zoomScale_(ZOOM_DEFAULT),
+	zoomScaleGoal_(ZOOM_DEFAULT),
 	ActorBase()
 
 {
@@ -84,6 +86,7 @@ void Camera::DrawDebug()
 	//DrawSphere3D(debugTargetPos_, 10.0f, 16, 0xff00ff, 0xff00ff, true);	
 
 	//DrawFormatString(10, 200, 0xffffff, "camera angles: %f, %f, %f", angles_.x, angles_.y, angles_.z);
+	//DrawFormatString(10, 220, 0xffffff, "zoom scale: %f", zoomScale_);
 }
 
 void Camera::Release()
@@ -210,6 +213,10 @@ void Camera::SetDefault()
 	// カメラの上方向
 	transform_.quaRot.GetUp();
 
+	// ズームをデフォルトに戻す
+	zoomScale_ = ZOOM_DEFAULT;
+	zoomScaleGoal_ = ZOOM_DEFAULT;
+
 }
 
 void Camera::SyncFollow()
@@ -235,8 +242,9 @@ void Camera::SyncFollow()
 	localPos = transform_.quaRot.PosAxis(FOLLOW_TARGET_LOCAL_POS);
 	targetPos_ = VAdd(pos, localPos);
 
-	// カメラ位置
-	localPos = transform_.quaRot.PosAxis(FOLLOW_CAMERA_LOCAL_POS);
+	// カメラ位置（ズームを適用）
+	VECTOR baseLocalPos = transform_.quaRot.PosAxis(FOLLOW_CAMERA_LOCAL_POS);
+	localPos = VScale(baseLocalPos, zoomScale_);
 	transform_.pos = VAdd(pos, localPos);
 
 	// カメラの上方向
@@ -309,6 +317,29 @@ void Camera::ProcessMove()
 
 }
 
+void Camera::ProcessZoom()
+{
+	auto ins = InputManager::GetInstance();
+
+	// マウスホイールの回転量を取得
+	int wheelRotVol = ins->GetMouseWheel() * 100;
+
+	if (wheelRotVol != 0)
+	{
+		// ホイールを上に回転：ズームイン（カメラを近づける）
+		// ホイールを下に回転：ズームアウト（カメラを遠ざける）
+		float zoomChange = -wheelRotVol / 120.0f * 0.1f;
+		zoomScaleGoal_ += zoomChange;
+
+		// ズーム倍率を制限
+		if (zoomScaleGoal_ < ZOOM_MIN) zoomScaleGoal_ = ZOOM_MIN;
+		if (zoomScaleGoal_ > ZOOM_MAX) zoomScaleGoal_ = ZOOM_MAX;
+	}
+
+	// ズームをイージングで滑らかに変化させる
+	zoomScale_ += (zoomScaleGoal_ - zoomScale_) * ZOOM_EASING_RATE;
+}
+
 void Camera::SetBeforeDrawFixedPoint()
 {
 	// 何もしない
@@ -343,6 +374,9 @@ void Camera::SetBeforeDrawFollow()
 	// カメラ操作(回転)
 	ProcessRot(true);
 
+	// カメラ操作(ズーム)
+	ProcessZoom();
+
 	// 追従対象との相対位置を同期
 	SyncFollow();
 
@@ -359,6 +393,9 @@ void Camera::SetBeforeDrawManual()
 
 	// カメラ操作(移動)
 	ProcessMove();
+
+	// カメラ操作(ズーム)
+	ProcessZoom();
 
 	// 追従対象との相対位置を同期
 	if (followTransform_ != nullptr)
@@ -419,8 +456,12 @@ void Camera::SetBeforeDrawTargeting()
 	// Y軸 + X軸回転
 	transform_.quaRot = rotY_.Mult(Quaternion::AngleAxis(angles_.x, AsoUtility::AXIS_X));
 
-	// カメラ位置の目標を計算
-	VECTOR localPos = transform_.quaRot.PosAxis(TARGETING_CAMERA_LOCAL_POS);
+	// カメラ操作(ズーム)
+	ProcessZoom();
+
+	// カメラ位置の目標を計算（ズームを適用）
+	VECTOR baseLocalPos = transform_.quaRot.PosAxis(TARGETING_CAMERA_LOCAL_POS);
+	VECTOR localPos = VScale(baseLocalPos, zoomScale_);
 	posGoal_ = VAdd(playerPos, localPos);
 	
 	// カメラ位置をイージング

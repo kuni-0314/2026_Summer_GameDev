@@ -58,6 +58,13 @@ public:
 	static constexpr float EASING_RATE_TARGET = 0.15f;		// 注視点のイージング速度
 	static constexpr float EASING_RATE_ANGLE = 0.08f;		// 角度のイージング速度
 
+	// ズーム関連の定数
+	static constexpr float ZOOM_SPEED = 20.0f;				// ズーム速度
+	static constexpr float ZOOM_MIN = 0.5f;					// ズームの最小値（最も近い）
+	static constexpr float ZOOM_MAX = 2.0f;					// ズームの最大値（最も遠い）
+	static constexpr float ZOOM_DEFAULT = 1.0f;				// ズームのデフォルト値
+	static constexpr float ZOOM_EASING_RATE = 0.15f;		// ズームのイージング速度
+
 	// カメラモード
 	enum class MODE
 	{
@@ -161,16 +168,21 @@ private:
 	VECTOR posGoal_;			// カメラ位置の目標
 	VECTOR anglesGoal_;			// カメラ角度の目標
 
+	// ズーム関連
+	float zoomScale_;			// 現在のズーム倍率
+	float zoomScaleGoal_;		// 目標のズーム倍率
+
 	
-	// カメラを初期位置に戻す
+	// カメラをデフォルト位置に戻す
 	void SetDefault();
 
-	// 追従対象との位置同期を取る
+	// 追従対象との位置を同期
 	void SyncFollow();
 
 	// カメラ操作
 	void ProcessRot(bool isLimit);
 	void ProcessMove();
+	void ProcessZoom();	// ズーム処理
 
 	// カメラ回転(キーボード)
 	void RotKeyboard(bool isLimit);
