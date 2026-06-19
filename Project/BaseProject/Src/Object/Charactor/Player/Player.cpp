@@ -269,6 +269,8 @@ void Player::Draw()
 	{
 		sword_->Draw();
 	}
+#ifdef _DEBUG
+
 
 
 	// ステータス描画
@@ -351,6 +353,7 @@ void Player::Draw()
 	DrawSphere3D(rot, 5.0f, 16, 0xFFFF00, 0xFFFF00, true);
 
 	//DrawFormatString(0, 500, 0xffffff, "<Player> HP : %d", hp_);
+#endif // _DEBUG
 }
 
 void Player::ChangeState(STATE newState)

@@ -63,6 +63,9 @@ VECTOR ColliderCapsule::GetCenter() const
 
 void ColliderCapsule::DrawDebug(int color)
 {
+#ifdef _DEBUG
+
+
 	// ”ñí‚ÉˆÓ–¡‚ª–³‚¢
 	auto a = follow_->pos;
 	auto b = follow_->quaRot;
@@ -112,6 +115,7 @@ void ColliderCapsule::DrawDebug(int color)
 	DrawFormatString(0, 260, color, "Capsule Pos Down X : %.2f", pos2.x);
 	DrawFormatString(0, 280, color, "Capsule Pos Down Y : %.2f", pos2.y);
 	DrawFormatString(0, 300, color, "Capsule Pos Down Z : %.2f", pos2.z);
+#endif // DEBUG
 }
 
 VECTOR ColliderCapsule::GetPosPushBackAlongNormal(

@@ -36,6 +36,7 @@ namespace SoundTable_Game
 		{ SoundID::SE_ENEMY_RAT_ATTAK,"Data/Sound/SE/Rat_Attack.wav"},
 		{ SoundID::SE_ENEMY_RASE_ATTACK,"Data/Sound/SE/Rase_Attack.mp3"},
 		{ SoundID::SE_ATTACK_1,"Data/Sound/SE/Attack1.wav"},
+		{ SoundID::SE_ENEMY_HIT,"Data/Sound/SE/Enemy_Hit.wav"},
 
 		
 	};

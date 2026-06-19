@@ -36,6 +36,9 @@ void SwordBase::Draw()
 	{
 		MV1DrawModel(transform_.modelId);
 	}
+#ifdef _DEBUG
+
+
 
 	// 所有しているコライダの描画
 	for (const auto& own : ownColliders_)
@@ -82,6 +85,7 @@ void SwordBase::Draw()
 	DrawFormatString(0, 380, 0xffffff, "End X : %.2f", worldEnd.x);
 	DrawFormatString(0, 400, 0xffffff, "End Y : %.2f", worldEnd.y);
 	DrawFormatString(0, 420, 0xffffff, "End Z : %.2f", worldEnd.z);
+#endif // _DEBUG
 }
 
 void SwordBase::BeginAttack(int attackType)

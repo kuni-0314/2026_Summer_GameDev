@@ -16,6 +16,7 @@ enum class SoundID
 	SE_HEAL,
 	SE_ENEMY_RAT_ATTAK,
 	SE_ENEMY_RASE_ATTACK,
+	SE_ENEMY_HIT,
 	MAX
 
 };

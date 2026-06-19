@@ -5,6 +5,7 @@
 #include "../Enemy/Shot/ShotStraight.h"
 #include "../../Collider/ColliderBase.h"
 #include "../../Collider/Capsule/ColliderCapsule.h"
+#include "../../../Sound/AudioManager.h"
 #include "EnemyBase.h"
 
 
@@ -150,6 +151,7 @@ void EnemyBase::CheckPlayerSwordCollision()
 			{
 				// ダメージ処理
 				Damege(1);
+				AudioManager::GetInstance()->PlaySE(SoundID::SE_ENEMY_HIT);
 
 				// 一度あったらフラグ
 				wasHit_ = true;

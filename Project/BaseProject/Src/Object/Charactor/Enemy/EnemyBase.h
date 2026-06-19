@@ -6,6 +6,7 @@
 class Player;
 class ShotBase;
 class ShotStraight;
+class AudioManager;
 
 class EnemyBase : public CharactorBase
 {
