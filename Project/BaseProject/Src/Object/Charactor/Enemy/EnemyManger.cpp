@@ -12,6 +12,7 @@
 #include "../../Actor/ActorBase.h"
 #include "../../Collider/Sphere/ColliderSphere.h"
 #include "../../Collider/Capsule/ColliderCapsule.h"
+#include "../../../Manager/ResourceManager.h"
 #include "EnemyManger.h"
 
 
@@ -167,14 +168,15 @@ void EnemyManager::LoadCsvData()
 
 EnemyBase* EnemyManager::Create(const EnemyBase::EnemyData& data, const Player* player)
 {
+	
 	EnemyBase* enemy = nullptr;
 	switch (data.type)
 	{
 	case EnemyBase::TYPE::RAT:
-		enemy = new EnemyRat(data, const_cast<Player*>(player));
+		enemy = new EnemyRat(data,-1, const_cast<Player*>(player));
 		break;
 	case EnemyBase::TYPE::RASE:
-		enemy = new EnemyRase(data, const_cast<Player*>(player));
+		enemy = new EnemyRase(data, -1, const_cast<Player*>(player));
 		break;
 	default:
 		break;

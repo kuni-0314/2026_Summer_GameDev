@@ -4,16 +4,21 @@
 #include "../../../Collider/Capsule/ColliderCapsule.h"
 #include "../../../Collider/Sphere/ColliderSphere.h"
 #include "../../../Collider/Line/ColliderLine.h"
+#include "../../../Collider/Model/ColliderModel.h"
 #include "../../../Common/AnimationController.h"
 #include "../../../../Utility/AsoUtility.h"
 #include "../../../../Manager/InputManager.h"
 #include "../../../../Object/Item/HP/HpItem.h"
 #include "../../../../Object/Item/ItemManger.h"
+#include "../../../../Sound/AudioManager.h"
 #include "../../Player/Player.h"
+#include "../Shot/ShotBase.h"
+#include "../Shot/ShotStraight.h"
 #include "EnemyRase.h"
 
-EnemyRase::EnemyRase(const EnemyBase::EnemyData& data, Player* player)
-	:EnemyBase(data, player),
+
+EnemyRase::EnemyRase(const EnemyBase::EnemyData& data, int attackModel, Player* player)
+	:EnemyBase(data, attackModel, player),
 	state_(STATE::NONE),
 	step_(0.0f),
 	hoverTime_(0.0f),
@@ -29,6 +34,26 @@ void EnemyRase::Draw()
 {
 	// Šî’êƒNƒ‰ƒX‚Ì•`‰æˆ—
 	CharactorBase::Draw();
+
+	//’e‚Ì•`‰æ
+	DrawShot();
+
+	STATE next = state_;
+
+	const char* name = "";
+
+	if (next == STATE::THINK) name = "THINK";
+	else if (next == STATE::ATTACK) name = "ATTACK";
+	else if (next == STATE::IDLE) name = "IDLE";
+	else if (next == STATE::MOVE) name = "MOVE";
+	else if (next == STATE::CHARGE) name = "CHARGE";
+
+	DrawFormatString(0, 400, GetColor(255, 255, 255), "STATE: %s", name);
+}
+
+void EnemyRase::Release(void)
+{
+	
 }
 
 void EnemyRase::InitLoad()
@@ -36,6 +61,11 @@ void EnemyRase::InitLoad()
 	//Šî’êƒNƒ‰ƒX‚ÌƒŠƒ\[ƒXƒ[ƒh
 	CharactorBase::InitLoad();
 	transform_.SetModel(resMng_.LoadModelDuplicate(ResourceManager::SRC::ENEMY_RASE));
+	//’e‚Ìƒ[ƒh
+	shotmodel_ = resMng_.LoadModelDuplicate(ResourceManager::SRC::ENEMY_RASE_BALL);
+
+	AudioManager::GetInstance()->LoadSceneSound(LoadScene::GAME);
+
 }
 
 void EnemyRase::InitTransform()
@@ -47,6 +77,7 @@ void EnemyRase::InitTransform()
 	//transform_.pos = { 0.0f, 100.0f, 1500.0f };
 
 	transform_.Update();
+
 }
 
 void EnemyRase::InitCollider()
@@ -63,6 +94,7 @@ void EnemyRase::InitCollider()
 		COL_CAPSULE_TOP_LOCAL_POS, COL_CAPSULE_DOWN_LOCAL_POS,
 		COL_CAPSULE_RADIUS);
 	ownColliders_.emplace(static_cast<int>(COLLIDER_TYPE::CAPSULE), colCapsule);
+
 }
 
 void EnemyRase::InitAnimation()
@@ -75,40 +107,94 @@ void EnemyRase::InitAnimation()
 	//‘Ò‹@
 	type = static_cast<int>(ANIM_TYPE::IDLE);
 	animationController_->AddInFbx(type, 20.0f, ANIM_INDX_FRY);
+	//UŒ‚‘Ò‹@
+	type = static_cast<int>(ANIM_TYPE::CHARGE);
+	animationController_->AddInFbx(type, 20.0f, ANIM_INDX_CHARGE);
+
+	type = static_cast<int>(ANIM_TYPE::HIT);
+	animationController_->AddInFbx(type, 20.0f, ANIM_INDX_HIT);
 
 	animationController_->Play(static_cast<int>(ANIM_TYPE::IDLE), true);
 }
 
 void EnemyRase::InitPost()
 {
-	// ‰Šúó‘Ôİ’è
-	ChangeState(STATE::IDLE);
 
+	//Šî€‚Ì‚‚³•Û‘¶
+	baseHeight_ = transform_.pos.y;
+
+	
 	stateChanges_.emplace(static_cast<int>(STATE::IDLE),
 		std::bind(&EnemyRase::ChangeStateIdle, this));
 	stateChanges_.emplace(static_cast<int>(STATE::THINK),
 		std::bind(&EnemyRase::ChangeStateThink, this));
+	stateChanges_.emplace(static_cast<int>(STATE::MOVE),
+		std::bind(&EnemyRase::ChangeStateMove, this));
+	stateChanges_.emplace(static_cast<int>(STATE::ATTACK),
+		std::bind(&EnemyRase::ChangeStateAttack, this));
+	stateChanges_.emplace(static_cast<int>(STATE::WAIT),
+		std::bind(&EnemyRase::ChangeStateWait, this));
+	stateChanges_.emplace(static_cast<int>(STATE::CHARGE),
+		std::bind(&EnemyRase::ChangeStateCharge, this));
+	stateChanges_.emplace(static_cast<int>(STATE::HIT),
+		std::bind(&EnemyRase::ChangeStateHit, this));
+	stateChanges_.emplace(static_cast<int>(STATE::CHARGE),
+		std::bind(&EnemyRase::ChangeStateCharge, this));
+	stateChanges_.emplace(static_cast<int>(STATE::DIE),
+		std::bind(&EnemyRase::ChangeStateEnd, this));
 
-	//Šî€‚Ì‚‚³•Û‘¶
-	baseHeight_ = transform_.pos.y;
+	shotCharge_ =  SHOT_CHARGE_COUNT;
+	;
+
+	// ‰Šúó‘Ôİ’è
+	ChangeState(STATE::THINK);
+	
 }
 
 void EnemyRase::UpdateProcess()
 {
-	hoverTime_ += scnMng_.GetDeltaTime();
+	playerPos_ = player_->GetPos();
+	playerRad_ = player_->GetCollRadius();
+
+	// ƒvƒŒƒCƒ„[•ûŒü
+	toPlayer_ = VSub(playerPos_, transform_.pos);
+
+	//ƒvƒŒƒCƒ„[‚Æ‚Ì‹——£‘ª’è
+	distance_ = VSize(toPlayer_);
+
+	LookPlayer();
 
 	//ã‰º‚Ì—h‚ê
+	hoverTime_ += scnMng_.GetDeltaTime();
 	transform_.pos.y =
-		baseHeight_ +
-		sinf(hoverTime_ * HOVER_SPEED) * HOVER_HEIGHT;
-
+		baseHeight_ + sinf(hoverTime_ * HOVER_SPEED) * HOVER_HEIGHT;
+	//‚¿‚å‚Á‚Æ‚µ‚½‰¡—h‚ê
 	transform_.pos.x += sinf(hoverTime_ * 0.7f) * 0.2f;
-	
 
+	for (auto& shot : shots_)
+	{
+		shot.shotTransform_.Update();
+	}
+
+
+	auto const ins = InputManager::GetInstance();
+
+	// 1ƒL[ or ƒ}ƒEƒX¶ƒNƒŠƒbƒN‚ÅƒvƒŒƒCƒ„[‚ª‹ß‚­‚É‚¢‚éê‡
+	if (ins->IsTrgDown(KEY_INPUT_1) ||
+		(ins->IsMouseTrgDown(MOUSE_INPUT_LEFT) && VSize(VSub(playerPos_, transform_.pos)) < 300.0f))
+	{
+		Damege(1);
+		ChangeState(STATE::HIT);
+
+	}
 }
 
 void EnemyRase::UpdateProcessPost()
 {
+	stateUpdate_();
+	//’e‚ÌXV
+	UpdateShot();
+
 }
 
 void EnemyRase::ChangeState(STATE state)
@@ -133,14 +219,76 @@ void EnemyRase::ChangeStateIdle()
 
 void EnemyRase::ChangeStateAttack()
 {
+	stateUpdate_ = std::bind(&EnemyRase::UpdateAttack, this);
+
+	shotFired_ = false;
+
+	AudioManager::GetInstance()->SetSeVolume(80);
+	AudioManager::GetInstance()->PlaySE(SoundID::SE_ENEMY_RASE_ATTACK);
+
+	// ƒ‰ƒ“ƒ_ƒ€‚È‘Ò‹@ŠÔ
+	step_ = 3.0f + static_cast<float>(GetRand(3));
+	// ˆÚ“®—Êƒ[ƒ
+	movePow_ = AsoUtility::VECTOR_ZERO;
+	// ‘Ò‹@ƒAƒjƒ[ƒVƒ‡ƒ“Ä¶
+	animationController_->Play(static_cast<int>(ANIM_TYPE::IDLE), true);
+}
+
+void EnemyRase::ChangeStateMove(void)
+{
+	stateUpdate_ = std::bind(&EnemyRase::UpdateMove, this);
+
+	// ƒ‰ƒ“ƒ_ƒ€‚È‘Ò‹@ŠÔ
+	step_ = 3.0f + static_cast<float>(GetRand(3));
+	// ˆÚ“®ƒXƒs[ƒh
+	moveSpeed_ = 3.0f;
+	// ‘Ò‹@ƒAƒjƒ[ƒVƒ‡ƒ“Ä¶
+	animationController_->Play(static_cast<int>(ANIM_TYPE::IDLE), true);
+}
+
+void EnemyRase::ChangeStateWait(void)
+{
+	stateUpdate_ = std::bind(&EnemyRase::UpdateWait, this);
+
+	// ƒ‰ƒ“ƒ_ƒ€‚È‘Ò‹@ŠÔ
+	step_ = 3.0f + static_cast<float>(GetRand(3));
+	// ˆÚ“®—Êƒ[ƒ
+	movePow_ = AsoUtility::VECTOR_ZERO;
+	// ‘Ò‹@ƒAƒjƒ[ƒVƒ‡ƒ“Ä¶
+	animationController_->Play(static_cast<int>(ANIM_TYPE::IDLE), true);
+
 }
 
 void EnemyRase::ChangeStateHit()
 {
+	stateUpdate_ = std::bind(&EnemyRase::UpdateHit, this);
+
+	// ƒ‰ƒ“ƒ_ƒ€‚È‘Ò‹@ŠÔ
+	step_ = 3.0f + static_cast<float>(GetRand(3));
+	// ‚Ü‚¾ƒvƒŒƒCƒ„[‚ÌUŒ‚‚ªÀ‘•‚³‚ê‚¢‚È‚¢‚Ì‚Å‚»‚Ìê‚Å
+	movePow_ = AsoUtility::VECTOR_ZERO;
+	// ‘Ò‹@ƒAƒjƒ[ƒVƒ‡ƒ“Ä¶
+	animationController_->Play(static_cast<int>(ANIM_TYPE::HIT), false);
 }
 
 void EnemyRase::ChangeStateEnd()
 {
+	stateUpdate_ = std::bind(&EnemyRase::UpdateDie, this);
+
+}
+
+void EnemyRase::ChangeStateCharge(void)
+{
+	stateUpdate_ = std::bind(&EnemyRase::UpdateCharge, this);
+
+	shotFired_ = false;
+
+	// ƒ‰ƒ“ƒ_ƒ€‚È‘Ò‹@ŠÔ
+	step_ = 3.0f + static_cast<float>(GetRand(3));
+	// ˆÚ“®—Êƒ[ƒ
+	movePow_ = AsoUtility::VECTOR_ZERO;
+	// ‘Ò‹@ƒAƒjƒ[ƒVƒ‡ƒ“Ä¶
+	animationController_->Play(static_cast<int>(ANIM_TYPE::CHARGE), true);
 }
 
 void EnemyRase::ChangeStateThink()
@@ -152,8 +300,7 @@ void EnemyRase::ChangeStateThink()
 	// ˆÚ“®—Êƒ[ƒ
 	movePow_ = AsoUtility::VECTOR_ZERO;
 	// ‘Ò‹@ƒAƒjƒ[ƒVƒ‡ƒ“Ä¶
-	animationController_->Play(
-		static_cast<int>(ANIM_TYPE::IDLE), true);
+	animationController_->Play(static_cast<int>(ANIM_TYPE::IDLE), true);
 
 }
 
@@ -171,21 +318,180 @@ void EnemyRase::UpdateIdle()
 
 void EnemyRase::UpdateAttack()
 {
+	if (!shotFired_)
+	{
+		AttackShot();
+		shotFired_ = true;
+	}
+	// ˆÚ“®—Êƒ[ƒ
+	movePow_ = AsoUtility::VECTOR_ZERO;
+}
+
+void EnemyRase::UpdateMove(void)
+{
+	//UŒ‚”ÍˆÍ‚É“ü‚é‚Ü‚ÅˆÚ“®
+	if (distance_ < SWICH_DISTANCE)
+	{
+		ChangeState(STATE::CHARGE);
+	}
+
+	// ˆÚ“®‚·‚é © ’Ç‰Á
+	movePow_ = VScale(moveDir_, moveSpeed_);
+}
+
+void EnemyRase::UpdateWait(void)
+{
+}
+
+void EnemyRase::UpdateThink(void)
+{
+	
+	//UŒ‚‚·‚é‚©”Û‚â
+	if (distance_ < SWICH_DISTANCE)
+	{
+		ChangeState(STATE::CHARGE);
+	}
+	else
+	{
+		ChangeState(STATE::MOVE);
+	}
 }
 
 void EnemyRase::UpdateHit()
 {
+	if (hp_ <= 0)
+	{
+		ChangeState(STATE::DIE);
+		return;
+	}
+
+	if (animationController_->IsEnd())
+	{
+		ChangeState(STATE::THINK);
+		return;
+	}
 }
 
 void EnemyRase::UpdateDie()
 {
+	if (animationController_->IsEnd())
+	{
+		MV1DeleteModel(transform_.modelId);
+		ChangeState(STATE::END);
+	}
+	movePow_ = AsoUtility::VECTOR_ZERO;
 }
 
 void EnemyRase::UpdateEnd()
 {
 }
 
+<<<<<<< HEAD
 void EnemyRase::UpdateThink()
+=======
+void EnemyRase::UpdateCharge(void)
+>>>>>>> origin/Î±ä¿®æ­£ï¼’
 {
-	ChangeState(STATE::IDLE);
+	shotCharge_--;
+
+	if (shotCharge_ <= 0)
+	{
+		ChangeState(STATE::ATTACK);
+		shotCharge_ = SHOT_CHARGE_COUNT;
+	}
+	// ˆÚ“®—Êƒ[ƒ
+	movePow_ = AsoUtility::VECTOR_ZERO;
 }
+
+void EnemyRase::AttackShot(void)
+{
+	SHOT shot;
+
+	//’e¶‘¶ƒtƒ‰ƒO
+	shot.isAlive_ = true;
+
+
+	//’e‚Ì‘å‚«‚³AÀ•W“™‚Ì‰Šú‰»
+	shot.shotTransform_.scl = { SHOT_SCALE ,SHOT_SCALE ,SHOT_SCALE };
+	shot.shotTransform_.quaRot = Quaternion::Identity();
+	shot.shotTransform_.quaRotLocal = Quaternion::Euler(ROT);
+
+	shot.shotTransform_.Update();
+
+	shot.shotTransform_.modelId = shotmodel_;
+
+	//ƒ‚ƒfƒ‹‚ÌƒZƒbƒg
+	shot.shotTransform_.SetModel(MV1DuplicateModel(shot.shotTransform_.modelId));
+
+	//‚ç‚¹‚ÌÀ•WˆÊ’u‚ğæ“¾
+	shot.shotTransform_.pos = transform_.pos;
+
+	//’eŒü‚«
+	shot.dir_ = VNorm(toPlayer_);
+
+	shots_.push_back(shot);
+}
+
+void EnemyRase::UpdateShot(void)
+{
+	for (auto& shot : shots_)
+	{
+		if (!shot.isAlive_) continue;
+
+		if (AsoUtility::IsHitSpheres(shot.shotTransform_.pos, COL_SPHERE_RADIUS, playerPos_, playerRad_))
+		{
+			player_->Damege(1);
+			shot.life = 0;
+		}
+
+		shot.speed += 0.05;
+
+		if (shot.life > 60)
+		{
+			VECTOR targetDir =
+				VNorm(VSub(player_->GetPos(),
+					shot.shotTransform_.pos));
+
+			shot.dir_ =
+				VNorm(VAdd(VScale(shot.dir_, 1.0f - shot.homingPower),
+					VScale(targetDir, shot.homingPower)));
+		}
+
+		shot.shotTransform_.pos =
+			VAdd(shot.shotTransform_.pos,
+				VScale(shot.dir_, shot.speed));
+
+		if (shot.shotTransform_.pos.y <= 0)
+		{
+			shot.shotTransform_.pos.y = 0;
+		}
+
+		shot.life--;
+
+		if (shot.life <= 0)
+		{
+			shot.isAlive_ = false;
+			shot.speed = 3.0f;
+			ChangeState(STATE::THINK);
+		}
+	}
+}
+
+void EnemyRase::DrawShot(void)
+{
+	for (auto& shot : shots_)
+	{
+		if (!shot.isAlive_)continue;
+
+		shot.shotTransform_.Update();
+
+		//•`‰æ
+		MV1SetPosition(shotmodel_, shot.shotTransform_.pos);
+		MV1DrawModel(shot.shotTransform_.modelId);
+	}
+}
+
+
+
+
+

@@ -122,7 +122,6 @@ private:
 
 	int stage_; //影の判定用ステージハンドル
 
-	//ここから
 	float PLAYER_SHADOW_HEIGHT = 800.0f;
 	float PLAYER_SHADOW_SIZE = 30.0f;
 

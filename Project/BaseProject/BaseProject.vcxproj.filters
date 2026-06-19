@@ -64,13 +64,21 @@
     <ClCompile Include="Src\Object\Weapon\Sword\KeyBlade1.cpp" />
     <ClCompile Include="Src\Shader\PixelMaterial.cpp" />
     <ClCompile Include="Src\Shader\PixelRenderer.cpp" />
+<<<<<<< HEAD
     <ClCompile Include="Src\Manager\PostEffectManager.cpp" />
+=======
+>>>>>>> origin/α修正２
     <ClCompile Include="Src\Object\Charactor\Enemy\Rase\EnemyRase.cpp" />
     <ClCompile Include="Src\Object\Item\ItemSkill\SkillItem.cpp" />
     <ClCompile Include="Src\Object\Skill\SkillBase.cpp" />
     <ClCompile Include="Src\Object\Skill\SkillManager.cpp" />
+<<<<<<< HEAD
     <ClCompile Include="Src\Object\Weapon\Sword\KeyBlade2.cpp" />
     <ClCompile Include="Src\Object\Weapon\Sword\KeyBlade3.cpp" />
+=======
+    <ClCompile Include="Src\Object\Charactor\Enemy\Shot\ShotBase.cpp" />
+    <ClCompile Include="Src\Object\Charactor\Enemy\Shot\ShotStraight.cpp" />
+>>>>>>> origin/α修正２
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Src\Sound\SoundTable.h" />
@@ -136,13 +144,21 @@
     <ClInclude Include="Src\Object\Weapon\Sword\KeyBlade1.h" />
     <ClInclude Include="Src\Shader\PixelRenderer.h" />
     <ClInclude Include="Src\Shader\PixelMaterial.h" />
+<<<<<<< HEAD
     <ClInclude Include="Src\Manager\PostEffectManager.h" />
+=======
+>>>>>>> origin/α修正２
     <ClInclude Include="Src\Object\Charactor\Enemy\Rase\EnemyRase.h" />
     <ClInclude Include="Src\Object\Item\ItemSkill\SkillItem.h" />
     <ClInclude Include="Src\Object\Skill\SkillBase.h" />
     <ClInclude Include="Src\Object\Skill\SkillManager.h" />
+<<<<<<< HEAD
     <ClInclude Include="Src\Object\Weapon\Sword\KeyBlade2.h" />
     <ClInclude Include="Src\Object\Weapon\Sword\KeyBlade3.h" />
+=======
+    <ClInclude Include="Src\Object\Charactor\Enemy\Shot\ShotBase.h" />
+    <ClInclude Include="Src\Object\Charactor\Enemy\Shot\ShotStraight.h" />
+>>>>>>> origin/α修正２
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Src\Shader\PostEffect\ChromaticAberration.hlsl" />

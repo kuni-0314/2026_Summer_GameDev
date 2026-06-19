@@ -5,6 +5,7 @@
 #include "../../../Object/Collider/ColliderBase.h"
 #include "../../../Utility/AsoUtility.h"
 #include "../../../Object/Common/AnimationController.h"
+#include "../../../Sound/AudioManager.h"
 
 void PlayerAttackState::Enter(Player* player)
 {
@@ -33,6 +34,19 @@ void PlayerAttackState::Enter(Player* player)
 		ATTACK_RADIUS,
 		ATTACK_POW[static_cast<int>(attackType_)],
 		60); 
+<<<<<<< HEAD
+=======
+	
+	//if (player->IsAir())
+	//{
+	//	VECTOR movePow = player->GetMovePow();
+	//	movePow.y = 200.0f;
+	//	player->SetMovePow(movePow);
+	//}
+
+	AudioManager::GetInstance()->LoadSceneSound(LoadScene::GAME);
+
+>>>>>>> origin/Œ±‰øÆÊ≠£Ôºí
 }
 
 void PlayerAttackState::Update(Player* player)
@@ -122,12 +136,17 @@ PlayerAttackState::ATTACK_TYPE PlayerAttackState::GetNextAttackType(Player* play
 
 	if (isHeavyAttack)
 	{
+	
+		
+
 		if (player->IsAir())
 		{
 			// ÉAÉjÉÅÅ[ÉVÉáÉìçƒê∂
 			player->GetAnimationController()->Play(
 				static_cast<int>(Player::ANIM_TYPE::ATK_H), false, true);
 			return ATTACK_TYPE::FALL;
+			AudioManager::GetInstance()->SetSeVolume(100);
+			AudioManager::GetInstance()->PlaySE(SoundID::SE_ATTACK_1);
 		}
 		else
 		{
@@ -135,10 +154,13 @@ PlayerAttackState::ATTACK_TYPE PlayerAttackState::GetNextAttackType(Player* play
 			player->GetAnimationController()->Play(
 				static_cast<int>(Player::ANIM_TYPE::ATK_H), false, true);
 			return ATTACK_TYPE::HEAVY;
+			AudioManager::GetInstance()->SetSeVolume(100);
+			AudioManager::GetInstance()->PlaySE(SoundID::SE_ATTACK_1);
 		}
 	}
 
 	// É_ÉbÉVÉÖçUåÇîªíË
+<<<<<<< HEAD
 	//bool isDashAttack = false;
 	//if (!player->IsAir())
 	//{
@@ -171,6 +193,27 @@ PlayerAttackState::ATTACK_TYPE PlayerAttackState::GetNextAttackType(Player* play
 	//		static_cast<int>(Player::ANIM_TYPE::ATK_D), false, true);
 	//	return ATTACK_TYPE::DASH;
 	//}
+=======
+	if (!player->IsAir() && 
+		ins->IsNew(KEY_INPUT_LSHIFT) &&
+		(ins->IsNew(KEY_INPUT_W) || ins->IsNew(KEY_INPUT_A) || 
+		 ins->IsNew(KEY_INPUT_S) || ins->IsNew(KEY_INPUT_D)))
+	{
+
+
+		// ÉAÉjÉÅÅ[ÉVÉáÉìçƒê∂
+		player->GetAnimationController()->Play(
+			static_cast<int>(Player::ANIM_TYPE::ATK_D), false, true);
+
+		AudioManager::GetInstance()->SetSeVolume(100);
+		AudioManager::GetInstance()->PlaySE(SoundID::SE_ATTACK_1);
+
+		return ATTACK_TYPE::DASH;
+
+	
+	
+	}
+>>>>>>> origin/Œ±‰øÆÊ≠£Ôºí
 
 	// ÉRÉìÉ{åpë±îªíË
 	bool inCombo = player->GetComboTimer() > 0;
@@ -218,12 +261,16 @@ PlayerAttackState::ATTACK_TYPE PlayerAttackState::GetNextAttackType(Player* play
 			player->GetAnimationController()->Play(
 				static_cast<int>(Player::ANIM_TYPE::ATK_N1), false, true);
 			return ATTACK_TYPE::NORMAL1;
+			AudioManager::GetInstance()->SetSeVolume(150);
+			AudioManager::GetInstance()->PlaySE(SoundID::SE_ATTACK_1);
 		}
 		switch (attackType_)
 		{
 		case ATTACK_TYPE::NORMAL1: 
 			player->GetAnimationController()->Play(
 				static_cast<int>(Player::ANIM_TYPE::ATK_N2), false, true);
+			AudioManager::GetInstance()->SetSeVolume(150);
+			AudioManager::GetInstance()->PlaySE(SoundID::SE_ATTACK_1);
 			return ATTACK_TYPE::NORMAL2;
 		case ATTACK_TYPE::NORMAL2: 
 			player->GetAnimationController()->Play(

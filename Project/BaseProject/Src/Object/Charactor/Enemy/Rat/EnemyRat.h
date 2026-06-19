@@ -27,16 +27,15 @@ public:
 		THINK,
 		IDLE,
 		RUN,
-		WANDER,
+		CHARGE,
 		ATTACK,
 		HIT,
 		DIE,
-		WARNIG,
 		END
 	};
 
 	// ƒRƒ“ƒXƒgƒ‰ƒNƒ^
-	EnemyRat(const EnemyBase::EnemyData& data, Player* player);
+	EnemyRat(const EnemyBase::EnemyData& data, int attackModel, Player* player);
 	// ƒfƒXƒgƒ‰ƒNƒ^
 	~EnemyRat() override;
 
@@ -64,18 +63,12 @@ private:
 	ItemManger* itemManager_ ;
 
 	//ƒAƒjƒ[ƒVƒ‡ƒ““o˜^”Ô†
-	//‘Ò‹@
 	static constexpr int  ANIM_INDX_IDLE = 8; 
-	//•à‚­
 	static constexpr int  ANIM_INDX_WALK = 13;
-	//UŒ‚
 	static constexpr int  ANIM_INDX_ATTACK = 1;
-	//ƒGƒ“ƒh
 	static constexpr int  ANIM_INDX_END = 6;
-	//HIT
-	static constexpr int  ANIM_INDX_HIT = 11;
-	//RUN
-	static constexpr int  ANIM_INDX_RUN = 12;
+	static constexpr int  ANIM_INDX_HIT = 7;
+	static constexpr int  ANIM_INDX_RUN = 11;
 
 
 	// ƒ‚ƒfƒ‹‚Ì‘å‚«‚³
@@ -85,32 +78,32 @@ private:
 
 	// Õ“Ë”»’è—pü•ªŠJn
 	static constexpr VECTOR COL_LINE_START_LOCAL_POS = { 0.0f, 80.0f, 0.0f };
-
 	// Õ“Ë”»’è—pü•ªI—¹
 	static constexpr VECTOR COL_LINE_END_LOCAL_POS = { 0.0f, -10.0f, 0.0f };
 
 	// Õ“Ë”»’è—pƒJƒvƒZƒ‹ã•”‹…‘Ì
 	static constexpr VECTOR COL_CAPSULE_TOP_LOCAL_POS = { 0.0f, 110.0f, 0.0f };
-
 	// Õ“Ë”»’è—pƒJƒvƒZƒ‹‰º•”‹…‘Ì
 	static constexpr VECTOR COL_CAPSULE_DOWN_LOCAL_POS = { 0.0f, 30.0f, 0.0f };
-
 	// Õ“Ë”»’è—pƒJƒvƒZƒ‹‹…‘Ì”¼Œa
 	static constexpr float COL_CAPSULE_RADIUS = 20.0f;
-
 	// Õ“Ë”»’è—pƒJƒvƒZƒ‹‹…‘Ì”¼Œa
 	static constexpr float COL_SPHERE_RADIUS = 50.0f;
 
 	// UŒ‚”»’è—p‹…‘Ì
 	static constexpr VECTOR ATTACK_SPHERE_LOCAL_POS = { 0.0f, 30.0f, 120.0f };
-
 	// s“®Ø‚è‘Ö‚¦—pƒJƒvƒZƒ‹‹…‘Ì”¼Œa
 	static constexpr float COL_SWICH_RADIUS = 250.0f;
 
-	// RUNØ‚è‘Ö‚¦‹——£
-	static constexpr float RUN_SWICH_DISTANCE = 400.0f;
-
+	//‹——£ŠÖ˜A
+	static constexpr float SEARCH_DISTANCE = 500.0f;
+	static constexpr float SWICH_DISTANCE = 200.0f;
+	static constexpr float MIN_DISTANCE = 150.0f;
 	static constexpr float ATTACK_MOVE_SPEED = 3.0f;
+
+	static constexpr int ATTACK_CHARGE = 20;
+
+	int attackCharge_ = 20;
 
 	//UŒ‚”»’è
 	bool isAttack_; 
@@ -129,8 +122,7 @@ private:
 	VECTOR toPlayer_;
 	//ƒvƒŒƒCƒ„[À•W
 	VECTOR playerPos_;
-	//ƒvƒŒƒCƒ„[”»’è‹…‚Ì”¼Œa
-	float playerRad_;
+
 
 
 
@@ -142,6 +134,7 @@ private:
 
 	// ó‘Ô‘JˆÚ
 	void ChangeState(STATE state);
+<<<<<<< HEAD
 	void ChangeStateNone();
 	void ChangeStateThink();
 	void ChangeStateIdle();
@@ -164,6 +157,30 @@ private:
 	void UpdateEnd();
 	void UpdateRun();
 	void UpdateWarnig();
+=======
+	void ChangeStateNone(void);
+	void ChangeStateThink(void);
+	void ChangeStateIdle(void);
+	void ChangeStateAttack(void);
+	void ChangeStateCharge(void);
+	void ChangeStateHit(void);
+	void ChangeStateDie(void);
+	void ChangeStateEnd(void);
+	void ChangeStateRun(void);
+	
+
+	// XVŒn
+	void UpdateNone(void);
+	void UpdateThink(void);
+	void UpdateIdle(void);
+	void UpdateCharge(void);
+	void UpdateAttack(void);
+	void UpdateHit(void);
+	void UpdateDie(void);
+	void UpdateEnd(void);
+	void UpdateRun(void);
+
+>>>>>>> origin/Î±ä¿®æ­£ï¼’
 
 
 
