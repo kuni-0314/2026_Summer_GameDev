@@ -103,4 +103,6 @@ private:
 
 	// エフェクト名を取得
 	const char* GetEffectName(PostEffectManager::EFFECT_TYPE effectType);
+
+	int audioHandle_;
 };

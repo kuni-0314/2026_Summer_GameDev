@@ -89,27 +89,20 @@ void GameScene::Init()
 	camMode_ = CAM_MODE::MANUAL;
 	sceMng_.GetCamera()->ChangeMode(Camera::MODE::MANUAL);
 
-	AudioManager::GetInstance()->LoadSceneSound(LoadScene::GAME);
-	AudioManager::GetInstance()->PlayBGM(SoundID::BGM_GAME);
+	//AudioManager::GetInstance()->LoadSceneSound(LoadScene::GAME);
+	//AudioManager::GetInstance()->PlayBGM(SoundID::BGM_GAME);
+
+	audioHandle_ = LoadSoundMem("Data/Sound/BGM/GameBGM.wav");
+	ChangeVolumeSoundMem(120, audioHandle_);
+	PlaySoundMem(audioHandle_, DX_PLAYTYPE_LOOP);
+	// 音量
+
 }
 
 void GameScene::Update()
 {
 	auto const ins = InputManager::GetInstance();
 
-	// ゲームオーバー判定
-	if (player_->GetHp() <= 0)
-	{
-		AudioManager::GetInstance()->StopBGM();
-		sceMng_.ChangeScene(SceneManager::SCENE_ID::OVER);
-	}
-
-	// ゲームクリア判定
-	if (enemyManager_->GetEnemyDead())
-	{
-		AudioManager::GetInstance()->StopBGM();
-		sceMng_.ChangeScene(SceneManager::SCENE_ID::CLEAR);
-	}
 
 	// 各オブジェクトの更新
 	stage_->Update();
@@ -278,6 +271,29 @@ void GameScene::Update()
 		{
 			activeEffects_.clear();
 		}
+	}
+
+
+	// ゲームオーバー判定
+	if (player_->GetHp() <= 0)
+	{
+		// 強制的に全サウンド停止
+		StopMusic();
+		StopSoundMem(audioHandle_);
+		AudioManager::GetInstance()->StopBGM();
+		sceMng_.ChangeScene(SceneManager::SCENE_ID::OVER);
+		return;
+	}
+
+	// ゲームクリア判定
+	if (enemyManager_->GetEnemyDead())
+	{
+		// 強制的に全サウンド停止
+		StopMusic();
+		StopSoundMem(audioHandle_);
+		AudioManager::GetInstance()->StopBGM();
+		sceMng_.ChangeScene(SceneManager::SCENE_ID::CLEAR);
+		return;
 	}
 }
 
