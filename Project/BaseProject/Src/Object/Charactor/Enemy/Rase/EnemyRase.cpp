@@ -179,7 +179,22 @@ void EnemyRase::UpdateProcess()
 
 	auto const ins = InputManager::GetInstance();
 
+
+	preHp_ = hp_;
+
 	CheckPlayerSwordCollision();
+
+	if (hp_ < preHp_)
+	{
+		if (hp_ <= 0)
+		{
+			ChangeState(STATE::DIE);
+		}
+		else
+		{
+			ChangeState(STATE::HIT);
+		}
+	}
 }
 
 void EnemyRase::UpdateProcessPost()

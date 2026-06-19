@@ -143,6 +143,7 @@ void EnemyBase::CheckPlayerSwordCollision()
 			{
 				// ƒ_ƒ[ƒWˆ—
 				Damege(1);
+
 			}
 		}
 	}
