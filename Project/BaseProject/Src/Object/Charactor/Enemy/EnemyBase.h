@@ -36,6 +36,8 @@ public:
 	//描画
 	virtual void Draw() override;
 
+	// プレイヤーの剣との衝突判定を行う
+	void CheckPlayerSwordCollision();
 
 protected:
 

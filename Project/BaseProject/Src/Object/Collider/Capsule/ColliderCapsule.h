@@ -43,6 +43,14 @@ public:
 	//衝突判定の判定渡し（モデル用）
 	bool IsHit(const ColliderModel* colliderModel, 
 		bool isExclude = false, bool isTarget = false) const;
+
+	// 衝突判定の判定渡し（カプセル用）
+	bool IsHit(const ColliderCapsule* colliderCapsule,
+		bool isExclude = false, bool isTarget = false) const;
+
+	// デバッグ用描画のON/OFF
+	void SetDebugDraw(bool isDebugDraw) { isDebugDraw_ = isDebugDraw; }
+
 protected:
 	// デバッグ用描画
 	void DrawDebug(int color) override;
@@ -53,6 +61,9 @@ private:
 	VECTOR localPosDown_;
 	// 半径
 	float radius_;
+
+	// デバッグ用
+	bool isDebugDraw_ = false;
 
 
 };

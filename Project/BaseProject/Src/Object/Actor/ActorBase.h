@@ -21,6 +21,7 @@ public:
 		MODEL,
 		VIEW_RANGE,
 		PLAYER,
+		PLAYER_SWORD,
 		ITEM,
 		MAX,
 	};
@@ -51,7 +52,7 @@ public:
 		return ownColliders_;
 	}
 	// 特定の自身の衝突情報取得
-	const ColliderBase* GetOwnCollider(int key) const;
+	const ColliderBase* GetOwnCollider(int key = 0) const;
 
 	// 衝突対象となるコライダを登録
 	void AddHitCollider(const ColliderBase* hitCollider);

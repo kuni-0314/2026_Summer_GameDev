@@ -54,14 +54,14 @@ void EnemyRobot::InitTransform()
 }
 void EnemyRobot::InitCollider()
 {
-	// 主に地面との衝突で仕様する線分コライダ
+	// 主に地面との衝突で使用する線分コライダ
 	ColliderLine* colLine = new ColliderLine(
 		ColliderBase::TAG::ENEMY, &transform_,
 		COL_LINE_START_LOCAL_POS, COL_LINE_END_LOCAL_POS);
 	ownColliders_.emplace(
 		static_cast<int>(COLLIDER_TYPE::LINE), colLine);
 
-	// 主に壁や木などの衝突で仕様するカプセルコライダ
+	// 主に壁や木などの衝突で使用するカプセルコライダ
 	ColliderCapsule* colCapsule = new ColliderCapsule(
 		ColliderBase::TAG::ENEMY, &transform_,
 		COL_CAPSULE_TOP_LOCAL_POS,

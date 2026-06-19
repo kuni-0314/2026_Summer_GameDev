@@ -5,8 +5,8 @@
 #include "../../../Utility/AsoUtility.h"
 #include "../../../Application.h"
 
-KeyBlade2::KeyBlade2(Transform& transform)
-	: SwordBase(TYPE::KEY_BLADE_2, transform)
+KeyBlade2::KeyBlade2(VECTOR startPos, VECTOR endPos, float radius, const Transform& ownerTransform)
+	: SwordBase(SWORD_TYPE::KEY_BLADE_2, startPos, endPos, radius, ownerTransform)
 {
 	scl = 0.0385f;
 }
@@ -27,10 +27,8 @@ void KeyBlade2::InitTransform()
 	transform_.scl = { scl, scl, scl };
 	transform_.rot = { 0.0f, 0.0f, 0.0f };
 	//transform_.pos = VGet(0.0f, 0.0f, 0.0f);
-}
 
-void KeyBlade2::InitCollider()
-{
+	transform_.quaRotLocal = Quaternion::Identity();
 }
 
 void KeyBlade2::InitAnimation()
@@ -39,7 +37,6 @@ void KeyBlade2::InitAnimation()
 
 void KeyBlade2::InitPost()
 {
-	SetupNormalAttack1();
 }
 
 void KeyBlade2::Update()
@@ -60,20 +57,6 @@ void KeyBlade2::Update()
 	rot = rot.Mult(Quaternion::Euler(0.0f * DX_PI_F / 180.0f, 8.0f * DX_PI_F / 180.0f, -60.0f * DX_PI_F / 180.0f));
 	transform_.quaRot = rot;
 
-	// 親クラスの更新処理
-	SwordBase::Update();
-}
-
-void KeyBlade2::SetupNormalAttack1()
-{
-	// 通常攻撃1: 縦斬り
-	HitboxInfo hitbox;
-	hitbox.localPosStart = { 0.0f, 15.0f, 0.0f };
-	hitbox.localPosEnd = { 0.0f, 70.0f, 0.0f };
-	hitbox.radius = 20.0f;
-	hitbox.activeStartFrame = 22;
-	hitbox.activeEndFrame = 29;
-	hitbox.damageMultiplier = 1.0f;
-	hitbox.isActive = false;
-	hitboxes_.push_back(hitbox);
+	// Transform の更新
+	transform_.Update();
 }

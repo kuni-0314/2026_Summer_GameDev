@@ -148,8 +148,11 @@ VECTOR Quaternion::PosAxis(const Quaternion& q, VECTOR pos)
 {
     // à íuèÓïÒÇ…âÒì]èÓïÒÇîΩâfÇ≥ÇπÇÈ
     // pos' = qÅEposÅEq(-1)
-    Quaternion tmp = Quaternion();
-    tmp = tmp.Mult(q);
+    //Quaternion tmp = Quaternion();
+    //tmp = tmp.Mult(q);
+    //tmp = tmp.Mult(Quaternion(0.0f, pos.x, pos.y, pos.z));
+    //tmp = tmp.Mult(q.Inverse());
+    Quaternion tmp = q;
     tmp = tmp.Mult(Quaternion(0.0f, pos.x, pos.y, pos.z));
     tmp = tmp.Mult(q.Inverse());
     return { (float)tmp.x, (float)tmp.y, (float)tmp.z };
@@ -186,62 +189,25 @@ VECTOR Quaternion::ToEuler() const
 
 MATRIX Quaternion::ToMatrix(const Quaternion& q)
 {
+    VECTOR right = PosAxis(q, VGet(1, 0, 0));
+    VECTOR up = PosAxis(q, VGet(0, 1, 0));
+    VECTOR forward = PosAxis(q, VGet(0, 0, 1));
 
-    MATRIX mat;
+    MATRIX mat = MGetIdent();
 
-    FLOAT4 fq = { (float)q.x, (float)q.y, (float)q.z, (float)q.w };
+    mat.m[0][0] = right.x;
+    mat.m[0][1] = right.y;
+    mat.m[0][2] = right.z;
 
-    float sx = fq.x * fq.x * 2.0f;
-    float sy = fq.y * fq.y * 2.0f;
-    float sz = fq.z * fq.z * 2.0f;
-    float cx = fq.y * fq.z * 2.0f;
-    float cy = fq.x * fq.z * 2.0f;
-    float cz = fq.x * fq.y * 2.0f;
-    float wx = fq.w * fq.x * 2.0f;
-    float wy = fq.w * fq.y * 2.0f;
-    float wz = fq.w * fq.z * 2.0f;
+    mat.m[1][0] = up.x;
+    mat.m[1][1] = up.y;
+    mat.m[1][2] = up.z;
 
-    mat.m[0][0] = 1.0f - (sy + sz);	mat.m[0][1] = cz + wz;			mat.m[0][2] = cy - wy;			mat.m[0][3] = 0.0f;
-    mat.m[1][0] = cz - wz;			mat.m[1][1] = 1.0f - (sx + sz);	mat.m[1][2] = cx + wx;			mat.m[1][3] = 0.0f;
-    mat.m[2][0] = cy + wy;			mat.m[2][1] = cx - wx;			mat.m[2][2] = 1.0f - (sx + sy);	mat.m[2][3] = 0.0f;
-    mat.m[3][0] = 0.0f;				mat.m[3][1] = 0.0f;				mat.m[3][2] = 0.0f;				mat.m[3][3] = 1.0f;
-    //mat.m[3][0] = trans.x;				mat.m[3][1] = trans.y;				mat.m[3][2] = trans.z;				mat.m[3][3] = 1.0f;
+    mat.m[2][0] = forward.x;
+    mat.m[2][1] = forward.y;
+    mat.m[2][2] = forward.z;
 
     return mat;
-
-    //double sqw = q.w * q.w;
-    //double sqx = q.x * q.x;
-    //double sqy = q.y * q.y;
-    //double sqz = q.z * q.z;
-    //double invs = 1.0 / (sqx + sqy + sqz + sqw);
-
-    //MATRIX matrix = MGetIdent();
-
-    //matrix.m[0][0] = static_cast<float>((sqx - sqy - sqz + sqw) * invs);
-    //matrix.m[1][1] = static_cast<float>((-sqx + sqy - sqz + sqw) * invs);
-    //matrix.m[2][2] = static_cast<float>((-sqx - sqy + sqz + sqw) * invs);
-
-    //double tmp1 = q.x * q.y;
-    //double tmp2 = q.z * q.w;
-    ////matrix.m[0][1] = static_cast<float>(2.0 * (tmp1 + tmp2) * invs);
-    ////matrix.m[1][0] = static_cast<float>(2.0 * (tmp1 - tmp2) * invs);
-    //matrix.m[0][1] = static_cast<float>(2.0 * (tmp1 - tmp2) * invs);
-    //matrix.m[1][0] = static_cast<float>(2.0 * (tmp1 + tmp2) * invs);
-
-    //tmp1 = q.x * q.z;
-    //tmp2 = q.y * q.w;
-    //matrix.m[0][2] = static_cast<float>(2.0 * (tmp1 - tmp2) * invs);
-    //matrix.m[2][0] = static_cast<float>(2.0 * (tmp1 + tmp2) * invs);
-
-    //tmp1 = q.y * q.z;
-    //tmp2 = q.x * q.w;
-    ////matrix.m[1][2] = static_cast<float>(2.0 * (tmp1 + tmp2) * invs);
-    ////matrix.m[2][1] = static_cast<float>(2.0 * (tmp1 - tmp2) * invs);
-    //matrix.m[1][2] = static_cast<float>(2.0 * (tmp1 - tmp2) * invs);
-    //matrix.m[2][1] = static_cast<float>(2.0 * (tmp1 + tmp2) * invs);
-
-    //return matrix;
-
 }
 
 MATRIX Quaternion::ToMatrix() const

@@ -1,6 +1,8 @@
 #include "../../../Utility/AsoUtility.h"
 #include "../../../Manager/InputManager.h"
 #include "../../Charactor/Player/Player.h"
+#include "../../Collider/ColliderBase.h"
+#include "../../Collider/Capsule/ColliderCapsule.h"
 #include "EnemyBase.h"
 
 EnemyBase::EnemyBase(const EnemyBase::EnemyData& data, Player* player)
@@ -86,8 +88,52 @@ void EnemyBase::ChangeState(int state)
 		stateUpdate_ = std::function<void()>{};
 	}
 
+
+
+
 }
 
+void EnemyBase::CheckPlayerSwordCollision()
+{
+	// 死亡状態なら処理しない
+	if (!isAlive_) return;
+
+	// 自身のカプセルコライダを取得
+	ColliderCapsule* ownColCapsule = nullptr;
+	for (const auto& ownCol : ownColliders_)
+	{
+		if (ownCol.second->GetTag() == ColliderBase::TAG::ENEMY)
+		{
+			ownColCapsule =
+				dynamic_cast<ColliderCapsule*>(ownCol.second);
+			//if (ownColCapsule == nullptr) return;
+		}
+	}
+
+	// プレイヤーの剣コライダはhitColliders_に登録されているはずなので、全てチェック
+	for (const auto& hitCol : hitColliders_)
+	{
+		if (hitCol->GetTag() == ColliderBase::TAG::PLAYER_SWORD)
+		{
+			// 剣はカプセルコライダ
+			// 敵もカプセルコライダ
+			// カプセルコライダ同士で衝突判定
+			const ColliderCapsule* swordColCapsule =
+				dynamic_cast<const ColliderCapsule*>(hitCol);
+
+			if (swordColCapsule == nullptr) return;
+
+			// 衝突判定
+			if (ownColCapsule->IsHit(swordColCapsule))
+			{
+				// ダメージ処理
+				Damege(1);
+			}
+		}
+	}
+
+
+}
 
 
 

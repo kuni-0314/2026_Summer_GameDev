@@ -153,6 +153,7 @@ public:
 
 	int GetPadNum() const { return padNum_; }
 
+	SwordBase* GetSword() const { return sword_; }
 
 protected:
 
@@ -174,6 +175,7 @@ protected:
 	//çXêVån
 	virtual void UpdateProcess() override;
 	virtual void UpdateProcessPost() override;
+
 
 private:
 
@@ -228,4 +230,15 @@ private:
 
 	// åï
 	SwordBase* sword_;
+
+	// àÍíUÇ±Ç±Ç…èëÇ¢Ç∆Ç≠
+	static constexpr VECTOR KEY_BLADE_1_LOCAL_POS_START = { 0.0f, 15.0f, 0.0f };
+	static constexpr VECTOR KEY_BLADE_1_LOCAL_POS_END = { 0.0f, 90.0f, 0.0f };
+	static constexpr float KEY_BLADE_1_RADIUS = 20.0f;
+	static constexpr VECTOR KEY_BLADE_2_LOCAL_POS_START = { 0.0f, 15.0f, 0.0f };
+	static constexpr VECTOR KEY_BLADE_2_LOCAL_POS_END = { 0.0f, 70.0f, 0.0f };
+	static constexpr float KEY_BLADE_2_RADIUS = 20.0f;
+	static constexpr VECTOR KEY_BLADE_3_LOCAL_POS_START = { 0.0f, 30.0f, 0.0f };
+	static constexpr VECTOR KEY_BLADE_3_LOCAL_POS_END = { 0.0f, 120.0f, 0.0f };
+	static constexpr float KEY_BLADE_3_RADIUS = 20.0f;
 };

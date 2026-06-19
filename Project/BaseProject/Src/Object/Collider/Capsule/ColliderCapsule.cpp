@@ -63,12 +63,18 @@ VECTOR ColliderCapsule::GetCenter() const
 
 void ColliderCapsule::DrawDebug(int color)
 {
+	// 非常に意味が無い
+	auto a = follow_->pos;
+	auto b = follow_->quaRot;
+
 	// 上の球体
 	VECTOR pos1 = GetPosTop();
 	DrawSphere3D(pos1, radius_, 5, color, color, false);
+	DrawSphere3D(pos1, radius_ * 0.125f, 5, color, color, true);
 	// 下の球体
 	VECTOR pos2 = GetPosDown();
 	DrawSphere3D(pos2, radius_, 5, color, color, false);
+	DrawSphere3D(pos2, radius_ * 0.125f, 5, color, color, true);
 	VECTOR dir;
 	VECTOR s;
 	VECTOR e;
@@ -93,7 +99,19 @@ void ColliderCapsule::DrawDebug(int color)
 	e = VAdd(pos2, VScale(dir, radius_));
 	DrawLine3D(s, e, color);
 	// カプセルの中心
-	DrawSphere3D(GetCenter(), 5.0f, 10, color, color, true);
+	//DrawSphere3D(GetCenter(), 5.0f, 10, color, color, true);
+
+	// 座標を表示（１要素ずつ改行）
+	if (!isDebugDraw_)
+	{
+		return;
+	}
+	DrawFormatString(0, 200, color, "Capsule Pos Top X : %.2f", pos1.x);
+	DrawFormatString(0, 220, color, "Capsule Pos Top Y : %.2f", pos1.y);
+	DrawFormatString(0, 240, color, "Capsule Pos Top Z : %.2f", pos1.z);
+	DrawFormatString(0, 260, color, "Capsule Pos Down X : %.2f", pos2.x);
+	DrawFormatString(0, 280, color, "Capsule Pos Down Y : %.2f", pos2.y);
+	DrawFormatString(0, 300, color, "Capsule Pos Down Z : %.2f", pos2.z);
 }
 
 VECTOR ColliderCapsule::GetPosPushBackAlongNormal(
@@ -190,4 +208,11 @@ bool ColliderCapsule::IsHit(const ColliderModel* colliderModel, bool isExclude, 
 	MV1CollResultPolyDimTerminate(hits);
 
 	return ret;
+}
+
+bool ColliderCapsule::IsHit(const ColliderCapsule* colliderCapsule, bool isExclude, bool isTarget) const
+{
+	return HitCheck_Capsule_Capsule(
+		GetPosTop(), GetPosDown(), GetRadius(),
+		colliderCapsule->GetPosTop(), colliderCapsule->GetPosDown(), colliderCapsule->GetRadius());
 }

@@ -19,6 +19,7 @@ public:
 	{
 		STAGE,
 		PLAYER,
+		PLAYER_SWORD,
 		CAMERA,
 		ENEMY,
 		VIEW_RANGE,

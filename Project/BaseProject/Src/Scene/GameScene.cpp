@@ -60,6 +60,7 @@ void GameScene::Init()
 	enemyManager_ = new EnemyManager(this, player_);
 	enemyManager_->Init();
 	enemyManager_->AddHitCollider(stageCollider);
+	enemyManager_->AddHitCollider(player_->GetSword()->GetOwnCollider(static_cast<int>(ActorBase::COLLIDER_TYPE::CAPSULE)));
 
 	// スカイドーム初期化
 	skyDome_ = new SkyDome(player_->GetTransform());
@@ -191,8 +192,6 @@ void GameScene::Update()
 
 			if (data->lifeTime <= 0)
 			{
-				enemyManager_->ClearAttackColliders();
-
 				delete data->collider->GetFollow();
 				delete data->collider;
 				delete data;
@@ -201,8 +200,11 @@ void GameScene::Update()
 			}
 			else
 			{
-				Transform* transform = const_cast<Transform*>(data->collider->GetFollow());
-				transform->pos = player_->GetTransform().pos;
+				if (data->collider != nullptr) 
+				{
+					Transform* transform = const_cast<Transform*>(data->collider->GetFollow());
+					transform->pos = player_->GetTransform().pos;
+				}
 			}
 		}
 	}
@@ -439,8 +441,6 @@ void GameScene::CreateAttackCollider(ColliderBase::TAG tag, VECTOR pos, float ra
 	data->lifeTime = lifeTime;
 
 	attackColliders_.push_back(data);
-
-	enemyManager_->AddAttackCollider(collider);
 }
 
 void GameScene::ToggleEffect(PostEffectManager::EFFECT_TYPE effectType)

@@ -142,13 +142,13 @@ void Player::InitTransform()
 
 void Player::InitCollider()
 {
-	// 主に地面との衝突で仕様する線分コライダ
+	// 主に地面との衝突で使用する線分コライダ
 	ColliderLine* colLine = new ColliderLine(
 	ColliderBase:: TAG::PLAYER, &transform_,
 	COL_LINE_START_LOCAL_POS, COL_LINE_END_LOCAL_POS);
 	ownColliders_.emplace(static_cast<int>(COLLIDER_TYPE::LINE), colLine);
 
-	// 主に壁や木などの衝突で仕様するカプセルコライダ
+	// 主に壁や木などの衝突で使用するカプセルコライダ
 	ColliderCapsule* colCapsule = new ColliderCapsule(
 		ColliderBase::TAG::PLAYER, &transform_,
 		COL_CAPSULE_TOP_LOCAL_POS, COL_CAPSULE_DOWN_LOCAL_POS,
@@ -227,7 +227,7 @@ void Player::InitPost()
 	InitState();
 
 	// 武器初期化
-	sword_ = new KeyBlade3(transform_);
+	sword_ = new KeyBlade2(KEY_BLADE_2_LOCAL_POS_START, KEY_BLADE_2_LOCAL_POS_END, KEY_BLADE_2_RADIUS, transform_);
 	sword_->Init();
 }
 
@@ -238,7 +238,6 @@ void Player::UpdateProcess()
 	{
 		currentState_->Update(this);
 	}
-
 
 	if (InputManager::GetInstance()->IsTrgDown(KEY_INPUT_R))
 	{
