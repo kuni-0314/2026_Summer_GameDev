@@ -120,6 +120,8 @@ void Player::InitLoad(void)
 	CharactorBase::InitLoad();
 
 	transform_.SetModel(resMng_.Load(ResourceManager::SRC::PLAYER).handleId_);
+
+
 }
 
 void Player::InitTransform(void)

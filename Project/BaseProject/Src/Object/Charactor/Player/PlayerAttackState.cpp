@@ -172,7 +172,6 @@ PlayerAttackState::ATTACK_TYPE PlayerAttackState::GetNextAttackType(Player* play
 	// ’·‰Ÿ‚µ”»’è
 	if (ins->GetMouseLastHoldTime(MOUSE_INPUT_LEFT) > 30)
 	{
-		AudioManager::GetInstance()->LoadSceneSound(LoadScene::TITLE);
 	
 		
 
@@ -182,6 +181,8 @@ PlayerAttackState::ATTACK_TYPE PlayerAttackState::GetNextAttackType(Player* play
 			player->GetAnimationController()->Play(
 				static_cast<int>(Player::ANIM_TYPE::ATK_H), false, true);
 			return ATTACK_TYPE::FALL;
+			AudioManager::GetInstance()->SetSeVolume(100);
+			AudioManager::GetInstance()->PlaySE(SoundID::SE_ATTACK_1);
 		}
 		else
 		{
@@ -189,6 +190,8 @@ PlayerAttackState::ATTACK_TYPE PlayerAttackState::GetNextAttackType(Player* play
 			player->GetAnimationController()->Play(
 				static_cast<int>(Player::ANIM_TYPE::ATK_H), false, true);
 			return ATTACK_TYPE::HEAVY;
+			AudioManager::GetInstance()->SetSeVolume(100);
+			AudioManager::GetInstance()->PlaySE(SoundID::SE_ATTACK_1);
 		}
 	}
 
@@ -204,7 +207,7 @@ PlayerAttackState::ATTACK_TYPE PlayerAttackState::GetNextAttackType(Player* play
 		player->GetAnimationController()->Play(
 			static_cast<int>(Player::ANIM_TYPE::ATK_D), false, true);
 
-		AudioManager::GetInstance()->SetSeVolume(150);
+		AudioManager::GetInstance()->SetSeVolume(100);
 		AudioManager::GetInstance()->PlaySE(SoundID::SE_ATTACK_1);
 
 		return ATTACK_TYPE::DASH;

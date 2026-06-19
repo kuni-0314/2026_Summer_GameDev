@@ -24,9 +24,9 @@ void AudioManager::Init(void)
 	// åªç›çƒê∂Ç≥ÇÍÇƒÇ¢ÇÈBGM
 	currentBgm_ = static_cast<SoundID>(-1);
 
-	bgmVolume_ = 255;		// bgmâπó 
-	seVolume_ = 255;		// seâπó 
-	masterVolume_ = 255;	// masterâπó 
+	bgmVolume_ = 255;// bgmâπó 
+	seVolume_ = 255;// seâπó 
+	masterVolume_ = 255;// masterâπó 
 }
 
 void AudioManager::LoadSceneSound(LoadScene scene)
@@ -227,3 +227,4 @@ void AudioManager::SetMasterVolume(int volume)
 		}
 	}
 }
+

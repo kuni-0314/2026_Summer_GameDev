@@ -10,6 +10,7 @@
 #include "../../../../Manager/InputManager.h"
 #include "../../../../Object/Item/HP/HpItem.h"
 #include "../../../../Object/Item/ItemManger.h"
+#include "../../../../Sound/AudioManager.h"
 #include "../../Player/Player.h"
 
 
@@ -61,6 +62,9 @@ void EnemyRat::InitLoad(void)
 	//基底クラスのリソースロード
 	CharactorBase::InitLoad();
 	transform_.SetModel(resMng_.LoadModelDuplicate(ResourceManager::SRC::ENEMY_RAT));
+
+
+	AudioManager::GetInstance()->LoadSceneSound(LoadScene::GAME);
 
 
 }
@@ -183,7 +187,7 @@ void EnemyRat::UpdateProcess(void)
 	if (ins->IsTrgDown(KEY_INPUT_1) ||
 		(ins->IsMouseTrgDown(MOUSE_INPUT_LEFT) && distance_ < 300.0f))
 	{
-		Damege(99999);
+		Damege(1);
 		if (hp_ <= 0) ChangeState(STATE::DIE);
 		else          ChangeState(STATE::HIT);
 	}
@@ -245,6 +249,9 @@ void EnemyRat::ChangeStateAttack(void)
 	isAttack_ = false;
 
 	if (distance_ > 0.01f)	moveDir_ = VNorm(toPlayer_);
+
+	AudioManager::GetInstance()->SetSeVolume(80);
+	AudioManager::GetInstance()->PlaySE(SoundID::SE_ENEMY_RAT_ATTAK);
 
 	// 攻撃アニメーション再生
 	animationController_->Play(static_cast<int>(ANIM_TYPE::ATTACK), false);
@@ -355,6 +362,7 @@ void EnemyRat::UpdateAttack(void)
 {
 	// 飛び込み攻撃のように前進させる場合
 	movePow_ = VScale(moveDir_, ATTACK_MOVE_SPEED);
+
 
 	if (!isAttack_)
 	{

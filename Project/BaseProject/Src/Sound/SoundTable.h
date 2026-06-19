@@ -8,10 +8,14 @@ enum class SoundID
 {
 	BGM_TITLE,
 	BGM_TITLE2,		//タイトルBGM
+	BGM_GAME,
 	SE_TITLE_SELECT,//タイトル選択
 	SE_TITLE_DECISION,//タイトル決定
 	SE_ATTACK_1,//攻撃１
+	SE_PLAYER_RUN,
 	SE_HEAL,
+	SE_ENEMY_RAT_ATTAK,
+	SE_ENEMY_RASE_ATTACK,
 	MAX
 
 };

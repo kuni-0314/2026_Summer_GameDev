@@ -10,6 +10,7 @@
 #include "../../../../Manager/InputManager.h"
 #include "../../../../Object/Item/HP/HpItem.h"
 #include "../../../../Object/Item/ItemManger.h"
+#include "../../../../Sound/AudioManager.h"
 #include "../../Player/Player.h"
 #include "../Shot/ShotBase.h"
 #include "../Shot/ShotStraight.h"
@@ -62,6 +63,8 @@ void EnemyRase::InitLoad(void)
 	transform_.SetModel(resMng_.LoadModelDuplicate(ResourceManager::SRC::ENEMY_RASE));
 	//弾のロード
 	shotmodel_ = resMng_.LoadModelDuplicate(ResourceManager::SRC::ENEMY_RASE_BALL);
+
+	AudioManager::GetInstance()->LoadSceneSound(LoadScene::GAME);
 
 }
 
@@ -219,6 +222,9 @@ void EnemyRase::ChangeStateAttack(void)
 	stateUpdate_ = std::bind(&EnemyRase::UpdateAttack, this);
 
 	shotFired_ = false;
+
+	AudioManager::GetInstance()->SetSeVolume(80);
+	AudioManager::GetInstance()->PlaySE(SoundID::SE_ENEMY_RASE_ATTACK);
 
 	// ランダムな待機時間
 	step_ = 3.0f + static_cast<float>(GetRand(3));

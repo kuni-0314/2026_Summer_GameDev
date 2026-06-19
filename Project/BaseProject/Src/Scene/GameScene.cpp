@@ -14,7 +14,7 @@
 #include "../Object/Collider/Sphere/ColliderSphere.h"
 #include "../Shader/PixelMaterial.h"
 #include "../Shader/PixelRenderer.h"
-#include "../Sound/AudioManager.h"]
+#include "../Sound/AudioManager.h"
 #include "GameScene.h"
 
 GameScene::GameScene(void)
@@ -73,10 +73,6 @@ void GameScene::Init(void)
 
 	postEffectScreen_ = MakeScreen(
 		Application::SCREEN_SIZE_X, Application::SCREEN_SIZE_Y, true);
-
-	AudioManager::GetInstance()->LoadSceneSound(LoadScene::TITLE);
-	/*AudioManager::GetInstance()->PlayBGM(SoundID::BGM_TITLE);
-	AudioManager::GetInstance()->SetBgmVolume(120);*/
 
 
 	// マテリアルとレンダラーを作成
@@ -252,20 +248,32 @@ void GameScene::Init(void)
 	renderers_[CRT]->MakeSquareVertex();
 	
 	currentEffect_ = NORMAL;
+
+
+	AudioManager::GetInstance()->LoadSceneSound(LoadScene::GAME);
+	AudioManager::GetInstance()->PlayBGM(SoundID::BGM_GAME);
+	AudioManager::GetInstance()->SetBgmVolume(100);
 }
 
 void GameScene::Update(void)
 {
 	auto const ins = InputManager::GetInstance();
+
 	if (player_->GetHp() <= 0)
 	{
+		AudioManager::GetInstance()->SetBgmVolume(0);
+		AudioManager::GetInstance()->StopBGM();
 		sceMng_.ChangeScene(SceneManager::SCENE_ID::OVER);
+
 	}
-	//bool end = enemyManager_->GetEnemyDead();
-	//if (end)
-	//{
-	//	sceMng_.ChangeScene(SceneManager::SCENE_ID::CLEAR);
-	//}
+	bool end = enemyManager_->GetEnemyDead();
+	if (end)
+	{
+		AudioManager::GetInstance()->SetBgmVolume(0);
+		AudioManager::GetInstance()->StopBGM();
+		sceMng_.ChangeScene(SceneManager::SCENE_ID::CLEAR);
+		
+	}
 
 	stage_->Update();
 	skyDome_->Update();
@@ -449,6 +457,8 @@ void GameScene::Release(void)
 
 	player_->Release();
 	delete player_;
+
+	AudioManager::GetInstance()->DeleteSceneSound(LoadScene::GAME);
 }
 
 void GameScene::CreateAttackCollider(ColliderBase::TAG tag, VECTOR pos, float radius, float Damage, int lifeTime)

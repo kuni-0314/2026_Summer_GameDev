@@ -131,7 +131,6 @@ void TitleScene::Draw(void)
 void TitleScene::Release(void)
 {
 
-
 	DeleteGraph(imgTitle_);
 	DeleteGraph(imgGameStart_);
 }

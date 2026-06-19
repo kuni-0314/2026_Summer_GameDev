@@ -3,6 +3,7 @@
 #include "../../../Manager/SceneManager.h"
 #include "../../../Utility/AsoUtility.h"
 #include "../../../Manager/Camera.h"
+#include "../../../Sound/AudioManager.h"
 #include "player.h"
 #include "../../Common/AnimationController.h"
 #include "PlayerRunState.h"
@@ -11,6 +12,8 @@ void PlayerRunState::Enter(Player* player)
 {
 	// 初期アニメーション再生
 	player->GetAnimationController()->Play(static_cast<int>(Player::ANIM_TYPE::RUN), true);
+
+
 }
 
 void PlayerRunState::Update(Player* player)
@@ -41,7 +44,8 @@ void PlayerRunState::Update(Player* player)
 			player->ChangeState(Player::STATE::FAST_RUN);
 			return;
 		}
-		
+
+
 		// 移動速度を設定
 		player->SetMoveSpeed(Player::SPEED_MOVE);
 

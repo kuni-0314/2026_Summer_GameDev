@@ -30,8 +30,14 @@ namespace SoundTable_Game
 {
 	static const std::unordered_map<SoundID, std::string> Table =
 	{
+		{ SoundID::BGM_GAME,"Data/Sound/BGM/GameBgm.wav"},
+		{ SoundID::SE_HEAL,"Data/Sound/SE/Heal.wav"},
+		{ SoundID::SE_PLAYER_RUN,"Data/Sound/SE/Player_Run.wav"},
+		{ SoundID::SE_ENEMY_RAT_ATTAK,"Data/Sound/SE/Rat_Attack.wav"},
+		{ SoundID::SE_ENEMY_RASE_ATTACK,"Data/Sound/SE/Rase_Attack.mp3"},
 		{ SoundID::SE_ATTACK_1,"Data/Sound/SE/Attack1.wav"},
-		{ SoundID::SE_HEAL,"Data/Sound/SE/Heal.wav"}
+
+		
 	};
 }
 
@@ -44,4 +50,3 @@ namespace SoundTable_Skill
 
 	};
 }
-

@@ -44,13 +44,13 @@ public:
 		bool isAlive_ = false;
 		float speed = 4.5f;
 		int life = 180;
-		float homingPower = 0.1f;
+		float homingPower = 0.06f;
 		VECTOR dir_;
 		Transform shotTransform_;
 	
 	};
-
 	// コンストラクタ
+
 	EnemyRase(const EnemyBase::EnemyData& data, int attackModel,Player* player);
 	// デストラクタ
 	~EnemyRase(void) override;
