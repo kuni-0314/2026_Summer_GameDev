@@ -64,6 +64,8 @@ protected:
 	// 状態管理(更新ステップ)
 	std::function<void()> stateUpdate_;
 
+	// ダメージを受けたかどうか
+	bool wasHit_ = false;
 
 	// リソースロード
 	void InitLoad() override {}

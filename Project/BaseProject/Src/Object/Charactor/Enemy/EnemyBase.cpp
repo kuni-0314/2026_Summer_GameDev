@@ -111,7 +111,14 @@ void EnemyBase::CheckPlayerSwordCollision()
 	if (!isAlive_) return;
 
 	// プレイヤーが剣を振っていない場合は処理しない
-	if (!player_->IsAttacking()) return;
+	if (!player_->IsAttacking()) 
+	{
+		wasHit_ = false; // 攻撃していないなら被ダメージフラグをリセット
+		return;
+	}
+
+	if (wasHit_) return;
+
 
 	// 自身のカプセルコライダを取得
 	ColliderCapsule* ownColCapsule = nullptr;
@@ -143,6 +150,9 @@ void EnemyBase::CheckPlayerSwordCollision()
 			{
 				// ダメージ処理
 				Damege(1);
+
+				// 一度あったらフラグ
+				wasHit_ = true;
 			}
 		}
 	}

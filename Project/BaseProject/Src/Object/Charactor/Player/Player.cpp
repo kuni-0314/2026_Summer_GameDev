@@ -221,7 +221,7 @@ void Player::InitPost()
 	currentGrantStatusIndex_ = 4;
 	pendingPoints_ = 30;
 
-	hp_ = 10000;
+	hp_ = 10;
 	maxHp_ = hp_;
 
 	InitState();

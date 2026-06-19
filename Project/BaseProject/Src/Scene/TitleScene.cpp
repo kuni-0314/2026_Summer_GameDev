@@ -203,7 +203,7 @@ void TitleScene::SelectUpdate()
 	if (ins->IsTrgDown(KEY_INPUT_SPACE) || ins->IsGamepadTrgDown(InputManager::PadInput::A, 0))//Œˆ’è
 	{
 		//Œˆ’èSE
-		AudioManager::GetInstance()->SetSeVolume(200);
+		AudioManager::GetInstance()->SetSeVolume(80);
 		AudioManager::GetInstance()->PlaySE(SoundID::SE_TITLE_DECISION);
 		SelectChange((SELECT)selectCount_);
 	}

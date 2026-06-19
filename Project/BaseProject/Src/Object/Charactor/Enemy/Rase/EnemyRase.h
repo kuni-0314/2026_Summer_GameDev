@@ -91,7 +91,7 @@ private:
 	static constexpr int  ANIM_INDX_CHARGE = 5;
 	
 	//弾待機カウント
-	static constexpr int  SHOT_CHARGE_COUNT = 60;
+	static constexpr int  SHOT_CHARGE_COUNT = 120;
 
 	// モデルの大きさ
 	static constexpr float SCALE = 0.3f;
