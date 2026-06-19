@@ -58,6 +58,8 @@ protected:
 	//攻撃用モデル(魔法の弾とか）
 	int attackModle_;
 
+	int preHp_;
+
 	// 状態管理
 	int stateBase_;
 	// 状態管理(状態遷移時初期処理)

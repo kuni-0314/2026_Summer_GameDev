@@ -14,6 +14,7 @@
 #include "../Object/Weapon/Sword/KeyBlade1.h"
 #include "../Object/Collider/ColliderBase.h"
 #include "../Object/Collider/Sphere/ColliderSphere.h"
+#include "../Sound/AudioManager.h"
 #include "GameScene.h"
 // 別プロジェクト
 GameScene::GameScene()
@@ -87,6 +88,9 @@ void GameScene::Init()
 
 	camMode_ = CAM_MODE::MANUAL;
 	sceMng_.GetCamera()->ChangeMode(Camera::MODE::MANUAL);
+
+	AudioManager::GetInstance()->LoadSceneSound(LoadScene::GAME);
+	AudioManager::GetInstance()->PlayBGM(SoundID::BGM_GAME);
 }
 
 void GameScene::Update()
