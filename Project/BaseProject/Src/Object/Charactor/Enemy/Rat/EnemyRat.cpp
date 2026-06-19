@@ -183,25 +183,6 @@ void EnemyRat::UpdateProcess()
 
 	CheckPlayerSwordCollision();
 
-<<<<<<< HEAD
-	//auto const ins = InputManager::GetInstance();
-
-	// 1キー or マウス左クリックでプレイヤーが近くにいる場合
-	//if (ins->IsTrgDown(KEY_INPUT_1) ||
-	//	(ins->IsMouseTrgDown(MOUSE_INPUT_LEFT) && VSize(VSub(playerPos_, transform_.pos)) < 300.0f))
-	//{
-	//	Damege(99999);
-
-	//	if (hp_ <= 0)
-	//	{
-	//		ChangeState(STATE::DIE);
-	//	}
-	//	else
-	//	{
-	//		ChangeState(STATE::HIT);
-	//	}
-	//}
-=======
 	// デバッグ用被ダメージ処理
 	auto const ins = InputManager::GetInstance();
 	if (ins->IsTrgDown(KEY_INPUT_1) ||
@@ -211,7 +192,6 @@ void EnemyRat::UpdateProcess()
 		if (hp_ <= 0) ChangeState(STATE::DIE);
 		else          ChangeState(STATE::HIT);
 	}
->>>>>>> origin/α修正２
 }
 
 void EnemyRat::UpdateProcessPost()
@@ -263,28 +243,7 @@ void EnemyRat::ChangeStateIdle()
 		static_cast<int>(ANIM_TYPE::IDLE), true);
 
 }
-<<<<<<< HEAD
-void EnemyRat::ChangeStateWander()
-{
-	stateUpdate_ = std::bind(&EnemyRat::UpdateWander, this);
-
-	// ランダムな角度
-	float angle = static_cast<float>(GetRand(360)) * DX_PI_F / 180.0f;
-	// 移動方向
-	moveDir_ = VGet(cosf(angle), 0.0f, sinf(angle));
-	// ランダムな移動時間
-	step_ = 2.0f + static_cast<float>(GetRand(5));
-	// 移動スピード
-	moveSpeed_ = 3.0f;
-	// 歩きアニメーション再生
-	animationController_->Play(
-		static_cast<int>(ANIM_TYPE::WALK), true);
-}
-void EnemyRat::ChangeStateAttack()
-=======
-
 void EnemyRat::ChangeStateAttack(void)
->>>>>>> origin/α修正２
 {
 	stateUpdate_ = std::bind(&EnemyRat::UpdateAttack, this);
 	isAttack_ = false;
@@ -297,9 +256,6 @@ void EnemyRat::ChangeStateAttack(void)
 	// 攻撃アニメーション再生
 	animationController_->Play(static_cast<int>(ANIM_TYPE::ATTACK), false);
 }
-<<<<<<< HEAD
-void EnemyRat::ChangeStateHit()
-=======
 
 void EnemyRat::ChangeStateCharge(void)
 {
@@ -364,7 +320,6 @@ void EnemyRat::UpdateThink(void)
 }
 
 void EnemyRat::ChangeStateHit(void)
->>>>>>> origin/α修正２
 {
 	stateUpdate_ = std::bind(&EnemyRat::UpdateHit, this);
 	movePow_ = AsoUtility::VECTOR_ZERO;
@@ -388,45 +343,11 @@ void EnemyRat::ChangeStateEnd()
 
 }
 
-<<<<<<< HEAD
-void EnemyRat::ChangeStateRun()
-=======
 void EnemyRat::UpdateCharge(void)
->>>>>>> origin/α修正２
 {
 	attackCharge_--;
 
-<<<<<<< HEAD
-void EnemyRat::ChangeStateWarnig()
-{
-	stateUpdate_ = std::bind(&EnemyRat::UpdateWarnig, this);
-
-	// 警戒時間
-	step_ = 1.0f;
-
-	// 警戒時移動速度（遅め）
-	moveSpeed_ = 1.5f;
-
-	// 警戒アニメ
-	animationController_->Play(
-		static_cast<int>(ANIM_TYPE::WALK), true);
-}
-
-void EnemyRat::UpdateNone()
-{
-}
-
-void EnemyRat::UpdateThink()
-{
-}
-
-void EnemyRat::UpdateIdle()
-{
-	step_ -= scnMng_.GetDeltaTime();
-	if (step_ < 0.0f)
-=======
 	if (attackCharge_ <= 0)
->>>>>>> origin/α修正２
 	{
 		ChangeState(STATE::ATTACK);
 		// カウントをリセット
@@ -437,40 +358,7 @@ void EnemyRat::UpdateIdle()
 	movePow_ = AsoUtility::VECTOR_ZERO;
 }
 
-<<<<<<< HEAD
-void EnemyRat::UpdateWander()
-{
-	step_ -= scnMng_.GetDeltaTime();
-
-	//プレイヤーを見つけた場合のみ
-	if (look_)
-	{
-
-		int rand = GetRand(100);
-		
-		if (AsoUtility::IsHitSpheres(worldPos, COL_SWICH_RADIUS/2, playerPos_, playerRad_))
-		{
-			ChangeState(STATE::ATTACK);
-			return;
-		}
-		else
-		{
-			ChangeState(STATE::THINK);
-		}
-	}
-
-
-	
-	
-
-	// 移動する ← 追加
-	movePow_ = VScale(moveDir_, moveSpeed_);
-}
-
-void EnemyRat::UpdateAttack()
-=======
 void EnemyRat::UpdateAttack(void)
->>>>>>> origin/α修正２
 {
 	// 飛び込み攻撃のように前進させる場合
 	movePow_ = VScale(moveDir_, ATTACK_MOVE_SPEED);
@@ -534,41 +422,6 @@ void EnemyRat::UpdateRun()
 	// 移動量を適用
 	movePow_ = VScale(moveDir_, moveSpeed_);
 }
-
-<<<<<<< HEAD
-void EnemyRat::UpdateWarnig()
-{
-
-	// 時間減少
-	step_ -= scnMng_.GetDeltaTime();
-
-	// プレイヤー方向へゆっくり移動
-	if (VSize(toPlayer_) > 0.01f)
-	{
-		moveDir_ = VNorm(toPlayer_);
-	}
-
-	movePow_ = VScale(moveDir_, moveSpeed_);
-
-	// プレイヤーを見る
-	LookPlayer();
-
-	// 十分近づいたら止まる
-	if (distance_ < COL_SPHERE_RADIUS * 1.2f)
-	{
-		movePow_ = AsoUtility::VECTOR_ZERO;
-	}
-
-	// 警戒終了後に攻撃
-	if (step_ < 0.0f)
-	{
-		ChangeState(STATE::ATTACK);
-		return;
-	}
-}
-=======
-
->>>>>>> origin/α修正２
 
 
 

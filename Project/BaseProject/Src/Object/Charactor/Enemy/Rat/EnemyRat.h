@@ -134,30 +134,7 @@ private:
 
 	// ó‘Ô‘JˆÚ
 	void ChangeState(STATE state);
-<<<<<<< HEAD
-	void ChangeStateNone();
-	void ChangeStateThink();
-	void ChangeStateIdle();
-	void ChangeStateWander();
-	void ChangeStateAttack();
-	void ChangeStateHit();
-	void ChangeStateDie();
-	void ChangeStateEnd();
-	void ChangeStateRun();
-	void ChangeStateWarnig();
 
-	// XVŒn
-	void UpdateNone();
-	void UpdateThink();
-	void UpdateIdle();
-	void UpdateWander();
-	void UpdateAttack();
-	void UpdateHit();
-	void UpdateDie();
-	void UpdateEnd();
-	void UpdateRun();
-	void UpdateWarnig();
-=======
 	void ChangeStateNone(void);
 	void ChangeStateThink(void);
 	void ChangeStateIdle(void);
@@ -179,9 +156,6 @@ private:
 	void UpdateDie(void);
 	void UpdateEnd(void);
 	void UpdateRun(void);
-
->>>>>>> origin/Î±ä¿®æ­£ï¼’
-
 
 
 };

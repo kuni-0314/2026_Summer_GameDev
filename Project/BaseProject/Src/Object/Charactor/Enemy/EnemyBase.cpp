@@ -1,13 +1,10 @@
 #include "../../../Utility/AsoUtility.h"
 #include "../../../Manager/InputManager.h"
 #include "../../Charactor/Player/Player.h"
-<<<<<<< HEAD
-#include "../../Collider/ColliderBase.h"
-#include "../../Collider/Capsule/ColliderCapsule.h"
-=======
 #include "../Enemy/Shot/ShotBase.h"
 #include "../Enemy/Shot/ShotStraight.h"
->>>>>>> origin/Î±ä¿®æ­£ï¼’
+#include "../../Collider/ColliderBase.h"
+#include "../../Collider/Capsule/ColliderCapsule.h"
 #include "EnemyBase.h"
 
 
@@ -27,12 +24,8 @@ attackModle_(attackModel)
 
 	hp_ = data.hp;
 }
-<<<<<<< HEAD
-EnemyBase::~EnemyBase()
-=======
 
 EnemyBase::~EnemyBase(void)
->>>>>>> origin/Î±ä¿®æ­£ï¼’
 {
 }
 
@@ -46,17 +39,12 @@ void EnemyBase::Draw()
 #endif // _DEBUG
 }
 
-<<<<<<< HEAD
-bool EnemyBase::InMovableRange() const
-=======
 void EnemyBase::Release(void)
 {
 	CharactorBase::Release();
 }
 
-
 bool EnemyBase::InMovableRange(void) const
->>>>>>> origin/Î±ä¿®æ­£ï¼’
 {
 	bool ret = false;
 	// ‰ŠúˆÊ’u‚©‚ç‚Ì‹——£
@@ -122,6 +110,9 @@ void EnemyBase::CheckPlayerSwordCollision()
 	// €–Só‘Ô‚È‚çˆ—‚µ‚È‚¢
 	if (!isAlive_) return;
 
+	// ƒvƒŒƒCƒ„[‚ªŒ•‚ğU‚Á‚Ä‚¢‚È‚¢ê‡‚Íˆ—‚µ‚È‚¢
+	if (!player_->IsAttacking()) return;
+
 	// ©g‚ÌƒJƒvƒZƒ‹ƒRƒ‰ƒCƒ_‚ğæ“¾
 	ColliderCapsule* ownColCapsule = nullptr;
 	for (const auto& ownCol : ownColliders_)
@@ -158,9 +149,3 @@ void EnemyBase::CheckPlayerSwordCollision()
 
 
 }
-
-<<<<<<< HEAD
-
-
-=======
->>>>>>> origin/Î±ä¿®æ­£ï¼’

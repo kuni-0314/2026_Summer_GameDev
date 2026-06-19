@@ -221,13 +221,13 @@ void Player::InitPost()
 	currentGrantStatusIndex_ = 4;
 	pendingPoints_ = 30;
 
-	hp_ = 10;
+	hp_ = 10000;
 	maxHp_ = hp_;
 
 	InitState();
 
 	// •Ší‰Šú‰»
-	sword_ = new KeyBlade2(KEY_BLADE_2_LOCAL_POS_START, KEY_BLADE_2_LOCAL_POS_END, KEY_BLADE_2_RADIUS, transform_);
+	sword_ = new KeyBlade3(KEY_BLADE_2_LOCAL_POS_START, KEY_BLADE_2_LOCAL_POS_END, KEY_BLADE_2_RADIUS, transform_);
 	sword_->Init();
 }
 

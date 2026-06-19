@@ -1,4 +1,5 @@
 #pragma once
+#include <map>
 #include <functional>
 #include "../CharactorBase.h"
 #include <DxLib.h>
@@ -29,24 +30,17 @@ public:
 
 	// ƒRƒ“ƒXƒgƒ‰ƒNƒ^
 	EnemyBase(const EnemyBase::EnemyData& data,int attackModel,Player* player);
+
 	// ƒfƒXƒgƒ‰ƒNƒ^
-<<<<<<< HEAD
 	virtual ~EnemyBase() override;
-	
-=======
-	virtual ~EnemyBase(void) override;
->>>>>>> origin/Î±ä¿®æ­£ï¼’
 
 	//•`‰æ
 	virtual void Draw() override;
 
-<<<<<<< HEAD
 	// ƒvƒŒƒCƒ„[‚ÌŒ•‚Æ‚ÌÕ“Ë”»’è‚ðs‚¤
 	void CheckPlayerSwordCollision();
-=======
-	void Release(void) override;
 
->>>>>>> origin/Î±ä¿®æ­£ï¼’
+	void Release(void) override;
 
 protected:
 

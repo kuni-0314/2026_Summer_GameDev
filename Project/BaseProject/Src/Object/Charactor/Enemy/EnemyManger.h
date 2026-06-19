@@ -57,15 +57,12 @@ private:
 
 	const ColliderBase* hitCollider_;
 
-<<<<<<< HEAD
-=======
 	// UŒ‚ƒRƒ‰ƒCƒ_‚ÌƒŠƒXƒg
 	std::vector<const ColliderBase*> attackColliders_;
 
 	// UŒ‚ƒGƒtƒFƒNƒg—p‚Ìƒ‚ƒfƒ‹ƒnƒ“ƒhƒ‹ID
 	int attackModel_;
 
->>>>>>> origin/Î±ä¿®æ­£ï¼’
 	bool isDead_ = false;
 
 	// ‹–ì”ÍˆÍ—pƒgƒ‰ƒ“ƒXƒtƒH[ƒ€

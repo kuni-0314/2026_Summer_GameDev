@@ -9,6 +9,8 @@
 
 void PlayerAttackState::Enter(Player* player)
 {
+	player->SetAttacking(true);
+
 	// UŒ‚ƒ^ƒCƒv‚ğŒˆ’è
 	attackType_ = GetNextAttackType(player);
 
@@ -34,9 +36,7 @@ void PlayerAttackState::Enter(Player* player)
 		ATTACK_RADIUS,
 		ATTACK_POW[static_cast<int>(attackType_)],
 		60); 
-<<<<<<< HEAD
-=======
-	
+
 	//if (player->IsAir())
 	//{
 	//	VECTOR movePow = player->GetMovePow();
@@ -46,7 +46,6 @@ void PlayerAttackState::Enter(Player* player)
 
 	AudioManager::GetInstance()->LoadSceneSound(LoadScene::GAME);
 
->>>>>>> origin/Î±ä¿®æ­£ï¼’
 }
 
 void PlayerAttackState::Update(Player* player)
@@ -99,6 +98,12 @@ void PlayerAttackState::Update(Player* player)
 void PlayerAttackState::Draw(Player* player)
 {
 	// ƒfƒoƒbƒO•\¦—piƒRƒƒ“ƒgƒAƒEƒgÏ‚İj
+}
+
+void PlayerAttackState::Exit(Player* player)
+{
+	// UŒ‚I—¹‚Ìˆ—
+	player->SetAttacking(false);
 }
 
 VECTOR PlayerAttackState::CalculateAttackPosition(Player* player)
@@ -160,7 +165,6 @@ PlayerAttackState::ATTACK_TYPE PlayerAttackState::GetNextAttackType(Player* play
 	}
 
 	// ƒ_ƒbƒVƒ…UŒ‚”»’è
-<<<<<<< HEAD
 	//bool isDashAttack = false;
 	//if (!player->IsAir())
 	//{
@@ -193,27 +197,6 @@ PlayerAttackState::ATTACK_TYPE PlayerAttackState::GetNextAttackType(Player* play
 	//		static_cast<int>(Player::ANIM_TYPE::ATK_D), false, true);
 	//	return ATTACK_TYPE::DASH;
 	//}
-=======
-	if (!player->IsAir() && 
-		ins->IsNew(KEY_INPUT_LSHIFT) &&
-		(ins->IsNew(KEY_INPUT_W) || ins->IsNew(KEY_INPUT_A) || 
-		 ins->IsNew(KEY_INPUT_S) || ins->IsNew(KEY_INPUT_D)))
-	{
-
-
-		// ƒAƒjƒ[ƒVƒ‡ƒ“Ä¶
-		player->GetAnimationController()->Play(
-			static_cast<int>(Player::ANIM_TYPE::ATK_D), false, true);
-
-		AudioManager::GetInstance()->SetSeVolume(100);
-		AudioManager::GetInstance()->PlaySE(SoundID::SE_ATTACK_1);
-
-		return ATTACK_TYPE::DASH;
-
-	
-	
-	}
->>>>>>> origin/Î±ä¿®æ­£ï¼’
 
 	// ƒRƒ“ƒ{Œp‘±”»’è
 	bool inCombo = player->GetComboTimer() > 0;

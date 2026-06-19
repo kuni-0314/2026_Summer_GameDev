@@ -85,6 +85,8 @@ public:
 	void SetApplyRootMotion(const bool apply) { applyRootMotion_ = apply; }
 	VECTOR GetAnimStartModelPos() const { return animStartModelPos_; }
 	void SetAnimStartModelPos(const VECTOR& pos) { animStartModelPos_ = pos; }
+	bool IsAttacking() const { return isAttacking_; }
+	void SetAttacking(const bool attacking) { isAttacking_ = attacking; }
 
 
 	//スケール
@@ -154,6 +156,10 @@ public:
 	int GetPadNum() const { return padNum_; }
 
 	SwordBase* GetSword() const { return sword_; }
+
+	// 攻撃判定の開始フレーム
+	static constexpr int ATTACK_HITBOX_START_FRAME = 22;
+	static constexpr int ATTACK_HITBOX_END_FRAME = 29;
 
 protected:
 
@@ -231,14 +237,17 @@ private:
 	// 剣
 	SwordBase* sword_;
 
+
+	bool isAttacking_;
+
 	// 一旦ここに書いとく
 	static constexpr VECTOR KEY_BLADE_1_LOCAL_POS_START = { 0.0f, 15.0f, 0.0f };
 	static constexpr VECTOR KEY_BLADE_1_LOCAL_POS_END = { 0.0f, 90.0f, 0.0f };
-	static constexpr float KEY_BLADE_1_RADIUS = 20.0f;
+	static constexpr float KEY_BLADE_1_RADIUS = 40.0f;
 	static constexpr VECTOR KEY_BLADE_2_LOCAL_POS_START = { 0.0f, 15.0f, 0.0f };
 	static constexpr VECTOR KEY_BLADE_2_LOCAL_POS_END = { 0.0f, 70.0f, 0.0f };
-	static constexpr float KEY_BLADE_2_RADIUS = 20.0f;
+	static constexpr float KEY_BLADE_2_RADIUS = 40.0f;
 	static constexpr VECTOR KEY_BLADE_3_LOCAL_POS_START = { 0.0f, 30.0f, 0.0f };
 	static constexpr VECTOR KEY_BLADE_3_LOCAL_POS_END = { 0.0f, 120.0f, 0.0f };
-	static constexpr float KEY_BLADE_3_RADIUS = 20.0f;
+	static constexpr float KEY_BLADE_3_RADIUS = 40.0f;
 };

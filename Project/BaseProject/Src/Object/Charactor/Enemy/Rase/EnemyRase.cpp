@@ -179,14 +179,7 @@ void EnemyRase::UpdateProcess()
 
 	auto const ins = InputManager::GetInstance();
 
-	// 1ƒL[ or ƒ}ƒEƒX¶ƒNƒŠƒbƒN‚ÅƒvƒŒƒCƒ„[‚ª‹ß‚­‚É‚¢‚éê‡
-	if (ins->IsTrgDown(KEY_INPUT_1) ||
-		(ins->IsMouseTrgDown(MOUSE_INPUT_LEFT) && VSize(VSub(playerPos_, transform_.pos)) < 300.0f))
-	{
-		Damege(1);
-		ChangeState(STATE::HIT);
-
-	}
+	CheckPlayerSwordCollision();
 }
 
 void EnemyRase::UpdateProcessPost()
@@ -386,11 +379,7 @@ void EnemyRase::UpdateEnd()
 {
 }
 
-<<<<<<< HEAD
-void EnemyRase::UpdateThink()
-=======
 void EnemyRase::UpdateCharge(void)
->>>>>>> origin/Î±ä¿®æ­£ï¼’
 {
 	shotCharge_--;
 

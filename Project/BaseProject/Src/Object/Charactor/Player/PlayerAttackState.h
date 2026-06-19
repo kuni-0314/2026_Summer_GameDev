@@ -7,6 +7,7 @@ public:
 	void Enter(Player* player) override;
 	void Update(Player* player) override;
 	void Draw(Player* player) override;
+	void Exit(Player* player) override;
 
 	enum class ATTACK_TYPE
 	{

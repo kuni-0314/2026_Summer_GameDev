@@ -61,7 +61,7 @@ void PlayerIdleState::Update(Player* player)
 			hasMoveInput = !AsoUtility::EqualsVZero(dir);
 
 			// キーボード操作
-			hasMoveInput = (ins->IsNew({ KEY_INPUT_W, KEY_INPUT_A,KEY_INPUT_S, KEY_INPUT_D }));
+			hasMoveInput = hasMoveInput || ins->IsNew({ KEY_INPUT_W, KEY_INPUT_A,KEY_INPUT_S, KEY_INPUT_D });
 		}
 		else
 		{

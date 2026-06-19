@@ -4,6 +4,7 @@
 #include "../Manager/InputManager.h"
 #include "../Manager/Camera.h"
 #include "../Manager/PostEffectManager.h"
+#include "../Sound/AudioManager.h"
 #include "../Object/Actor/Stage/Stage.h"
 #include "../Object/Actor/Stage/StageWall.h"
 #include "../Object/Actor/SkyDome/SkyDome.h"
@@ -95,7 +96,15 @@ void GameScene::Update()
 	// ゲームオーバー判定
 	if (player_->GetHp() <= 0)
 	{
+		AudioManager::GetInstance()->StopBGM();
 		sceMng_.ChangeScene(SceneManager::SCENE_ID::OVER);
+	}
+
+	// ゲームクリア判定
+	if (enemyManager_->GetEnemyDead())
+	{
+		AudioManager::GetInstance()->StopBGM();
+		sceMng_.ChangeScene(SceneManager::SCENE_ID::CLEAR);
 	}
 
 	// 各オブジェクトの更新

@@ -1,4 +1,3 @@
-
 #pragma once
 #include <DxLib.h>
 #include <functional>
@@ -55,13 +54,9 @@ public:
 	// ƒfƒXƒgƒ‰ƒNƒ^
 	~EnemyRase() override;
 
-<<<<<<< HEAD
-	void Draw() override;
-=======
 	void Draw(void) override;
 
 	void Release(void) override;
->>>>>>> origin/Î±ä¿®æ­£ï¼’
 protected:
 	// ƒŠƒ\[ƒXƒ[ƒh
 	void InitLoad() override;
@@ -173,22 +168,7 @@ private:
 
 	// ó‘Ô‘JˆÚ
 	void ChangeState(STATE state);
-<<<<<<< HEAD
-	void ChangeStateThink();
-	void ChangeStateIdle();
-	void ChangeStateAttack();
-	void ChangeStateHit();
-	void ChangeStateEnd();
 
-
-	// XVŒn
-	void UpdateThink();
-	void UpdateIdle();
-	void UpdateAttack();
-	void UpdateHit();
-	void UpdateDie();
-	void UpdateEnd();
-=======
 	void ChangeStateThink(void);
 	void ChangeStateIdle(void);
 	void ChangeStateAttack(void);
@@ -208,7 +188,6 @@ private:
 	void UpdateDie(void);
 	void UpdateEnd(void);
 	void UpdateCharge(void);
->>>>>>> origin/Î±ä¿®æ­£ï¼’
 
 	//’e”­Ë
 	void AttackShot(void);
