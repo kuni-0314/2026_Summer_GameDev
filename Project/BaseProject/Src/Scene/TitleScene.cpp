@@ -227,45 +227,58 @@ void TitleScene::SelectUpdate()
 		SelectChange((SELECT)selectCount_);
 	}
 
-	// マウスカーソルが選択肢の上にある場合、選択肢を変更する
-	int mouseX_, mouseY_;
-	ins->GetMousePos(mouseX_, mouseY_);
-	int imgWidth_, imgHeight_;
-	// ゲームスタート
-	GetGraphSize(selectCount_ == static_cast<int>(SELECT::GAME) ? imgGameStart_ : imgNotGameStart_, &imgWidth_, &imgHeight_);
-	if (mouseX_ >= IMG_CHOICE_POS_X && mouseX_ <= IMG_CHOICE_POS_X + imgWidth_ &&
-		mouseY_ >= IMG_CHOICE_POS_Y && mouseY_ <= IMG_CHOICE_POS_Y + imgHeight_)
+	// マウス操作があった場合、マウスカーソルの位置から選択肢を変更する
+	if (ins->IsMouseMoved())
 	{
-		selectCount_ = static_cast<int>(SELECT::GAME);
-	}
+		// マウスカーソルが選択肢の上にある場合、選択肢を変更する
+		int mouseX_, mouseY_;
+		ins->GetMousePos(mouseX_, mouseY_);
+		int imgWidth_, imgHeight_;
 
-	// チュートリアル
-	GetGraphSize(selectCount_ == static_cast<int>(SELECT::TUTORIAL) ? imgTutorial_ : imgNotTutorial_, &imgWidth_, &imgHeight_);
-	if (mouseX_ >= IMG_CHOICE_POS_X && mouseX_ <= IMG_CHOICE_POS_X + imgWidth_ &&
-		mouseY_ >= IMG_CHOICE_POS_Y + IMG_CHOICE_POS_Y_OFFSET && mouseY_ <= IMG_CHOICE_POS_Y + IMG_CHOICE_POS_Y_OFFSET + imgHeight_)
-	{
-		selectCount_ = static_cast<int>(SELECT::TUTORIAL);
-	}
+		// ゲームスタート
+		GetGraphSize(selectCount_ == static_cast<int>(SELECT::GAME) ? imgGameStart_ : imgNotGameStart_, &imgWidth_, &imgHeight_);
+		if (mouseX_ >= IMG_CHOICE_POS_X && mouseX_ <= IMG_CHOICE_POS_X + imgWidth_ &&
+			mouseY_ >= IMG_CHOICE_POS_Y && mouseY_ <= IMG_CHOICE_POS_Y + imgHeight_)
+		{
+			AudioManager::GetInstance()->SetSeVolume(150);
+			AudioManager::GetInstance()->PlaySE(SoundID::SE_TITLE_SELECT);
+			selectCount_ = static_cast<int>(SELECT::GAME);
+		}
 
-	// オプション
-	GetGraphSize(selectCount_ == static_cast<int>(SELECT::OPTION) ? imgOption_ : imgNotOption_, &imgWidth_, &imgHeight_);
-	if (mouseX_ >= IMG_CHOICE_POS_X && mouseX_ <= IMG_CHOICE_POS_X + imgWidth_ &&
-		mouseY_ >= IMG_CHOICE_POS_Y + IMG_CHOICE_POS_Y_OFFSET * 2 && mouseY_ <= IMG_CHOICE_POS_Y + IMG_CHOICE_POS_Y_OFFSET * 2 + imgHeight_)
-	{
-		selectCount_ = static_cast<int>(SELECT::OPTION);
-	}
+		// チュートリアル
+		GetGraphSize(selectCount_ == static_cast<int>(SELECT::TUTORIAL) ? imgTutorial_ : imgNotTutorial_, &imgWidth_, &imgHeight_);
+		if (mouseX_ >= IMG_CHOICE_POS_X && mouseX_ <= IMG_CHOICE_POS_X + imgWidth_ &&
+			mouseY_ >= IMG_CHOICE_POS_Y + IMG_CHOICE_POS_Y_OFFSET && mouseY_ <= IMG_CHOICE_POS_Y + IMG_CHOICE_POS_Y_OFFSET + imgHeight_)
+		{
+			AudioManager::GetInstance()->SetSeVolume(150);
+			AudioManager::GetInstance()->PlaySE(SoundID::SE_TITLE_SELECT);
+			selectCount_ = static_cast<int>(SELECT::TUTORIAL);
+		}
 
-	// 終了
-	GetGraphSize(selectCount_ == static_cast<int>(SELECT::EXIT) ? imgEnd_ : imgNotEnd_, &imgWidth_, &imgHeight_);
-	if (mouseX_ >= IMG_CHOICE_POS_X && mouseX_ <= IMG_CHOICE_POS_X + imgWidth_ &&
-		mouseY_ >= IMG_CHOICE_POS_Y + IMG_CHOICE_POS_Y_OFFSET * 3 && mouseY_ <= IMG_CHOICE_POS_Y + IMG_CHOICE_POS_Y_OFFSET * 3 + imgHeight_)
-	{
-		selectCount_ = static_cast<int>(SELECT::EXIT);
-	}
+		// オプション
+		GetGraphSize(selectCount_ == static_cast<int>(SELECT::OPTION) ? imgOption_ : imgNotOption_, &imgWidth_, &imgHeight_);
+		if (mouseX_ >= IMG_CHOICE_POS_X && mouseX_ <= IMG_CHOICE_POS_X + imgWidth_ &&
+			mouseY_ >= IMG_CHOICE_POS_Y + IMG_CHOICE_POS_Y_OFFSET * 2 && mouseY_ <= IMG_CHOICE_POS_Y + IMG_CHOICE_POS_Y_OFFSET * 2 + imgHeight_)
+		{
+			AudioManager::GetInstance()->SetSeVolume(150);
+			AudioManager::GetInstance()->PlaySE(SoundID::SE_TITLE_SELECT);
+			selectCount_ = static_cast<int>(SELECT::OPTION);
+		}
 
-	// マウスクリックで決定
-	if (ins->IsMouseTrgDown(MOUSE_INPUT_LEFT))
-	{
-		SelectChange((SELECT)selectCount_);
+		// 終了
+		GetGraphSize(selectCount_ == static_cast<int>(SELECT::EXIT) ? imgEnd_ : imgNotEnd_, &imgWidth_, &imgHeight_);
+		if (mouseX_ >= IMG_CHOICE_POS_X && mouseX_ <= IMG_CHOICE_POS_X + imgWidth_ &&
+			mouseY_ >= IMG_CHOICE_POS_Y + IMG_CHOICE_POS_Y_OFFSET * 3 && mouseY_ <= IMG_CHOICE_POS_Y + IMG_CHOICE_POS_Y_OFFSET * 3 + imgHeight_)
+		{
+			AudioManager::GetInstance()->SetSeVolume(150);
+			AudioManager::GetInstance()->PlaySE(SoundID::SE_TITLE_SELECT);
+			selectCount_ = static_cast<int>(SELECT::EXIT);
+		}
+
+		// マウスクリックで決定
+		if (ins->IsMouseTrgDown(MOUSE_INPUT_LEFT))
+		{
+			SelectChange((SELECT)selectCount_);
+		}
 	}
 }

@@ -314,9 +314,12 @@ void GameScene::Draw()
 	itemManger_->Draw();
 	enemyManager_->Draw();
 
-	VECTOR targetPos = SceneManager::GetInstance().GetCamera()->GetTargetPos();
-	DrawExtendGraph3D(targetPos.x, targetPos.y + 30.0f, targetPos.z, 0.5f, 0.5f, targetCursorBlueImageHandle_, true);
-	
+	if (camMode_ == CAM_MODE::TARGETING)
+	{
+		// ターゲットカーソル描画
+		VECTOR targetPos = SceneManager::GetInstance().GetCamera()->GetTargetPos();
+		DrawExtendGraph3D(targetPos.x, targetPos.y + 30.0f, targetPos.z, 0.5f, 0.5f, targetCursorBlueImageHandle_, true);
+	}
 
 	// 一時スクリーンにメイン画面をコピー
 	int tempScreen = MakeScreen(Application::SCREEN_SIZE_X, Application::SCREEN_SIZE_Y, false);
