@@ -4,6 +4,7 @@
 #include "../Manager/InputManager.h"
 #include "../Manager/Camera.h"
 #include "../Manager/PostEffectManager.h"
+#include "../Manager/ResourceManager.h"
 #include "../Sound/AudioManager.h"
 #include "../Object/Actor/Stage/Stage.h"
 #include "../Object/Actor/Stage/StageWall.h"
@@ -96,6 +97,10 @@ void GameScene::Init()
 	ChangeVolumeSoundMem(120, audioHandle_);
 	PlaySoundMem(audioHandle_, DX_PLAYTYPE_LOOP);
 	// 音量
+
+	// ターゲットカーソルの読み込み
+	targetCursorBlueImageHandle_ = ResourceManager::GetInstance().Load(ResourceManager::SRC::TARGET_CURSOR_BLUE).handleId_;
+	targetCursorOrangeImageHandle_ = ResourceManager::GetInstance().Load(ResourceManager::SRC::TARGET_CURSOR_ORANGE).handleId_;
 
 }
 
@@ -308,6 +313,10 @@ void GameScene::Draw()
 	//weapon_->Draw();
 	itemManger_->Draw();
 	enemyManager_->Draw();
+
+	VECTOR targetPos = SceneManager::GetInstance().GetCamera()->GetTargetPos();
+	DrawExtendGraph3D(targetPos.x, targetPos.y + 30.0f, targetPos.z, 0.5f, 0.5f, targetCursorBlueImageHandle_, true);
+	
 
 	// 一時スクリーンにメイン画面をコピー
 	int tempScreen = MakeScreen(Application::SCREEN_SIZE_X, Application::SCREEN_SIZE_Y, false);

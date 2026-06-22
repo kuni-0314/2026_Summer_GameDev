@@ -105,4 +105,8 @@ private:
 	const char* GetEffectName(PostEffectManager::EFFECT_TYPE effectType);
 
 	int audioHandle_;
+
+	// ターゲットカーソル
+	int targetCursorBlueImageHandle_;
+	int targetCursorOrangeImageHandle_;
 };
