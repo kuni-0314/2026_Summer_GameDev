@@ -31,6 +31,25 @@ void EnemyManager::Init()
 {
 
 	LoadCsvData();
+	//かさなってしまう
+	for (auto& enemy1 : enemies_)
+	{
+		//自身を探して自身のコライダー情報を渡す
+		for (auto& enemy2 : enemies_)
+		{
+			if (enemy1 == enemy2)
+			{
+				continue;
+			}
+
+			//enemy自身の衝突判定を取得
+			const ColliderBase* enemyCollider =
+				enemy2->GetOwnCollider(static_cast<int>(ActorBase::COLLIDER_TYPE::CAPSULE));
+			
+			enemy1->AddHitCollider(enemyCollider);
+			
+		}
+	}
 
 
 }
@@ -58,6 +77,7 @@ void EnemyManager::Update()
 			gameScene_->GetItemManger()->Create(ItemBase::TYPE::HP, hpPos, hitCollider_,
 				static_cast<int>(Player::COLLIDER_TYPE::CAPSULE), player_);
 
+			
 
 			enemy->SetAlive(false);
 		}

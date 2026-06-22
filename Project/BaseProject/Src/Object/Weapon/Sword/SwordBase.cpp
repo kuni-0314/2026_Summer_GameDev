@@ -36,6 +36,7 @@ void SwordBase::Draw()
 	{
 		MV1DrawModel(transform_.modelId);
 	}
+
 #ifdef _DEBUG
 
 

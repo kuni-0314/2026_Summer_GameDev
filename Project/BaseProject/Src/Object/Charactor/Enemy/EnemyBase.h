@@ -34,12 +34,15 @@ public:
 
 	// デストラクタ
 	virtual ~EnemyBase() override;
-
+	//更新
+	virtual void Update() override;
 	//描画
 	virtual void Draw() override;
 
 	// プレイヤーの剣との衝突判定を行う
 	void CheckPlayerSwordCollision();
+
+	void CheckEnemy();
 
 	void Release(void) override;
 
@@ -49,6 +52,7 @@ protected:
 	// 種別
 	TYPE type_;
 
+
 	// 初期位置
 	const VECTOR defaultPos_;
 	float movableRange_;
@@ -57,9 +61,8 @@ protected:
 	int power_;
 	//攻撃用モデル(魔法の弾とか）
 	int attackModle_;
-
+	//ダメージ受ける前のHP保存用
 	int preHp_;
-
 	// 状態管理
 	int stateBase_;
 	// 状態管理(状態遷移時初期処理)
@@ -80,6 +83,7 @@ protected:
 	void InitAnimation() override {}
 	// 初期化後の個別処理
 	void InitPost() override {}
+
 
 	// 状態遷移
 	void ChangeState(int state);

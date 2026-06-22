@@ -84,11 +84,11 @@ private:
 	// 衝突判定用カプセル上部球体
 	static constexpr VECTOR COL_CAPSULE_TOP_LOCAL_POS = { 0.0f, 110.0f, 0.0f };
 	// 衝突判定用カプセル下部球体
-	static constexpr VECTOR COL_CAPSULE_DOWN_LOCAL_POS = { 0.0f, 30.0f, 0.0f };
+	static constexpr VECTOR COL_CAPSULE_DOWN_LOCAL_POS = { 0.0f, 70.0f, 0.0f };
 	// 衝突判定用カプセル球体半径
-	static constexpr float COL_CAPSULE_RADIUS = 40.0f;
+	static constexpr float COL_CAPSULE_RADIUS = 70.0f;
 	// 衝突判定用カプセル球体半径
-	static constexpr float COL_SPHERE_RADIUS = 50.0f;
+	static constexpr float COL_ATTACK_RADIUS = 50.0f;
 
 	// 攻撃判定用球体
 	static constexpr VECTOR ATTACK_SPHERE_LOCAL_POS = { 0.0f, 30.0f, 120.0f };
