@@ -285,16 +285,16 @@ void GameScene::Update()
 		return;
 	}
 
-	// ゲームクリア判定
-	if (enemyManager_->GetEnemyDead())
-	{
-		// 強制的に全サウンド停止
-		StopMusic();
-		StopSoundMem(audioHandle_);
-		AudioManager::GetInstance()->StopBGM();
-		sceMng_.ChangeScene(SceneManager::SCENE_ID::CLEAR);
-		return;
-	}
+	//// ゲームクリア判定
+	//if (enemyManager_->GetEnemyDead())
+	//{
+	//	// 強制的に全サウンド停止
+	//	StopMusic();
+	//	StopSoundMem(audioHandle_);
+	//	AudioManager::GetInstance()->StopBGM();
+	//	sceMng_.ChangeScene(SceneManager::SCENE_ID::CLEAR);
+	//	return;
+	//}
 }
 
 void GameScene::Draw()
