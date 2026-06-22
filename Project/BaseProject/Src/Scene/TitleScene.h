@@ -29,6 +29,8 @@ public:
 
 	static constexpr int IMG_CHOICE_POS_Y = 650;
 
+	static constexpr int IMG_CHOICE_POS_Y_OFFSET = 100;
+
 
 
 	//ÉTÉuòfêØÇÃëÂÇ´Ç≥
@@ -117,7 +119,7 @@ private:
 
 	bool pushAlive_ = true;
 
-	bool IsSelect_ = false;
+	//bool IsSelect_ = false;
 
 	int mainScreen_;
 

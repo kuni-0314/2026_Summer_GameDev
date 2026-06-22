@@ -63,7 +63,7 @@ void TitleScene::Update()
 
 	auto const ins = InputManager::GetInstance();
 
-	IsSelect_ = true;
+	//IsSelect_ = true;
 
 	SelectUpdate();
 
@@ -97,32 +97,51 @@ void TitleScene::Draw()
 	//チュートリアル
 	if (selectCount_ == static_cast <int>(SELECT::TUTORIAL))
 	{
-		DrawGraph(IMG_CHOICE_POS_X, IMG_CHOICE_POS_Y + 100, imgTutorial_, TRUE);
+		DrawGraph(IMG_CHOICE_POS_X, IMG_CHOICE_POS_Y + IMG_CHOICE_POS_Y_OFFSET, imgTutorial_, TRUE);
 	}
 	else
 	{
-		DrawGraph(IMG_NOT_CHOICE_POS_X, IMG_CHOICE_POS_Y + 100, imgNotTutorial_, TRUE);
+		DrawGraph(IMG_NOT_CHOICE_POS_X, IMG_CHOICE_POS_Y + IMG_CHOICE_POS_Y_OFFSET, imgNotTutorial_, TRUE);
 	}
 	//オプション
 	if (selectCount_ == static_cast <int>(SELECT::OPTION))
 	{
-		DrawGraph(IMG_CHOICE_POS_X, IMG_CHOICE_POS_Y + 200, imgOption_, TRUE);
+		DrawGraph(IMG_CHOICE_POS_X, IMG_CHOICE_POS_Y + IMG_CHOICE_POS_Y_OFFSET * 2, imgOption_, TRUE);
 	}
 	else
 	{
-		DrawGraph(IMG_NOT_CHOICE_POS_X, IMG_CHOICE_POS_Y + 200, imgNotOption_, TRUE);
+		DrawGraph(IMG_NOT_CHOICE_POS_X, IMG_CHOICE_POS_Y + IMG_CHOICE_POS_Y_OFFSET * 2, imgNotOption_, TRUE);
 	}
 	//終了
 	if (selectCount_ == static_cast <int>(SELECT::EXIT))
 	{
-		DrawGraph(IMG_CHOICE_POS_X, IMG_CHOICE_POS_Y + 300, imgEnd_, TRUE);
+		DrawGraph(IMG_CHOICE_POS_X, IMG_CHOICE_POS_Y + IMG_CHOICE_POS_Y_OFFSET * 3, imgEnd_, TRUE);
 	}
 	else
 	{
-		DrawGraph(IMG_NOT_CHOICE_POS_X, IMG_CHOICE_POS_Y + 300, imgNotEnd_, TRUE);
+		DrawGraph(IMG_NOT_CHOICE_POS_X, IMG_CHOICE_POS_Y + IMG_CHOICE_POS_Y_OFFSET * 3, imgNotEnd_, TRUE);
 	}
 
 
+#ifdef _DEBUG
+	int imgWidth_, imgHeight_, img, posX;
+	img = selectCount_ == static_cast<int>(SELECT::GAME) ? imgGameStart_ : imgNotGameStart_;
+	posX = selectCount_ == static_cast<int>(SELECT::GAME) ? IMG_CHOICE_POS_X : IMG_NOT_CHOICE_POS_X;
+	GetGraphSize(img, &imgWidth_, &imgHeight_);
+	DrawBox(posX, IMG_CHOICE_POS_Y, posX + imgWidth_, IMG_CHOICE_POS_Y + imgHeight_, GetRand(0xffffff), false);
+	img = selectCount_ == static_cast<int>(SELECT::TUTORIAL) ? imgTutorial_ : imgNotTutorial_;
+	posX = selectCount_ == static_cast<int>(SELECT::TUTORIAL) ? IMG_CHOICE_POS_X : IMG_NOT_CHOICE_POS_X;
+	GetGraphSize(img, &imgWidth_, &imgHeight_);
+	DrawBox(posX, IMG_CHOICE_POS_Y + IMG_CHOICE_POS_Y_OFFSET, posX + imgWidth_, IMG_CHOICE_POS_Y + IMG_CHOICE_POS_Y_OFFSET + imgHeight_, GetRand(0xffffff), false);
+	img = selectCount_ == static_cast<int>(SELECT::OPTION) ? imgOption_ : imgNotOption_;
+	posX = selectCount_ == static_cast<int>(SELECT::OPTION) ? IMG_CHOICE_POS_X : IMG_NOT_CHOICE_POS_X;
+	GetGraphSize(img, &imgWidth_, &imgHeight_);
+	DrawBox(posX, IMG_CHOICE_POS_Y + IMG_CHOICE_POS_Y_OFFSET * 2, posX + imgWidth_, IMG_CHOICE_POS_Y + IMG_CHOICE_POS_Y_OFFSET * 2 + imgHeight_, GetRand(0xffffff), false);
+	img = selectCount_ == static_cast<int>(SELECT::EXIT) ? imgEnd_ : imgNotEnd_;
+	posX = selectCount_ == static_cast<int>(SELECT::EXIT) ? IMG_CHOICE_POS_X : IMG_NOT_CHOICE_POS_X;
+	GetGraphSize(img, &imgWidth_, &imgHeight_);
+	DrawBox(posX, IMG_CHOICE_POS_Y + IMG_CHOICE_POS_Y_OFFSET * 3, posX + imgWidth_, IMG_CHOICE_POS_Y + IMG_CHOICE_POS_Y_OFFSET * 3 + imgHeight_, GetRand(0xffffff), false);
+#endif // _DEBUG
 
 
 	SelectDraw((SELECT)selectCount_);
@@ -208,5 +227,45 @@ void TitleScene::SelectUpdate()
 		SelectChange((SELECT)selectCount_);
 	}
 
+	// マウスカーソルが選択肢の上にある場合、選択肢を変更する
+	int mouseX_, mouseY_;
+	ins->GetMousePos(mouseX_, mouseY_);
+	int imgWidth_, imgHeight_;
+	// ゲームスタート
+	GetGraphSize(selectCount_ == static_cast<int>(SELECT::GAME) ? imgGameStart_ : imgNotGameStart_, &imgWidth_, &imgHeight_);
+	if (mouseX_ >= IMG_CHOICE_POS_X && mouseX_ <= IMG_CHOICE_POS_X + imgWidth_ &&
+		mouseY_ >= IMG_CHOICE_POS_Y && mouseY_ <= IMG_CHOICE_POS_Y + imgHeight_)
+	{
+		selectCount_ = static_cast<int>(SELECT::GAME);
+	}
 
+	// チュートリアル
+	GetGraphSize(selectCount_ == static_cast<int>(SELECT::TUTORIAL) ? imgTutorial_ : imgNotTutorial_, &imgWidth_, &imgHeight_);
+	if (mouseX_ >= IMG_CHOICE_POS_X && mouseX_ <= IMG_CHOICE_POS_X + imgWidth_ &&
+		mouseY_ >= IMG_CHOICE_POS_Y + IMG_CHOICE_POS_Y_OFFSET && mouseY_ <= IMG_CHOICE_POS_Y + IMG_CHOICE_POS_Y_OFFSET + imgHeight_)
+	{
+		selectCount_ = static_cast<int>(SELECT::TUTORIAL);
+	}
+
+	// オプション
+	GetGraphSize(selectCount_ == static_cast<int>(SELECT::OPTION) ? imgOption_ : imgNotOption_, &imgWidth_, &imgHeight_);
+	if (mouseX_ >= IMG_CHOICE_POS_X && mouseX_ <= IMG_CHOICE_POS_X + imgWidth_ &&
+		mouseY_ >= IMG_CHOICE_POS_Y + IMG_CHOICE_POS_Y_OFFSET * 2 && mouseY_ <= IMG_CHOICE_POS_Y + IMG_CHOICE_POS_Y_OFFSET * 2 + imgHeight_)
+	{
+		selectCount_ = static_cast<int>(SELECT::OPTION);
+	}
+
+	// 終了
+	GetGraphSize(selectCount_ == static_cast<int>(SELECT::EXIT) ? imgEnd_ : imgNotEnd_, &imgWidth_, &imgHeight_);
+	if (mouseX_ >= IMG_CHOICE_POS_X && mouseX_ <= IMG_CHOICE_POS_X + imgWidth_ &&
+		mouseY_ >= IMG_CHOICE_POS_Y + IMG_CHOICE_POS_Y_OFFSET * 3 && mouseY_ <= IMG_CHOICE_POS_Y + IMG_CHOICE_POS_Y_OFFSET * 3 + imgHeight_)
+	{
+		selectCount_ = static_cast<int>(SELECT::EXIT);
+	}
+
+	// マウスクリックで決定
+	if (ins->IsMouseTrgDown(MOUSE_INPUT_LEFT))
+	{
+		SelectChange((SELECT)selectCount_);
+	}
 }
