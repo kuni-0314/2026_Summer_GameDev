@@ -1,6 +1,7 @@
 #pragma once
 #include "SceneBase.h"
 #include "../Object/Common/Transform.h"
+#include "../Manager/PostEffectManager.h"
 
 class AnimationController;
 class SkyDome;
@@ -123,4 +124,5 @@ private:
 
 	int mainScreen_;
 
+	int postEffectScreen_;
 };

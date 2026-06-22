@@ -30,10 +30,8 @@ TitleScene::~TitleScene()
 void TitleScene::Init()
 {
 	// エフェクト
-	// エフェクトを設定（これだけでOK）
-	SceneManager::GetInstance().SetCurrentEffect(
-		PostEffectManager::EFFECT_TYPE::GLITCH
-	);
+	PostEffectManager::GetInstance().Init();
+	postEffectScreen_ = PostEffectManager::GetInstance().CreatePostEffectScreen();
 
 	// 定点カメラ
 	sceMng_.GetCamera()->ChangeMode(Camera::MODE::FIXED_POINT);
@@ -122,6 +120,8 @@ void TitleScene::Draw()
 	}
 
 
+
+
 #ifdef _DEBUG
 	int imgWidth_, imgHeight_, img, posX;
 	img = selectCount_ == static_cast<int>(SELECT::GAME) ? imgGameStart_ : imgNotGameStart_;
@@ -144,6 +144,40 @@ void TitleScene::Draw()
 
 
 	SelectDraw((SELECT)selectCount_);
+	
+
+	// 一時スクリーンにメイン画面をコピー
+	int tempScreen = MakeScreen(Application::SCREEN_SIZE_X, Application::SCREEN_SIZE_Y, false);
+	SetDrawScreen(tempScreen);
+	ClearDrawScreen();
+	DrawGraph(0, 0, mainScreen, false);
+
+	// エフェクト適用
+	//if (!multiEffectMode_)
+	//{
+		// 単一エフェクトモード
+	int mainScreen = GetDrawScreen();
+		PostEffectManager::GetInstance().ApplyEffect(
+			PostEffectManager::EFFECT_TYPE::MONO,
+			tempScreen,
+			postEffectScreen_,
+			effectTime_
+		);
+	//}
+	//else
+	//{
+	//	// 複数エフェクトモード
+	//	PostEffectManager::GetInstance().ApplyEffects(
+	//		activeEffects_,
+	//		tempScreen,
+	//		postEffectScreen_,
+	//		effectTime_
+	//	);
+	//}
+
+	// 最終結果をメイン画面に描画
+	SetDrawScreen(mainScreen);
+	DrawGraph(0, 0, postEffectScreen_, false);
 }
 
 void TitleScene::Release()

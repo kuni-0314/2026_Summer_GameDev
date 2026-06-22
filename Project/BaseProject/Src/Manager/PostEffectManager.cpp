@@ -48,6 +48,7 @@ void PostEffectManager::Init()
 	InitializeEffect(EFFECT_TYPE::SNOW_STORM, "SnowStorm.cso", 1);
 	InitializeEffect(EFFECT_TYPE::SCREEN_SHAKE, "ScreenShake.cso", 2);
 	InitializeEffect(EFFECT_TYPE::CRT, "CRT.cso", 1);
+	InitializeEffect(EFFECT_TYPE::MAX, "FadeWhite.cso", 1);
 
 	isInitialized_ = true;
 }
@@ -371,6 +372,10 @@ void PostEffectManager::SetEffectParameters(EFFECT_TYPE type, EffectParams& para
 		buf.y = 1.0f;
 		buf.z = 0.5f;
 		buf.w = 0.25f;
+		params.params.push_back(buf);
+		break;
+	case EFFECT_TYPE::FADE_WHITE:
+		buf.x = time;
 		params.params.push_back(buf);
 		break;
 	default:

@@ -45,6 +45,7 @@ public:
 		SNOW_STORM,
 		SCREEN_SHAKE,
 		CRT,
+		FADE_WHITE,
 		MAX
 	};
 
