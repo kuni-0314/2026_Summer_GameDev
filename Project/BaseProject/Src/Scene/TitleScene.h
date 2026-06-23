@@ -125,4 +125,6 @@ private:
 	int mainScreen_;
 
 	int postEffectScreen_;
+
+	float effectTime_;
 };

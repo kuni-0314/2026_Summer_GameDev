@@ -68,6 +68,9 @@ void TitleScene::Update()
 
 	//IsSelect_ = true;
 
+	// エフェクト時間更新
+	effectTime_ += sceMng_.GetDeltaTime();
+
 	SelectUpdate();
 
 }
@@ -147,6 +150,7 @@ void TitleScene::Draw()
 	
 
 	// 一時スクリーンにメイン画面をコピー
+	int mainScreen = SceneManager::GetInstance().GetMainScreen();
 	int tempScreen = MakeScreen(Application::SCREEN_SIZE_X, Application::SCREEN_SIZE_Y, false);
 	SetDrawScreen(tempScreen);
 	ClearDrawScreen();
@@ -155,14 +159,13 @@ void TitleScene::Draw()
 	// エフェクト適用
 	//if (!multiEffectMode_)
 	//{
-		// 単一エフェクトモード
-	int mainScreen = GetDrawScreen();
-		PostEffectManager::GetInstance().ApplyEffect(
-			PostEffectManager::EFFECT_TYPE::MONO,
-			tempScreen,
-			postEffectScreen_,
-			effectTime_
-		);
+	// 単一エフェクトモード
+	PostEffectManager::GetInstance().ApplyEffect(
+		PostEffectManager::EFFECT_TYPE::GLITCH,
+		tempScreen,
+		postEffectScreen_,
+		effectTime_
+	);
 	//}
 	//else
 	//{
@@ -319,11 +322,11 @@ void TitleScene::SelectUpdate()
 				AudioManager::GetInstance()->PlaySE(SoundID::SE_TITLE_SELECT);
 			}
 		}
+	}
 
-		// マウスクリックで決定
-		if (ins->IsMouseTrgDown(MOUSE_INPUT_LEFT))
-		{
-			SelectChange((SELECT)selectCount_);
-		}
+	// マウスクリックで決定
+	if (ins->IsMouseTrgDown(MOUSE_INPUT_LEFT))
+	{
+		SelectChange((SELECT)selectCount_);
 	}
 }
