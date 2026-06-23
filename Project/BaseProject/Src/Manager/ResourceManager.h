@@ -40,7 +40,8 @@ public:
 		KEY_BLADE_1,	//キーブレード１
 		KEY_BLADE_2,	//キーブレード２
 		KEY_BLADE_3,	//キーブレード３
-
+		TARGET_CURSOR_BLUE,	//ターゲットカーソル青
+		TARGET_CURSOR_ORANGE,	//ターゲットカーソルオレンジ
 		MAX
 	};
 

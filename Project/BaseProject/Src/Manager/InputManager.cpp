@@ -189,6 +189,20 @@ void InputManager::Update()
 	// マウスホイールの更新
 	mouseWheel_ = GetMouseWheelRotVol();
 
+	// マウスの座標の更新
+	int mouseX_, mouseY_;
+	GetMousePoint(&mouseX_, &mouseY_);
+	if (mouseX_ != prevMouseX_ || mouseY_ != prevMouseY_)
+	{
+		isMouseMoved_ = true;
+	}
+	else
+	{
+		isMouseMoved_ = false;
+	}
+	prevMouseX_ = mouseX_;
+	prevMouseY_ = mouseY_;
+
 	// ゲームパッドの更新
 	UpdateGamePad();
 }
@@ -346,6 +360,11 @@ int InputManager::GetMouseWheel()
 void InputManager::GetMousePos(int& x, int& y)
 {
 	GetMousePoint(&x, &y);
+}
+
+bool InputManager::IsMouseMoved()
+{
+	return isMouseMoved_;
 }
 
 int InputManager::GetMouseLastHoldTime(int button)
