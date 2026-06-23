@@ -198,7 +198,7 @@ EnemyBase* EnemyManager::Create(const EnemyBase::EnemyData& data, const Player* 
 	case EnemyBase::TYPE::RASE:
 		enemy = new EnemyRase(data, -1, const_cast<Player*>(player));
 		break;
-	default:
+	default:s
 		break;
 	}
 
