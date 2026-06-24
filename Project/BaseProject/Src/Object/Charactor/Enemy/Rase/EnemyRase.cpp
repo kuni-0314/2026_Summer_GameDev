@@ -138,10 +138,10 @@ void EnemyRase::InitPost()
 		std::bind(&EnemyRase::ChangeStateCharge, this));
 	stateChanges_.emplace(static_cast<int>(STATE::HIT),
 		std::bind(&EnemyRase::ChangeStateHit, this));
-	stateChanges_.emplace(static_cast<int>(STATE::CHARGE),
-		std::bind(&EnemyRase::ChangeStateCharge, this));
-	stateChanges_.emplace(static_cast<int>(STATE::DIE),
+	stateChanges_.emplace(static_cast<int>(STATE::END),
 		std::bind(&EnemyRase::ChangeStateEnd, this));
+	stateChanges_.emplace(static_cast<int>(STATE::DIE),
+		std::bind(&EnemyRase::ChangeStateDie, this));
 
 	shotCharge_ =  SHOT_CHARGE_COUNT;
 	;
@@ -186,14 +186,7 @@ void EnemyRase::UpdateProcess()
 
 	if (hp_ < preHp_)
 	{
-		if (hp_ <= 0)
-		{
-			ChangeState(STATE::DIE);
-		}
-		else
-		{
-			ChangeState(STATE::HIT);
-		}
+		ChangeState(STATE::HIT);
 	}
 }
 
@@ -281,7 +274,16 @@ void EnemyRase::ChangeStateHit()
 
 void EnemyRase::ChangeStateEnd()
 {
+	stateUpdate_ = std::bind(&EnemyRase::UpdateEnd, this);
+
+}
+
+void EnemyRase::ChangeStateDie()
+{
 	stateUpdate_ = std::bind(&EnemyRase::UpdateDie, this);
+	movePow_ = AsoUtility::VECTOR_ZERO;
+	// 待機アニメーション再生
+	animationController_->Play(static_cast<int>(ANIM_TYPE::HIT), true);
 
 }
 

@@ -19,6 +19,7 @@ public:
 		ATTACK,
 		CHARGE,
 		END,
+		DIE,
 		HIT
 	};
 
@@ -176,6 +177,7 @@ private:
 	void ChangeStateWait(void);
 	void ChangeStateHit(void);
 	void ChangeStateEnd(void);
+	void ChangeStateDie(void);
 	void ChangeStateCharge(void);
 
 	// çXêVån
