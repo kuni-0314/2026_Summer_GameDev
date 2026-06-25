@@ -49,6 +49,8 @@ void PostEffectManager::Init()
 	InitializeEffect(EFFECT_TYPE::SCREEN_SHAKE, "ScreenShake.cso", 2);
 	InitializeEffect(EFFECT_TYPE::CRT, "CRT.cso", 1);
 	InitializeEffect(EFFECT_TYPE::FADE_WHITE, "FadeWhite.cso", 1);
+	InitializeEffect(EFFECT_TYPE::ZOOM_IN_RADIAL_BLUR, "ZoomInRadialBlur.cso", 1);
+	InitializeEffect(EFFECT_TYPE::FH_GAME_START, "FH_GameStart.cso", 1);
 
 	isInitialized_ = true;
 }
@@ -280,10 +282,7 @@ void PostEffectManager::SetEffectParameters(EFFECT_TYPE type, EffectParams& para
 		buf.z = 1.0f;
 		params.params.push_back(buf);
 		break;
-	case EFFECT_TYPE::RADIAL_BLUR:
-		buf.x = -0.1f;
-		params.params.push_back(buf);
-		break;
+
 	case EFFECT_TYPE::HUE_SHIFT:
 		buf.x = time;
 		params.params.push_back(buf);
@@ -378,7 +377,14 @@ void PostEffectManager::SetEffectParameters(EFFECT_TYPE type, EffectParams& para
 		buf.x = time;
 		params.params.push_back(buf);
 		break;
-	default:
+	case EFFECT_TYPE::ZOOM_IN_RADIAL_BLUR:
+		buf.x = -0.1f;
+		params.params.push_back(buf);
+		break;
+	case EFFECT_TYPE::FH_GAME_START:	// ÉJÉXÉ^ÉÄêÑèß
+		buf.x = -0.1f;
+		buf.y = 1.0f;
+		buf.z = 0.5f;
 		params.params.push_back(buf);
 		break;
 	}

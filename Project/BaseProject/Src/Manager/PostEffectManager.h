@@ -46,6 +46,8 @@ public:
 		SCREEN_SHAKE,
 		CRT,
 		FADE_WHITE,
+		ZOOM_IN_RADIAL_BLUR,
+		FH_GAME_START,
 		MAX
 	};
 

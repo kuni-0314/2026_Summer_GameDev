@@ -135,22 +135,56 @@ void TitleScene::Draw()
 
 #ifdef _DEBUG
 	int imgWidth_, imgHeight_, img, posX;
-	img = selectCount_ == static_cast<int>(SELECT::GAME) ? imgGameStart_ : imgNotGameStart_;
-	posX = selectCount_ == static_cast<int>(SELECT::GAME) ? IMG_CHOICE_POS_X : IMG_NOT_CHOICE_POS_X;
-	GetGraphSize(img, &imgWidth_, &imgHeight_);
-	DrawBox(posX, IMG_CHOICE_POS_Y, posX + imgWidth_, IMG_CHOICE_POS_Y + imgHeight_, GetRand(0xffffff), false);
-	img = selectCount_ == static_cast<int>(SELECT::TUTORIAL) ? imgTutorial_ : imgNotTutorial_;
-	posX = selectCount_ == static_cast<int>(SELECT::TUTORIAL) ? IMG_CHOICE_POS_X : IMG_NOT_CHOICE_POS_X;
-	GetGraphSize(img, &imgWidth_, &imgHeight_);
-	DrawBox(posX, IMG_CHOICE_POS_Y + IMG_CHOICE_POS_Y_OFFSET, posX + imgWidth_, IMG_CHOICE_POS_Y + IMG_CHOICE_POS_Y_OFFSET + imgHeight_, GetRand(0xffffff), false);
-	img = selectCount_ == static_cast<int>(SELECT::OPTION) ? imgOption_ : imgNotOption_;
-	posX = selectCount_ == static_cast<int>(SELECT::OPTION) ? IMG_CHOICE_POS_X : IMG_NOT_CHOICE_POS_X;
-	GetGraphSize(img, &imgWidth_, &imgHeight_);
-	DrawBox(posX, IMG_CHOICE_POS_Y + IMG_CHOICE_POS_Y_OFFSET * 2, posX + imgWidth_, IMG_CHOICE_POS_Y + IMG_CHOICE_POS_Y_OFFSET * 2 + imgHeight_, GetRand(0xffffff), false);
-	img = selectCount_ == static_cast<int>(SELECT::EXIT) ? imgEnd_ : imgNotEnd_;
-	posX = selectCount_ == static_cast<int>(SELECT::EXIT) ? IMG_CHOICE_POS_X : IMG_NOT_CHOICE_POS_X;
-	GetGraphSize(img, &imgWidth_, &imgHeight_);
-	DrawBox(posX, IMG_CHOICE_POS_Y + IMG_CHOICE_POS_Y_OFFSET * 3, posX + imgWidth_, IMG_CHOICE_POS_Y + IMG_CHOICE_POS_Y_OFFSET * 3 + imgHeight_, GetRand(0xffffff), false);
+	for (int i = 0; i < 4; i++)
+	{
+		switch (i)
+		{
+		case static_cast<int>(SELECT::GAME):
+			img = imgGameStart_;
+			break;
+		case static_cast<int>(SELECT::TUTORIAL):
+			img = imgTutorial_;
+			break;
+		case static_cast<int>(SELECT::OPTION):
+			img = imgOption_;
+			break;
+		case static_cast<int>(SELECT::EXIT):
+			img = imgEnd_;
+			break;
+		default:
+			break;
+		}
+		posX = i == selectCount_ ? IMG_CHOICE_POS_X : IMG_NOT_CHOICE_POS_X;
+		GetGraphSize(img, &imgWidth_, &imgHeight_);
+		//DrawBox(posX, IMG_CHOICE_POS_Y + IMG_CHOICE_POS_Y_OFFSET * i, posX + imgWidth_, IMG_CHOICE_POS_Y + IMG_CHOICE_POS_Y_OFFSET * i + imgHeight_, GetRand(0xffffff), false);
+		static float alpha = 0.0f, speed = 1.0f;
+
+		// sin(speed++ / 100.0f) → -1.0f - 1.0f
+		// sin(speed++ / 100.0f) * 255.0f → -255.0f - 255.0f
+		// sin(speed++ / 100.0f) * 255.0f + 255.0f → 0.0f - 510.0f
+		// (sin(speed++ / 100.0f) * 255.0f + 255.0f) / 4.0f → 0.0f - 127.5f
+		if (i != selectCount_) continue;
+		alpha = (sin(speed++ / 10.0f) * 255.0f + 255.0f) / 4.0f;
+		SetDrawBlendMode(DX_BLENDMODE_ALPHA, static_cast<int>(alpha));
+		DrawBox(posX, IMG_CHOICE_POS_Y + IMG_CHOICE_POS_Y_OFFSET * i, posX + imgWidth_, IMG_CHOICE_POS_Y + IMG_CHOICE_POS_Y_OFFSET * i + imgHeight_, 0xffffff, true);
+		SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
+	}
+	//img = selectCount_ == static_cast<int>(SELECT::GAME) ? imgGameStart_ : imgNotGameStart_;
+	//posX = selectCount_ == static_cast<int>(SELECT::GAME) ? IMG_CHOICE_POS_X : IMG_NOT_CHOICE_POS_X;
+	//GetGraphSize(img, &imgWidth_, &imgHeight_);
+	//DrawBox(posX, IMG_CHOICE_POS_Y, posX + imgWidth_, IMG_CHOICE_POS_Y + imgHeight_, GetRand(0xffffff), false);
+	//img = selectCount_ == static_cast<int>(SELECT::TUTORIAL) ? imgTutorial_ : imgNotTutorial_;
+	//posX = selectCount_ == static_cast<int>(SELECT::TUTORIAL) ? IMG_CHOICE_POS_X : IMG_NOT_CHOICE_POS_X;
+	//GetGraphSize(img, &imgWidth_, &imgHeight_);
+	//DrawBox(posX, IMG_CHOICE_POS_Y + IMG_CHOICE_POS_Y_OFFSET, posX + imgWidth_, IMG_CHOICE_POS_Y + IMG_CHOICE_POS_Y_OFFSET + imgHeight_, GetRand(0xffffff), false);
+	//img = selectCount_ == static_cast<int>(SELECT::OPTION) ? imgOption_ : imgNotOption_;
+	//posX = selectCount_ == static_cast<int>(SELECT::OPTION) ? IMG_CHOICE_POS_X : IMG_NOT_CHOICE_POS_X;
+	//GetGraphSize(img, &imgWidth_, &imgHeight_);
+	//DrawBox(posX, IMG_CHOICE_POS_Y + IMG_CHOICE_POS_Y_OFFSET * 2, posX + imgWidth_, IMG_CHOICE_POS_Y + IMG_CHOICE_POS_Y_OFFSET * 2 + imgHeight_, GetRand(0xffffff), false);
+	//img = selectCount_ == static_cast<int>(SELECT::EXIT) ? imgEnd_ : imgNotEnd_;
+	//posX = selectCount_ == static_cast<int>(SELECT::EXIT) ? IMG_CHOICE_POS_X : IMG_NOT_CHOICE_POS_X;
+	//GetGraphSize(img, &imgWidth_, &imgHeight_);
+	//DrawBox(posX, IMG_CHOICE_POS_Y + IMG_CHOICE_POS_Y_OFFSET * 3, posX + imgWidth_, IMG_CHOICE_POS_Y + IMG_CHOICE_POS_Y_OFFSET * 3 + imgHeight_, GetRand(0xffffff), false);
 #endif // _DEBUG
 
 	SelectDraw((SELECT)selectCount_);
@@ -172,15 +206,15 @@ void TitleScene::Draw()
 		effectTime -= 0.01f;
 	}
 	
-	PostEffectManager::EffectParams params = { effectTime_, 0.7f, 0.0f, 0.0f };
+	PostEffectManager::EffectParams params = { effectTime_, effectTime_, effectTime_, 0.0f };
 	auto& pstEfcMngIns = PostEffectManager::GetInstance();
-	pstEfcMngIns.SetCustomParams(PostEffectManager::EFFECT_TYPE::FADE_WHITE, params);
+	pstEfcMngIns.SetCustomParams(PostEffectManager::EFFECT_TYPE::FH_GAME_START, params);
 	// エフェクト適用
 	//if (!multiEffectMode_)
 	//{
 	// 単一エフェクトモード
 	pstEfcMngIns.ApplyEffect(
-		PostEffectManager::EFFECT_TYPE::FADE_WHITE,
+		PostEffectManager::EFFECT_TYPE::FH_GAME_START,
 		tempScreen,
 		postEffectScreen_,
 		effectTime_
@@ -197,11 +231,13 @@ void TitleScene::Draw()
 	//	);
 	//}
 
-	DeleteGraph(tempScreen);
 
 	// 最終結果をメイン画面に描画
 	SetDrawScreen(mainScreen);
 	DrawGraph(0, 0, postEffectScreen_, false);
+
+	// 一時スクリーンを削除
+	DeleteGraph(tempScreen);
 }
 
 void TitleScene::Release()

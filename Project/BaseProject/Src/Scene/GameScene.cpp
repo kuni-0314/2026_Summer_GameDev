@@ -327,6 +327,17 @@ void GameScene::Draw()
 	ClearDrawScreen();
 	DrawGraph(0, 0, mainScreen, false);
 
+	static float effectTime = 0.0f;
+	if (InputManager::GetInstance()->IsNew(KEY_INPUT_Q))
+	{
+		effectTime += 0.01f;
+	}
+	else if (InputManager::GetInstance()->IsNew(KEY_INPUT_E))
+	{
+		effectTime -= 0.01f;
+	}
+
+
 	// エフェクト適用
 	if (!multiEffectMode_)
 	{
@@ -543,6 +554,8 @@ const char* GameScene::GetEffectName(PostEffectManager::EFFECT_TYPE effectType)
 	case PostEffectManager::EFFECT_TYPE::SNOW_STORM: return "SnowStorm";
 	case PostEffectManager::EFFECT_TYPE::SCREEN_SHAKE: return "ScreenShake";
 	case PostEffectManager::EFFECT_TYPE::CRT: return "CRT";
+	case PostEffectManager::EFFECT_TYPE::FADE_WHITE: return "FadeWhite";
+	case PostEffectManager::EFFECT_TYPE::ZOOM_IN_RADIAL_BLUR: return "ZoomInRadialBlur";
 	default: return "Unknown";
 	}
 }

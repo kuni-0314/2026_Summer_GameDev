@@ -121,12 +121,14 @@ private:
 
 	//bool IsSelect_ = false;
 
-	int mainScreen_;
+	//int mainScreen_;
 
 	int postEffectScreen_;
 
 	bool isFadeIn_;
 	float effectTime_;
 	static constexpr float FADE_SPEED = 0.01f;
+
+	
 
 };
