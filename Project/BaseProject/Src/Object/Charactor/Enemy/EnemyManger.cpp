@@ -6,6 +6,7 @@
 #include "Rat/EnemyRat.h"
 #include "Robot/EnemyRobot.h"
 #include "Rase/EnemyRase.h"
+#include "Large/EnemyLarge.h"
 #include "../../Item/ItemBase.h"
 #include "../../Item/ItemManger.h"
 #include "../../Charactor/Player/Player.h"
@@ -197,6 +198,9 @@ EnemyBase* EnemyManager::Create(const EnemyBase::EnemyData& data, const Player* 
 		break;
 	case EnemyBase::TYPE::RASE:
 		enemy = new EnemyRase(data, -1, const_cast<Player*>(player));
+		break;
+	case EnemyBase::TYPE::LARGE:
+		enemy = new EnemyLarge(data, -1, const_cast<Player*>(player));
 		break;
 	default:
 		break;

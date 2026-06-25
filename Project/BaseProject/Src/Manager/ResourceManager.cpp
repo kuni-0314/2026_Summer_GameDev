@@ -120,6 +120,10 @@ void ResourceManager::Init()
 	//アイテムスキル
 	res = new RES(RES_T::MODEL, PATH_MDL + "Enemy/Rase/Fireball.mv1");
 	resourcesMap_.emplace(SRC::ENEMY_RASE_BALL, res);	//mapに登録
+
+	//ラージエネミー
+	res = new RES(RES_T::MODEL, PATH_MDL + "Enemy/Large/Idle.mv1");
+	resourcesMap_.emplace(SRC::ENEMY_LARGE, res);	//mapに登録
 }
 
 void ResourceManager::Release()

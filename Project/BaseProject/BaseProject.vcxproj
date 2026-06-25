@@ -19,6 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Src\Object\Charactor\Enemy\Large\EnemyLarge.cpp" />
     <ClCompile Include="Src\Effect\EffectBase.cpp" />
     <ClCompile Include="Src\Effect\EffectManager.cpp" />
     <ClCompile Include="Src\Effect\LoadEffekseer\EffekseerEffect.cpp" />
@@ -94,6 +95,7 @@
     <ClCompile Include="Src\Object\Weapon\Sword\SwordBase.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Src\Object\Charactor\Enemy\Large\EnemyLarge.h" />
     <ClInclude Include="Src\Effect\EffectBase.h" />
     <ClInclude Include="Src\Effect\EffectManager.h" />
     <ClInclude Include="Src\Effect\LoadEffekseer\EffekseerEffect.h" />

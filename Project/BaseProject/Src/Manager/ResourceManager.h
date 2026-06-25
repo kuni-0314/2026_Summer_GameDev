@@ -31,6 +31,7 @@ public:
 		ENEMY_RAT,
 		ENEMY_RASE,			//らせ
 		ENEMY_RASE_BALL,	//攻撃用モデル
+		ENEMY_LARGE,
 		VIEW_RANGE,			//敵の視野
 		CELL_RED,			// 赤色セル
 		BATTLE_STAGE,		//バトルステージ
