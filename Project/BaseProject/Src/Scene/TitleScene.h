@@ -1,7 +1,6 @@
 #pragma once
 #include "SceneBase.h"
 #include "../Object/Common/Transform.h"
-#include "../Manager/PostEffectManager.h"
 
 class AnimationController;
 class SkyDome;
@@ -126,5 +125,8 @@ private:
 
 	int postEffectScreen_;
 
+	bool isFadeIn_;
 	float effectTime_;
+	static constexpr float FADE_SPEED = 0.01f;
+
 };

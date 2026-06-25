@@ -7,6 +7,7 @@
 #include "../Common/Quaternion.h"
 #include "TitleScene.h"
 #include "../Application.h"
+#include "../Manager/PostEffectManager.h"
 #include "../Sound/AudioManager.h"
 
 
@@ -69,9 +70,16 @@ void TitleScene::Update()
 	//IsSelect_ = true;
 
 	// エフェクト時間更新
-	effectTime_ += sceMng_.GetDeltaTime();
+	
 
-	SelectUpdate();
+	if (!isFadeIn_) SelectUpdate();
+	else effectTime_ += FADE_SPEED;
+
+	if (effectTime_ >= 1.0f)
+	{
+		effectTime_ = 1.0f;
+		sceMng_.ChangeScene(SceneManager::SCENE_ID::GAME);
+	}
 
 }
 
@@ -79,47 +87,47 @@ void TitleScene::Update()
 void TitleScene::Draw()
 {
 	static int x = 10;
-	DrawPixel(x++, 10, 0xffffff);
+	//DrawPixel(x++, 10, 0xffffff);
 
 	DrawGraph(Application::SCREEN_SIZE_X / 2 + 100, 100, imgPlayer_, true);
 
-	DrawGraph(50, 20, imgTitle_, TRUE);
+	DrawGraph(50, 20, imgTitle_, true);
 
 	//ゲームスタート
 	if (selectCount_ == static_cast <int>(SELECT::GAME))
 	{
-		DrawGraph(IMG_CHOICE_POS_X, IMG_CHOICE_POS_Y, imgGameStart_, TRUE);
+		DrawGraph(IMG_CHOICE_POS_X, IMG_CHOICE_POS_Y, imgGameStart_, true);
 	}
 	else
 	{
-		DrawGraph(IMG_NOT_CHOICE_POS_X, IMG_CHOICE_POS_Y, imgNotGameStart_, TRUE);
+		DrawGraph(IMG_NOT_CHOICE_POS_X, IMG_CHOICE_POS_Y, imgNotGameStart_, true);
 	}
 	//チュートリアル
 	if (selectCount_ == static_cast <int>(SELECT::TUTORIAL))
 	{
-		DrawGraph(IMG_CHOICE_POS_X, IMG_CHOICE_POS_Y + IMG_CHOICE_POS_Y_OFFSET, imgTutorial_, TRUE);
+		DrawGraph(IMG_CHOICE_POS_X, IMG_CHOICE_POS_Y + IMG_CHOICE_POS_Y_OFFSET, imgTutorial_, true);
 	}
 	else
 	{
-		DrawGraph(IMG_NOT_CHOICE_POS_X, IMG_CHOICE_POS_Y + IMG_CHOICE_POS_Y_OFFSET, imgNotTutorial_, TRUE);
+		DrawGraph(IMG_NOT_CHOICE_POS_X, IMG_CHOICE_POS_Y + IMG_CHOICE_POS_Y_OFFSET, imgNotTutorial_, true);
 	}
 	//オプション
 	if (selectCount_ == static_cast <int>(SELECT::OPTION))
 	{
-		DrawGraph(IMG_CHOICE_POS_X, IMG_CHOICE_POS_Y + IMG_CHOICE_POS_Y_OFFSET * 2, imgOption_, TRUE);
+		DrawGraph(IMG_CHOICE_POS_X, IMG_CHOICE_POS_Y + IMG_CHOICE_POS_Y_OFFSET * 2, imgOption_, true);
 	}
 	else
 	{
-		DrawGraph(IMG_NOT_CHOICE_POS_X, IMG_CHOICE_POS_Y + IMG_CHOICE_POS_Y_OFFSET * 2, imgNotOption_, TRUE);
+		DrawGraph(IMG_NOT_CHOICE_POS_X, IMG_CHOICE_POS_Y + IMG_CHOICE_POS_Y_OFFSET * 2, imgNotOption_, true);
 	}
 	//終了
 	if (selectCount_ == static_cast <int>(SELECT::EXIT))
 	{
-		DrawGraph(IMG_CHOICE_POS_X, IMG_CHOICE_POS_Y + IMG_CHOICE_POS_Y_OFFSET * 3, imgEnd_, TRUE);
+		DrawGraph(IMG_CHOICE_POS_X, IMG_CHOICE_POS_Y + IMG_CHOICE_POS_Y_OFFSET * 3, imgEnd_, true);
 	}
 	else
 	{
-		DrawGraph(IMG_NOT_CHOICE_POS_X, IMG_CHOICE_POS_Y + IMG_CHOICE_POS_Y_OFFSET * 3, imgNotEnd_, TRUE);
+		DrawGraph(IMG_NOT_CHOICE_POS_X, IMG_CHOICE_POS_Y + IMG_CHOICE_POS_Y_OFFSET * 3, imgNotEnd_, true);
 	}
 
 
@@ -145,7 +153,6 @@ void TitleScene::Draw()
 	DrawBox(posX, IMG_CHOICE_POS_Y + IMG_CHOICE_POS_Y_OFFSET * 3, posX + imgWidth_, IMG_CHOICE_POS_Y + IMG_CHOICE_POS_Y_OFFSET * 3 + imgHeight_, GetRand(0xffffff), false);
 #endif // _DEBUG
 
-
 	SelectDraw((SELECT)selectCount_);
 	
 
@@ -155,13 +162,25 @@ void TitleScene::Draw()
 	SetDrawScreen(tempScreen);
 	ClearDrawScreen();
 	DrawGraph(0, 0, mainScreen, false);
-
+	static float effectTime = 0.0f;
+	if (InputManager::GetInstance()->IsNew(KEY_INPUT_W))
+	{
+		effectTime += 0.01f;
+	}
+	else if (InputManager::GetInstance()->IsNew(KEY_INPUT_S))
+	{
+		effectTime -= 0.01f;
+	}
+	
+	PostEffectManager::EffectParams params = { effectTime_, 0.7f, 0.0f, 0.0f };
+	auto& pstEfcMngIns = PostEffectManager::GetInstance();
+	pstEfcMngIns.SetCustomParams(PostEffectManager::EFFECT_TYPE::FADE_WHITE, params);
 	// エフェクト適用
 	//if (!multiEffectMode_)
 	//{
 	// 単一エフェクトモード
-	PostEffectManager::GetInstance().ApplyEffect(
-		PostEffectManager::EFFECT_TYPE::GLITCH,
+	pstEfcMngIns.ApplyEffect(
+		PostEffectManager::EFFECT_TYPE::FADE_WHITE,
 		tempScreen,
 		postEffectScreen_,
 		effectTime_
@@ -177,6 +196,8 @@ void TitleScene::Draw()
 	//		effectTime_
 	//	);
 	//}
+
+	DeleteGraph(tempScreen);
 
 	// 最終結果をメイン画面に描画
 	SetDrawScreen(mainScreen);
@@ -198,20 +219,18 @@ void TitleScene::SelectChange(SELECT next)
 	{
 	case SELECT::GAME:
 		AudioManager::GetInstance()->StopBGM();
-		sceMng_.ChangeScene(SceneManager::SCENE_ID::GAME);
 		break;
 	case SELECT::TUTORIAL:
-
 		break;
 	case SELECT::OPTION:
-
 		break;
 	case SELECT::EXIT:
-
 		Application::GetInstance().End();
-
 		break;
 	}
+
+	effectTime_ = 0.0f;
+	isFadeIn_ = true;
 }
 
 void TitleScene::SelectDraw(SELECT next)
@@ -254,13 +273,6 @@ void TitleScene::SelectUpdate()
 		{
 			selectCount_ = minIndex; // 一番上へ
 		}
-	}
-	if (ins->IsTrgDown(KEY_INPUT_SPACE) || ins->IsGamepadTrgDown(InputManager::PadInput::A, 0))//決定
-	{
-		//決定SE
-		AudioManager::GetInstance()->SetSeVolume(80);
-		AudioManager::GetInstance()->PlaySE(SoundID::SE_TITLE_DECISION);
-		SelectChange((SELECT)selectCount_);
 	}
 
 	// マウス操作があった場合、マウスカーソルの位置から選択肢を変更する
@@ -324,9 +336,18 @@ void TitleScene::SelectUpdate()
 		}
 	}
 
+	// SpaceキーまたはゲームパッドのAボタンで決定
+	if (ins->IsTrgDown(KEY_INPUT_SPACE) || ins->IsGamepadTrgDown(InputManager::PadInput::A, 0))//決定
+	{
+		AudioManager::GetInstance()->SetSeVolume(80);
+		AudioManager::GetInstance()->PlaySE(SoundID::SE_TITLE_DECISION);
+		SelectChange((SELECT)selectCount_);
+	}
 	// マウスクリックで決定
 	if (ins->IsMouseTrgDown(MOUSE_INPUT_LEFT))
 	{
+		AudioManager::GetInstance()->SetSeVolume(80);
+		AudioManager::GetInstance()->PlaySE(SoundID::SE_TITLE_DECISION);
 		SelectChange((SELECT)selectCount_);
 	}
 }

@@ -48,7 +48,7 @@ void PostEffectManager::Init()
 	InitializeEffect(EFFECT_TYPE::SNOW_STORM, "SnowStorm.cso", 1);
 	InitializeEffect(EFFECT_TYPE::SCREEN_SHAKE, "ScreenShake.cso", 2);
 	InitializeEffect(EFFECT_TYPE::CRT, "CRT.cso", 1);
-	InitializeEffect(EFFECT_TYPE::MAX, "FadeWhite.cso", 1);
+	InitializeEffect(EFFECT_TYPE::FADE_WHITE, "FadeWhite.cso", 1);
 
 	isInitialized_ = true;
 }
@@ -136,7 +136,7 @@ void PostEffectManager::ApplyEffects(const std::vector<EFFECT_TYPE>& effectTypes
 	{
 		SetDrawScreen(dstScreen);
 		ClearDrawScreen();
-		DrawGraph(0, 0, srcScreen, TRUE);
+		DrawGraph(0, 0, srcScreen, true);
 		return;
 	}
 

@@ -227,7 +227,7 @@ void Player::InitPost()
 	InitState();
 
 	// •Ší‰Šú‰»
-	sword_ = new KeyBlade3(KEY_BLADE_2_LOCAL_POS_START, KEY_BLADE_2_LOCAL_POS_END, KEY_BLADE_2_RADIUS, transform_);
+	sword_ = new KeyBlade1(KEY_BLADE_1_LOCAL_POS_START, KEY_BLADE_1_LOCAL_POS_END, KEY_BLADE_1_RADIUS, transform_);
 	sword_->Init();
 }
 
