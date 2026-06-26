@@ -1,3 +1,4 @@
+#include  <filesystem>
 #include "EffekseerEffect.h"
 #include <EffekseerForDXLib.h>
 #include "../../Common/Quaternion.h"
@@ -8,7 +9,14 @@ EffekseerEffect::EffekseerEffect(const std::wstring& filePath, const VECTOR& pos
     m_playingHandle(-1),
     m_pos3D(pos)
 {
-
+    if (!std::filesystem::exists(filePath))
+    {
+        printf("ファイルがありません\n");
+    }
+    else
+    {
+        printf("ファイル発見\n");
+    }
     m_effectHandle = LoadEffekseerEffect(filePath.c_str(), 1.0f);
 
     if (m_effectHandle == -1)

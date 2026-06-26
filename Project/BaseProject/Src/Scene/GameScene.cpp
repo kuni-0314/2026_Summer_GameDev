@@ -14,8 +14,10 @@
 #include "../Object/Weapon/Sword/KeyBlade1.h"
 #include "../Object/Collider/ColliderBase.h"
 #include "../Object/Collider/Sphere/ColliderSphere.h"
+#include "../Effect/EffectManager.h"
 #include "../Sound/AudioManager.h"
 #include "GameScene.h"
+#include <EffekseerForDXLib.h>
 // 別プロジェクト
 GameScene::GameScene()
 	: SceneBase(),
@@ -104,6 +106,7 @@ void GameScene::Update()
 {
 	auto const ins = InputManager::GetInstance();
 
+	UpdateEffekseer3D();
 
 	// 各オブジェクトの更新
 	stage_->Update();
@@ -112,6 +115,8 @@ void GameScene::Update()
 	//weapon_->Update();
 	enemyManager_->Update();
 	itemManger_->Update();
+
+	
 	
 	if (!enemyManager_->GetEnemyDead())
 	{
@@ -309,6 +314,11 @@ void GameScene::Draw()
 	//weapon_->Draw();
 	itemManger_->Draw();
 	enemyManager_->Draw();
+
+	// エフェクトを一番手前に描画
+	EffectManager::GetInstance().Draw();
+
+	DrawEffekseer3D();
 
 	// 一時スクリーンにメイン画面をコピー
 	int tempScreen = MakeScreen(Application::SCREEN_SIZE_X, Application::SCREEN_SIZE_Y, false);

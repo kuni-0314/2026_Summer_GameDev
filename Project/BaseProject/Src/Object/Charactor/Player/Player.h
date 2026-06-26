@@ -1,9 +1,11 @@
 #pragma once
+#include <memory>
 #include "../../Charactor/CharactorBase.h"
 class GameScene;
 class AnimationController;
 class PlayerState;
 class SwordBase;
+class EffekseerEffect;
 
 class Player : public CharactorBase
 {
@@ -87,6 +89,8 @@ public:
 	void SetAnimStartModelPos(const VECTOR& pos) { animStartModelPos_ = pos; }
 	bool IsAttacking() const { return isAttacking_; }
 	void SetAttacking(const bool attacking) { isAttacking_ = attacking; }
+	void ActivatePowerUp();
+	void PlayBlinkEffect();
 
 
 	//スケール
@@ -157,6 +161,8 @@ public:
 
 	SwordBase* GetSword() const { return sword_; }
 
+	Quaternion GetRot(void) const { return transform_.quaRot; }
+
 	// 攻撃判定の開始フレーム
 	static constexpr int ATTACK_HITBOX_START_FRAME = 22;
 	static constexpr int ATTACK_HITBOX_END_FRAME = 29;
@@ -213,8 +219,17 @@ private:
 	float jetTime_;
 	static constexpr float TIME_JET = 0.2f;
 
+	// パワーアップ状態フラグ（あなたのプロジェクトの状態管理に合わせて調整してください）
+	bool m_isPowerUp = false;       // パワーアップ中
+	int m_powerUpTimer = 0;         // エフェクト時間
+
 	PlayerState* currentState_;
 	std::map<STATE, PlayerState*> states_;
+
+	// 現在プレイヤーに追従しているエフェクトのポインタ
+	std::shared_ptr<EffekseerEffect> m_powerUpEffect;
+
+	std::shared_ptr<EffekseerEffect> blinkEffect_;
 
 	// 攻撃のクールタイム
 	int attackCoolTime_;
