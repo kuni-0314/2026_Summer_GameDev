@@ -50,6 +50,22 @@ public:
 	ItemManger* GetItemManger() const { return itemManger_; }
 
 private:
+
+	enum class HP_UI
+	{
+		HP10, //HPFULL↓
+		HP9,
+		HP8,
+		HP7,
+		HP6,
+		HP5,
+		HP4,
+		HP3,
+		HP2,
+		HP1,
+		HP0
+	};
+
 	// ステージ
 	Stage* stage_;
 
@@ -70,6 +86,10 @@ private:
 
 	// 武器
 	//WeaponBase* weapon_;
+	
+	static constexpr int IMG_HP_X = 1500;
+	static constexpr int IMG_HP_Y = 700;
+
 
 	// 攻撃コライダーリスト
 	std::vector<AttackColliderData*> attackColliders_;
@@ -92,6 +112,9 @@ private:
 	// ターゲット敵のID
 	int targetEnemyId_;
 
+	//HPUi用
+	int hpUiCount_;
+
 	// ターゲット位置
 	VECTOR targetPos_;
 
@@ -104,5 +127,20 @@ private:
 	// エフェクト名を取得
 	const char* GetEffectName(PostEffectManager::EFFECT_TYPE effectType);
 
+	void PlayerHpUIDraw();
+
 	int audioHandle_;
+
+	//HPUI画像ハンドル
+	int hpHandle0_;
+	int hpHandle1_;
+	int hpHandle2_;
+	int hpHandle3_;
+	int hpHandle4_;
+	int hpHandle5_;
+	int hpHandle6_;
+	int hpHandle7_;
+	int hpHandle8_;
+	int hpHandle9_;
+	int hpHandle10_;
 };

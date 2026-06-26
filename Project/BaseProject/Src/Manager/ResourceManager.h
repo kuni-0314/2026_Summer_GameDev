@@ -41,7 +41,17 @@ public:
 		KEY_BLADE_1,	//キーブレード１
 		KEY_BLADE_2,	//キーブレード２
 		KEY_BLADE_3,	//キーブレード３
-
+		IMG_PLAYER_HP_0,
+		IMG_PLAYER_HP_1,
+		IMG_PLAYER_HP_2,
+		IMG_PLAYER_HP_3,
+		IMG_PLAYER_HP_4,
+		IMG_PLAYER_HP_5,
+		IMG_PLAYER_HP_6,
+		IMG_PLAYER_HP_7,
+		IMG_PLAYER_HP_8,
+		IMG_PLAYER_HP_9,
+		IMG_PLAYER_HP_10,
 		MAX
 	};
 

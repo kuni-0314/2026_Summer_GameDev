@@ -16,7 +16,7 @@ public:
 	{
 		IDLE,
 		MOVE,
-		ATTACK,
+		ATTACK_PUNCH,
 		CHARGE,
 		END,
 		DIE,
@@ -30,7 +30,8 @@ public:
 		THINK,
 		IDLE,
 		MOVE,
-		ATTACK,
+		ATTACK_PUNCH,
+		ATTACK_RUN,
 		WAIT,
 		CHARGE,
 		HIT,
@@ -73,9 +74,6 @@ protected:
 	void UpdateProcess() override;
 	void UpdateProcessPost() override;
 
-	int count = 300;
-
-	int countUp = 0;
 
 
 private:
@@ -97,7 +95,6 @@ private:
 
 	//弾待機カウント
 	static constexpr int  SHOT_CHARGE_COUNT = 120;
-
 	// モデルの大きさ
 	static constexpr float SCALE = 2.5f;
 
@@ -121,33 +118,33 @@ private:
 	// 攻撃判定用球体
 	static constexpr VECTOR ATTACK_SPHERE_LOCAL_POS = { 0.0f, 30.0f, 120.0f };
 
+	int count = 180;
+	int countUp = 0;
+
 	// 行動切り替え用カプセル球体半径
 	static constexpr float COL_SWICH_RADIUS = 250.0f;
 
 	// 攻撃切り替え距離
-	static constexpr float SWICH_DISTANCE = 350.0f;
+	const float SWICH_DISTANCE = 200.0f;
 
-	static constexpr float ATTACK_MOVE_SPEED = 3.0f;
+	//突進１の移動終了距離
+	const float ATTACK_RUN_END_POINT = 500.0f;
 
 	//揺れ幅
 	const float HOVER_HEIGHT = 20.0f;
 	//揺れる速さ
 	const float HOVER_SPEED = 2.0f;
 
-	int shotmodel_;
-
-	int shotCharge_;
-
 	//攻撃判定
 	bool isAttack_;
 	//生存判定
 	bool isAlive_ = true;
-	//プレイヤー視認判定
+	//LookPlayer用フラグ(true:ON)
 	bool look_ = false;
 	//連続攻撃判定
 	bool attackHit_ = false;;
 
-	bool shotFired_;
+
 
 
 	// 更新ステップ
@@ -156,6 +153,7 @@ private:
 	float distance_;
 	//経過時間
 	float hoverTime_;
+
 
 	//プレイヤー判定球の半径
 	float playerRad_;
@@ -167,6 +165,8 @@ private:
 	VECTOR toPlayer_;
 	//プレイヤー座標
 	VECTOR playerPos_;
+	//突進用開始地点
+	VECTOR startPos;
 
 
 	// 状態遷移
@@ -174,7 +174,8 @@ private:
 
 	void ChangeStateThink(void);
 	void ChangeStateIdle(void);
-	void ChangeStateAttack(void);
+	void ChangeStateAttackPunch(void);
+	void ChangeStateAttackRun(void);
 	void ChangeStateMove(void);
 	void ChangeStateWait(void);
 	void ChangeStateHit(void);
@@ -185,7 +186,8 @@ private:
 	// 更新系
 	void UpdateThink(void);
 	void UpdateIdle(void);
-	void UpdateAttack(void);
+	void UpdateAttackPunch(void);
+	void UpdateRunAttack(void);
 	void UpdateMove(void);
 	void UpdateWait(void);
 	void UpdateHit(void);
