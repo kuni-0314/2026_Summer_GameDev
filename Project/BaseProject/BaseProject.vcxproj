@@ -19,6 +19,10 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Src\Object\Charactor\Enemy\Large\EnemyLarge.cpp" />
+    <ClCompile Include="Src\Effect\EffectBase.cpp" />
+    <ClCompile Include="Src\Effect\EffectManager.cpp" />
+    <ClCompile Include="Src\Effect\LoadEffekseer\EffekseerEffect.cpp" />
     <ClCompile Include="Src\Object\Weapon\Sword\KeyBlade3.cpp" />
     <ClCompile Include="Src\Object\Weapon\Sword\KeyBlade2.cpp" />
     <ClCompile Include="Src\Manager\PostEffectManager.cpp" />
@@ -83,6 +87,10 @@
     <ClCompile Include="Src\Object\Weapon\Sword\SwordBase.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Src\Object\Charactor\Enemy\Large\EnemyLarge.h" />
+    <ClInclude Include="Src\Effect\EffectBase.h" />
+    <ClInclude Include="Src\Effect\EffectManager.h" />
+    <ClInclude Include="Src\Effect\LoadEffekseer\EffekseerEffect.h" />
     <ClInclude Include="Src\Object\Weapon\Sword\KeyBlade3.h" />
     <ClInclude Include="Src\Object\Weapon\Sword\KeyBlade2.h" />
     <ClInclude Include="Src\Manager\PostEffectManager.h" />
@@ -537,7 +545,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(DXLIB_DIR)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(DXLIB_DIR);C:\EffekseerForDxlib</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
       <LanguageStandard>stdcpp20</LanguageStandard>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
@@ -545,7 +553,7 @@
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>$(DXLIB_DIR)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(DXLIB_DIR);C:\EffekseerForDxlib</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">

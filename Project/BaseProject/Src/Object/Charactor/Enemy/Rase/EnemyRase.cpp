@@ -34,9 +34,9 @@ void EnemyRase::Draw()
 {
 	// 基底クラスの描画処理
 	CharactorBase::Draw();
-
-	//弾の描画
 	DrawShot();
+
+#ifdef _DEBUG
 
 	STATE next = state_;
 
@@ -49,6 +49,8 @@ void EnemyRase::Draw()
 	else if (next == STATE::CHARGE) name = "CHARGE";
 
 	DrawFormatString(0, 400, GetColor(255, 255, 255), "STATE: %s", name);
+
+#endif // _DEBUG
 }
 
 void EnemyRase::Release(void)
@@ -144,7 +146,7 @@ void EnemyRase::InitPost()
 		std::bind(&EnemyRase::ChangeStateDie, this));
 
 	shotCharge_ =  SHOT_CHARGE_COUNT;
-	;
+	
 
 	// 初期状態設定
 	ChangeState(STATE::THINK);
@@ -179,11 +181,10 @@ void EnemyRase::UpdateProcess()
 
 	auto const ins = InputManager::GetInstance();
 
-
-	preHp_ = hp_;
+	//ダメージヒット処理
+	preHp_ = hp_;//被ダメージ前HP保存
 
 	CheckPlayerSwordCollision();
-
 	if (hp_ < preHp_)
 	{
 		ChangeState(STATE::HIT);

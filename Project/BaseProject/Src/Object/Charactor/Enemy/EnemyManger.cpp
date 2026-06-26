@@ -6,6 +6,7 @@
 #include "Rat/EnemyRat.h"
 #include "Robot/EnemyRobot.h"
 #include "Rase/EnemyRase.h"
+#include "Large/EnemyLarge.h"
 #include "../../Item/ItemBase.h"
 #include "../../Item/ItemManger.h"
 #include "../../Charactor/Player/Player.h"
@@ -31,6 +32,25 @@ void EnemyManager::Init()
 {
 
 	LoadCsvData();
+	//かさなってしまう
+	for (auto& enemy1 : enemies_)
+	{
+		//自身を探して自身のコライダー情報を渡す
+		for (auto& enemy2 : enemies_)
+		{
+			if (enemy1 == enemy2)
+			{
+				continue;
+			}
+
+			//enemy自身の衝突判定を取得
+			const ColliderBase* enemyCollider =
+				enemy2->GetOwnCollider(static_cast<int>(ActorBase::COLLIDER_TYPE::CAPSULE));
+			
+			enemy1->AddHitCollider(enemyCollider);
+			
+		}
+	}
 
 
 }
@@ -58,6 +78,7 @@ void EnemyManager::Update()
 			gameScene_->GetItemManger()->Create(ItemBase::TYPE::HP, hpPos, hitCollider_,
 				static_cast<int>(Player::COLLIDER_TYPE::CAPSULE), player_);
 
+			
 
 			enemy->SetAlive(false);
 		}
@@ -177,6 +198,9 @@ EnemyBase* EnemyManager::Create(const EnemyBase::EnemyData& data, const Player* 
 		break;
 	case EnemyBase::TYPE::RASE:
 		enemy = new EnemyRase(data, -1, const_cast<Player*>(player));
+		break;
+	case EnemyBase::TYPE::LARGE:
+		enemy = new EnemyLarge(data, -1, const_cast<Player*>(player));
 		break;
 	default:
 		break;

@@ -4,12 +4,7 @@
 class Stage :public ActorBase
 {
 public:
-	// Õ“Ë”»’èí•Ê
-	enum class COLLIDER_TYPE
-	{
-		MODEL = 0,
-		MAX,
-	};
+
 
 	static constexpr float SCL_MAIN_STAGE_X = 10.0f;
 	static constexpr float SCL_MAIN_STAGE_Y = 1.0f;

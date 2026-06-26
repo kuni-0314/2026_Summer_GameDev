@@ -165,20 +165,20 @@ void EnemyRat::UpdateProcess()
 	if (look_){LookPlayer();}
 	
 
-	//判定のコライダーがで使えるまで
-	if (distance_ < MIN_DISTANCE)
-	{
-		// プレイヤーからRatへの離れる方向のベクトル
-		VECTOR pushDir = VScale(toPlayer_, -1.0f);
-		pushDir = VNorm(pushDir);
+	////判定のコライダーがで使えるまで
+	//if (distance_ < MIN_DISTANCE)
+	//{
+	//	// プレイヤーからRatへの離れる方向のベクトル
+	//	VECTOR pushDir = VScale(toPlayer_, -1.0f);
+	//	pushDir = VNorm(pushDir);
 
-		// 食い込んでいる距離を計算
-		float overlap = MIN_DISTANCE - distance_;
+	//	// 食い込んでいる距離を計算
+	//	float overlap = MIN_DISTANCE - distance_;
 
-		// 実際にRatの座標を食い込んでいる分だけ押し戻す
-		transform_.pos = VAdd(transform_.pos, VScale(pushDir, overlap));
-		transform_.Update();
-	}
+	//	// 実際にRatの座標を食い込んでいる分だけ押し戻す
+	//	transform_.pos = VAdd(transform_.pos, VScale(pushDir, overlap));
+	//	transform_.Update();
+	//}
 
 	preHp_ = hp_;
 
@@ -380,7 +380,7 @@ void EnemyRat::UpdateAttack(void)
 	if (!isAttack_)
 	{
 		// 攻撃判定
-		if (AsoUtility::IsHitSpheres(worldPos, COL_SPHERE_RADIUS, playerPos_, playerRad_))
+		if (AsoUtility::IsHitSpheres(worldPos, COL_ATTACK_RADIUS, playerPos_, playerRad_))
 		{
 			player_->Damege(1);
 			isAttack_ = true;

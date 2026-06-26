@@ -28,6 +28,16 @@ attackModle_(attackModel)
 
 EnemyBase::~EnemyBase(void)
 {
+
+}
+
+void EnemyBase::Update()
+{
+	CharactorBase::Update();
+
+	
+
+	
 }
 
 void EnemyBase::Draw()
@@ -100,10 +110,6 @@ void EnemyBase::ChangeState(int state)
 		// マッピングがない場合は明示的に空にする（保険）
 		stateUpdate_ = std::function<void()>{};
 	}
-
-
-
-
 }
 
 void EnemyBase::CheckPlayerSwordCollision()
@@ -161,3 +167,8 @@ void EnemyBase::CheckPlayerSwordCollision()
 
 
 }
+
+void EnemyBase::CheckEnemy()
+{
+}
+
