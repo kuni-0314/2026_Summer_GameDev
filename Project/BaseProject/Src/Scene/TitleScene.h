@@ -127,7 +127,7 @@ private:
 
 	bool isFadeIn_;
 	float effectTime_;
-	static constexpr float FADE_SPEED = 0.01f;
+	static constexpr float FADE_SPEED = 0.02f;
 
 	
 

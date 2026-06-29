@@ -112,8 +112,31 @@ void Application::Run()
 	SceneManager& sceneManager = SceneManager::GetInstance();
 
 	// ゲームループ
-	while (ProcessMessage() == 0 && CheckHitKey(KEY_INPUT_ESCAPE) == 0 && !isEnd_)
+	while (ProcessMessage() == 0 && !isEnd_)
 	{
+		// Escapeキーが押されたか判定
+		if (CheckHitKey(KEY_INPUT_ESCAPE) || isExitRequested_)
+		{
+			int result = MessageBoxA
+			(
+				nullptr,
+				"ゲームを終了しウィンドウを閉じますか？セーブしていないゲームデータは失われます。",
+				"確認",
+				MB_YESNO | MB_ICONEXCLAMATION
+			);
+
+			if (result == IDYES)
+			{
+				break;
+			}
+			else
+			{
+				if (isExitRequested_)
+				{
+					isExitRequested_ = false;	// 終了要求フラグをリセット
+				}
+			}
+		}
 
 		inputManager->Update();
 		sceneManager.Update();
@@ -171,6 +194,12 @@ void Application::Destroy()
 	#endif
 }
 
+// アプリケーションの終了要求
+void Application::RequestExit(void)
+{
+	isExitRequested_ = true;	// 終了要求フラグを立てる	
+}
+
 bool Application::IsInitFail() const
 {
 	return isInitFail_;
@@ -186,6 +215,8 @@ Application::Application()
 	isInitFail_(false),
 	isReleaseFail_(false)
 {
+	isEnd_ = false;
+	isExitRequested_ = false;
 }
 
 void Application::InitEffekseer()

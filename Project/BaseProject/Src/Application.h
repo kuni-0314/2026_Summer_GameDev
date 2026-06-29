@@ -52,6 +52,9 @@ public:
 	// リソースの破棄
 	void Destroy();
 
+	// アプリケーション終了要求
+	void RequestExit(void);	
+
 	// 初期化成功／失敗の判定
 	bool IsInitFail() const;
 
@@ -75,7 +78,11 @@ private:
 	// 解放失敗
 	bool isReleaseFail_;
 
-	bool isEnd_ = false;
+	// アプリケーション終了要求フラグ
+	bool isExitRequested_;
+
+	// アプリケーション終了フラグ
+	bool isEnd_;
 
 	// デフォルトコンストラクタをprivateにして、
 	// 外部から生成できない様にする

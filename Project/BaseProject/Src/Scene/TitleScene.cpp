@@ -86,7 +86,9 @@ void TitleScene::Update()
 
 void TitleScene::Draw()
 {
-	static int x = 10;
+	static int blinkCounter_ = 0;
+	blinkCounter_++;
+	const int BLINK_CYCLE = 20;
 	//DrawPixel(x++, 10, 0xffffff);
 
 	DrawGraph(Application::SCREEN_SIZE_X / 2 + 100, 100, imgPlayer_, true);
@@ -96,6 +98,7 @@ void TitleScene::Draw()
 	//ゲームスタート
 	if (selectCount_ == static_cast <int>(SELECT::GAME))
 	{
+		if (!isFadeIn_ || blinkCounter_ % BLINK_CYCLE < BLINK_CYCLE / 2)
 		DrawGraph(IMG_CHOICE_POS_X, IMG_CHOICE_POS_Y, imgGameStart_, true);
 	}
 	else
@@ -105,6 +108,7 @@ void TitleScene::Draw()
 	//チュートリアル
 	if (selectCount_ == static_cast <int>(SELECT::TUTORIAL))
 	{
+		if (!isFadeIn_ || blinkCounter_ % BLINK_CYCLE < BLINK_CYCLE / 2)
 		DrawGraph(IMG_CHOICE_POS_X, IMG_CHOICE_POS_Y + IMG_CHOICE_POS_Y_OFFSET, imgTutorial_, true);
 	}
 	else
@@ -114,6 +118,7 @@ void TitleScene::Draw()
 	//オプション
 	if (selectCount_ == static_cast <int>(SELECT::OPTION))
 	{
+		if (!isFadeIn_ || blinkCounter_ % BLINK_CYCLE < BLINK_CYCLE / 2)
 		DrawGraph(IMG_CHOICE_POS_X, IMG_CHOICE_POS_Y + IMG_CHOICE_POS_Y_OFFSET * 2, imgOption_, true);
 	}
 	else
@@ -123,6 +128,7 @@ void TitleScene::Draw()
 	//終了
 	if (selectCount_ == static_cast <int>(SELECT::EXIT))
 	{
+		if (!isFadeIn_ || blinkCounter_ % BLINK_CYCLE < BLINK_CYCLE / 2)
 		DrawGraph(IMG_CHOICE_POS_X, IMG_CHOICE_POS_Y + IMG_CHOICE_POS_Y_OFFSET * 3, imgEnd_, true);
 	}
 	else
