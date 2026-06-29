@@ -54,16 +54,7 @@ void PlayerRunState::Update(Player* player)
 	// スティックの傾きの大きさを計算
 	float pow = VSize({ normLeftStickX, 0.0f, normLeftStickY });
 
-	// アニメーション再生
-	if (pow > 0.85f)
-	{
-		player->GetAnimationController()->Play(static_cast<int>(Player::ANIM_TYPE::FAST_RUN), true);
-	}
-	else
-	{
-		player->GetAnimationController()->Play(static_cast<int>(Player::ANIM_TYPE::RUN), true);
-	}
-
+	// --- 【修正：方向入力を先に取得して判定に使う】 ---
 	VECTOR dir = AsoUtility::VECTOR_ZERO;
 	bool enableKAM = ins->IsEnableKeyAndMouse();
 	bool isGamepadConnected = (GetJoypadNum() > 0);
@@ -72,60 +63,48 @@ void PlayerRunState::Update(Player* player)
 	{
 		if (enableKAM)
 		{
-			// ゲームパッド操作
 			ins->GetStickDirXZ(dir, player->GetPadNum(), true, ins->DEFAULT_STICK_DEADZONE);
-
-			// キーボード操作
 			ins->GetInputDirXZ(dir, KEY_INPUT_W, KEY_INPUT_S, KEY_INPUT_A, KEY_INPUT_D);
 		}
 		else
 		{
-			// ゲームパッド操作
 			ins->GetStickDirXZ(dir, player->GetPadNum(), true, ins->DEFAULT_STICK_DEADZONE);
 		}
 	}
 	else
 	{
-		// キーボード操作
 		ins->GetInputDirXZ(dir, KEY_INPUT_W, KEY_INPUT_S, KEY_INPUT_A, KEY_INPUT_D);
 	}
-	
+
+	// --- 【修正：キーボード入力がある場合は pow を最大にする】 ---
+	// スティックが動いていなくて、キーボードのWASD入力がある場合
+	if (pow <= 0.0f && !AsoUtility::EqualsVZero(dir))
+	{
+		pow = 1.0f; // キーボードは常に全力ダッシュ扱いにする
+	}
+
+	// アニメーション再生（これでキーボードでも FAST_RUN に入るようになります）
+	if (pow > 0.5f)
+	{
+		player->GetAnimationController()->Play(static_cast<int>(Player::ANIM_TYPE::FAST_RUN), true);
+	}
+	else
+	{
+		player->GetAnimationController()->Play(static_cast<int>(Player::ANIM_TYPE::RUN), true);
+	}
+
 	// 方向入力がある場合
 	if (!AsoUtility::EqualsVZero(dir))
 	{
-		// ダッシュ入力のチェック
-		//bool isDashInput = false;
-		//if (isGamepadConnected)
-		//{
-		//	isDashInput = ins->IsGamepadNew(InputManager::PadInput::A, GAMEPAD_INDEX);
-		//}
-		//else
-		//{
-		//	isDashInput = ins->IsNew(KEY_INPUT_LSHIFT);
-		//}
-
-		//if (isDashInput)
-		//{
-		//	player->ChangeState(Player::STATE::FAST_RUN);
-		//	return;
-		//}
-		
-		// 移動速度を設定
+		// (以下、移動処理はそのまま)
 		player->SetMoveSpeed(Player::SPEED_MOVE);
-
-		// Y軸のみのカメラ角度を取得
 		Quaternion cameraRot = SceneManager::GetInstance().GetCamera()->GetQuaRotY();
-
-		// 移動方向をカメラに合わせる
 		VECTOR moveDir = Quaternion::PosAxis(cameraRot, dir);
 		player->SetMoveDir(moveDir);
-
-		// 移動量を計算
 		player->SetMovePow(VScale(moveDir, Player::SPEED_MOVE));
 	}
 	else
 	{
-		// 方向入力がない場合は待機状態に戻る
 		player->ChangeState(Player::STATE::IDLE);
 		return;
 	}

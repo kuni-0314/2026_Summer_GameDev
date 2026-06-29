@@ -73,7 +73,8 @@ public:
 		FREE,
 		FOLLOW,
 		MANUAL,
-		TARGETING
+		TARGETING,
+		OPENING,
 	};
 
 	// コンストラクタ
@@ -172,7 +173,8 @@ private:
 	float zoomScale_;			// 現在のズーム倍率
 	float zoomScaleGoal_;		// 目標のズーム倍率
 
-	
+	// オープニング演出用
+	float openingTimer_;		// オープニング演出のタイマー
 	// カメラをデフォルト位置に戻す
 	void SetDefault();
 
@@ -199,6 +201,7 @@ private:
 	void SetBeforeDrawFollow();
 	void SetBeforeDrawManual();
 	void SetBeforeDrawTargeting();
+	void SetBeforeDrawOpening();
 
 	// 衝突判定
 	void Collision();
@@ -207,4 +210,8 @@ private:
 	VECTOR LerpVector(const VECTOR& current, const VECTOR& target, float rate);
 	float LerpAngle(float current, float target, float rate);
 
+	static constexpr float OPENING_TIME = 2.0f;          // 演出時間(秒)
+	static constexpr float OPENING_START_DISTANCE = 10.0f;
+	static constexpr float OPENING_END_DISTANCE = 250.0f;
+	static constexpr float OPENING_HEIGHT = 10.0f;       // 顔から少し上を見る
 };

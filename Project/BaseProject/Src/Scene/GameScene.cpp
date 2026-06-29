@@ -88,7 +88,7 @@ void GameScene::Init()
 	multiEffectMode_ = false;
 
 	camMode_ = CAM_MODE::MANUAL;
-	sceMng_.GetCamera()->ChangeMode(Camera::MODE::MANUAL);
+	sceMng_.GetCamera()->ChangeMode(Camera::MODE::OPENING);
 
 	//AudioManager::GetInstance()->LoadSceneSound(LoadScene::GAME);
 	//AudioManager::GetInstance()->PlayBGM(SoundID::BGM_GAME);
@@ -124,6 +124,8 @@ void GameScene::Update()
 	enemyManager_->Update();
 	itemManger_->Update();
 	
+
+	goto tmp;
 	if (!enemyManager_->GetEnemyDead())
 	{
 		if (ins->IsGamepadTrgDown(InputManager::PadInput::RB, 0))
@@ -158,25 +160,12 @@ void GameScene::Update()
 	//if (ins->IsTrgDown(KEY_INPUT_LEFT) && targetEnemyId_ > 0) targetEnemyId_--;
 	//if (ins->IsTrgDown(KEY_INPUT_RIGHT)) targetEnemyId_++;
 
+//#ifdef _tmp
 	targetPos_ = enemyManager_->GetEnemyPos(targetEnemyId_);
 	SceneManager::GetInstance().GetCamera()->SetTargetPos(targetPos_);
+//#endif // !_tmp
 
-	// デバッグ用即死攻撃
-	if (ins->IsTrgDown(MOUSE_INPUT_LEFT))
-	{
-		auto enemies = enemyManager_->GetEnemies();
-		for (auto enemy : enemies)
-		{
-			if (!enemy->IsAlive()) continue;
-			VECTOR playerPos = player_->GetTransform().pos;
-			VECTOR enemyPos = enemy->GetTransform().pos;
-			float dist = VSize(VSub(playerPos, enemyPos));
-			if (dist < 300.0f)
-			{
-				enemy->Damege(99999);
-			}
-		}
-	}
+	tmp:
 
 	// 攻撃コライダーの更新
 	for (int i = 0; i < attackColliders_.size(); i++)

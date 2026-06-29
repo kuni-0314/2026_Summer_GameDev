@@ -112,14 +112,14 @@ void PlayerAirborneState::Update(Player* player)
 	{
 		// ˆÚ“®‘¬“x‚ðÝ’è
 		float speed = 0.0f;
-		if (ins->IsNew(KEY_INPUT_LSHIFT))
-		{
-			speed = Player::SPEED_DASH;
-		}
-		else
-		{
+		//if (ins->IsNew(KEY_INPUT_LSHIFT))
+		//{
+		//	speed = Player::SPEED_DASH;
+		//}
+		//else
+		//{
 			speed = Player::SPEED_MOVE;
-		}
+		//}
 
 		//YŽ²‚Ì‚Ý‚ÌƒJƒƒ‰Šp“x‚ðŽæ“¾
 		Quaternion cameraRot = SceneManager::GetInstance().GetCamera()->GetQuaRotY();
