@@ -132,6 +132,7 @@ void SceneManager::Draw()
 
 	scene_->Draw();
 
+#ifdef _DEBUG
 	MEMORYSTATUSEX mem = {};
 	mem.dwLength = sizeof(mem);
 
@@ -149,7 +150,7 @@ void SceneManager::Draw()
 
 	DrawFormatString(10, 50, GetRand(0xffffff), "Battery Life Percent: %d", status.BatteryLifePercent);
 	DrawFormatString(10, 70, GetRand(0xffffff), "AC Line Status: %d", status.ACLineStatus);
-
+#endif
 
 	camera_->DrawDebug();
 	DrawEffekseer3D();

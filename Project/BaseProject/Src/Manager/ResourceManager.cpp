@@ -58,6 +58,11 @@ void ResourceManager::Init()
 	resourcesMap_.emplace(SRC::TITLE_END, res);	//mapÇ…ìoò^
 	res = new RES(RES_T::IMG, PATH_IMG + "Title/NotChoice_End.png");
 	resourcesMap_.emplace(SRC::TITLE_NOT_END, res);	//mapÇ…ìoò^
+	// ÉJÅ[É\ÉãâÊëú
+	res = new RES(RES_T::IMG, PATH_IMG + "UI/Target_Cursor_Orange.png");
+	resourcesMap_.emplace(SRC::TARGET_CURSOR_ORANGE, res);	//mapÇ…ìoò^
+	res = new RES(RES_T::IMG, PATH_IMG + "UI/Target_Cursor_Blue.png");
+	resourcesMap_.emplace(SRC::TARGET_CURSOR_BLUE, res);	//mapÇ…ìoò^
 	//PlayerHPUIâÊëú
 	res = new RES(RES_T::IMG, PATH_IMG + "PlayerHP/PlayerHP_0.png");
 	resourcesMap_.emplace(SRC::IMG_PLAYER_HP_0, res);	//mapÇ…ìoò^
