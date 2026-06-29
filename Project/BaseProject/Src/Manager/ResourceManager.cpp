@@ -58,9 +58,32 @@ void ResourceManager::Init()
 	resourcesMap_.emplace(SRC::TITLE_END, res);	//mapÇ…ìoò^
 	res = new RES(RES_T::IMG, PATH_IMG + "Title/NotChoice_End.png");
 	resourcesMap_.emplace(SRC::TITLE_NOT_END, res);	//mapÇ…ìoò^
+	//PlayerHPUIâÊëú
+	res = new RES(RES_T::IMG, PATH_IMG + "PlayerHP/PlayerHP_0.png");
+	resourcesMap_.emplace(SRC::IMG_PLAYER_HP_0, res);	//mapÇ…ìoò^
+	res = new RES(RES_T::IMG, PATH_IMG + "PlayerHP/PlayerHP_1.png");
+	resourcesMap_.emplace(SRC::IMG_PLAYER_HP_1, res);	//mapÇ…ìoò^
+	res = new RES(RES_T::IMG, PATH_IMG + "PlayerHP/PlayerHP_2.png");
+	resourcesMap_.emplace(SRC::IMG_PLAYER_HP_2, res);	//mapÇ…ìoò^
+	res = new RES(RES_T::IMG, PATH_IMG + "PlayerHP/PlayerHP_3.png");
+	resourcesMap_.emplace(SRC::IMG_PLAYER_HP_3, res);	//mapÇ…ìoò^
+	res = new RES(RES_T::IMG, PATH_IMG + "PlayerHP/PlayerHP_4.png");
+	resourcesMap_.emplace(SRC::IMG_PLAYER_HP_4, res);	//mapÇ…ìoò^
+	res = new RES(RES_T::IMG, PATH_IMG + "PlayerHP/PlayerHP_5.png");
+	resourcesMap_.emplace(SRC::IMG_PLAYER_HP_5, res);	//mapÇ…ìoò^
+	res = new RES(RES_T::IMG, PATH_IMG + "PlayerHP/PlayerHP_6.png");
+	resourcesMap_.emplace(SRC::IMG_PLAYER_HP_6, res);	//mapÇ…ìoò^
+	res = new RES(RES_T::IMG, PATH_IMG + "PlayerHP/PlayerHP_7.png");
+	resourcesMap_.emplace(SRC::IMG_PLAYER_HP_7, res);	//mapÇ…ìoò^
+	res = new RES(RES_T::IMG, PATH_IMG + "PlayerHP/PlayerHP_8.png");
+	resourcesMap_.emplace(SRC::IMG_PLAYER_HP_8, res);	//mapÇ…ìoò^
+	res = new RES(RES_T::IMG, PATH_IMG + "PlayerHP/PlayerHP_9.png");
+	resourcesMap_.emplace(SRC::IMG_PLAYER_HP_9, res);	//mapÇ…ìoò^
+	res = new RES(RES_T::IMG, PATH_IMG + "PlayerHP/PlayerHP_10.png");
+	resourcesMap_.emplace(SRC::IMG_PLAYER_HP_10, res);	//mapÇ…ìoò^
+
 
 	//ÉÇÉfÉãìoò^ 
-
 	//ÉÅÉCÉìÇÃòfêØÉÇÉfÉã
 	res = new RES(RES_T::MODEL, PATH_MDL +"Stage/PitfallPlanet/PitfallPlanet.mv1");
 	resourcesMap_.emplace(SRC::PIT_FALL_PLANET, res);	//mapÇ…ìoò^

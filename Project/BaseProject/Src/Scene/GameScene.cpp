@@ -15,7 +15,6 @@
 #include "../Object/Weapon/Sword/KeyBlade1.h"
 #include "../Object/Collider/ColliderBase.h"
 #include "../Object/Collider/Sphere/ColliderSphere.h"
-#include "../Sound/AudioManager.h"
 #include "GameScene.h"
 // 別プロジェクト
 GameScene::GameScene()
@@ -99,10 +98,17 @@ void GameScene::Init()
 	PlaySoundMem(audioHandle_, DX_PLAYTYPE_LOOP);
 	// 音量
 
-	// ターゲットカーソルの読み込み
-	targetCursorBlueImageHandle_ = ResourceManager::GetInstance().Load(ResourceManager::SRC::TARGET_CURSOR_BLUE).handleId_;
-	targetCursorOrangeImageHandle_ = ResourceManager::GetInstance().Load(ResourceManager::SRC::TARGET_CURSOR_ORANGE).handleId_;
-
+	hpHandle0_ = resMng_.Load(ResourceManager::SRC::IMG_PLAYER_HP_0).handleId_;
+	hpHandle1_ = resMng_.Load(ResourceManager::SRC::IMG_PLAYER_HP_1).handleId_;
+	hpHandle2_ = resMng_.Load(ResourceManager::SRC::IMG_PLAYER_HP_2).handleId_;
+	hpHandle3_ = resMng_.Load(ResourceManager::SRC::IMG_PLAYER_HP_3).handleId_;
+	hpHandle4_ = resMng_.Load(ResourceManager::SRC::IMG_PLAYER_HP_4).handleId_;
+	hpHandle5_ = resMng_.Load(ResourceManager::SRC::IMG_PLAYER_HP_5).handleId_;
+	hpHandle6_ = resMng_.Load(ResourceManager::SRC::IMG_PLAYER_HP_6).handleId_;
+	hpHandle7_ = resMng_.Load(ResourceManager::SRC::IMG_PLAYER_HP_7).handleId_;
+	hpHandle8_ = resMng_.Load(ResourceManager::SRC::IMG_PLAYER_HP_8).handleId_;
+	hpHandle9_ = resMng_.Load(ResourceManager::SRC::IMG_PLAYER_HP_9).handleId_;
+	hpHandle10_ = resMng_.Load(ResourceManager::SRC::IMG_PLAYER_HP_10).handleId_;
 }
 
 void GameScene::Update()
@@ -315,29 +321,12 @@ void GameScene::Draw()
 	itemManger_->Draw();
 	enemyManager_->Draw();
 
-	if (camMode_ == CAM_MODE::TARGETING)
-	{
-		// ターゲットカーソル描画
-		VECTOR targetPos = SceneManager::GetInstance().GetCamera()->GetTargetPos();
-		DrawExtendGraph3D(targetPos.x, targetPos.y + 30.0f, targetPos.z, 0.5f, 0.5f, targetCursorBlueImageHandle_, true);
-	}
-
+	PlayerHpUIDraw();
 	// 一時スクリーンにメイン画面をコピー
 	int tempScreen = MakeScreen(Application::SCREEN_SIZE_X, Application::SCREEN_SIZE_Y, false);
 	SetDrawScreen(tempScreen);
 	ClearDrawScreen();
 	DrawGraph(0, 0, mainScreen, false);
-
-	static float effectTime = 0.0f;
-	if (InputManager::GetInstance()->IsNew(KEY_INPUT_Q))
-	{
-		effectTime += 0.01f;
-	}
-	else if (InputManager::GetInstance()->IsNew(KEY_INPUT_E))
-	{
-		effectTime -= 0.01f;
-	}
-
 
 	// エフェクト適用
 	if (!multiEffectMode_)
@@ -553,8 +542,38 @@ const char* GameScene::GetEffectName(PostEffectManager::EFFECT_TYPE effectType)
 	case PostEffectManager::EFFECT_TYPE::SNOW_STORM: return "SnowStorm";
 	case PostEffectManager::EFFECT_TYPE::SCREEN_SHAKE: return "ScreenShake";
 	case PostEffectManager::EFFECT_TYPE::CRT: return "CRT";
-	case PostEffectManager::EFFECT_TYPE::FADE_WHITE: return "FadeWhite";
-	case PostEffectManager::EFFECT_TYPE::ZOOM_IN_RADIAL_BLUR: return "ZoomInRadialBlur";
 	default: return "Unknown";
 	}
+}
+
+void GameScene::PlayerHpUIDraw()
+{
+	//プレイヤーHP
+	int hp = player_->GetHp();
+
+	hpUiCount_ =  (hp + 2 - 1) / 2;
+
+	if(hpUiCount_ == static_cast<int>(HP_UI::HP0)) 
+		DrawGraph(IMG_HP_X,IMG_HP_Y,hpHandle0_,true);
+	else if (hpUiCount_ == static_cast<int>(HP_UI::HP1))
+		DrawGraph(IMG_HP_X, IMG_HP_Y, hpHandle1_, true);
+	else if (hpUiCount_ == static_cast<int>(HP_UI::HP2))
+		DrawGraph(IMG_HP_X, IMG_HP_Y, hpHandle2_, true);
+	else if (hpUiCount_ == static_cast<int>(HP_UI::HP3))
+		DrawGraph(IMG_HP_X, IMG_HP_Y, hpHandle3_, true);
+	else if (hpUiCount_ == static_cast<int>(HP_UI::HP4))
+		DrawGraph(IMG_HP_X, IMG_HP_Y, hpHandle4_, true);
+	else if (hpUiCount_ == static_cast<int>(HP_UI::HP5))
+		DrawGraph(IMG_HP_X, IMG_HP_Y, hpHandle5_, true);
+	else if (hpUiCount_ == static_cast<int>(HP_UI::HP6))
+		DrawGraph(IMG_HP_X, IMG_HP_Y, hpHandle6_, true);
+	else if (hpUiCount_ == static_cast<int>(HP_UI::HP7))
+		DrawGraph(IMG_HP_X, IMG_HP_Y, hpHandle7_, true);
+	else if (hpUiCount_ == static_cast<int>(HP_UI::HP8))
+		DrawGraph(IMG_HP_X, IMG_HP_Y, hpHandle8_, true);
+	else if (hpUiCount_ == static_cast<int>(HP_UI::HP9))
+		DrawGraph(IMG_HP_X, IMG_HP_Y, hpHandle9_, true);
+	else if (hpUiCount_ == static_cast<int>(HP_UI::HP10))
+		DrawGraph(IMG_HP_X, IMG_HP_Y, hpHandle10_, true);
+	
 }

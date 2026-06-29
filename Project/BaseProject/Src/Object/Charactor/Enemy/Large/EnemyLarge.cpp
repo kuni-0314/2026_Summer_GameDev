@@ -34,20 +34,21 @@ void EnemyLarge::Draw(void)
 
 
 
-#ifndef _DEBUG
+#ifdef _DEBUG
+
+#endif //_DEBUG
 
 
 	STATE next = state_;
-
 	const char* name = "";
-
-	if (next == STATE::THINK) name = "IDlE";
-
+	if (next == STATE::THINK) name = "THINK";
+	else if (next == STATE::IDLE) name = "IDlE";
+	else if (next == STATE::ATTACK_PUNCH) name = "ATTACK_PUNCH";
+	else if (next == STATE::ATTACK_RUN) name = "ATTACK_RUN";
+	else if (next == STATE::CHARGE) name = "CHARGE";
 
 	DrawFormatString(0, 500, GetColor(255, 255, 255), "STATE: %s", name);
 
-
-#endif // _DEBUG
 
 }
 
@@ -100,6 +101,8 @@ void EnemyLarge::InitAnimation()
 		, 20.0f, Application::PATH_MODEL + "Enemy/Large/Idle.mv1");
 	animationController_->Add(static_cast<int>(ANIM_TYPE::MOVE)
 		, 20.0f, Application::PATH_MODEL + "Enemy/Large/Walk.mv1");
+	animationController_->Add(static_cast<int>(ANIM_TYPE::ATTACK_PUNCH)
+		, 20.0f, Application::PATH_MODEL + "Enemy/Large/Punch.mv1");
 
 
 	animationController_->Play(static_cast<int>(ANIM_TYPE::IDLE), true);
@@ -114,6 +117,15 @@ void EnemyLarge::InitPost()
 
 	stateChanges_.emplace(static_cast<int>(STATE::MOVE),
 		std::bind(&EnemyLarge::ChangeStateMove, this));
+
+	stateChanges_.emplace(static_cast<int>(STATE::ATTACK_RUN),
+		std::bind(&EnemyLarge::ChangeStateAttackRun, this));
+
+	stateChanges_.emplace(static_cast<int>(STATE::ATTACK_PUNCH),
+		std::bind(&EnemyLarge::ChangeStateAttackPunch, this));
+
+	stateChanges_.emplace(static_cast<int>(STATE::CHARGE),
+		std::bind(&EnemyLarge::ChangeStateCharge, this));
 
 
 	// 初期状態設定
@@ -133,7 +145,7 @@ void EnemyLarge::UpdateProcess()
 	
 	STATE state = state_;
 
-	if (state != STATE::IDLE)
+	if(look_)
 	{
 		LookPlayer();
 	}
@@ -156,6 +168,8 @@ void EnemyLarge::ChangeStateIdle()
 {
 	stateUpdate_ =  std::bind(&EnemyLarge::UpdateIdle, this);
 
+	look_ = false;
+
 	// ランダムな待機時間
 	step_ = 3.0f + static_cast<float>(GetRand(3));
 	// 移動量ゼロ
@@ -165,13 +179,55 @@ void EnemyLarge::ChangeStateIdle()
 		static_cast<int>(ANIM_TYPE::IDLE), true);
 }
 
+void EnemyLarge::ChangeStateCharge()
+{
+	stateUpdate_ = std::bind(&EnemyLarge::UpdateCharge, this);
+
+	look_ = true;
+
+	// ランダムな待機時間
+	step_ = 3.0f + static_cast<float>(GetRand(3));
+	// 移動量ゼロ
+	movePow_ = AsoUtility::VECTOR_ZERO;
+	// 待機アニメーション再生
+	animationController_->Play(
+		static_cast<int>(ANIM_TYPE::IDLE), true);
+}
+
+void EnemyLarge::ChangeStateAttackPunch(void)
+{
+	stateUpdate_ = std::bind(&EnemyLarge::UpdateAttackPunch, this);
+
+	look_ = false;
+
+	// 移動量ゼロ
+	movePow_ = AsoUtility::VECTOR_ZERO;
+	// 待機アニメーション再生
+	animationController_->Play(
+		static_cast<int>(ANIM_TYPE::ATTACK_PUNCH), false);
+}
+
+void EnemyLarge::ChangeStateAttackRun(void)
+{
+	stateUpdate_ = std::bind(&EnemyLarge::UpdateRunAttack, this);
+
+	look_ = true;
+
+	moveSpeed_ = 6.0f;
+
+	// 待機アニメーション再生
+	animationController_->Play(
+		static_cast<int>(ANIM_TYPE::MOVE), true);
+}
+
 void EnemyLarge::ChangeStateMove()
 {
 	stateUpdate_ = std::bind(&EnemyLarge::UpdateMove, this);
 
+	look_ = true;
 
 	// 移動スピード
-	moveSpeed_ = 1.0f;
+	moveSpeed_ = 3.0f;
 
 	// 待機アニメーション再生
 	animationController_->Play(
@@ -187,10 +243,57 @@ void EnemyLarge::UpdateIdle()
 	if (count < countUp)
 	{
 		countUp = 0;
-		ChangeState(STATE::MOVE);
+		ChangeState(STATE::CHARGE);
 	}
 
 	movePow_ = AsoUtility::VECTOR_ZERO;
+}
+
+void EnemyLarge::UpdateCharge()
+{
+	countUp++;
+
+	if (count/2 < countUp)
+	{
+		countUp = 0;
+		ChangeState(STATE::ATTACK_RUN);
+	}
+
+	movePow_ = AsoUtility::VECTOR_ZERO;
+}
+
+void EnemyLarge::UpdateAttackPunch(void)
+{
+	if(animationController_->IsEnd())
+	{
+		ChangeState(STATE::IDLE);
+	}
+
+	movePow_ = AsoUtility::VECTOR_ZERO;
+}
+
+void EnemyLarge::UpdateRunAttack(void)
+{
+
+	//進行方向を決める
+	if(look_)
+	{
+		//突進開始位置
+		startPos = transform_.pos;
+		look_ = false;
+	}
+
+	//進行方向を決めた後移動
+	//移動距離
+	float dist =VSize(VSub(transform_.pos, startPos));
+
+	if (dist > ATTACK_RUN_END_POINT)
+	{
+		ChangeState(STATE::ATTACK_PUNCH);
+	}
+
+	movePow_ = VScale(moveDir_, moveSpeed_);
+	
 }
 
 void EnemyLarge::UpdateMove()
@@ -198,7 +301,7 @@ void EnemyLarge::UpdateMove()
 	//攻撃範囲に入るまで移動
 	if (distance_ < SWICH_DISTANCE)
 	{
-		ChangeState(STATE::IDLE);
+		ChangeState(STATE::ATTACK_RUN);
 	}
 
 	// 移動する ← 追加

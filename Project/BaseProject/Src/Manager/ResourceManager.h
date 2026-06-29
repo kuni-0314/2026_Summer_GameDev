@@ -41,8 +41,22 @@ public:
 		KEY_BLADE_1,	//ƒL[ƒuƒŒ[ƒh‚P
 		KEY_BLADE_2,	//ƒL[ƒuƒŒ[ƒh‚Q
 		KEY_BLADE_3,	//ƒL[ƒuƒŒ[ƒh‚R
+<<<<<<< HEAD
 		TARGET_CURSOR_BLUE,	//ƒ^[ƒQƒbƒgƒJ[ƒ\ƒ‹Â
 		TARGET_CURSOR_ORANGE,	//ƒ^[ƒQƒbƒgƒJ[ƒ\ƒ‹ƒIƒŒƒ“ƒW
+=======
+		IMG_PLAYER_HP_0,
+		IMG_PLAYER_HP_1,
+		IMG_PLAYER_HP_2,
+		IMG_PLAYER_HP_3,
+		IMG_PLAYER_HP_4,
+		IMG_PLAYER_HP_5,
+		IMG_PLAYER_HP_6,
+		IMG_PLAYER_HP_7,
+		IMG_PLAYER_HP_8,
+		IMG_PLAYER_HP_9,
+		IMG_PLAYER_HP_10,
+>>>>>>> origin/dxlibãƒ†ã‚¹ãƒˆ
 		MAX
 	};
 
