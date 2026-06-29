@@ -121,7 +121,9 @@ public:
 	// 連打ジャンプ力
 	static constexpr float POW_JUMP_KEEP = 8.5f;
 	// ジャンプ力付与時間
-	static constexpr float TIME_JUMP_INPUT = 0.5f;
+	static constexpr float TIME_JUMP_INPUT = 1.5f;
+	// ニュートラル状態でのジャンプ力
+	static constexpr float POW_JUMP_NEUTRAL = 7.0f;
 
 	
 	static constexpr float POW_JET = 80.0f;

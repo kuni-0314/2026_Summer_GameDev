@@ -67,13 +67,12 @@ void PlayerAirborneState::Update(Player* player)
 		
 		if (!isJumpKeyPressed)
 		{
-			VECTOR jumpPow = player->GetJumpPow();
-			if (jumpPow.y > 0.0f)
+			if (player->GetStepJump() < Player::TIME_JUMP_INPUT)
 			{
-				jumpPow.y *= 0.0f;
-				player->SetJumpPow(jumpPow);
+				player->SetJumpPow(VAdd(player->GetJumpPow(), VScale(AsoUtility::DIR_U, Player::POW_JUMP_NEUTRAL)));
+				player->SetStepJump(player->GetStepJump() + SceneManager::GetInstance().GetDeltaTime());
 			}
-			player->SetStepJump(Player::TIME_JUMP_INPUT);
+			isJumpKeyPressed = true;
 		}
 	}
 

@@ -227,7 +227,7 @@ void Player::InitPost()
 	InitState();
 
 	// •Ší‰Šú‰»
-	sword_ = new KeyBlade1(KEY_BLADE_1_LOCAL_POS_START, KEY_BLADE_1_LOCAL_POS_END, KEY_BLADE_1_RADIUS, transform_);
+	sword_ = new KeyBlade3(KEY_BLADE_3_LOCAL_POS_START, KEY_BLADE_3_LOCAL_POS_END, KEY_BLADE_3_RADIUS, transform_);
 	sword_->Init();
 }
 
@@ -323,7 +323,7 @@ void Player::Draw()
 	//DrawFormatString(x, y, color, "PendingPoints   : %d", pendingPoints_);
 
 	//y += lineHeight;
-	//DrawFormatString(x, y, 0xffffff, "jumpPow   : %f.", jumpPow_.y);
+	DrawFormatString(x, y, 0xffffff, "jumpPow   : %f.", jumpPow_.y);
 
 	VECTOR lineStart = transform_.pos;
 	VECTOR lineEnd = { transform_.pos.x, transform_.pos.y + jumpPow_.y * 10.0f, transform_.pos.z };
