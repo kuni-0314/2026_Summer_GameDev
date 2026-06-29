@@ -51,21 +51,6 @@ public:
 
 private:
 
-	enum class HP_UI
-	{
-		HP10, //HPFULL↓
-		HP9,
-		HP8,
-		HP7,
-		HP6,
-		HP5,
-		HP4,
-		HP3,
-		HP2,
-		HP1,
-		HP0
-	};
-
 	// ステージ
 	Stage* stage_;
 
@@ -127,9 +112,16 @@ private:
 	// エフェクト名を取得
 	const char* GetEffectName(PostEffectManager::EFFECT_TYPE effectType);
 
-	void PlayerHpUIDraw();
+	//プレイヤーHPUI
+	void PlayerHpUpdate();
 
+	bool warnigOn_ = false;
+
+	int wargnigHandle_;
+	
 	int audioHandle_;
+
+	std::vector<int> hpHandles_;
 
 	//HPUI画像ハンドル
 	int hpHandle0_;

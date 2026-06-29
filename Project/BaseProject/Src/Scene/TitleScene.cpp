@@ -14,11 +14,6 @@ TitleScene::TitleScene()
 	:
 	imgTitle_(-1),
 	imgPushSpace_(-1),
-	bigPlanet_(),
-	subPlanet_(),
-	player_(),
-	animationController_(nullptr),
-	skyDome_(nullptr),
 	SceneBase()
 {
 }
