@@ -118,6 +118,15 @@ void Player::Update()
 
 }
 
+void Player::HealHp(int heal)
+{
+	hp_ += heal;
+	if (hp_ > MAX_HP)
+	{
+		hp_ = MAX_HP;
+	}
+}
+
 void Player::InitLoad()
 {
 	transform_.SetModel(resMng_.LoadModelDuplicate(ResourceManager::SRC::PLAYER));
@@ -221,8 +230,7 @@ void Player::InitPost()
 	currentGrantStatusIndex_ = 4;
 	pendingPoints_ = 30;
 
-	hp_ = 20;
-	maxHp_ = hp_;
+	hp_ = MAX_HP;
 
 	InitState();
 

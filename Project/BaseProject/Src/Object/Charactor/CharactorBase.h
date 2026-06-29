@@ -52,7 +52,7 @@ public:
 
 	bool IsAnimEnd();
 
-	void HealHp(int heal) { hp_ += heal; }
+	virtual void HealHp(int heal) { hp_ += heal; };
 
 protected:
 

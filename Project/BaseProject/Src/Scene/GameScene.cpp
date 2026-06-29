@@ -309,8 +309,8 @@ void GameScene::Draw()
 	//weapon_->Draw();
 	itemManger_->Draw();
 	enemyManager_->Draw();
-
 	PlayerHpUIDraw();
+
 	// 一時スクリーンにメイン画面をコピー
 	int tempScreen = MakeScreen(Application::SCREEN_SIZE_X, Application::SCREEN_SIZE_Y, false);
 	SetDrawScreen(tempScreen);
@@ -542,7 +542,7 @@ void GameScene::PlayerHpUIDraw()
 
 	hpUiCount_ =  (hp + 2 - 1) / 2;
 
-	if(hpUiCount_ == static_cast<int>(HP_UI::HP0)) 
+	if(hpUiCount_ >= static_cast<int>(HP_UI::HP0)) 
 		DrawGraph(IMG_HP_X,IMG_HP_Y,hpHandle0_,true);
 	else if (hpUiCount_ == static_cast<int>(HP_UI::HP1))
 		DrawGraph(IMG_HP_X, IMG_HP_Y, hpHandle1_, true);
