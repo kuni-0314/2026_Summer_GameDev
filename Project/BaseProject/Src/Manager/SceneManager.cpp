@@ -132,6 +132,25 @@ void SceneManager::Draw()
 
 	scene_->Draw();
 
+	MEMORYSTATUSEX mem = {};
+	mem.dwLength = sizeof(mem);
+
+	GlobalMemoryStatusEx(&mem);
+
+	SIZE_T total = mem.ullTotalPhys;
+	SIZE_T used = mem.ullTotalPhys - mem.ullAvailPhys;
+
+	DrawFormatString(10, 10, GetRand(0xffffff), "Total Memory: %llu MB", total / (1024 * 1024));
+	DrawFormatString(10, 30, GetRand(0xffffff), "Used Memory: %llu MB", used / (1024 * 1024));
+
+	SYSTEM_POWER_STATUS status = {};
+
+	GetSystemPowerStatus(&status);
+
+	DrawFormatString(10, 50, GetRand(0xffffff), "Battery Life Percent: %d", status.BatteryLifePercent);
+	DrawFormatString(10, 70, GetRand(0xffffff), "AC Line Status: %d", status.ACLineStatus);
+
+
 	camera_->DrawDebug();
 	DrawEffekseer3D();
 	fader_->Draw();

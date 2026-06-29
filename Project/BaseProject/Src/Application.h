@@ -1,5 +1,8 @@
 #pragma once
 #include <string>
+#include <windows.h>
+#include <mmdeviceapi.h>
+#include <endpointvolume.h>
 class FpsController;
 
 class Application
@@ -97,7 +100,15 @@ private:
 	// エフェクシアの初期化
 	void InitEffekseer();
 
+	// オーディオデバイスの初期化
+	void InitAudioDevice();
+
 	// FPS制御
 	FpsController* fpsController_;
+
+	// オーディオ関連
+	IMMDeviceEnumerator* pEnumerator_;	// デバイス列挙子
+	IMMDevice* pDevice_;				// オーディオデバイス
+	IAudioEndpointVolume* pVolume_;		// ボリュームコントロール
 
 };

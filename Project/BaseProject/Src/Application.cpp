@@ -1,5 +1,4 @@
-#define _CRTDBG_MAP_ALLOC
-#include <crtdbg.h>
+#include <windows.h>
 #include <DxLib.h>
 #include <EffekseerForDXLib.h>
 #include "Manager/InputManager.h"
@@ -8,6 +7,7 @@
 #include "Application.h"
 #include "Common/FpsController.h"
 #include "Sound/AudioManager.h"
+#define _CRTDBG_MAP_ALLOC
 
 #ifdef _DEBUG
 #define new new(_NORMAL_BLOCK, __FILE__, __LINE__)
@@ -53,6 +53,26 @@ void Application::Init()
 	//_CrtSetBreakAlloc(17282);
 #endif
 
+
+	HRESULT hr = CoInitialize(nullptr);
+	//if (FAILED(hr))
+	//{
+	//	return;
+	//}
+	hr = CoCreateInstance(
+		__uuidof(MMDeviceEnumerator),
+		nullptr,
+		CLSCTX_ALL,
+		__uuidof(IMMDeviceEnumerator),
+		(void**)&pEnumerator_);
+	//if (FAILED(hr))
+	//{
+	//	return;
+	//}
+	InitAudioDevice();
+	float volume = 0.0f;
+	pVolume_->GetMasterVolumeLevelScalar(&volume);
+
 	// アプリケーションの初期設定
 	SetWindowText("3DAction");
 
@@ -85,7 +105,6 @@ void Application::Init()
 	// 設定する数値によって、ランダムの出方が変わる
 	SRand(date.Year + date.Mon + date.Day + date.Hour + date.Min + date.Sec);
 
-
 	//サウンド管理初期化
 	AudioManager::CreateInstance();
 	AudioManager::GetInstance()->Init();
@@ -103,6 +122,37 @@ void Application::Init()
 	// シーン管理初期化
 	SceneManager::CreateInstance();
 
+#ifndef _DEBUG
+	if (volume < 0.01f)
+	{
+		int result = MessageBoxA(
+			nullptr,
+			"音量が0やんけ、試遊なのに音なしでするんか？",
+			"確認",
+			MB_YESNO | MB_ICONEXCLAMATION
+		);
+		if (result == IDYES)
+		{
+			MessageBoxA(
+				nullptr,
+				"音量上げてね",
+				"確認",
+				MB_OK | MB_ICONINFORMATION
+			);
+			isEnd_ = true;
+		}
+		else
+		{
+			MessageBoxA(
+				nullptr,
+				"じゃあ遊べんなぁ",
+				"残念",
+				MB_OK | MB_ICONERROR
+			);
+			isEnd_ = true;
+		}
+	}
+#endif
 }
 
 void Application::Run()
@@ -117,6 +167,7 @@ void Application::Run()
 		// Escapeキーが押されたか判定
 		if (CheckHitKey(KEY_INPUT_ESCAPE) || isExitRequested_)
 		{
+			SetMouseDispFlag(true);
 			int result = MessageBoxA
 			(
 				nullptr,
@@ -137,6 +188,10 @@ void Application::Run()
 				}
 			}
 		}
+
+		//InitAudioDevice();
+		//float volume = 0.0f;
+		//pVolume_->GetMasterVolumeLevelScalar(&volume);
 
 		inputManager->Update();
 		sceneManager.Update();
@@ -184,6 +239,12 @@ void Application::Destroy()
 		isReleaseFail_ = true;
 	}
 
+	pVolume_->Release();
+	pDevice_->Release();
+	pEnumerator_->Release();
+
+	CoUninitialize();
+
 	// インスタンスのメモリ解放
 	delete instance_;
 	instance_ = nullptr;
@@ -194,10 +255,9 @@ void Application::Destroy()
 	#endif
 }
 
-// アプリケーションの終了要求
 void Application::RequestExit(void)
 {
-	isExitRequested_ = true;	// 終了要求フラグを立てる	
+	isExitRequested_ = true;
 }
 
 bool Application::IsInitFail() const
@@ -213,7 +273,11 @@ bool Application::IsReleaseFail() const
 Application::Application()
 	:
 	isInitFail_(false),
-	isReleaseFail_(false)
+	isReleaseFail_(false),
+	pEnumerator_(nullptr),
+	pDevice_(nullptr),
+	pVolume_(nullptr),
+	fpsController_(nullptr)
 {
 	isEnd_ = false;
 	isExitRequested_ = false;
@@ -229,4 +293,35 @@ void Application::InitEffekseer()
 	SetChangeScreenModeGraphicsSystemResetFlag(false);
 
 	Effekseer_SetGraphicsDeviceLostCallbackFunctions();
+}
+
+void Application::InitAudioDevice()
+{
+	// 古いものを解放
+	if (pVolume_)
+	{
+		pVolume_->Release();
+		pVolume_ = nullptr;
+	}
+
+	if (pDevice_)
+	{
+		pDevice_->Release();
+		pDevice_ = nullptr;
+	}
+
+	// 現在の既定デバイス取得
+	pEnumerator_->GetDefaultAudioEndpoint(
+		eRender,
+		eConsole,
+		&pDevice_
+	);
+
+	// 音量操作用インターフェース取得
+	pDevice_->Activate(
+		__uuidof(IAudioEndpointVolume),
+		CLSCTX_ALL,
+		nullptr,
+		(void**)&pVolume_
+	);
 }
