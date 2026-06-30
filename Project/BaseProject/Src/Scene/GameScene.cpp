@@ -101,17 +101,17 @@ void GameScene::Init()
 
 	hpHandles_.resize(11);
 
-	hpHandles_[0] = resMng_.Load(ResourceManager::SRC::IMG_PLAYER_HP_0).handleId_;
-	hpHandles_[1] = resMng_.Load(ResourceManager::SRC::IMG_PLAYER_HP_1).handleId_;
-	hpHandles_[2] = resMng_.Load(ResourceManager::SRC::IMG_PLAYER_HP_2).handleId_;
-	hpHandles_[3] = resMng_.Load(ResourceManager::SRC::IMG_PLAYER_HP_3).handleId_;
-	hpHandles_[4] = resMng_.Load(ResourceManager::SRC::IMG_PLAYER_HP_4).handleId_;
+	hpHandles_[0] = resMng_.Load(ResourceManager::SRC::IMG_PLAYER_HP_10).handleId_;
+	hpHandles_[1] = resMng_.Load(ResourceManager::SRC::IMG_PLAYER_HP_9).handleId_;
+	hpHandles_[2] = resMng_.Load(ResourceManager::SRC::IMG_PLAYER_HP_8).handleId_;
+	hpHandles_[3] = resMng_.Load(ResourceManager::SRC::IMG_PLAYER_HP_7).handleId_;
+	hpHandles_[4] = resMng_.Load(ResourceManager::SRC::IMG_PLAYER_HP_6).handleId_;
 	hpHandles_[5] = resMng_.Load(ResourceManager::SRC::IMG_PLAYER_HP_5).handleId_;
-	hpHandles_[6] = resMng_.Load(ResourceManager::SRC::IMG_PLAYER_HP_6).handleId_;
-	hpHandles_[7] = resMng_.Load(ResourceManager::SRC::IMG_PLAYER_HP_7).handleId_;
-	hpHandles_[8] = resMng_.Load(ResourceManager::SRC::IMG_PLAYER_HP_8).handleId_;
-	hpHandles_[9] = resMng_.Load(ResourceManager::SRC::IMG_PLAYER_HP_9).handleId_;
-	hpHandles_[10] = resMng_.Load(ResourceManager::SRC::IMG_PLAYER_HP_10).handleId_;
+	hpHandles_[6] = resMng_.Load(ResourceManager::SRC::IMG_PLAYER_HP_4).handleId_;
+	hpHandles_[7] = resMng_.Load(ResourceManager::SRC::IMG_PLAYER_HP_3).handleId_;
+	hpHandles_[8] = resMng_.Load(ResourceManager::SRC::IMG_PLAYER_HP_2).handleId_;
+	hpHandles_[9] = resMng_.Load(ResourceManager::SRC::IMG_PLAYER_HP_1).handleId_;
+	hpHandles_[10] = resMng_.Load(ResourceManager::SRC::IMG_PLAYER_HP_0).handleId_;
 }
 
 void GameScene::Update()

@@ -41,7 +41,7 @@ public:
 		KEY_BLADE_1,	//キーブレード１
 		KEY_BLADE_2,	//キーブレード２
 		KEY_BLADE_3,	//キーブレード３
-		IMG_PLAYER_HP_0,
+		IMG_PLAYER_HP_0,	//プレイヤーHPUI
 		IMG_PLAYER_HP_1,
 		IMG_PLAYER_HP_2,
 		IMG_PLAYER_HP_3,
@@ -52,12 +52,13 @@ public:
 		IMG_PLAYER_HP_8,
 		IMG_PLAYER_HP_9,
 		IMG_PLAYER_HP_10,
-		IMG_ON_CONTINUE,
+		IMG_ON_CONTINUE,	//ゲームオーバー選択コマンド
 		IMG_ON_TITLE,
 		IMG_ON_RETRY,
 		IMG_OFF_CONTINUE,
 		IMG_OFF_TITLE,
 		IMG_OFF_RETRY,
+		PLAYER_GAMEOVER,	//ゲームオーバー用プレイヤー
 		MAX
 	};
 

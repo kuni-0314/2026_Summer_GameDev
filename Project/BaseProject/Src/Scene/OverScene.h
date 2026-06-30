@@ -35,6 +35,9 @@ public:
 private:
 
 	SELECT select_;
+
+	int playerHandle_;
+
 	//”ñ‘I‘ðŽž
 	int imgOnTitleHandle_;
 	int imgOnRetryHandle_;

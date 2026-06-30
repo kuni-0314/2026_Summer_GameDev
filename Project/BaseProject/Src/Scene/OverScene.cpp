@@ -26,6 +26,8 @@ void OverScene::Init()
 
 	select_ = SELECT::CONTINUE;
 
+	playerHandle_ = resMng_.Load(ResourceManager::SRC::PLAYER_GAMEOVER).handleId_;
+
 	imgOffTitleHandle_ = resMng_.Load(ResourceManager::SRC::IMG_OFF_TITLE).handleId_;
 	imgOffContinueHandle_ = resMng_.Load(ResourceManager::SRC::IMG_OFF_CONTINUE).handleId_;
 	imgOffRetryHandle_ = resMng_.Load(ResourceManager::SRC::IMG_OFF_RETRY).handleId_;
@@ -37,6 +39,12 @@ void OverScene::Init()
 	AudioManager::GetInstance()->LoadSceneSound(LoadScene::TITLE);
 	AudioManager::GetInstance()->PlayBGM(SoundID::BGM_OVER);
 	AudioManager::GetInstance()->SetBgmVolume(120);
+
+	VECTOR playerPos_;
+	playerPos_ = { 0,150,0 };
+
+
+	MV1SetPosition(playerHandle_, playerPos_);
 	
 }
 
@@ -50,21 +58,24 @@ void OverScene::Update()
 
 void OverScene::Draw()
 {
+	MV1DrawModel(playerHandle_);
 
 	if (selectCount_ == static_cast<int>(SELECT::CONTINUE))
-	{ DrawGraph(500, 300, imgOnContinueHandle_, true);}
+	{ DrawGraph(500, 450, imgOnContinueHandle_, true);}
 	else
-	{ DrawGraph(500, 300, imgOffContinueHandle_, true);}
+	{ DrawGraph(500, 450, imgOffContinueHandle_, true);}
 
 	if (selectCount_ == static_cast<int>(SELECT::RETRY))
-	{ DrawGraph(500, 500, imgOnRetryHandle_, true);}
+	{ DrawGraph(500, 650, imgOnRetryHandle_, true);}
 	else
-	{ DrawGraph(500, 500, imgOffRetryHandle_, true);}
+	{ DrawGraph(500, 650, imgOffRetryHandle_, true);}
 
 	if (selectCount_ == static_cast<int>(SELECT::TITLE))
-	{ DrawGraph(500, 700, imgOnTitleHandle_, true);}
+	{ DrawGraph(500, 850, imgOnTitleHandle_, true);}
 	else
-	{ DrawGraph(500, 700, imgOffTitleHandle_, true);}
+	{ DrawGraph(500, 850, imgOffTitleHandle_, true);}
+
+
 }
 
 void OverScene::Release()
