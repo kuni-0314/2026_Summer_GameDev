@@ -555,13 +555,12 @@ const char* GameScene::GetEffectName(PostEffectManager::EFFECT_TYPE effectType)
 
 void GameScene::PlayerHpDraw()
 {
-	int hp = player_->GetHp();
+	// 最大の方がインデックスが０ 
+	// 最小の方がインデックスが１０
+	// ややこしいねぇ
 
-	hpUiCount_ = (hp + 1) / 2;
-	hpUiCount_ = std::clamp(hpUiCount_, 0, 10);
-
-	DrawGraph(IMG_HP_X,IMG_HP_Y,
-		hpHandles_[hpUiCount_],true);
+	int index = hpHandles_.size() - std::ceil(player_->GetHp() * hpHandles_.size() / Player::MAX_HP);
+	DrawGraph(IMG_HP_X, IMG_HP_Y, hpHandles_[index], true);
 }
 
 

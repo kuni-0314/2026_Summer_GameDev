@@ -121,18 +121,19 @@ private:
 	
 	int audioHandle_;
 
+	// ŒãXŒÅ’è’·‚É
 	std::vector<int> hpHandles_;
 
 	//HPUI‰æ‘œƒnƒ“ƒhƒ‹
-	int hpHandle0_;
-	int hpHandle1_;
-	int hpHandle2_;
-	int hpHandle3_;
-	int hpHandle4_;
-	int hpHandle5_;
-	int hpHandle6_;
-	int hpHandle7_;
-	int hpHandle8_;
-	int hpHandle9_;
-	int hpHandle10_;
+	//int hpHandle0_;
+	//int hpHandle1_;
+	//int hpHandle2_;
+	//int hpHandle3_;
+	//int hpHandle4_;
+	//int hpHandle5_;
+	//int hpHandle6_;
+	//int hpHandle7_;
+	//int hpHandle8_;
+	//int hpHandle9_;
+	//int hpHandle10_;
 };
