@@ -88,27 +88,30 @@ void GameScene::Init()
 	multiEffectMode_ = false;
 
 	camMode_ = CAM_MODE::MANUAL;
-	sceMng_.GetCamera()->ChangeMode(Camera::MODE::OPENING);
+	sceMng_.GetCamera()->ChangeMode(Camera::MODE::MANUAL);
 
-	//AudioManager::GetInstance()->LoadSceneSound(LoadScene::GAME);
+	AudioManager::GetInstance()->LoadSceneSound(LoadScene::GAME);
 	//AudioManager::GetInstance()->PlayBGM(SoundID::BGM_GAME);
 
 	audioHandle_ = LoadSoundMem("Data/Sound/BGM/GameBGM.wav");
+	wargnigHandle_ = LoadSoundMem("Data/Sound/BGM/WarnigBgm.wav");
 	ChangeVolumeSoundMem(120, audioHandle_);
 	PlaySoundMem(audioHandle_, DX_PLAYTYPE_LOOP);
 	// 音量
 
-	hpHandle0_ = resMng_.Load(ResourceManager::SRC::IMG_PLAYER_HP_0).handleId_;
-	hpHandle1_ = resMng_.Load(ResourceManager::SRC::IMG_PLAYER_HP_1).handleId_;
-	hpHandle2_ = resMng_.Load(ResourceManager::SRC::IMG_PLAYER_HP_2).handleId_;
-	hpHandle3_ = resMng_.Load(ResourceManager::SRC::IMG_PLAYER_HP_3).handleId_;
-	hpHandle4_ = resMng_.Load(ResourceManager::SRC::IMG_PLAYER_HP_4).handleId_;
-	hpHandle5_ = resMng_.Load(ResourceManager::SRC::IMG_PLAYER_HP_5).handleId_;
-	hpHandle6_ = resMng_.Load(ResourceManager::SRC::IMG_PLAYER_HP_6).handleId_;
-	hpHandle7_ = resMng_.Load(ResourceManager::SRC::IMG_PLAYER_HP_7).handleId_;
-	hpHandle8_ = resMng_.Load(ResourceManager::SRC::IMG_PLAYER_HP_8).handleId_;
-	hpHandle9_ = resMng_.Load(ResourceManager::SRC::IMG_PLAYER_HP_9).handleId_;
-	hpHandle10_ = resMng_.Load(ResourceManager::SRC::IMG_PLAYER_HP_10).handleId_;
+	hpHandles_.resize(11);
+
+	hpHandles_[0] = resMng_.Load(ResourceManager::SRC::IMG_PLAYER_HP_0).handleId_;
+	hpHandles_[1] = resMng_.Load(ResourceManager::SRC::IMG_PLAYER_HP_1).handleId_;
+	hpHandles_[2] = resMng_.Load(ResourceManager::SRC::IMG_PLAYER_HP_2).handleId_;
+	hpHandles_[3] = resMng_.Load(ResourceManager::SRC::IMG_PLAYER_HP_3).handleId_;
+	hpHandles_[4] = resMng_.Load(ResourceManager::SRC::IMG_PLAYER_HP_4).handleId_;
+	hpHandles_[5] = resMng_.Load(ResourceManager::SRC::IMG_PLAYER_HP_5).handleId_;
+	hpHandles_[6] = resMng_.Load(ResourceManager::SRC::IMG_PLAYER_HP_6).handleId_;
+	hpHandles_[7] = resMng_.Load(ResourceManager::SRC::IMG_PLAYER_HP_7).handleId_;
+	hpHandles_[8] = resMng_.Load(ResourceManager::SRC::IMG_PLAYER_HP_8).handleId_;
+	hpHandles_[9] = resMng_.Load(ResourceManager::SRC::IMG_PLAYER_HP_9).handleId_;
+	hpHandles_[10] = resMng_.Load(ResourceManager::SRC::IMG_PLAYER_HP_10).handleId_;
 }
 
 void GameScene::Update()
@@ -124,8 +127,6 @@ void GameScene::Update()
 	enemyManager_->Update();
 	itemManger_->Update();
 	
-
-	goto tmp;
 	if (!enemyManager_->GetEnemyDead())
 	{
 		if (ins->IsGamepadTrgDown(InputManager::PadInput::RB, 0))
@@ -160,12 +161,25 @@ void GameScene::Update()
 	//if (ins->IsTrgDown(KEY_INPUT_LEFT) && targetEnemyId_ > 0) targetEnemyId_--;
 	//if (ins->IsTrgDown(KEY_INPUT_RIGHT)) targetEnemyId_++;
 
-//#ifdef _tmp
 	targetPos_ = enemyManager_->GetEnemyPos(targetEnemyId_);
 	SceneManager::GetInstance().GetCamera()->SetTargetPos(targetPos_);
-//#endif // !_tmp
 
-	tmp:
+	// デバッグ用即死攻撃
+	if (ins->IsTrgDown(MOUSE_INPUT_LEFT))
+	{
+		auto enemies = enemyManager_->GetEnemies();
+		for (auto enemy : enemies)
+		{
+			if (!enemy->IsAlive()) continue;
+			VECTOR playerPos = player_->GetTransform().pos;
+			VECTOR enemyPos = enemy->GetTransform().pos;
+			float dist = VSize(VSub(playerPos, enemyPos));
+			if (dist < 300.0f)
+			{
+				enemy->Damege(99999);
+			}
+		}
+	}
 
 	// 攻撃コライダーの更新
 	for (int i = 0; i < attackColliders_.size(); i++)
@@ -281,6 +295,7 @@ void GameScene::Update()
 		// 強制的に全サウンド停止
 		StopMusic();
 		StopSoundMem(audioHandle_);
+		StopSoundMem(wargnigHandle_);
 		AudioManager::GetInstance()->StopBGM();
 		sceMng_.ChangeScene(SceneManager::SCENE_ID::OVER);
 		return;
@@ -296,6 +311,8 @@ void GameScene::Update()
 	//	sceMng_.ChangeScene(SceneManager::SCENE_ID::CLEAR);
 	//	return;
 	//}
+
+
 }
 
 void GameScene::Draw()
@@ -309,8 +326,8 @@ void GameScene::Draw()
 	//weapon_->Draw();
 	itemManger_->Draw();
 	enemyManager_->Draw();
-	PlayerHpUIDraw();
 
+	PlayerHpUpdate();
 	// 一時スクリーンにメイン画面をコピー
 	int tempScreen = MakeScreen(Application::SCREEN_SIZE_X, Application::SCREEN_SIZE_Y, false);
 	SetDrawScreen(tempScreen);
@@ -535,34 +552,15 @@ const char* GameScene::GetEffectName(PostEffectManager::EFFECT_TYPE effectType)
 	}
 }
 
-void GameScene::PlayerHpUIDraw()
+void GameScene::PlayerHpUpdate()
 {
-	//プレイヤーHP
 	int hp = player_->GetHp();
 
-	hpUiCount_ =  (hp + 2 - 1) / 2;
+	hpUiCount_ = (hp + 1) / 2;
+	hpUiCount_ = std::clamp(hpUiCount_, 0, 10);
 
-	if(hpUiCount_ >= static_cast<int>(HP_UI::HP0)) 
-		DrawGraph(IMG_HP_X,IMG_HP_Y,hpHandle0_,true);
-	else if (hpUiCount_ == static_cast<int>(HP_UI::HP1))
-		DrawGraph(IMG_HP_X, IMG_HP_Y, hpHandle1_, true);
-	else if (hpUiCount_ == static_cast<int>(HP_UI::HP2))
-		DrawGraph(IMG_HP_X, IMG_HP_Y, hpHandle2_, true);
-	else if (hpUiCount_ == static_cast<int>(HP_UI::HP3))
-		DrawGraph(IMG_HP_X, IMG_HP_Y, hpHandle3_, true);
-	else if (hpUiCount_ == static_cast<int>(HP_UI::HP4))
-		DrawGraph(IMG_HP_X, IMG_HP_Y, hpHandle4_, true);
-	else if (hpUiCount_ == static_cast<int>(HP_UI::HP5))
-		DrawGraph(IMG_HP_X, IMG_HP_Y, hpHandle5_, true);
-	else if (hpUiCount_ == static_cast<int>(HP_UI::HP6))
-		DrawGraph(IMG_HP_X, IMG_HP_Y, hpHandle6_, true);
-	else if (hpUiCount_ == static_cast<int>(HP_UI::HP7))
-		DrawGraph(IMG_HP_X, IMG_HP_Y, hpHandle7_, true);
-	else if (hpUiCount_ == static_cast<int>(HP_UI::HP8))
-		DrawGraph(IMG_HP_X, IMG_HP_Y, hpHandle8_, true);
-	else if (hpUiCount_ == static_cast<int>(HP_UI::HP9))
-		DrawGraph(IMG_HP_X, IMG_HP_Y, hpHandle9_, true);
-	else if (hpUiCount_ == static_cast<int>(HP_UI::HP10))
-		DrawGraph(IMG_HP_X, IMG_HP_Y, hpHandle10_, true);
-	
+	DrawGraph(IMG_HP_X,IMG_HP_Y,
+		hpHandles_[hpUiCount_],true);
 }
+
+

@@ -86,6 +86,21 @@ void ResourceManager::Init()
 	resourcesMap_.emplace(SRC::IMG_PLAYER_HP_9, res);	//mapÇ…ìoò^
 	res = new RES(RES_T::IMG, PATH_IMG + "PlayerHP/PlayerHP_10.png");
 	resourcesMap_.emplace(SRC::IMG_PLAYER_HP_10, res);	//mapÇ…ìoò^
+	//ÉQÅ[ÉÄÉIÅ[ÉoÅ[
+	res = new RES(RES_T::IMG, PATH_IMG + "GameOver/OFF_Continue.png");
+	resourcesMap_.emplace(SRC::IMG_OFF_CONTINUE, res);	//mapÇ…ìoò^
+	res = new RES(RES_T::IMG, PATH_IMG + "GameOver/OFF_Retry.png");
+	resourcesMap_.emplace(SRC::IMG_OFF_RETRY, res);	//mapÇ…ìoò^
+	res = new RES(RES_T::IMG, PATH_IMG + "GameOver/OFF_Title.png");
+	resourcesMap_.emplace(SRC::IMG_OFF_TITLE, res);	//mapÇ…ìoò^
+
+	res = new RES(RES_T::IMG, PATH_IMG + "GameOver/ON_Continue.png");
+	resourcesMap_.emplace(SRC::IMG_ON_CONTINUE, res);	//mapÇ…ìoò^
+	res = new RES(RES_T::IMG, PATH_IMG + "GameOver/ON_Retry.png");
+	resourcesMap_.emplace(SRC::IMG_ON_RETRY, res);	//mapÇ…ìoò^
+	res = new RES(RES_T::IMG, PATH_IMG + "GameOver/ON_Title.png");
+	resourcesMap_.emplace(SRC::IMG_ON_TITLE, res);	//mapÇ…ìoò^
+
 
 
 	//ÉÇÉfÉãìoò^ 

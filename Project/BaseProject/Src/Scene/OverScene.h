@@ -6,6 +6,13 @@ class OverScene : public SceneBase
 
 public:
 
+	enum class SELECT
+	{
+		CONTINUE, //そのWAVEから
+		RETRY,	  //最初から
+		TITLE	  //タイトルから
+	};
+
 	// コンストラクタ
 	OverScene();
 
@@ -27,6 +34,24 @@ public:
 
 private:
 
+	SELECT select_;
+	//非選択時
+	int imgOnTitleHandle_;
+	int imgOnRetryHandle_;
+	int imgOnContinueHandle_;
+	//選択時
+	int imgOffTitleHandle_;
+	int imgOffRetryHandle_;
+	int imgOffContinueHandle_;
+
+	int maxIndex ;
+	int minIndex ;
+
+	int selectCount_;
+
+	void SelectChange(SELECT next);
+
+	void SelectUpdate();
 
 
 };
