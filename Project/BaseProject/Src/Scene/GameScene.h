@@ -113,7 +113,7 @@ private:
 	const char* GetEffectName(PostEffectManager::EFFECT_TYPE effectType);
 
 	//ÉvÉåÉCÉÑÅ[HPUI
-	void PlayerHpUpdate();
+	void PlayerHpDraw();
 
 	bool warnigOn_ = false;
 

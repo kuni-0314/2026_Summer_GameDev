@@ -327,7 +327,8 @@ void GameScene::Draw()
 	itemManger_->Draw();
 	enemyManager_->Draw();
 
-	PlayerHpUpdate();
+	PlayerHpDraw();
+
 	// 一時スクリーンにメイン画面をコピー
 	int tempScreen = MakeScreen(Application::SCREEN_SIZE_X, Application::SCREEN_SIZE_Y, false);
 	SetDrawScreen(tempScreen);
@@ -552,7 +553,7 @@ const char* GameScene::GetEffectName(PostEffectManager::EFFECT_TYPE effectType)
 	}
 }
 
-void GameScene::PlayerHpUpdate()
+void GameScene::PlayerHpDraw()
 {
 	int hp = player_->GetHp();
 
