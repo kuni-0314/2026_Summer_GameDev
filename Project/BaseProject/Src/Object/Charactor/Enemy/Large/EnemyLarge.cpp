@@ -46,6 +46,7 @@ void EnemyLarge::Draw(void)
 	else if (next == STATE::ATTACK_PUNCH) name = "ATTACK_PUNCH";
 	else if (next == STATE::ATTACK_RUN) name = "ATTACK_RUN";
 	else if (next == STATE::CHARGE) name = "CHARGE";
+	else if (next == STATE::ATTACK_DROP) name = "ATTACK_DROP";
 
 	DrawFormatString(0, 500, GetColor(255, 255, 255), "STATE: %s", name);
 
@@ -103,6 +104,8 @@ void EnemyLarge::InitAnimation()
 		, 20.0f, Application::PATH_MODEL + "Enemy/Large/Walk.mv1");
 	animationController_->Add(static_cast<int>(ANIM_TYPE::ATTACK_PUNCH)
 		, 20.0f, Application::PATH_MODEL + "Enemy/Large/Punch.mv1");
+	animationController_->Add(static_cast<int>(ANIM_TYPE::ATTACK_DROP)
+		, 20.0f, Application::PATH_MODEL + "Enemy/Large/Drop.mv1");
 
 
 	animationController_->Play(static_cast<int>(ANIM_TYPE::IDLE), true);
@@ -126,6 +129,9 @@ void EnemyLarge::InitPost()
 
 	stateChanges_.emplace(static_cast<int>(STATE::CHARGE),
 		std::bind(&EnemyLarge::ChangeStateCharge, this));
+
+	stateChanges_.emplace(static_cast<int>(STATE::ATTACK_DROP),
+		std::bind(&EnemyLarge::ChangeStateAttackDrop, this));
 
 
 	// 初期状態設定
@@ -194,7 +200,7 @@ void EnemyLarge::ChangeStateCharge()
 		static_cast<int>(ANIM_TYPE::IDLE), true);
 }
 
-void EnemyLarge::ChangeStateAttackPunch(void)
+void EnemyLarge::ChangeStateAttackPunch()
 {
 	stateUpdate_ = std::bind(&EnemyLarge::UpdateAttackPunch, this);
 
@@ -207,9 +213,9 @@ void EnemyLarge::ChangeStateAttackPunch(void)
 		static_cast<int>(ANIM_TYPE::ATTACK_PUNCH), false);
 }
 
-void EnemyLarge::ChangeStateAttackRun(void)
+void EnemyLarge::ChangeStateAttackRun()
 {
-	stateUpdate_ = std::bind(&EnemyLarge::UpdateRunAttack, this);
+	stateUpdate_ = std::bind(&EnemyLarge::UpdateAttackRun, this);
 
 	look_ = true;
 
@@ -218,6 +224,19 @@ void EnemyLarge::ChangeStateAttackRun(void)
 	// 待機アニメーション再生
 	animationController_->Play(
 		static_cast<int>(ANIM_TYPE::MOVE), true);
+}
+
+void EnemyLarge::ChangeStateAttackDrop()
+{
+	stateUpdate_ = std::bind(&EnemyLarge::UpdateAttacDrop, this);
+
+	look_ = false;
+
+	movePow_ = AsoUtility::VECTOR_ZERO;
+
+	// 待機アニメーション再生
+	animationController_->Play(
+		static_cast<int>(ANIM_TYPE::ATTACK_DROP), true);
 }
 
 void EnemyLarge::ChangeStateMove()
@@ -262,17 +281,17 @@ void EnemyLarge::UpdateCharge()
 	movePow_ = AsoUtility::VECTOR_ZERO;
 }
 
-void EnemyLarge::UpdateAttackPunch(void)
+void EnemyLarge::UpdateAttackPunch()
 {
 	if(animationController_->IsEnd())
 	{
-		ChangeState(STATE::IDLE);
+		ChangeState(STATE::ATTACK_DROP);
 	}
 
 	movePow_ = AsoUtility::VECTOR_ZERO;
 }
 
-void EnemyLarge::UpdateRunAttack(void)
+void EnemyLarge::UpdateAttackRun()
 {
 
 	//進行方向を決める
@@ -294,6 +313,16 @@ void EnemyLarge::UpdateRunAttack(void)
 
 	movePow_ = VScale(moveDir_, moveSpeed_);
 	
+}
+
+void EnemyLarge::UpdateAttacDrop()
+{
+	if(animationController_->IsEnd())
+	{
+		ChangeState(STATE::IDLE);
+	}
+
+	movePow_ = AsoUtility::VECTOR_ZERO;
 }
 
 void EnemyLarge::UpdateMove()

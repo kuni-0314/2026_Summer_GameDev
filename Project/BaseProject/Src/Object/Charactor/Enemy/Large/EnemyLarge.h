@@ -17,6 +17,7 @@ public:
 		IDLE,
 		MOVE,
 		ATTACK_PUNCH,
+		ATTACK_DROP,
 		CHARGE,
 		END,
 		DIE,
@@ -32,6 +33,7 @@ public:
 		MOVE,
 		ATTACK_PUNCH,
 		ATTACK_RUN,
+		ATTACK_DROP,
 		WAIT,
 		CHARGE,
 		HIT,
@@ -172,28 +174,30 @@ private:
 	// èÛë‘ëJà⁄
 	void ChangeState(STATE state);
 
-	void ChangeStateThink(void);
-	void ChangeStateIdle(void);
-	void ChangeStateAttackPunch(void);
-	void ChangeStateAttackRun(void);
-	void ChangeStateMove(void);
-	void ChangeStateWait(void);
-	void ChangeStateHit(void);
-	void ChangeStateEnd(void);
-	void ChangeStateDie(void);
-	void ChangeStateCharge(void);
+	void ChangeStateThink();
+	void ChangeStateIdle();
+	void ChangeStateAttackPunch();
+	void ChangeStateAttackRun();
+	void ChangeStateAttackDrop();
+	void ChangeStateMove();
+	void ChangeStateWait();
+	void ChangeStateHit();
+	void ChangeStateEnd();
+	void ChangeStateDie();
+	void ChangeStateCharge();
 
 	// çXêVån
-	void UpdateThink(void);
-	void UpdateIdle(void);
-	void UpdateAttackPunch(void);
-	void UpdateRunAttack(void);
-	void UpdateMove(void);
-	void UpdateWait(void);
-	void UpdateHit(void);
-	void UpdateDie(void);
-	void UpdateEnd(void);
-	void UpdateCharge(void);
+	void UpdateThink();
+	void UpdateIdle();
+	void UpdateAttackPunch();
+	void UpdateAttackRun();
+	void UpdateAttacDrop();
+	void UpdateMove();
+	void UpdateWait();
+	void UpdateHit();
+	void UpdateDie();
+	void UpdateEnd();
+	void UpdateCharge();
 
 
 };
