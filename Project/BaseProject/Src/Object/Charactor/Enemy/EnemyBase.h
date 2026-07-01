@@ -27,7 +27,7 @@ public:
 		int hp;
 		VECTOR defaultPos;
 		float movableRange;
-		int power;
+		int wave;
 	};
 
 	// コンストラクタ
@@ -57,15 +57,16 @@ protected:
 	// 初期位置
 	const VECTOR defaultPos_;
 	float movableRange_;
-
 	float playerRad_;
-	int power_;
+
 	//攻撃用モデル(魔法の弾とか）
 	int attackModle_;
 	//ダメージ受ける前のHP保存用
 	int preHp_;
 	// 状態管理
 	int stateBase_;
+	//wave
+	int wave_;
 	// 状態管理(状態遷移時初期処理)
 	std::map<int, std::function<void()>> stateChanges_;
 	// 状態管理(更新ステップ)

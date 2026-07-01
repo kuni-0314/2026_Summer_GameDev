@@ -30,87 +30,28 @@ EnemyManager::~EnemyManager()
 }
 void EnemyManager::Init()
 {
-
-	LoadCsvData();
-	//かさなってしまう
-	for (auto& enemy1 : enemies_)
-	{
-		//自身を探して自身のコライダー情報を渡す
-		for (auto& enemy2 : enemies_)
-		{
-			if (enemy1 == enemy2)
-			{
-				continue;
-			}
-
-			//enemy自身の衝突判定を取得
-			const ColliderBase* enemyCollider =
-				enemy2->GetOwnCollider(static_cast<int>(ActorBase::COLLIDER_TYPE::CAPSULE));
-			
-			enemy1->AddHitCollider(enemyCollider);
-			
-		}
-	}
-
+	//開始ウェーブ
+	LoadWaveData(WAVE::WAVE1);
 
 }
 void EnemyManager::Update()
 {
-	for (auto& enemy : enemies_)
-	{
-		enemy->Update();
-
-		if (enemy->GetHp() <= 0 && enemy->IsAlive())
-		{
-			VECTOR hpPos = enemy->GetTransform().pos;
-
-			int randNum = rand() % 500;
-
-			hpPos.x += randNum;
-
-			VECTOR skillPos = enemy->GetTransform().pos;
-
-			randNum = rand() % 500;
-
-			skillPos.z += randNum;
-
-
-			gameScene_->GetItemManger()->Create(ItemBase::TYPE::HP, hpPos, hitCollider_,
-				static_cast<int>(Player::COLLIDER_TYPE::CAPSULE), player_);
-
-			
-
-			enemy->SetAlive(false);
-		}
-	}
-	//エネミー削除
-	for (int j = 0; j < enemies_.size(); j++)
-	{
-		if (enemies_[j]->IsAnimEnd() && !enemies_[j]->IsAlive())
-		{
-			enemies_[j]->Release();
-			delete enemies_[j];
-			enemies_[j] = nullptr;
-			enemies_.erase(std::remove(enemies_.begin(), enemies_.end(), enemies_[j]), enemies_.end());
-
-			j--;
-		}
-	}
-
-	//エネミー全滅フラグ
-	isDead_ = true;
-	for (const auto enemy : enemies_)
-	{
-		if (enemy->IsAlive())
-		{
-			isDead_ = false;
-			break;
-		}
-	}
+	//wave更新
+	UpdateWave();
 }
 
 void EnemyManager::Draw()
 {
+	WAVE next = wave_;
+	const char* name = "";
+	if (next == WAVE::WAVE1) name = "WAVE1";
+	else if (next == WAVE::WAVE2) name = "WAVE2";
+	else if (next == WAVE::WAVE3) name = "WAVE3";
+	else if (next == WAVE::WAVE4) name = "WAVE4";
+	else if (next == WAVE::BOSS) name = "BOSS";
+
+	DrawFormatString(0, 100, GetColor(255, 255, 255), "WAVE: %s", name);
+
 	for (auto& enemy : enemies_)
 	{
 		enemy->Draw();
@@ -133,7 +74,6 @@ void EnemyManager::AddHitCollider(const ColliderBase* hitCollider)
 	for (auto& enemy : enemies_)
 	{
 		enemy->AddHitCollider(hitCollider);
-
 	}
 }
 
@@ -181,8 +121,14 @@ void EnemyManager::LoadCsvData()
 		//移動範囲
 		data.movableRange = stoi(strSplit[idx++]);
 
-		// エネミー生成
-		Create(data, player_);
+		//生成ウェーブ
+		data.wave = stoi(strSplit[idx++]);
+
+		if (data.wave == static_cast<int>(wave_))
+		{
+			EnemyBase* newEnemy = Create(data, player_);
+
+		}
 	}
 	ifs.close();
 }
@@ -261,4 +207,250 @@ VECTOR EnemyManager::GetEnemyPos(int id) const
 bool EnemyManager::GetEnemyDead()
 {
 	return isDead_;
+}
+
+void EnemyManager::CreateHpItem()
+{
+	for (auto& enemy : enemies_)
+	{
+		enemy->Update();
+
+		if (enemy->GetHp() <= 0 && enemy->IsAlive())
+		{
+			//HPアイテム生成
+			VECTOR hpPos = enemy->GetTransform().pos;
+			int randNum = rand() % 500;
+			hpPos.x += randNum;
+
+			VECTOR skillPos = enemy->GetTransform().pos;
+			randNum = rand() % 500;
+			skillPos.z += randNum;
+
+
+			gameScene_->GetItemManger()->Create(ItemBase::TYPE::HP, hpPos, hitCollider_,
+				static_cast<int>(Player::COLLIDER_TYPE::CAPSULE), player_);
+
+
+			//生存フラグ（オフ）
+			enemy->SetAlive(false);
+		}
+	}
+}
+
+void EnemyManager::EnemysDelete()
+{
+	//エネミー削除
+	for (int j = 0; j < enemies_.size(); j++)
+	{
+		if (enemies_[j]->IsAnimEnd() && !enemies_[j]->IsAlive())
+		{
+			enemies_[j]->Release();
+			delete enemies_[j];
+			enemies_[j] = nullptr;
+			enemies_.erase(std::remove(enemies_.begin(), enemies_.end(), enemies_[j]), enemies_.end());
+
+			j--;
+		}
+	}
+}
+
+void EnemyManager::EnemysCollision()
+{
+	//敵同士の衝突判定（敵ががぶらないように）
+	for (auto& enemy1 : enemies_)
+	{
+		//自身を探して自身のコライダー情報を渡す
+		for (auto& enemy2 : enemies_)
+		{
+			if (enemy1 == enemy2)
+			{
+				continue;
+			}
+
+			//enemy自身の衝突判定を取得
+			const ColliderBase* enemyCollider =
+				enemy2->GetOwnCollider(static_cast<int>(ActorBase::COLLIDER_TYPE::CAPSULE));
+
+			enemy1->AddHitCollider(enemyCollider);
+
+		}
+	}
+}
+
+void EnemyManager::ChangeWave(WAVE wave)
+{ 
+	switch (wave)
+	{
+	case EnemyManager::WAVE::START:
+		break;
+	case EnemyManager::WAVE::WAVE1:
+		break;
+	case EnemyManager::WAVE::WAVE2:
+		break;
+	case EnemyManager::WAVE::WAVE3:
+		break;
+	case EnemyManager::WAVE::WAVE4:
+		break;
+	case EnemyManager::WAVE::BOSS:
+		break;
+	case EnemyManager::WAVE::END:
+		break;
+	default:
+		break;
+	}
+}
+
+void EnemyManager::LoadWaveData(WAVE wave)
+{
+	wave_ = wave;
+
+	//WAVE切り替え
+	ChangeWave(wave_);
+	//敵生成
+	LoadCsvData();
+}
+
+
+void EnemyManager::UpdateWave()
+{
+	switch (wave_)
+	{
+	case EnemyManager::WAVE::START:
+		UpdateWaveStart();
+		break;
+	case EnemyManager::WAVE::WAVE1:
+		UpdateWave1();
+		break;
+	case EnemyManager::WAVE::WAVE2:
+		UpdateWave2();
+		break;
+	case EnemyManager::WAVE::WAVE3:
+		UpdateWave3();
+		break;
+	case EnemyManager::WAVE::WAVE4:
+		UpdateWave4();
+		break;
+	case EnemyManager::WAVE::BOSS:
+		UpdateWaveBoss();
+		break;
+	case EnemyManager::WAVE::END:
+		break;
+	default:
+		break;
+	}
+}
+
+
+
+void EnemyManager::UpdateWaveStart()
+{
+}
+
+void EnemyManager::UpdateWave1()
+{
+	CreateHpItem();
+	EnemysDelete();
+
+	//エネミー全滅フラグ
+	wave1Clear_ = true;
+	for (const auto enemy : enemies_)
+	{
+		if (enemy->IsAlive())
+		{
+			wave1Clear_ = false;
+			break;
+		}
+	}
+
+	//wave1クリア時にwave2の敵を生成
+	if (wave1Clear_)
+	{
+		LoadWaveData(WAVE::WAVE2);
+	}
+}
+
+void EnemyManager::UpdateWave2()
+{
+	CreateHpItem();
+	EnemysDelete();
+
+	//エネミー全滅フラグ
+	wave2Clear_ = true;
+	for (const auto enemy : enemies_)
+	{
+		if (enemy->IsAlive())
+		{
+			wave2Clear_ = false;
+			break;
+		}
+	}
+
+	//wave1クリア時にwave2の敵を生成
+	if (wave2Clear_)
+	{
+		LoadWaveData(WAVE::WAVE3);
+	}
+}
+
+void EnemyManager::UpdateWave3()
+{
+	CreateHpItem();
+	EnemysDelete();
+
+	//エネミー全滅フラグ
+	wave3Clear_ = true;
+	for (const auto enemy : enemies_)
+	{
+		if (enemy->IsAlive())
+		{
+			wave3Clear_ = false;
+			break;
+		}
+	}
+
+	//wave1クリア時にwave2の敵を生成
+	if (wave3Clear_)
+	{
+		LoadWaveData(WAVE::WAVE4);
+	}
+}
+
+void EnemyManager::UpdateWave4()
+{
+	CreateHpItem();
+	EnemysDelete();
+
+	//エネミー全滅フラグ
+	wave4Clear_ = true;
+	for (const auto enemy : enemies_)
+	{
+		if (enemy->IsAlive())
+		{
+			wave4Clear_ = false;
+			break;
+		}
+	}
+
+	//wave1クリア時にwave2の敵を生成
+	if (wave4Clear_)
+	{
+		LoadWaveData(WAVE::BOSS);
+	}
+}
+
+void EnemyManager::UpdateWaveBoss()
+{
+	CreateHpItem();
+	EnemysDelete();
+
+	//エネミー全滅フラグ
+	isDead_ = true;
+	for (const auto enemy : enemies_)
+	{
+		if (enemy->IsAlive())
+		{
+			isDead_ = false;
+			break;
+		}
+	}
 }
