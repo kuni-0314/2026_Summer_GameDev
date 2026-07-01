@@ -22,6 +22,7 @@ const std::string Application::PATH_SHADER = "Data/Shader/";
 const std::string Application::PATH_CSV = "Data/Csv/";
 const std::string Application::PATH_SOUND_SE = "Data/Sound/SE/";
 const std::string Application::PATH_SOUND_BGM = "Data/Sound/BGM/";
+const std::string Application::PATH_FONT = "Data/Font/";
 
 
 void Application::CreateInstance()

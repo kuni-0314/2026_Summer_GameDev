@@ -28,6 +28,7 @@ void ResourceManager::Init()
 	static std::string PATH_IMG = Application::PATH_IMAGE;
 	static std::string PATH_MDL = Application::PATH_MODEL;
 	static std::string PATH_EFF = Application::PATH_EFFECT;
+	static std::string PATH_FNT = Application::PATH_FONT;
 
 	Resource* res = nullptr;
 
@@ -170,6 +171,10 @@ void ResourceManager::Init()
 	//プレイヤーゲームオーバー用
 	res = new RES(RES_T::MODEL, PATH_MDL + "Player/Player_GameOver.mv1");
 	resourcesMap_.emplace(SRC::PLAYER_GAMEOVER, res);	//mapに登録
+
+	// フォント
+	res = new RES(RES_T::FONT, PATH_FNT + "msGothic.ttf");
+	resourcesMap_.emplace(SRC::FONT_MSGOTHIC, res);	//mapに登録
 }
 
 void ResourceManager::Release()

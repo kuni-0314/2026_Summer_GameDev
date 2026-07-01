@@ -59,6 +59,9 @@ public:
 		IMG_OFF_TITLE,
 		IMG_OFF_RETRY,
 		PLAYER_GAMEOVER,	//ゲームオーバー用プレイヤー
+		TARGET_CURSOR_ORANGE,	//ターゲットカーソルオレンジ
+		TARGET_CURSOR_BLUE,	//ターゲットカーソルブルー
+		FONT_MSGOTHIC,	//MSゴシックフォント
 		MAX
 	};
 

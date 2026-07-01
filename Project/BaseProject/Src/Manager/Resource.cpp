@@ -76,6 +76,10 @@ void Resource::Load()
 		handleId_ = LoadEffekseerEffect(path_.c_str());
 		break;
 
+	case Resource::TYPE::FONT:
+
+		handleId_ = CreateFontToHandle(path_.c_str(), 32, -1, DX_FONTTYPE_NORMAL);
+		break;
 	}
 
 }
@@ -116,6 +120,9 @@ void Resource::Release()
 		DeleteEffekseerEffect(handleId_);
 		break;
 
+	case Resource::TYPE::FONT:
+		DeleteFontToHandle(handleId_);
+		break;
 	}
 
 }
