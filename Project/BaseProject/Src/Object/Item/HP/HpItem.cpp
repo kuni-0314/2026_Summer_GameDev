@@ -21,21 +21,12 @@ HpItem::~HpItem()
 void HpItem::Update()
 {
     ItemBase::Update();
-    //プレイヤーとの判定
-    //InSearchModel()
-
-
-
 }
 
 void HpItem::Draw()
 {
-
-
     ItemBase::Draw();
     //DrawSphere3D(transform_.pos,COL_SPHERE_RADIUS, 10, 0x0000ff, 0x0000ff, false);
-
-
 }
 
 void HpItem::InitLoad()
@@ -71,12 +62,6 @@ void HpItem::InitCollider()
         COL_CAPSULE_RADIUS);
     ownColliders_.emplace(static_cast<int>(COLLIDER_TYPE::CAPSULE), colCapsule);
 
-    // モデルのコライダ
-    ColliderModel* colModel =
-        new ColliderModel(ColliderBase::TAG::ITEM, &transform_);
-    //判定の登録
-    ownColliders_.emplace(
-        static_cast<int>(COLLIDER_TYPE::ITEM), colModel);
 }
 
 void HpItem::InitAnimation()
@@ -88,6 +73,18 @@ void HpItem::InitPost()
 }
 
 void HpItem::UpdateProcess()
+{
+   
+    PlayerHpGet();
+
+    transform_.Update();
+}
+
+void HpItem::UpdateProcessPost()
+{
+}
+
+void HpItem::PlayerHpGet()
 {
     //プレイヤー座標取得
     VECTOR playerPos = player_->GetPos();
@@ -146,10 +143,4 @@ void HpItem::UpdateProcess()
             isAlive_ = false;
         }
     }
-
-    transform_.Update();
-}
-
-void HpItem::UpdateProcessPost()
-{
 }

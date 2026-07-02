@@ -68,7 +68,11 @@ private:
 	// エネミー
 	std::vector<EnemyBase*> enemies_;
 
+
 	const ColliderBase* hitCollider_;
+
+	// 衝突対象コライダ（複数登録を保持するため vector に変更）
+	std::vector<const ColliderBase*> hitColliders_;
 
 	// 攻撃コライダのリスト
 	std::vector<const ColliderBase*> attackColliders_;

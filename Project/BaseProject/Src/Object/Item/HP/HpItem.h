@@ -57,12 +57,12 @@ private:
 	static constexpr VECTOR COL_CAPSULE_TOP_LOCAL_POS = { 0.0f, 80.0f, 0.0f };
 
 	// 衝突判定用カプセル下部球体
-	static constexpr VECTOR COL_CAPSULE_DOWN_LOCAL_POS = { 0.0f, 0.0f, 0.0f };
+	static constexpr VECTOR COL_CAPSULE_DOWN_LOCAL_POS = { 0.0f, 70.0f, 0.0f };
 
 	// 衝突判定用カプセル球体半径
-	static constexpr float COL_CAPSULE_RADIUS = 40.0f;
+	static constexpr float COL_CAPSULE_RADIUS = 70.0f;
 
-	// 衝突判定用カプセル球体半径
+	// 衝突判定用球体半径
 	static constexpr float COL_SPHERE_RADIUS = 80.0f;
 
 	//　モデル縮小スピード
@@ -79,6 +79,8 @@ private:
 	VECTOR worldPos;
 
 	VECTOR spawnPos_;
+
+	void PlayerHpGet();
 
 
 };

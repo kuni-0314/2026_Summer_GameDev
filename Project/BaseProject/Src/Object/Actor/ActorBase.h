@@ -92,6 +92,7 @@ protected:
 	// ‰Šú‰»Œã‚ÌŒÂ•Êˆ—
 	virtual void InitPost() = 0;
 
+
 	//•Ï”
 	bool isAlive_;
 

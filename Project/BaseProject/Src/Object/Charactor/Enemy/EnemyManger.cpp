@@ -1,5 +1,7 @@
 #include <string>
 #include <fstream>
+#include <vector>
+#include <algorithm>
 #include "../../../Application.h"
 #include "../../../Utility/AsoUtility.h"
 #include "../../../Scene/GameScene.h"
@@ -68,9 +70,16 @@ void EnemyManager::Release()
 }
 void EnemyManager::AddHitCollider(const ColliderBase* hitCollider)
 {
+	//重複登録を避けるため、既存の敵に登録されているかの確認
+	if (std::find(hitColliders_.begin(), hitColliders_.end(), hitCollider) == hitColliders_.end())
+	{
+		hitColliders_.push_back(hitCollider);
+	}
 
 	hitCollider_ = hitCollider;
 
+
+	//衝突判定の追加
 	for (auto& enemy : enemies_)
 	{
 		enemy->AddHitCollider(hitCollider);
@@ -155,6 +164,16 @@ EnemyBase* EnemyManager::Create(const EnemyBase::EnemyData& data, const Player* 
 	if (enemy != nullptr)
 	{
 		enemy->Init();
+
+		//新たに生成される敵に対して、コライダを追加
+		for (const auto* collider : hitColliders_)
+		{
+			if (collider != nullptr)
+			{
+				enemy->AddHitCollider(collider);
+			}
+		}
+
 		enemies_.emplace_back(enemy);
 	}
 
@@ -217,19 +236,30 @@ void EnemyManager::CreateHpItem()
 
 		if (enemy->GetHp() <= 0 && enemy->IsAlive())
 		{
-			//HPアイテム生成
+			
+			// HPアイテム生成位置を敵の上に出す
 			VECTOR hpPos = enemy->GetTransform().pos;
-			int randNum = rand() % 500;
-			hpPos.x += randNum;
 
-			VECTOR skillPos = enemy->GetTransform().pos;
-			randNum = rand() % 500;
-			skillPos.z += randNum;
+			//左右に広がるように調整
+			int randX = (rand() % 201) - 100; // -100 .. +100
+			int randZ = (rand() % 201) - 100; // -100 .. +100
+
+			hpPos.x += static_cast<float>(randX);
+			hpPos.z += static_cast<float>(randZ);
+
+			// ここで確実に地面より上に出す
+			hpPos.y += 80.0f;
 
 
-			gameScene_->GetItemManger()->Create(ItemBase::TYPE::HP, hpPos, hitCollider_,
-				static_cast<int>(Player::COLLIDER_TYPE::CAPSULE), player_);
+			// 安全チェック：ItemManager とステージコライダが有効か確認してから生成
+			auto itemMgr = gameScene_ ? gameScene_->GetItemManger() : nullptr;
 
+			//HPアイテムの生成
+			if (itemMgr != nullptr && hitCollider_ != nullptr)
+			{
+				itemMgr->Create(ItemBase::TYPE::HP, hpPos, hitCollider_,
+					static_cast<int>(Player::COLLIDER_TYPE::CAPSULE), player_);
+			}
 
 			//生存フラグ（オフ）
 			enemy->SetAlive(false);
