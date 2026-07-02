@@ -353,7 +353,7 @@ bool InputManager::IsMouseTrgUp(int button)
 // マウスホイールの回転量を取得
 int InputManager::GetMouseWheel()
 {
-	return mouseWheel_;
+	return mouseWheel_ * wheelSensitivity_;
 }
 
 // マウスの座標を取得
@@ -583,6 +583,18 @@ void InputManager::GetStickDirXZ(VECTOR& vec, int gamepadIndex, bool isLeftStick
 		vec.z = normalizedY;
 	}
 }
+
+int InputManager::GetMouseWheelSensitivity()
+{
+	return wheelSensitivity_;
+}
+
+void InputManager::SetMouseWheelSensitivity(float value)
+{
+	if (value < 0.0f) value = 0.0f;
+	wheelSensitivity_ = value;
+}
+
 
 // ゲームパッドの更新
 void InputManager::UpdateGamePad()

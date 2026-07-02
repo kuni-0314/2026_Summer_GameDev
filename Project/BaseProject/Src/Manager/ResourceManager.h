@@ -61,7 +61,9 @@ public:
 		PLAYER_GAMEOVER,	//ゲームオーバー用プレイヤー
 		TARGET_CURSOR_ORANGE,	//ターゲットカーソルオレンジ
 		TARGET_CURSOR_BLUE,	//ターゲットカーソルブルー
-		FONT_MSGOTHIC,	//MSゴシックフォント
+		OPTION_BACKGROUND,	//オプション背景
+		SLIDER_FRAME,	//スライダー枠
+		SLIDER_KNOB,	//スライダーノブ
 		MAX
 	};
 

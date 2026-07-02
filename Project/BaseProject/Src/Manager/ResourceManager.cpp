@@ -172,9 +172,17 @@ void ResourceManager::Init()
 	res = new RES(RES_T::MODEL, PATH_MDL + "Player/Player_GameOver.mv1");
 	resourcesMap_.emplace(SRC::PLAYER_GAMEOVER, res);	//mapÇ…ìoò^
 
-	// ÉtÉHÉìÉg
-	res = new RES(RES_T::FONT, PATH_FNT + "msGothic.ttf");
-	resourcesMap_.emplace(SRC::FONT_MSGOTHIC, res);	//mapÇ…ìoò^
+	// ÉIÉvÉVÉáÉìîwåi
+	res = new RES(RES_T::IMG, PATH_IMG + "Title.png");
+	resourcesMap_.emplace(SRC::OPTION_BACKGROUND, res);	//mapÇ…ìoò^
+
+	// ÉXÉâÉCÉ_Å[òg
+	res = new RES(RES_T::IMG, PATH_IMG + "UI/SliderFrame.png");
+	resourcesMap_.emplace(SRC::SLIDER_FRAME, res);	//mapÇ…ìoò^
+
+	// ÉXÉâÉCÉ_Å[ÉmÉu
+	res = new RES(RES_T::IMG, PATH_IMG + "UI/SliderKnob.png");
+	resourcesMap_.emplace(SRC::SLIDER_KNOB, res);	//mapÇ…ìoò^
 }
 
 void ResourceManager::Release()

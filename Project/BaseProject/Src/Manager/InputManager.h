@@ -133,6 +133,9 @@ public:
 	void SetKeyAndMouseEnabled(bool enabled) { isKeyAndMouseEnabled_ = enabled; }	// キーとマウスの両方を有効/無効にする
 	bool IsEnableKeyAndMouse() const { return isKeyAndMouseEnabled_; }	// キーとマウスの両方が有効か
 
+	int GetMouseWheelSensitivity();	// マウスホイールの回転感度の取得
+	void SetMouseWheelSensitivity(float value);	// マウスホイールの回転感度の設定
+
 private:
 	InputManager();		// コンストラクタ
 	~InputManager();	// デストラクタ
@@ -202,10 +205,11 @@ private:
 	void Add(int key);				// 判定を行うキーを追加
 	void AddMouse(int button);		// 判定を行うマウスボタンを追加
 
-	int mouseWheel_;	// マウスホイールの回転量
-	int prevMouseX_;	// 前フレームのマウスX座標
-	int prevMouseY_;	// 前フレームのマウスY座標
-	bool isMouseMoved_;	// マウスが動いたか
+	int mouseWheel_;					// マウスホイールの回転量
+	float wheelSensitivity_ = 10.0f;	// マウスホイールの回転感度
+	int prevMouseX_;					// 前フレームのマウスX座標
+	int prevMouseY_;					// 前フレームのマウスY座標
+	bool isMouseMoved_;					// マウスが動いたか
 
 	std::map<int, Info> keyInfos_;			// キーと情報紐付け
 	std::map<int, MouseInfo> mouseInfos_;	// マウスボタンと情報の紐付け
