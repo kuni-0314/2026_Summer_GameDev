@@ -64,6 +64,8 @@ public:
 		OPTION_BACKGROUND,	//オプション背景
 		SLIDER_FRAME,	//スライダー枠
 		SLIDER_KNOB,	//スライダーノブ
+		CHECKBOX_ON,	//チェックボックスON
+		CHECKBOX_OFF,	//チェックボックスOFF
 		MAX
 	};
 

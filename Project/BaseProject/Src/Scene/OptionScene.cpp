@@ -18,8 +18,8 @@ OptionScene::~OptionScene()
 void OptionScene::Init()
 {
 	// カテゴリーはメイン、項目はサブを使用する
-	mainFontHandle_ = CreateFontToHandle("MS Mincho", 48, -1, DX_FONTTYPE_ANTIALIASING);
-	subFontHandle_ = CreateFontToHandle("MS Mincho", 32, -1, DX_FONTTYPE_ANTIALIASING);
+	categoryFontHandle_ = CreateFontToHandle("MS Mincho", 48, -1, DX_FONTTYPE_ANTIALIASING);
+	itemFontHandle_ = CreateFontToHandle("MS Mincho", 32, -1, DX_FONTTYPE_ANTIALIASING);
 
 	LoadOptionValues();	
 
@@ -32,9 +32,8 @@ void OptionScene::Init()
 	sliderKnobHandle_ = resMng_.Load(ResourceManager::SRC::SLIDER_KNOB).handleId_;
 	
 	// チェックボックス用画像の読み込み
-	// TODO: ResourceManager::SRC に追加する必要があります
-	// checkboxOnHandle_ = resMng_.Load(ResourceManager::SRC::CHECKBOX_ON).handleId_;
-	// checkboxOffHandle_ = resMng_.Load(ResourceManager::SRC::CHECKBOX_OFF).handleId_;
+	 checkboxOnHandle_ = resMng_.Load(ResourceManager::SRC::CHECKBOX_ON).handleId_;
+	 checkboxOffHandle_ = resMng_.Load(ResourceManager::SRC::CHECKBOX_OFF).handleId_;
 	
 	// ボタン用画像の読み込み
 	// TODO: ResourceManager::SRC に追加する必要があります
@@ -47,8 +46,9 @@ void OptionScene::Update()
 	auto ins = InputManager::GetInstance();
 
 	// スクロール処理
+	const float scrollSpeed = 10.0f; // スクロール速度
 	int wheelDelta = ins->GetMouseWheel();
-	scrollOffset_ += wheelDelta;
+	scrollOffset_ += wheelDelta * scrollSpeed;
 
 	// キーボードによるスクロール
 	if (ins->IsNew(KEY_INPUT_DOWN))
@@ -105,20 +105,7 @@ void OptionScene::Update()
 				UpdateDropdown(info.itemIndex, controlDisplayX, controlDisplayY, cursorX, cursorY);
 				break;
 			case CHECKBOX:
-				// チェックボックスのクリック処理
-				if (ins->IsMouseTrgDown(MOUSE_INPUT_LEFT))
-				{
-					int checkboxX = controlDisplayX;
-					int checkboxY = controlDisplayY;
-					int checkboxSize = 48;
-					
-					if (cursorX >= checkboxX - checkboxSize / 2 && cursorX <= checkboxX + checkboxSize / 2 &&
-						cursorY >= checkboxY - checkboxSize / 2 && cursorY <= checkboxY + checkboxSize / 2)
-					{
-						bool value = GetItemValueBool(info.itemIndex);
-						SetItemValueBool(info.itemIndex, !value);
-					}
-				}
+				UpdateCheckbox(info.itemIndex, controlDisplayX, controlDisplayY, cursorX, cursorY);
 				break;
 			}
 		}
@@ -126,62 +113,71 @@ void OptionScene::Update()
 
 	// 適用・終了ボタンの更新
 	UpdateButtons(cursorX, cursorY);
+}
 
-	// ESCキーで終了
-	if (ins->IsTrgDown(KEY_INPUT_ESCAPE))
+void OptionScene::UpdateCheckbox(int itemIndex, int x, int y, int cursorX, int cursorY)
+{
+	auto ins = InputManager::GetInstance();
+
+	if (ins->IsMouseTrgDown(MOUSE_INPUT_LEFT))
 	{
-		// シーン遷移処理（必要に応じて実装）
-		// sceneManager.ChangeScene(SceneManager::SCENE_ID::TITLE);
+		int checkboxX = x;
+		int checkboxY = y;
+		int checkboxSize = 48;
+
+		if (cursorX >= checkboxX - checkboxSize / 2 && cursorX <= checkboxX + checkboxSize / 2 &&
+			cursorY >= checkboxY - checkboxSize / 2 && cursorY <= checkboxY + checkboxSize / 2)
+		{
+			bool value = GetItemValueBool(itemIndex);
+			SetItemValueBool(itemIndex, !value);
+		}
 	}
 }
 
-void OptionScene::UpdateButtons(int cursorX, int cursorY)
+OptionScene::SliderConfig OptionScene::GetSliderConfig(int itemIndex) const
 {
-	auto ins = InputManager::GetInstance();
-	
-	const int buttonWidth = 200;
-	const int buttonHeight = 60;
-	const int buttonY = Application::SCREEN_SIZE_Y - 100;
-	const int applyButtonX = Application::SCREEN_SIZE_X / 2 - 120;
-	const int exitButtonX = Application::SCREEN_SIZE_X / 2 + 120;
-
-	// 適用ボタンのホバー判定
-	buttonState_.isApplyHovered = (cursorX >= applyButtonX - buttonWidth / 2 && 
-									cursorX <= applyButtonX + buttonWidth / 2 &&
-									cursorY >= buttonY - buttonHeight / 2 && 
-									cursorY <= buttonY + buttonHeight / 2);
-
-	// 終了ボタンのホバー判定
-	buttonState_.isExitHovered = (cursorX >= exitButtonX - buttonWidth / 2 && 
-								   cursorX <= exitButtonX + buttonWidth / 2 &&
-								   cursorY >= buttonY - buttonHeight / 2 && 
-								   cursorY <= buttonY + buttonHeight / 2);
-
-	// クリック処理
-	if (ins->IsMouseTrgDown(MOUSE_INPUT_LEFT))
-	{
-		if (buttonState_.isApplyHovered)
-		{
-			// 適用ボタン
-			ApplyOptionValues();
-		}
-		else if (buttonState_.isExitHovered)
-		{
-			// 終了ボタン
-			SaveOptionValues();
-			// シーン遷移処理（必要に応じて実装）
-			// sceneManager.ChangeScene(SceneManager::SCENE_ID::TITLE);
-		}
-	}
+    switch (itemIndex)
+    {
+    case IDX_MASTER_VOLUME:
+    case IDX_BGM_VOLUME:
+    case IDX_SE_VOLUME:
+        return { SliderConfig::ValueType::FLOAT, 0.0f, 100.0f, 1.0f };
+        
+    case IDX_BRIGHTNESS:
+        return { SliderConfig::ValueType::FLOAT, 0.0f, 200.0f, 1.0f };
+        
+    case IDX_MOUSE_SENSITIVITY:
+        return { SliderConfig::ValueType::INT, 1.0f, 20.0f, 1.0f };
+        
+    case IDX_WHEEL_SENSITIVITY:
+        return { SliderConfig::ValueType::FLOAT, 1.0f, 100.0f, 1.0f };
+        
+    case IDX_LEFT_STICK_SENSITIVITY:
+    case IDX_RIGHT_STICK_SENSITIVITY:
+        return { SliderConfig::ValueType::FLOAT, 0.1f, 5.0f, 0.1f };
+        
+    case IDX_LEFT_STICK_DEAD_ZONE:
+    case IDX_RIGHT_STICK_DEAD_ZONE:
+        return { SliderConfig::ValueType::FLOAT, 0.0f, 1.0f, 0.05f };
+        
+    case IDX_VIBRATION_STRENGTH:
+        return { SliderConfig::ValueType::FLOAT, 0.0f, 100.0f, 1.0f };
+        
+    case IDX_HOLD_THRESHOLD:
+        return { SliderConfig::ValueType::INT, 1.0f, 120.0f, 1.0f };
+        
+    default:
+        return { SliderConfig::ValueType::FLOAT, 0.0f, 100.0f, 1.0f };
+    }
 }
 
 void OptionScene::UpdateSlider(int itemIndex, int x, int y, int cursorX, int cursorY)
 {
 	auto ins = InputManager::GetInstance();
 	
-	const int sliderWidth = 400;
-	const int sliderHeight = 20;
-	const int knobSize = 30;
+	const int sliderWidth = 600;
+	const int sliderHeight = 15;
+	const int knobSize = 40;
 	
 	int sliderLeft = x - sliderWidth / 2;
 	int sliderRight = x + sliderWidth / 2;
@@ -204,14 +200,31 @@ void OptionScene::UpdateSlider(int itemIndex, int x, int y, int cursorX, int cur
 	{
 		if (ins->IsMouseNew(MOUSE_INPUT_LEFT))
 		{
+			// スライダー設定を取得
+			SliderConfig config = GetSliderConfig(itemIndex);
+			
 			// スライダーの値を更新
 			float ratio = static_cast<float>(cursorX - sliderLeft) / sliderWidth;
 			ratio = std::clamp(ratio, 0.0f, 1.0f);
 			
-			// 項目に応じた範囲で値を設定
-			// TODO: 各項目の最小値・最大値を定義する必要があります
-			float value = ratio * 100.0f; // 仮に0-100の範囲
-			SetItemValueFloat(itemIndex, value);
+			// 最小値～最大値の範囲で値を計算
+			float rawValue = config.minValue + (config.maxValue - config.minValue) * ratio;
+			
+			// 刻み幅に合わせて丸める
+			if (config.step > 0.0f)
+			{
+				rawValue = std::round(rawValue / config.step) * config.step;
+			}
+			
+			// 型に応じて設定
+			if (config.type == SliderConfig::ValueType::INT)
+			{
+				SetItemValueInt(itemIndex, static_cast<int>(rawValue));
+			}
+			else
+			{
+				SetItemValueFloat(itemIndex, rawValue);
+			}
 		}
 		else
 		{
@@ -301,6 +314,47 @@ void OptionScene::UpdateDropdown(int itemIndex, int x, int y, int cursorX, int c
 	}
 }
 
+void OptionScene::UpdateButtons(int cursorX, int cursorY)
+{
+	auto ins = InputManager::GetInstance();
+
+	const int buttonWidth = 200;
+	const int buttonHeight = 60;
+	const int buttonY = Application::SCREEN_SIZE_Y - 100;
+	const int applyButtonX = Application::SCREEN_SIZE_X / 2 - 120;
+	const int exitButtonX = Application::SCREEN_SIZE_X / 2 + 120;
+
+	// 適用ボタンのホバー判定
+	buttonState_.isApplyHovered = (cursorX >= applyButtonX - buttonWidth / 2 &&
+		cursorX <= applyButtonX + buttonWidth / 2 &&
+		cursorY >= buttonY - buttonHeight / 2 &&
+		cursorY <= buttonY + buttonHeight / 2);
+
+	// 終了ボタンのホバー判定
+	buttonState_.isExitHovered = (cursorX >= exitButtonX - buttonWidth / 2 &&
+		cursorX <= exitButtonX + buttonWidth / 2 &&
+		cursorY >= buttonY - buttonHeight / 2 &&
+		cursorY <= buttonY + buttonHeight / 2);
+
+	// クリック処理
+	if (ins->IsMouseTrgDown(MOUSE_INPUT_LEFT))
+	{
+		if (buttonState_.isApplyHovered)
+		{
+			// 適用ボタン
+			//ApplyOptionValues();
+			SaveOptionValues();
+		}
+		else if (buttonState_.isExitHovered)
+		{
+			// 終了ボタン
+			//SaveOptionValues();
+			// シーン遷移処理（必要に応じて実装）
+			SceneManager::GetInstance().ChangeScene(SceneManager::SCENE_ID::TITLE);
+		}
+	}
+}
+
 void OptionScene::Draw()
 {
 	// 一時スクリーンにメイン画面をコピー
@@ -308,6 +362,7 @@ void OptionScene::Draw()
 	SetDrawScreen(tempScreen);
 	ClearDrawScreen();
 
+	// 背景描画
 	SetDrawBlendMode(DX_BLENDMODE_ALPHA, 80);
 	int backgroundWidth_, backgroundHeight_;
 	GetGraphSize(backgroundHandle_, &backgroundWidth_, &backgroundHeight_);
@@ -325,7 +380,7 @@ void OptionScene::Draw()
 
 		if (info.isCategory)
 		{
-			textColor = GetColor(50, 50, 50);
+			textColor = GetColor(90, 90, 90);
 		}
 		else
 		{
@@ -352,39 +407,7 @@ void OptionScene::Draw()
 			switch (ITEM_TYPES[lastItemNum_])
 			{
 			case CHECKBOX:
-				{
-					bool value = GetItemValueBool(info.itemIndex);
-					int checkboxSize = 48;
-					
-					if (value && checkboxOnHandle_ > 0)
-					{
-						// ON画像を描画
-						DrawRotaGraph(controlDisplayX, controlDisplayY, 1.0, 0.0, checkboxOnHandle_, TRUE);
-					}
-					else if (!value && checkboxOffHandle_ > 0)
-					{
-						// OFF画像を描画
-						DrawRotaGraph(controlDisplayX, controlDisplayY, 1.0, 0.0, checkboxOffHandle_, TRUE);
-					}
-					else
-					{
-						// 画像がない場合は矩形で描画
-						unsigned int color = value ? GetColor(0, 200, 0) : GetColor(200, 200, 200);
-						DrawBox(controlDisplayX - checkboxSize / 2, controlDisplayY - checkboxSize / 2,
-								controlDisplayX + checkboxSize / 2, controlDisplayY + checkboxSize / 2,
-								color, TRUE);
-						DrawBox(controlDisplayX - checkboxSize / 2, controlDisplayY - checkboxSize / 2,
-								controlDisplayX + checkboxSize / 2, controlDisplayY + checkboxSize / 2,
-								GetColor(0, 0, 0), FALSE);
-						
-						if (value)
-						{
-							// チェックマークを描画
-							DrawLine(controlDisplayX - 15, controlDisplayY, controlDisplayX - 5, controlDisplayY + 10, GetColor(255, 255, 255), 3);
-							DrawLine(controlDisplayX - 5, controlDisplayY + 10, controlDisplayX + 15, controlDisplayY - 10, GetColor(255, 255, 255), 3);
-						}
-					}
-				}
+				DrawCheckbox(info.itemIndex, controlDisplayX, controlDisplayY);
 				break;
 			case SLIDER:
 				DrawSlider(info.itemIndex, controlDisplayX, controlDisplayY);
@@ -408,96 +431,102 @@ void OptionScene::Draw()
 	DeleteGraph(tempScreen);
 }
 
-void OptionScene::DrawButtons()
+void OptionScene::DrawCheckbox(int itemIndex, int x, int y)
 {
-	const int buttonWidth = 200;
-	const int buttonHeight = 60;
-	const int buttonY = Application::SCREEN_SIZE_Y - 100;
-	const int applyButtonX = Application::SCREEN_SIZE_X / 2 - 120;
-	const int exitButtonX = Application::SCREEN_SIZE_X / 2 + 120;
+	bool value = GetItemValueBool(itemIndex);
+	int checkboxSize = 48;
 
-	// 適用ボタン描画
-	if (buttonApplyHandle_ > 0)
+	if (value && checkboxOnHandle_ > 0)
 	{
-		DrawRotaGraph(applyButtonX, buttonY, 1.0, 0.0, buttonApplyHandle_, TRUE);
+		// ON画像を描画
+		DrawRotaGraph(x, y, 1.0, 0.0, checkboxOnHandle_, true);
+	}
+	else if (!value && checkboxOffHandle_ > 0)
+	{
+		// OFF画像を描画
+		DrawRotaGraph(x, y, 1.0, 0.0, checkboxOffHandle_, true);
 	}
 	else
 	{
-		unsigned int applyColor = buttonState_.isApplyHovered ? GetColor(100, 200, 100) : GetColor(150, 150, 150);
-		DrawBox(applyButtonX - buttonWidth / 2, buttonY - buttonHeight / 2,
-				applyButtonX + buttonWidth / 2, buttonY + buttonHeight / 2,
-				applyColor, TRUE);
-		DrawBox(applyButtonX - buttonWidth / 2, buttonY - buttonHeight / 2,
-				applyButtonX + buttonWidth / 2, buttonY + buttonHeight / 2,
-				GetColor(0, 0, 0), FALSE);
-		
-		const char* applyText = "適用";
-		int textWidth = GetDrawStringWidthToHandle(applyText, static_cast<int>(strlen(applyText)), subFontHandle_);
-		DrawStringToHandle(applyButtonX - textWidth / 2, buttonY - 16, applyText, GetColor(255, 255, 255), subFontHandle_);
-	}
+		// 画像がない場合は矩形で描画
+		unsigned int color = value ? GetColor(0, 200, 0) : GetColor(200, 200, 200);
+		DrawBox(x - checkboxSize / 2, y - checkboxSize / 2,
+			x + checkboxSize / 2, y + checkboxSize / 2,
+			color, true);
+		DrawBox(x - checkboxSize / 2, y - checkboxSize / 2,
+			x + checkboxSize / 2, y + checkboxSize / 2,
+			GetColor(0, 0, 0), false);
 
-	// 終了ボタン描画
-	if (buttonExitHandle_ > 0)
-	{
-		DrawRotaGraph(exitButtonX, buttonY, 1.0, 0.0, buttonExitHandle_, TRUE);
-	}
-	else
-	{
-		unsigned int exitColor = buttonState_.isExitHovered ? GetColor(200, 100, 100) : GetColor(150, 150, 150);
-		DrawBox(exitButtonX - buttonWidth / 2, buttonY - buttonHeight / 2,
-				exitButtonX + buttonWidth / 2, buttonY + buttonHeight / 2,
-				exitColor, TRUE);
-		DrawBox(exitButtonX - buttonWidth / 2, buttonY - buttonHeight / 2,
-				exitButtonX + buttonWidth / 2, buttonY + buttonHeight / 2,
-				GetColor(0, 0, 0), FALSE);
-		
-		const char* exitText = "終了";
-		int textWidth = GetDrawStringWidthToHandle(exitText, static_cast<int>(strlen(exitText)), subFontHandle_);
-		DrawStringToHandle(exitButtonX - textWidth / 2, buttonY - 16, exitText, GetColor(255, 255, 255), subFontHandle_);
+		if (value)
+		{
+			// チェックマークを描画
+			DrawLine(x - 15, y, x - 5, y + 10, GetColor(255, 255, 255), 3);
+			DrawLine(x - 5, y + 10, x + 15, y - 10, GetColor(255, 255, 255), 3);
+		}
 	}
 }
 
 void OptionScene::DrawSlider(int itemIndex, int x, int y)
 {
-	const int sliderWidth = 400;
-	const int sliderHeight = 20;
-	const int knobSize = 30;
-	
-	int sliderLeft = x - sliderWidth / 2;
-	int sliderTop = y - sliderHeight / 2;
+    const int sliderWidth = 600;
+    const int sliderHeight = 15;
+    const int knobSize = 40;
+    
+    int sliderLeft = x - sliderWidth / 2;
+    int sliderTop = y - sliderHeight / 2;
 
-	// スライダーフレーム描画
-	if (sliderFrameHandle_ > 0)
-	{
-		DrawExtendGraph(sliderLeft, sliderTop, sliderLeft + sliderWidth, sliderTop + sliderHeight, sliderFrameHandle_, TRUE);
-	}
-	else
-	{
-		DrawBox(sliderLeft, sliderTop, sliderLeft + sliderWidth, sliderTop + sliderHeight, GetColor(100, 100, 100), TRUE);
-		DrawBox(sliderLeft, sliderTop, sliderLeft + sliderWidth, sliderTop + sliderHeight, GetColor(200, 200, 200), FALSE);
-	}
+    // スライダーフレーム描画
+    if (sliderFrameHandle_ > 0)
+    {
+        DrawExtendGraph(sliderLeft, sliderTop, sliderLeft + sliderWidth, sliderTop + sliderHeight, sliderFrameHandle_, true);
+    }
+    else
+    {
+        DrawBox(sliderLeft, sliderTop, sliderLeft + sliderWidth, sliderTop + sliderHeight, GetColor(100, 100, 100), true);
+        DrawBox(sliderLeft, sliderTop, sliderLeft + sliderWidth, sliderTop + sliderHeight, GetColor(200, 200, 200), false);
+    }
 
-	// 値を取得して位置を計算
-	float value = GetItemValueFloat(itemIndex);
-	float ratio = value / 100.0f;
-	ratio = std::clamp(ratio, 0.0f, 1.0f);
-	
-	int knobX = sliderLeft + static_cast<int>(sliderWidth * ratio);
-	int knobY = y;
+    // スライダー設定を取得
+    SliderConfig config = GetSliderConfig(itemIndex);
+    
+    // 値を取得
+    float value;
+    if (config.type == SliderConfig::ValueType::INT)
+    {
+        value = static_cast<float>(GetItemValueInt(itemIndex));
+    }
+    else
+    {
+        value = GetItemValueFloat(itemIndex);
+    }
+    
+    // 位置を計算(最小値～最大値の範囲で正規化)
+    float ratio = (value - config.minValue) / (config.maxValue - config.minValue);
+    ratio = std::clamp(ratio, 0.0f, 1.0f);
+    
+    int knobX = sliderLeft + static_cast<int>(sliderWidth * ratio);
+    int knobY = y;
 
-	// つまみ描画
-	if (sliderKnobHandle_ > 0)
-	{
-		DrawRotaGraph(knobX, knobY, 1.0, 0.0, sliderKnobHandle_, TRUE);
-	}
-	else
-	{
-		DrawCircle(knobX, knobY, knobSize / 2, GetColor(255, 255, 255), TRUE);
-		DrawCircle(knobX, knobY, knobSize / 2, GetColor(0, 0, 0), FALSE);
-	}
+    // つまみ描画
+    if (sliderKnobHandle_ > 0)
+    {
+        DrawRotaGraph(knobX, knobY, 1.0, 0.0, sliderKnobHandle_, true);
+    }
+    else
+    {
+        DrawCircle(knobX, knobY, knobSize / 2, GetColor(255, 255, 255), true);
+        DrawCircle(knobX, knobY, knobSize / 2, GetColor(0, 0, 0), false);
+    }
 
-	// 値を右側に表示
-	DrawFormatStringToHandle(x + sliderWidth / 2 + 20, y - 16, GetColor(0, 0, 0), subFontHandle_, "%.1f", value);
+    // 値を右側に表示
+    if (config.type == SliderConfig::ValueType::INT)
+    {
+        DrawFormatStringToHandle(x + sliderWidth / 2 + 20, y - 16, GetColor(0, 0, 0), itemFontHandle_, "%d", static_cast<int>(value));
+    }
+    else
+    {
+        DrawFormatStringToHandle(x + sliderWidth / 2 + 20, y - 16, GetColor(0, 0, 0), itemFontHandle_, "%.1f", value);
+    }
 }
 
 void OptionScene::DrawDropdown(int itemIndex, int x, int y)
@@ -517,11 +546,11 @@ void OptionScene::DrawDropdown(int itemIndex, int x, int y)
 		? options[currentValue] : "未選択";
 
 	// ドロップダウンボタン描画
-	DrawBox(buttonLeft, buttonTop, buttonLeft + dropdownWidth, buttonTop + dropdownHeight, GetColor(200, 200, 200), TRUE);
-	DrawBox(buttonLeft, buttonTop, buttonLeft + dropdownWidth, buttonTop + dropdownHeight, GetColor(0, 0, 0), FALSE);
+	DrawBox(buttonLeft, buttonTop, buttonLeft + dropdownWidth, buttonTop + dropdownHeight, GetColor(200, 200, 200), true);
+	DrawBox(buttonLeft, buttonTop, buttonLeft + dropdownWidth, buttonTop + dropdownHeight, GetColor(0, 0, 0), false);
 	
-	DrawFormatStringToHandle(buttonLeft + 10, buttonTop + 5, GetColor(0, 0, 0), subFontHandle_, "%s", displayText.c_str());
-	DrawFormatStringToHandle(buttonLeft + dropdownWidth - 30, buttonTop + 5, GetColor(0, 0, 0), subFontHandle_, "▼");
+	DrawFormatStringToHandle(buttonLeft + 10, buttonTop + 5, GetColor(0, 0, 0), itemFontHandle_, "%s", displayText.c_str());
+	DrawFormatStringToHandle(buttonLeft + dropdownWidth - 35, buttonTop + 5, GetColor(0, 0, 0), itemFontHandle_, "▼");
 
 	// 展開時の選択肢描画
 	if (dropdownState_.isOpen && dropdownState_.openItemIndex == itemIndex)
@@ -532,11 +561,60 @@ void OptionScene::DrawDropdown(int itemIndex, int x, int y)
 			bool isHovered = (dropdownState_.hoveredOption == static_cast<int>(i));
 			
 			unsigned int bgColor = isHovered ? GetColor(150, 150, 255) : GetColor(220, 220, 220);
-			DrawBox(buttonLeft, optionTop, buttonLeft + dropdownWidth, optionTop + optionHeight, bgColor, TRUE);
-			DrawBox(buttonLeft, optionTop, buttonLeft + dropdownWidth, optionTop + optionHeight, GetColor(0, 0, 0), FALSE);
+			DrawBox(buttonLeft, optionTop, buttonLeft + dropdownWidth, optionTop + optionHeight, bgColor, true);
+			DrawBox(buttonLeft, optionTop, buttonLeft + dropdownWidth, optionTop + optionHeight, GetColor(0, 0, 0), false);
 			
-			DrawFormatStringToHandle(buttonLeft + 10, optionTop + 2, GetColor(0, 0, 0), subFontHandle_, "%s", options[i].c_str());
+			DrawFormatStringToHandle(buttonLeft + 10, optionTop + 2, GetColor(0, 0, 0), itemFontHandle_, "%s", options[i].c_str());
 		}
+	}
+}
+
+void OptionScene::DrawButtons()
+{
+	const int buttonWidth = 200;
+	const int buttonHeight = 60;
+	const int buttonY = Application::SCREEN_SIZE_Y - 100;
+	const int applyButtonX = Application::SCREEN_SIZE_X / 2 - 120;
+	const int exitButtonX = Application::SCREEN_SIZE_X / 2 + 120;
+
+	// 適用ボタン描画
+	if (buttonApplyHandle_ > 0)
+	{
+		DrawRotaGraph(applyButtonX, buttonY, 1.0, 0.0, buttonApplyHandle_, true);
+	}
+	else
+	{
+		unsigned int applyColor = buttonState_.isApplyHovered ? GetColor(100, 200, 100) : GetColor(150, 150, 150);
+		DrawBox(applyButtonX - buttonWidth / 2, buttonY - buttonHeight / 2,
+				applyButtonX + buttonWidth / 2, buttonY + buttonHeight / 2,
+				applyColor, true);
+		DrawBox(applyButtonX - buttonWidth / 2, buttonY - buttonHeight / 2,
+				applyButtonX + buttonWidth / 2, buttonY + buttonHeight / 2,
+				GetColor(0, 0, 0), false);
+		
+		const char* applyText = "適用";
+		int textWidth = GetDrawStringWidthToHandle(applyText, static_cast<int>(strlen(applyText)), itemFontHandle_);
+		DrawStringToHandle(applyButtonX - textWidth / 2, buttonY - 16, applyText, GetColor(255, 255, 255), itemFontHandle_);
+	}
+
+	// 終了ボタン描画
+	if (buttonExitHandle_ > 0)
+	{
+		DrawRotaGraph(exitButtonX, buttonY, 1.0, 0.0, buttonExitHandle_, true);
+	}
+	else
+	{
+		unsigned int exitColor = buttonState_.isExitHovered ? GetColor(200, 100, 100) : GetColor(150, 150, 150);
+		DrawBox(exitButtonX - buttonWidth / 2, buttonY - buttonHeight / 2,
+				exitButtonX + buttonWidth / 2, buttonY + buttonHeight / 2,
+				exitColor, true);
+		DrawBox(exitButtonX - buttonWidth / 2, buttonY - buttonHeight / 2,
+				exitButtonX + buttonWidth / 2, buttonY + buttonHeight / 2,
+				GetColor(0, 0, 0), false);
+		
+		const char* exitText = "終了";
+		int textWidth = GetDrawStringWidthToHandle(exitText, static_cast<int>(strlen(exitText)), itemFontHandle_);
+		DrawStringToHandle(exitButtonX - textWidth / 2, buttonY - 16, exitText, GetColor(255, 255, 255), itemFontHandle_);
 	}
 }
 
@@ -546,8 +624,8 @@ void OptionScene::Release()
 	SaveOptionValues();
 
 	// フォントハンドルを削除
-	DeleteFontToHandle(mainFontHandle_);
-	DeleteFontToHandle(subFontHandle_);
+	DeleteFontToHandle(categoryFontHandle_);
+	DeleteFontToHandle(itemFontHandle_);
 }
 
 void OptionScene::LoadOptionValues()
@@ -569,8 +647,8 @@ void OptionScene::LoadOptionValues()
 	//isInvertYAxis_ = appIns.IsInvertYAxis();
 	//holdThreshold_ = inputIns->GetHoldThreshold();
 	//isAcceptKeyboardInput_ = inputIns->IsAcceptKeyboardInput();
-	//mouseSensitivity_ = inputIns->GetMouseSensitivity();
-	wheelSensitivity_ = static_cast<float>(inputIns->GetMouseWheelSensitivity());
+	mouseSensitivity_ = static_cast<float>(inputIns->GetMouseSensitivity());
+	wheelSensitivity_ = inputIns->GetMouseWheelSensitivity();
 	//leftStickSensitivity_ = inputIns->GetLeftStickSensitivity();
 	//leftStickDeadZone_ = inputIns->GetLeftStickDeadZone();
 	//rightStickSensitivity_ = inputIns->GetRightStickSensitivity();
@@ -606,7 +684,7 @@ void OptionScene::SaveOptionValues()
 	//appIns.SetInvertYAxis(isInvertYAxis_);
 	//inputIns->SetHoldThreshold(holdThreshold_);
 	//inputIns->SetAcceptKeyboardInput(isAcceptKeyboardInput_);
-	//inputIns->SetMouseSensitivity(mouseSensitivity_);
+	inputIns->SetMouseSensitivity(mouseSensitivity_);
 	inputIns->SetMouseWheelSensitivity(wheelSensitivity_);
 	//inputIns->SetLeftStickSensitivity(leftStickSensitivity_);
 	//inputIns->SetLeftStickDeadZone(leftStickDeadZone_);
@@ -626,19 +704,21 @@ void OptionScene::SaveOptionValues()
 	// 例: SaveToFile("Config/Options.ini");
 }
 
-void OptionScene::ApplyOptionValues()
-{
-	// 設定を即座に反映する場合に使用
-	SaveOptionValues();
-}
+//void OptionScene::ApplyOptionValues()
+//{
+//	// 設定を即座に反映する場合に使用
+//	SaveOptionValues();
+//}
 
 void OptionScene::CalculateItemDisplayInfo()
 {
-	const int mainTextHeight = 48;
-	const int subTextHeight = 32;
+	int categoryTextHeight = 0;
+	GetDrawFormatStringSizeToHandle(nullptr, &categoryTextHeight, nullptr, categoryFontHandle_, "%S", "A");
+	int itemTextHeight = 0;
+	GetDrawFormatStringSizeToHandle(nullptr, &itemTextHeight, nullptr, itemFontHandle_, "%S", "A");
 	const int hitboxMargin = 5;
-	const int itemSpacing = 20;
-	const int categorySpacing = 50;
+	const int categorySpacing = categoryTextHeight;
+	const int itemSpacing = itemTextHeight;
 	const int leftAreaCenterX = Application::SCREEN_SIZE_X / 4;
 
 	int currentY = scrollOffset_;
@@ -649,8 +729,8 @@ void OptionScene::CalculateItemDisplayInfo()
 		auto& info = itemDisplayInfos_[i];
 
 		info.isCategory = (ITEM_TYPES[i] == CATEGORY_HEADER);
-		info.textHeight = info.isCategory ? mainTextHeight : subTextHeight;
-		info.fontHandle = info.isCategory ? mainFontHandle_ : subFontHandle_;
+		info.textHeight = info.isCategory ? categoryTextHeight : itemTextHeight;
+		info.fontHandle = info.isCategory ? categoryFontHandle_ : itemFontHandle_;
 
 		if (!info.isCategory)
 		{
@@ -764,7 +844,6 @@ void OptionScene::SetItemValueBool(int itemIndex, bool value)
 
 const std::vector<std::string>& OptionScene::GetDropdownOptions(int itemIndex)
 {
-	// TODO: 各項目の選択肢を定義
 	static std::vector<std::string> dummyOptions = {"選択肢1", "選択肢2", "選択肢3"};
 	
 	switch (itemIndex)
@@ -781,10 +860,11 @@ const std::vector<std::string>& OptionScene::GetDropdownOptions(int itemIndex)
 		}
 	case IDX_COLOR_ACCESSIBILITY:
 		{
-			static std::vector<std::string> colorOptions = {"通常", "1型色覚", "2型色覚", "3型色覚"};
+			static std::vector<std::string> colorOptions = {"一般色覚(C型)", "1型2色覚(PA型)", "1型3色覚(P型)", "2型2色覚(DA型)", "2型3色覚(D型)", "3型2色覚(TA型)", "3型3色覚(T型)", "1色覚(A型)"};
 			return colorOptions;
 		}
 	default:
+		OutputDebugString("GetDropdownOptions: 未定義の項目インデックスが指定されました\n");
 		return dummyOptions;
 	}
 }

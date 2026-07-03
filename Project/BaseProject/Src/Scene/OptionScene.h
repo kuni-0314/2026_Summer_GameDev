@@ -104,7 +104,7 @@ private:
 	void SaveOptionValues();
 
 	// 値の適用
-	void ApplyOptionValues();
+	//void ApplyOptionValues();
 
 	// 項目の表示情報を初期化
 	void CalculateItemDisplayInfo();
@@ -182,7 +182,7 @@ private:
 	};
 
 	// InputManager
-	float mouseSensitivity_ = 0.0f;	// マウス感度
+	int mouseSensitivity_ = 0;	// マウス感度
 	float wheelSensitivity_ = 0.0f;	// ホイール回転感度
 
 	// パッド操作関連
@@ -364,8 +364,8 @@ private:
 		CHECKBOX			// バッテリー残量
 	};
 
-	int mainFontHandle_ = 0;	// メインフォントハンドル
-	int subFontHandle_ = 0;		// サブフォントハンドル
+	int categoryFontHandle_ = 0;	// メインフォントハンドル
+	int itemFontHandle_ = 0;		// サブフォントハンドル
 	int scrollOffset_ = 32;		// スクロールオフセット
 	int lastItemNum_ = 0;		// 最後にホバーした項目番号
 	int currentItemNum_ = -1;	// 現在ホバーしている項目番号
@@ -373,6 +373,12 @@ private:
 
 	// 項目の表示情報キャッシュ
 	ItemDisplayInfo itemDisplayInfos_[ALL_ITEM_NUM_MAX];
+
+	// チェックボックスの状態
+	struct CheckboxState
+	{
+		bool isHovered = false;	// ホバー中か
+	};
 
 	// スライダーの状態
 	struct SliderState
@@ -389,17 +395,23 @@ private:
 		int hoveredOption = -1;		// ホバー中の選択肢
 	};
 
-	// スライダーの描画
-	void DrawSlider(int itemIndex, int x, int y);
-
-	// ドロップダウンの描画
-	void DrawDropdown(int itemIndex, int x, int y);
+	// チェックボックスの更新処理
+	void UpdateCheckbox(int itemIndex, int x, int y, int cursorX, int cursorY);
 
 	// スライダーの更新処理
 	void UpdateSlider(int itemIndex, int x, int y, int cursorX, int cursorY);
 
 	// ドロップダウンの更新処理
 	void UpdateDropdown(int itemIndex, int x, int y, int cursorX, int cursorY);
+
+	// チェックボックスの描画
+	void DrawCheckbox(int itemIndex, int x, int y);
+
+	// スライダーの描画
+	void DrawSlider(int itemIndex, int x, int y);
+
+	// ドロップダウンの描画
+	void DrawDropdown(int itemIndex, int x, int y);
 
 	// 項目の値を取得（float型）
 	float GetItemValueFloat(int itemIndex);
@@ -422,6 +434,7 @@ private:
 	// ドロップダウンの選択肢を取得
 	const std::vector<std::string>& GetDropdownOptions(int itemIndex);
 
+	CheckboxState checkboxState_;	// チェックボックスの状態
 	SliderState sliderState_;		// スライダーの状態
 	DropdownState dropdownState_;	// ドロップダウンの状態
 
@@ -433,11 +446,11 @@ private:
 	int buttonApplyHandle_ = 0;		// 適用ボタン画像
 	int buttonExitHandle_ = 0;		// 終了ボタン画像
 
-	// 適用・終了ボタンの描画
-	void DrawButtons();
-
 	// 適用・終了ボタンの更新処理
 	void UpdateButtons(int cursorX, int cursorY);
+
+	// 適用・終了ボタンの描画
+	void DrawButtons();
 
 	// ボタンの状態
 	struct ButtonState
@@ -447,4 +460,22 @@ private:
 	};
 
 	ButtonState buttonState_;	// ボタンの状態
+
+	// スライダー設定
+	struct SliderConfig
+	{
+		enum class ValueType
+		{
+			FLOAT,
+			INT
+		};
+		
+		ValueType type;
+		float minValue;
+		float maxValue;
+		float step; // 刻み幅(オプション)
+	};
+
+	// スライダー設定を取得
+	SliderConfig GetSliderConfig(int itemIndex) const;
 };

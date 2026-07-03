@@ -559,7 +559,11 @@ void GameScene::PlayerHpDraw()
 	// 最小の方がインデックスが１０
 	// ややこしいねぇ
 
-	int index = hpHandles_.size() - std::ceil(player_->GetHp() * hpHandles_.size() / Player::MAX_HP);
+	int index = /*hpHandles_.size() -*/ std::ceil(player_->GetHp() * hpHandles_.size() / Player::MAX_HP);
+	
+	if (index < 0) index = 0;
+	if (index >= hpHandles_.size()) index = hpHandles_.size() - 1;
+
 	DrawGraph(IMG_HP_X, IMG_HP_Y, hpHandles_[index], true);
 }
 

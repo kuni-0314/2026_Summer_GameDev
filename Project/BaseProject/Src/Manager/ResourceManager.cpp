@@ -183,6 +183,13 @@ void ResourceManager::Init()
 	// スライダーノブ
 	res = new RES(RES_T::IMG, PATH_IMG + "UI/SliderKnob.png");
 	resourcesMap_.emplace(SRC::SLIDER_KNOB, res);	//mapに登録
+
+	// チェックボックスON
+	res = new RES(RES_T::IMG, PATH_IMG + "UI/CheckON.png");
+	resourcesMap_.emplace(SRC::CHECKBOX_ON, res);	//mapに登録
+	// チェックボックスOFF
+	res = new RES(RES_T::IMG, PATH_IMG + "UI/CheckOFF.png");
+	resourcesMap_.emplace(SRC::CHECKBOX_OFF, res);	//mapに登録
 }
 
 void ResourceManager::Release()

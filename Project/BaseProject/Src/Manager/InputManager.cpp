@@ -1,3 +1,4 @@
+#include <Windows.h>
 #include <DxLib.h>
 #include "InputManager.h"
 
@@ -584,7 +585,31 @@ void InputManager::GetStickDirXZ(VECTOR& vec, int gamepadIndex, bool isLeftStick
 	}
 }
 
-int InputManager::GetMouseWheelSensitivity()
+int InputManager::GetMouseSensitivity() const
+{
+	int speed = 0;
+	// Œ»İ‚Ì‘¬“x‚ğæ“¾
+	SystemParametersInfoA(
+		SPI_GETMOUSESPEED,
+		0,
+		&speed,
+		0
+	);
+	return speed;
+}
+
+void InputManager::SetMouseSensitivity(int value)
+{
+	if (value < 0) value = 0;
+	SystemParametersInfoA(
+		SPI_SETMOUSESPEED,
+		0,
+		(PVOID)value,
+		0
+	);
+}
+
+float InputManager::GetMouseWheelSensitivity()
 {
 	return wheelSensitivity_;
 }

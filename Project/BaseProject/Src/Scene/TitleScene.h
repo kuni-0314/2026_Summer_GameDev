@@ -1,5 +1,6 @@
 #pragma once
 #include "SceneBase.h"
+#include "../Manager/SceneManager.h"
 #include "../Object/Common/Transform.h"
 
 class AnimationController;
@@ -129,6 +130,6 @@ private:
 	float effectTime_;
 	static constexpr float FADE_SPEED = 0.02f;
 
-	
+	SceneManager::SCENE_ID nextScene_;
 
 };
