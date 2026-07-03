@@ -59,6 +59,7 @@ public:
 		IMG_OFF_TITLE,
 		IMG_OFF_RETRY,
 		PLAYER_GAMEOVER,	//ゲームオーバー用プレイヤー
+		ENEMY_LARGE_RING,
 		MAX
 	};
 

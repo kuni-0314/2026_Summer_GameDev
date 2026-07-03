@@ -33,7 +33,6 @@ void EnemyLarge::Draw(void)
 	CharactorBase::Draw();
 
 
-
 #ifdef _DEBUG
 
 #endif //_DEBUG
@@ -49,6 +48,7 @@ void EnemyLarge::Draw(void)
 	else if (next == STATE::ATTACK_DROP) name = "ATTACK_DROP";
 
 	DrawFormatString(0, 500, GetColor(255, 255, 255), "STATE: %s", name);
+	DrawFormatString(0, 400, GetColor(255, 255, 255), "POS: %.2f", transform_.pos.y);
 
 
 }
@@ -62,8 +62,8 @@ void EnemyLarge::InitLoad()
 	//基底クラスのリソースロード
 	CharactorBase::InitLoad();
 	transform_.SetModel(resMng_.LoadModelDuplicate(ResourceManager::SRC::ENEMY_LARGE));
-	
 
+	//ringTransform_.SetModel(resMng_.LoadModelDuplicate(ResourceManager::SRC::ENEMY_LARGE_RING));
 }
 
 void EnemyLarge::InitTransform()
@@ -72,8 +72,6 @@ void EnemyLarge::InitTransform()
 	transform_.scl = { SCALE ,SCALE ,SCALE };
 	transform_.quaRot = Quaternion::Identity();
 	transform_.quaRotLocal = Quaternion::Euler(ROT);
-	transform_.pos = { 0.0f, 100.0f, 1500.0f };
-
 	transform_.Update();
 }
 
@@ -85,12 +83,33 @@ void EnemyLarge::InitCollider()
 		COL_LINE_START_LOCAL_POS, COL_LINE_END_LOCAL_POS);
 	ownColliders_.emplace(static_cast<int>(COLLIDER_TYPE::LINE), colLine);
 
-	// 主に壁や木などの衝突で使用するカプセルコライダ
+	// 主に壁や木などの衝突で使用するカプセルコライダ（前半分）
 	ColliderCapsule* colCapsule = new ColliderCapsule(
 		ColliderBase::TAG::ENEMY, &transform_,
 		COL_CAPSULE_TOP_LOCAL_POS, COL_CAPSULE_DOWN_LOCAL_POS,
 		COL_CAPSULE_RADIUS);
 	ownColliders_.emplace(static_cast<int>(COLLIDER_TYPE::CAPSULE), colCapsule);
+
+	// 主に壁や木などの衝突で使用するカプセルコライダ
+	ColliderCapsule* colbodyCapsule = new ColliderCapsule(
+		ColliderBase::TAG::ENEMY, &transform_,
+		COLBODY_CAPSULE_TOP_LOCAL_POS, COLBODY_CAPSULE_DOWN_LOCAL_POS,
+		COL_CAPSULE_RADIUS);
+	ownColliders_.emplace(static_cast<int>(COLLIDER_TYPE::CAPSULE), colbodyCapsule);
+
+	// 前半分用カプセル（キー: COLLIDER_KEY_BODY_FRONT）
+	colFrontCapsule_ = new ColliderCapsule(
+		ColliderBase::TAG::ENEMY, &transform_,
+		COL_CAPSULE_TOP_LOCAL_POS, COL_CAPSULE_DOWN_LOCAL_POS,
+		COL_CAPSULE_RADIUS);
+	ownColliders_.emplace(COLLIDER_KEY_BODY_FRONT, colFrontCapsule_);
+
+	// 後半分用カプセル（キー: COLLIDER_KEY_BODY_BACK）
+	colBackCapsule_ = new ColliderCapsule(
+		ColliderBase::TAG::ENEMY, &transform_,
+		COLBODY_CAPSULE_TOP_LOCAL_POS, COLBODY_CAPSULE_DOWN_LOCAL_POS,
+		COL_CAPSULE_RADIUS);
+	ownColliders_.emplace(COLLIDER_KEY_BODY_BACK, colBackCapsule_);
 }
 
 void EnemyLarge::InitAnimation()
@@ -106,6 +125,8 @@ void EnemyLarge::InitAnimation()
 		, 20.0f, Application::PATH_MODEL + "Enemy/Large/Punch.mv1");
 	animationController_->Add(static_cast<int>(ANIM_TYPE::ATTACK_DROP)
 		, 20.0f, Application::PATH_MODEL + "Enemy/Large/Drop.mv1");
+	animationController_->Add(static_cast<int>(ANIM_TYPE::HIT)
+		, 20.0f, Application::PATH_MODEL + "Enemy/Large/Hit.mv1");
 
 
 	animationController_->Play(static_cast<int>(ANIM_TYPE::IDLE), true);
@@ -133,6 +154,9 @@ void EnemyLarge::InitPost()
 	stateChanges_.emplace(static_cast<int>(STATE::ATTACK_DROP),
 		std::bind(&EnemyLarge::ChangeStateAttackDrop, this));
 
+	stateChanges_.emplace(static_cast<int>(STATE::HIT),
+		std::bind(&EnemyLarge::ChangeStateHit, this));
+
 
 	// 初期状態設定
 	ChangeState(STATE::IDLE);
@@ -151,9 +175,19 @@ void EnemyLarge::UpdateProcess()
 	
 	STATE state = state_;
 
+	//プレイヤー視認状態
 	if(look_)
 	{
 		LookPlayer();
+	}
+
+	//ダメージヒット処理
+	preHp_ = hp_;//被ダメージ前HP保存
+
+	CheckPlayerSwordCollision();
+	if (hp_ < preHp_)
+	{
+		ChangeState(STATE::HIT);
 	}
 }
 
@@ -228,15 +262,28 @@ void EnemyLarge::ChangeStateAttackRun()
 
 void EnemyLarge::ChangeStateAttackDrop()
 {
-	stateUpdate_ = std::bind(&EnemyLarge::UpdateAttacDrop, this);
+	stateUpdate_ = std::bind(&EnemyLarge::UpdateAttackDrop, this);
 
 	look_ = false;
 
 	movePow_ = AsoUtility::VECTOR_ZERO;
 
+
 	// 待機アニメーション再生
 	animationController_->Play(
-		static_cast<int>(ANIM_TYPE::ATTACK_DROP), true);
+		static_cast<int>(ANIM_TYPE::ATTACK_DROP), false);
+}
+
+void EnemyLarge::ChangeStateHit()
+{
+	stateUpdate_ = std::bind(&EnemyLarge::UpdateHit, this);
+
+	// ランダムな待機時間
+	step_ = 3.0f + static_cast<float>(GetRand(3));
+	// まだプレイヤーの攻撃が実装されいないのでその場で
+	movePow_ = AsoUtility::VECTOR_ZERO;
+	// 待機アニメーション再生
+	animationController_->Play(static_cast<int>(ANIM_TYPE::HIT), false);
 }
 
 void EnemyLarge::ChangeStateMove()
@@ -315,14 +362,45 @@ void EnemyLarge::UpdateAttackRun()
 	
 }
 
-void EnemyLarge::UpdateAttacDrop()
+void EnemyLarge::UpdateAttackDrop()
 {
-	if(animationController_->IsEnd())
+	// アニメーションの進行状況を取得して、指定タイミングでジャンプ力を加算する
+	if (animationController_ != nullptr && !jumpApplied_)
 	{
+		const auto& anim = animationController_->GetPlayAnim();
+		
+		if (anim.totalTime > 0.0f)
+		{
+			float triggerTime = anim.totalTime * ATTACK_DROP_JUMP_TIME_RATIO;
+			if (anim.step >= triggerTime)
+			{
+				// 指定タイミングでジャンプ力を与える
+				jumpApplied_ = true;
+				jumpPow_ = VGet(0.0f, 80.0f, 0.0f);
+				isJump_ = true;
+				isAir_ = true;
+
+			}
+		}
+	}
+
+	if (animationController_->IsEnd())
+	{
+
 		ChangeState(STATE::IDLE);
+		jumpApplied_ = false;
 	}
 
 	movePow_ = AsoUtility::VECTOR_ZERO;
+}
+
+void EnemyLarge::UpdateHit()
+{
+	if (animationController_->IsEnd())
+	{
+
+		ChangeState(STATE::IDLE);
+	}
 }
 
 void EnemyLarge::UpdateMove()

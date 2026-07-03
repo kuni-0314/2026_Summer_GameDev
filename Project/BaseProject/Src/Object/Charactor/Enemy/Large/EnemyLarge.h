@@ -6,6 +6,7 @@
 
 class Player;
 class ItemManger;
+class ColliderCapsule; // 前方/後方用カプセルのポインタを保持するための前方宣言
 
 
 class EnemyLarge : public EnemyBase
@@ -41,17 +42,6 @@ public:
 		END
 	};
 
-	//弾のパラメーター(
-	struct SHOT
-	{
-		bool isAlive_ = false;
-		float speed = 4.5f;
-		int life = 180;
-		float homingPower = 0.06f;
-		VECTOR dir_;
-		Transform shotTransform_;
-
-	};
 	// コンストラクタ
 
 	EnemyLarge(const EnemyBase::EnemyData& data, int attackModel, Player* player);
@@ -82,10 +72,7 @@ private:
 
 	ItemManger* itemManager_;
 
-	std::vector<SHOT> shots_;
-
-
-	//アニメーション登録番号
+		//アニメーション登録番号
 	//待機
 	static constexpr int  ANIM_INDX_FRY = 2;
 	//HIT
@@ -108,20 +95,32 @@ private:
 	static constexpr VECTOR COL_LINE_START_LOCAL_POS = { 0.0f, 80.0f, 0.0f };
 	// 衝突判定用線分終了
 	static constexpr VECTOR COL_LINE_END_LOCAL_POS = { 0.0f, -10.0f, 0.0f };
-	// 衝突判定用カプセル上部球体
-	static constexpr VECTOR COL_CAPSULE_TOP_LOCAL_POS = { 40.0f, 200.0f, 0.0f };
-	// 衝突判定用カプセル下部球体
-	static constexpr VECTOR COL_CAPSULE_DOWN_LOCAL_POS = { 40.0f, 70.0f, 0.0f };
+
+	// 衝突判定用カプセル上部球体（前半分）
+	static constexpr VECTOR COL_CAPSULE_TOP_LOCAL_POS = { 0.0f, 200.0f, 60.0f };
+	static constexpr VECTOR COL_CAPSULE_DOWN_LOCAL_POS = { 0.0f, 70.0f, 60.0f };
+
+	// 後半分用のカプセルローカル座標（体を前半/後半に分割）
+	static constexpr VECTOR COLBODY_CAPSULE_TOP_LOCAL_POS = { 0.0f, 200.0f, -50.0f };
+	static constexpr VECTOR COLBODY_CAPSULE_DOWN_LOCAL_POS = { 0.0f, 70.0f, -50.0f };
+
 	// 衝突判定用カプセル球体半径
 	static constexpr float COL_CAPSULE_RADIUS = 70.0f;
-	// 衝突判定用カプセル球体半径
+
+	// 衝突判定用カプセル球体半径（球体判定用）
 	static constexpr float COL_SPHERE_RADIUS = 50.0f;
 
 	// 攻撃判定用球体
 	static constexpr VECTOR ATTACK_SPHERE_LOCAL_POS = { 0.0f, 30.0f, 120.0f };
 
+	// EnemyLarge 固有で管理する ownColliders_ のキー（衝突タイプと被らないよう高めの値を使用）
+	static constexpr int COLLIDER_KEY_BODY_FRONT = 100;
+	static constexpr int COLLIDER_KEY_BODY_BACK = 101;
+
 	int count = 180;
 	int countUp = 0;
+
+	
 
 	// 行動切り替え用カプセル球体半径
 	static constexpr float COL_SWICH_RADIUS = 250.0f;
@@ -147,7 +146,8 @@ private:
 	bool attackHit_ = false;;
 
 
-
+	// ATTACK_DROP アニメーション内でジャンプを行うタイミング（アニメーション再生時間に対する比率）
+	static constexpr float ATTACK_DROP_JUMP_TIME_RATIO = 0.25f;
 
 	// 更新ステップ
 	float step_;// 状態管理(更新ステップ)
@@ -162,6 +162,8 @@ private:
 	// 状態
 	STATE state_;
 
+	bool jumpApplied_ = false;
+
 	VECTOR worldPos;
 	//プレイヤー方向
 	VECTOR toPlayer_;
@@ -170,6 +172,10 @@ private:
 	//突進用開始地点
 	VECTOR startPos;
 
+
+	// 実体の前後コライダへの直接参照（必要なら使う）
+	ColliderCapsule* colFrontCapsule_ = nullptr;
+	ColliderCapsule* colBackCapsule_ = nullptr;
 
 	// 状態遷移
 	void ChangeState(STATE state);
@@ -191,7 +197,7 @@ private:
 	void UpdateIdle();
 	void UpdateAttackPunch();
 	void UpdateAttackRun();
-	void UpdateAttacDrop();
+	void UpdateAttackDrop();
 	void UpdateMove();
 	void UpdateWait();
 	void UpdateHit();
