@@ -12,6 +12,19 @@ class EnemyManager
 {
 
 public:
+
+	enum class WAVE
+	{
+		START,//wave開始（演出とか入れる用）
+		WAVE1,
+		WAVE2,
+		WAVE3,
+		WAVE4,
+		BOSS,
+		END
+	};
+
+
 	// コンストラクタ
 	EnemyManager(GameScene* gamescene, Player* player);
 	// デストラクタ
@@ -40,10 +53,8 @@ public:
 	// 指定IDのエネミーの座標を取得
 	VECTOR GetEnemyPos(int id) const;
 
+	//enemyの絶滅フラグ渡し
 	bool GetEnemyDead();
-
-
-
 
 
 private:
@@ -51,11 +62,17 @@ private:
 	Player* player_;
 	//ゲームシーン
 	GameScene* gameScene_;
+	//ウェーブ
+	WAVE wave_;
 
 	// エネミー
 	std::vector<EnemyBase*> enemies_;
 
+
 	const ColliderBase* hitCollider_;
+
+	// 衝突対象コライダ（複数登録を保持するため vector に変更）
+	std::vector<const ColliderBase*> hitColliders_;
 
 	// 攻撃コライダのリスト
 	std::vector<const ColliderBase*> attackColliders_;
@@ -65,8 +82,39 @@ private:
 
 	bool isDead_ = false;
 
+	//wave敵全滅フラグ
+	bool wave1Clear_ = false;
+	bool wave2Clear_ = false;
+	bool wave3Clear_ = false;
+	bool wave4Clear_ = false;
+	bool waveBossClear_ = false;
+
 	// 視野範囲用トランスフォーム
 	Transform attackTransform_;
+
+	//HPアイテム生成
+	void CreateHpItem();
+	//enemysの削除
+	void EnemysDelete();
+	//enemysの衝突判定
+	void EnemysCollision();
+	
+	//WAVE切り替え
+	void ChangeWave(WAVE wave);
+	//WAVEデータ読み込み
+	void LoadWaveData(WAVE wave);
+
+
+	void UpdateWave();
+
+
+	//ウェーブ別更新
+	void UpdateWaveStart();
+	void UpdateWave1();
+	void UpdateWave2();
+	void UpdateWave3();
+	void UpdateWave4();
+	void UpdateWaveBoss();
 
 };
 

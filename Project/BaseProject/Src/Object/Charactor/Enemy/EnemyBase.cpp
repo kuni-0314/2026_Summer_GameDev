@@ -16,7 +16,7 @@ player_(player),
 type_(data.type),
 defaultPos_(data.defaultPos),
 movableRange_(data.movableRange),
-power_(data.power),
+wave_(data.wave),
 attackModle_(attackModel)
 {
 
@@ -34,10 +34,6 @@ EnemyBase::~EnemyBase(void)
 void EnemyBase::Update()
 {
 	CharactorBase::Update();
-
-	
-
-	
 }
 
 void EnemyBase::Draw()
