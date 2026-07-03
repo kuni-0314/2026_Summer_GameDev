@@ -15,6 +15,7 @@
 #include "../Object/Collider/ColliderBase.h"
 #include "../Object/Collider/Sphere/ColliderSphere.h"
 #include "../Effect/EffectManager.h"
+#include "../Effect/LoadEffekseer/EffekseerEffect.h"
 #include "../Sound/AudioManager.h"
 #include "GameScene.h"
 #include <EffekseerForDXLib.h>
@@ -301,6 +302,7 @@ void GameScene::Update()
 	//	sceMng_.ChangeScene(SceneManager::SCENE_ID::CLEAR);
 	//	return;
 	//}
+
 }
 
 void GameScene::Draw()

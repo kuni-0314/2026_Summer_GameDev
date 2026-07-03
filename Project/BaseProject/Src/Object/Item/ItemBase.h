@@ -1,5 +1,8 @@
 #pragma once
 #include "../Actor/ActorBase.h"
+#include "../../Effect/LoadEffekseer/EffekseerEffect.h"
+#include "../../Effect/EffectManager.h"
+#include "../../Common/Quaternion.h"
 
 class AnimationController;
 
@@ -91,7 +94,8 @@ protected:
 	// 丸影描画
 	void DrawShadow();
 
-
+	// 回復エフェクト再生
+	//void PlayHealEffect();
 
 private:
 

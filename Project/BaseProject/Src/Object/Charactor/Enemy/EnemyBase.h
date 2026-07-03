@@ -46,6 +46,9 @@ public:
 
 	void Release(void) override;
 
+	//エフェクト
+	void HitEffect(const VECTOR& pos, const VECTOR& normal, float size);
+
 protected:
 
 	Player* player_;
