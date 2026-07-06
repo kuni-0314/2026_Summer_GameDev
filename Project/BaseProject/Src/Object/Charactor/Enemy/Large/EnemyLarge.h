@@ -72,20 +72,18 @@ private:
 
 	ItemManger* itemManager_;
 
-		//アニメーション登録番号
-	//待機
-	static constexpr int  ANIM_INDX_FRY = 2;
-	//HIT
-	static constexpr int  ANIM_INDX_HIT = 4;
-	//END
-	static constexpr int  ANIM_INDX_DEAD = 0;
-	//チャージ
-	static constexpr int  ANIM_INDX_CHARGE = 5;
+	//アニメーション登録番号
+	static constexpr int  ANIM_INDX_FRY = 2;//待機
+	static constexpr int  ANIM_INDX_HIT = 4;//HIT
+	static constexpr int  ANIM_INDX_DEAD = 0;//END
+	static constexpr int  ANIM_INDX_CHARGE = 5;	//チャージ
 
-	//弾待機カウント
-	static constexpr int  SHOT_CHARGE_COUNT = 120;
-	// モデルの大きさ
-	static constexpr float SCALE = 2.5f;
+
+	static constexpr float SCALE = 2.5f;				// モデルの大きさ
+
+	static constexpr float RING_SCALE = 0.3f;			//衝撃波初期サイズ
+	static constexpr float RING_MAX_SCALE = 12.0f;		//衝撃波最大サイズ
+
 
 
 	// モデルのローカル回転
@@ -101,53 +99,37 @@ private:
 	static constexpr VECTOR COL_CAPSULE_DOWN_LOCAL_POS = { 0.0f, 70.0f, 60.0f };
 
 	// 後半分用のカプセルローカル座標（体を前半/後半に分割）
-	static constexpr VECTOR COLBODY_CAPSULE_TOP_LOCAL_POS = { 0.0f, 200.0f, -50.0f };
-	static constexpr VECTOR COLBODY_CAPSULE_DOWN_LOCAL_POS = { 0.0f, 70.0f, -50.0f };
+	static constexpr VECTOR COLBODY_CAPSULE_TOP_LOCAL_POS = { 0.0f, 200.0f, -60.0f };
+	static constexpr VECTOR COLBODY_CAPSULE_DOWN_LOCAL_POS = { 0.0f, 70.0f, -60.0f };
+
+	static constexpr VECTOR RING_ADD_SCL = { 0.1f, 0.0f, 0.1f };
 
 	// 衝突判定用カプセル球体半径
-	static constexpr float COL_CAPSULE_RADIUS = 70.0f;
-
+	static constexpr float COL_CAPSULE_RADIUS = 40.0f;
 	// 衝突判定用カプセル球体半径（球体判定用）
 	static constexpr float COL_SPHERE_RADIUS = 50.0f;
 
-	// 攻撃判定用球体
-	static constexpr VECTOR ATTACK_SPHERE_LOCAL_POS = { 0.0f, 30.0f, 120.0f };
 
-	// EnemyLarge 固有で管理する ownColliders_ のキー（衝突タイプと被らないよう高めの値を使用）
+	//固有で管理するコライダー番号
 	static constexpr int COLLIDER_KEY_BODY_FRONT = 100;
 	static constexpr int COLLIDER_KEY_BODY_BACK = 101;
 
-	int count = 180;
-	int countUp = 0;
+	//チャージ用カウント
+	int countMax = 180;		//チャージ・待機用MAXカウント		
+	int countUp = 0;		//チャージ・待機用初期カウント
 
+	//衝撃波モデルハンドルID
+	int ringModelHandle_;							
 	
-
 	// 行動切り替え用カプセル球体半径
 	static constexpr float COL_SWICH_RADIUS = 250.0f;
 
-	// 攻撃切り替え距離
-	const float SWICH_DISTANCE = 200.0f;
+	const float SWICH_DISTANCE = 200.0f;		// 攻撃切り替え距離
+	const float ATTACK_RUN_END_POINT = 500.0f;	//突進１の移動終了距離
 
-	//突進１の移動終了距離
-	const float ATTACK_RUN_END_POINT = 500.0f;
-
-	//揺れ幅
-	const float HOVER_HEIGHT = 20.0f;
-	//揺れる速さ
-	const float HOVER_SPEED = 2.0f;
-
-	//攻撃判定
-	bool isAttack_;
-	//生存判定
-	bool isAlive_ = true;
-	//LookPlayer用フラグ(true:ON)
-	bool look_ = false;
-	//連続攻撃判定
-	bool attackHit_ = false;;
-
-
-	// ATTACK_DROP アニメーション内でジャンプを行うタイミング（アニメーション再生時間に対する比率）
-	static constexpr float ATTACK_DROP_JUMP_TIME_RATIO = 0.25f;
+	// ATTACK_DROP内でジャンプを行うタイミング(フレーム)
+	static constexpr float ATTACK_DROP_JUMP_TIME_RATIO = 0.42f;	//ジャンプ開始
+	static constexpr float ATTACK_DROP_JUMP_TIME_WAVE = 0.56f;	//衝撃波開始
 
 	// 更新ステップ
 	float step_;// 状態管理(更新ステップ)
@@ -155,14 +137,19 @@ private:
 	float distance_;
 	//経過時間
 	float hoverTime_;
-
-
 	//プレイヤー判定球の半径
 	float playerRad_;
 	// 状態
 	STATE state_;
 
-	bool jumpApplied_ = false;
+
+	bool isAttack_;			//攻撃判定
+	bool isAlive_ = true;	//生存判定
+	bool look_ = false;		//LookPlayer用フラグ(true:ON)
+	bool attackHit_ = false;//連続攻撃判定
+	bool jumpApplied_ = false;	//ジャンプ処理実行判定
+	bool isDrop_ = false;		//衝撃破生存判定
+	bool attackriggerRing_ = false;	//衝撃波生成判定
 
 	VECTOR worldPos;
 	//プレイヤー方向
@@ -171,11 +158,17 @@ private:
 	VECTOR playerPos_;
 	//突進用開始地点
 	VECTOR startPos;
+	//パンチ用攻撃座標
+	VECTOR attackWorldPos_;
 
+
+	//衝撃波用トランスフォーム
+	std::unique_ptr<Transform> ringTransform_;
 
 	// 実体の前後コライダへの直接参照（必要なら使う）
 	ColliderCapsule* colFrontCapsule_ = nullptr;
 	ColliderCapsule* colBackCapsule_ = nullptr;
+	
 
 	// 状態遷移
 	void ChangeState(STATE state);

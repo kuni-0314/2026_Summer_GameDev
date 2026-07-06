@@ -19,7 +19,8 @@ EnemyLarge::EnemyLarge(const EnemyBase::EnemyData& data, int attackModel, Player
 	:EnemyBase(data, attackModel, player),
 	state_(STATE::NONE),
 	step_(0.0f),
-	hoverTime_(0.0f)
+	hoverTime_(0.0f),
+	ringTransform_(nullptr)
 {
 }
 
@@ -32,8 +33,18 @@ void EnemyLarge::Draw(void)
 	// 基底クラスの描画処理
 	CharactorBase::Draw();
 
+	DrawSphere3D(attackWorldPos_, COL_SPHERE_RADIUS, 16, GetColor(255, 0, 0), GetColor(255, 0, 0), false);
+
+	if (isDrop_)
+	{
+		MV1SetScale(ringModelHandle_, ringTransform_->scl);
+		MV1SetPosition(ringModelHandle_, ringTransform_->pos);
+		MV1DrawModel(ringModelHandle_);
+	}
 
 #ifdef _DEBUG
+
+	
 
 #endif //_DEBUG
 
@@ -50,7 +61,6 @@ void EnemyLarge::Draw(void)
 	DrawFormatString(0, 500, GetColor(255, 255, 255), "STATE: %s", name);
 	DrawFormatString(0, 400, GetColor(255, 255, 255), "POS: %.2f", transform_.pos.y);
 
-
 }
 
 void EnemyLarge::Release(void)
@@ -63,7 +73,8 @@ void EnemyLarge::InitLoad()
 	CharactorBase::InitLoad();
 	transform_.SetModel(resMng_.LoadModelDuplicate(ResourceManager::SRC::ENEMY_LARGE));
 
-	//ringTransform_.SetModel(resMng_.LoadModelDuplicate(ResourceManager::SRC::ENEMY_LARGE_RING));
+
+	
 }
 
 void EnemyLarge::InitTransform()
@@ -73,6 +84,14 @@ void EnemyLarge::InitTransform()
 	transform_.quaRot = Quaternion::Identity();
 	transform_.quaRotLocal = Quaternion::Euler(ROT);
 	transform_.Update();
+
+	ringTransform_ = std::make_unique<Transform>();
+	ringTransform_->SetModel(resMng_.LoadModelDuplicate(ResourceManager::SRC::ENEMY_LARGE_RING));
+	ringModelHandle_ = ringTransform_->modelId;
+	ringTransform_->scl = { RING_SCALE ,RING_SCALE ,RING_SCALE };
+	ringTransform_ ->quaRot = Quaternion::Identity();
+	ringTransform_ ->quaRotLocal = Quaternion::Euler(ROT);
+	ringTransform_->Update();
 }
 
 void EnemyLarge::InitCollider()
@@ -86,30 +105,23 @@ void EnemyLarge::InitCollider()
 	// 主に壁や木などの衝突で使用するカプセルコライダ（前半分）
 	ColliderCapsule* colCapsule = new ColliderCapsule(
 		ColliderBase::TAG::ENEMY, &transform_,
-		COL_CAPSULE_TOP_LOCAL_POS, COL_CAPSULE_DOWN_LOCAL_POS,
+		COLBODY_CAPSULE_TOP_LOCAL_POS, COLBODY_CAPSULE_DOWN_LOCAL_POS,
 		COL_CAPSULE_RADIUS);
 	ownColliders_.emplace(static_cast<int>(COLLIDER_TYPE::CAPSULE), colCapsule);
 
-	// 主に壁や木などの衝突で使用するカプセルコライダ
-	ColliderCapsule* colbodyCapsule = new ColliderCapsule(
-		ColliderBase::TAG::ENEMY, &transform_,
-		COLBODY_CAPSULE_TOP_LOCAL_POS, COLBODY_CAPSULE_DOWN_LOCAL_POS,
-		COL_CAPSULE_RADIUS);
-	ownColliders_.emplace(static_cast<int>(COLLIDER_TYPE::CAPSULE), colbodyCapsule);
-
 	// 前半分用カプセル（キー: COLLIDER_KEY_BODY_FRONT）
-	colFrontCapsule_ = new ColliderCapsule(
+	/*colFrontCapsule_ = new ColliderCapsule(
 		ColliderBase::TAG::ENEMY, &transform_,
 		COL_CAPSULE_TOP_LOCAL_POS, COL_CAPSULE_DOWN_LOCAL_POS,
 		COL_CAPSULE_RADIUS);
-	ownColliders_.emplace(COLLIDER_KEY_BODY_FRONT, colFrontCapsule_);
+	ownColliders_.emplace(COLLIDER_KEY_BODY_FRONT, colFrontCapsule_);*/
 
-	// 後半分用カプセル（キー: COLLIDER_KEY_BODY_BACK）
-	colBackCapsule_ = new ColliderCapsule(
+	 //後半分用カプセル（キー: COLLIDER_KEY_BODY_BACK）
+	/*colBackCapsule_ = new ColliderCapsule(
 		ColliderBase::TAG::ENEMY, &transform_,
 		COLBODY_CAPSULE_TOP_LOCAL_POS, COLBODY_CAPSULE_DOWN_LOCAL_POS,
 		COL_CAPSULE_RADIUS);
-	ownColliders_.emplace(COLLIDER_KEY_BODY_BACK, colBackCapsule_);
+	ownColliders_.emplace(COLLIDER_KEY_BODY_BACK, colBackCapsule_);*/
 }
 
 void EnemyLarge::InitAnimation()
@@ -164,12 +176,15 @@ void EnemyLarge::InitPost()
 
 void EnemyLarge::UpdateProcess()
 {
+
+	
+
+	//プレイヤー情報関連
 	playerPos_ = player_->GetPos();
 	playerRad_ = player_->GetCollRadius();
 
 	// プレイヤー方向
 	toPlayer_ = VSub(playerPos_, transform_.pos);
-
 	//プレイヤーとの距離測定
 	distance_ = VSize(toPlayer_);
 	
@@ -189,6 +204,33 @@ void EnemyLarge::UpdateProcess()
 	{
 		ChangeState(STATE::HIT);
 	}
+
+	//衝撃波
+	if (isDrop_)
+	{
+		ringTransform_->scl = VAdd(ringTransform_->scl, RING_ADD_SCL);
+
+		if (ringTransform_->scl.x >= RING_MAX_SCALE)
+		{
+			isDrop_ = false;
+			ringTransform_->scl = { RING_SCALE, RING_SCALE, RING_SCALE };
+		
+		}
+
+		ringTransform_->Update();
+	}
+	
+
+	//パンチ攻撃判定座標更新
+	
+	// フレーム22のワールドマトリクスを取得
+	MATRIX mat = MV1GetFrameLocalWorldMatrix(transform_.modelId, 22);
+	// 位置補正（プレイヤーの向きに合わせて微調整）
+	MATRIX offset = MMult(MGetTranslate(VGet(0.0f, 0.0f, -3.0f)), mat);
+	// 位置を適用
+	attackWorldPos_ = VGet(offset.m[3][0], offset.m[3][1], offset.m[3][2]);
+	// 回転をQuaternionに変換
+	Quaternion rot = Quaternion::GetRotation(mat);
 }
 
 void EnemyLarge::UpdateProcessPost()
@@ -264,6 +306,7 @@ void EnemyLarge::ChangeStateAttackDrop()
 {
 	stateUpdate_ = std::bind(&EnemyLarge::UpdateAttackDrop, this);
 
+	jumpApplied_ = false;
 	look_ = false;
 
 	movePow_ = AsoUtility::VECTOR_ZERO;
@@ -306,7 +349,7 @@ void EnemyLarge::UpdateIdle()
 {
 	countUp++;
 
-	if (count < countUp)
+	if (countMax < countUp)
 	{
 		countUp = 0;
 		ChangeState(STATE::CHARGE);
@@ -319,7 +362,7 @@ void EnemyLarge::UpdateCharge()
 {
 	countUp++;
 
-	if (count/2 < countUp)
+	if (countMax /2 < countUp)
 	{
 		countUp = 0;
 		ChangeState(STATE::ATTACK_RUN);
@@ -330,8 +373,23 @@ void EnemyLarge::UpdateCharge()
 
 void EnemyLarge::UpdateAttackPunch()
 {
+
+	// Transform の更新
+	transform_.Update();
+
+	if (!isAttack_)
+	{
+		// 攻撃判定
+		if (AsoUtility::IsHitSpheres(attackWorldPos_, COL_SPHERE_RADIUS, playerPos_, playerRad_))
+		{
+			player_->Damege(2);
+			isAttack_ = true;
+		}
+	}
+
 	if(animationController_->IsEnd())
 	{
+		
 		ChangeState(STATE::ATTACK_DROP);
 	}
 
@@ -364,34 +422,42 @@ void EnemyLarge::UpdateAttackRun()
 
 void EnemyLarge::UpdateAttackDrop()
 {
-	// アニメーションの進行状況を取得して、指定タイミングでジャンプ力を加算する
-	if (animationController_ != nullptr && !jumpApplied_)
-	{
-		const auto& anim = animationController_->GetPlayAnim();
-		
-		if (anim.totalTime > 0.0f)
-		{
-			float triggerTime = anim.totalTime * ATTACK_DROP_JUMP_TIME_RATIO;
-			if (anim.step >= triggerTime)
-			{
-				// 指定タイミングでジャンプ力を与える
-				jumpApplied_ = true;
-				jumpPow_ = VGet(0.0f, 80.0f, 0.0f);
-				isJump_ = true;
-				isAir_ = true;
+	//アニメーションコントローラーの取得
+	if (animationController_ == nullptr) return;
+	const auto& anim = animationController_->GetPlayAnim();
+	if (anim.totalTime <= 0.0f) return;
 
-			}
-		}
+	//ジャンプ処理
+	float jumpTriggerTime = anim.totalTime * ATTACK_DROP_JUMP_TIME_RATIO;
+	if (!jumpApplied_ && anim.step >= jumpTriggerTime)
+	{
+		jumpApplied_ = true;
+		jumpPow_ = VGet(0.0f, 25.0f, 0.0f);
+		isJump_ = true;
+		isAir_ = true;
+	}
+
+	//衝撃波発生
+	float attackTriggerTime = anim.totalTime * ATTACK_DROP_JUMP_TIME_WAVE;
+
+
+	if (!attackriggerRing_ && anim.step >= attackTriggerTime)
+	{
+		// 発生の瞬間に一度だけ座標をセット
+		ringTransform_->pos = transform_.pos;
+		ringTransform_->scl = { RING_SCALE,RING_SCALE ,RING_SCALE };
+		isDrop_ = true;
+		attackriggerRing_ = true;
 	}
 
 	if (animationController_->IsEnd())
 	{
-
-		ChangeState(STATE::IDLE);
+		isAir_ = false;
+		isJump_ = false;
+		attackriggerRing_ = false;
 		jumpApplied_ = false;
+		ChangeState(STATE::IDLE);
 	}
-
-	movePow_ = AsoUtility::VECTOR_ZERO;
 }
 
 void EnemyLarge::UpdateHit()
