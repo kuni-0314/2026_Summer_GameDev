@@ -40,7 +40,9 @@ public:
 		KEY_BLADE_1,	//キーブレード１
 		KEY_BLADE_2,	//キーブレード２
 		KEY_BLADE_3,	//キーブレード３
-
+		EFFECT_POWER_UP,	//パワーアップエフェクト
+		EFFECT_HEAL,			//回復エフェクト
+		EFFECT_HIT,				//ヒットエフェクト
 		MAX
 	};
 

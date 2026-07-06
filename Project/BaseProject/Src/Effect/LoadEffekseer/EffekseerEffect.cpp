@@ -17,8 +17,10 @@ EffekseerEffect::EffekseerEffect(const std::wstring& filePath, const VECTOR& pos
     {
         printf("ファイル発見\n");
     }
+	// Effekseerのエフェクトをロード
     m_effectHandle = LoadEffekseerEffect(filePath.c_str(), 1.0f);
 
+	// エフェクトのロードに失敗した場合は即座に消滅フラグを立てる
     if (m_effectHandle == -1)
     {
         m_isDead = true;

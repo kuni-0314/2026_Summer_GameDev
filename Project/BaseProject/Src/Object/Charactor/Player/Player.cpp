@@ -404,12 +404,12 @@ void Player::ActivatePowerUp()
 	m_powerUpTimer = 60; // 約1秒(60FPSの場合)
 
 	VECTOR effectPos = transform_.pos;
-
+	// エフェクトの再生位置をプレイヤーの座標に設定
 	auto effect = std::make_shared<EffekseerEffect>(
 		L"Data/Effect/PowerUp/PowerUp2.efkefc",
 		effectPos
 	);
-
+	// エフェクトを再生
 	effect->Play(
 		effectPos,
 		transform_.quaRot
@@ -420,29 +420,29 @@ void Player::ActivatePowerUp()
 
 void Player::PlayBlinkEffect()
 {
-
+	// エフェクト再生時間
 	auto effect = std::make_shared<EffekseerEffect>(
 		L"Data/Effect/Bring/Blink.efkefc",
 		transform_.pos
 	);
-
+	// エフェクトの再生位置をプレイヤーの背後に設定
 	VECTOR back = transform_.quaRot.GetBack();
-
+	// 50.0fの距離を背後に設定
 	VECTOR backPos = VScale(
 		back,
 		50.0f
 	);
-
+	// プレイヤーの座標に背後の位置を加算
 	backPos = VAdd(
 		transform_.pos,
 		backPos
 	);
-
+	// エフェクトを再生
 	effect->Play(
 		backPos,
 		transform_.quaRot
 	);
-
+	// エフェクトをエフェクトマネージャーに登録
 	EffectManager::GetInstance().RegisterEffect(effect);
 }
 
