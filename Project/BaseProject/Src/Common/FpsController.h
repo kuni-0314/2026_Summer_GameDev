@@ -26,10 +26,13 @@ public:
     // 現在のFPSを取得
     float GetFPS() const { return fps_; }
 
+    // 固定FPSを変更
+    void ChangeFixedFPS(int newFixedFPS);
+
 private:
 
     // 最大FPS
-    const int MAX_FPS = 1200;
+    int MAX_FPS = 1200;
 
 	// 平均FPS計算に使用するフレーム数
 	const int AVG_FPS_COUNT = 60;
@@ -44,10 +47,10 @@ private:
     const std::string TEXT_FORMAT = "FPS : %.2f";
 
     // 指定された固定フレームレート
-    const int fixedFps_;
+    int fixedFps_;
 
-	// 1フレームの理想時間(秒)
-	const double idealFrameTime_;
+	// 1フレームの理想時間(秒) 
+	double idealFrameTime_;
 
     // 計測用FPS
     float fps_;

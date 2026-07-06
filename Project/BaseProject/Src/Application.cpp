@@ -1,4 +1,3 @@
-#include <windows.h>
 #include <DxLib.h>
 #include <EffekseerForDXLib.h>
 #include "Manager/InputManager.h"
@@ -8,6 +7,8 @@
 #include "Common/FpsController.h"
 #include "Sound/AudioManager.h"
 #define _CRTDBG_MAP_ALLOC
+
+#pragma comment(lib, "wbemuuid.lib")
 
 #ifdef _DEBUG
 #define new new(_NORMAL_BLOCK, __FILE__, __LINE__)
@@ -73,7 +74,7 @@ void Application::Init()
 	InitAudioDevice();
 	float volume = 0.0f;
 	pVolume_->GetMasterVolumeLevelScalar(&volume);
-
+	
 	// アプリケーションの初期設定
 	SetWindowText("3DAction");
 
@@ -82,7 +83,7 @@ void Application::Init()
 	ChangeWindowMode(true);
 
 	// FPS制御初期化
-	fpsController_ = new FpsController(FRAME_RATE);
+	fpsController_ = new FpsController(fpsLimit_);
 
 	// DxLibの初期化
 	SetUseDirect3DVersion(DX_DIRECT3D_11);
@@ -203,6 +204,10 @@ void Application::Run()
 		// 平均FPS描画
 		fpsController_->Draw();
 		#endif // _DEBUG
+
+		SetDrawBlendMode(DX_BLENDMODE_ALPHA, 255 * 0.8f * (1.0f - brightness_ / 100.0f));
+		DrawBox(0, 0, SCREEN_SIZE_X, SCREEN_SIZE_Y, GetColor(0, 0, 0), TRUE);
+		SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
 
 		ScreenFlip();
 
@@ -325,4 +330,29 @@ void Application::InitAudioDevice()
 		nullptr,
 		(void**)&pVolume_
 	);
+}
+
+int Application::GetBrightness()
+{
+	return brightness_;
+}
+
+void Application::SetBrightness(int value)
+{
+	if (value < 0)
+		value = 0; // 範囲外の場合は0に設定
+	else if (value > 100)
+		value = 100; // 範囲外の場合は100に設定
+	brightness_ = value;
+}
+
+void Application::SetFPSLimit(int fpsLimit)
+{
+	if (fpsLimit == fpsLimit_) return;
+	
+	fpsLimit_ = fpsLimit;
+	
+	// 0（無制限）の場合は非常に高い値に変換
+	int actualFPS = (fpsLimit == 0) ? 1200 : fpsLimit;
+	fpsController_->ChangeFixedFPS(actualFPS);
 }

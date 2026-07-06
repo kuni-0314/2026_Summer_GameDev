@@ -1,6 +1,8 @@
 #pragma once
 #include <string>
 #include <windows.h>
+//#include <Wbemidl.h>
+//#include <comdef.h>
 #include <mmdeviceapi.h>
 #include <endpointvolume.h>
 class FpsController;
@@ -11,7 +13,7 @@ class Application
 public:
 
 	// 固定FPS
-	static constexpr int FRAME_RATE = 60;
+	//static constexpr int FRAME_RATE = 60;
 
 
 	// スクリーンサイズ
@@ -70,6 +72,11 @@ public:
 
 	void End() { isEnd_ = true; };
 
+	int GetBrightness();
+	void SetBrightness(int brightness);
+
+	int GetFPSLimit() const { return fpsLimit_; }
+	void SetFPSLimit(int fpsLimit);
 
 private:
 
@@ -112,4 +119,7 @@ private:
 	IMMDevice* pDevice_;				// オーディオデバイス
 	IAudioEndpointVolume* pVolume_;		// ボリュームコントロール
 
+	float brightness_ = 100.0f;	// 明るさ（0～100）
+
+	int fpsLimit_ = 60;	// FPS制限（0で制限なし）
 };

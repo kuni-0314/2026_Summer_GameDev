@@ -89,13 +89,13 @@ private:
 	};
 
 	// 項目のクリック処理（個別）
-	void HandleItemClick(int itemIndex);
+	//void HandleItemClick(int itemIndex);
 	
 	// 特定の項目の値を取得
 	void* GetItemValuePtr(int itemIndex);
 	
 	// 特定の項目の値を設定
-	void SetItemValue(int itemIndex, void* value);
+	//void SetItemValue(int itemIndex, void* value);
 
 	// 値の読み込み
 	void LoadOptionValues();
@@ -152,7 +152,7 @@ private:
 	};
 
 	// Application
-	float brightness_ = 0.0f;	// 明るさ
+	int brightness_ = 0;	// 明るさ
 	bool enableShader_ = false;	// シェーダーの有無
 	int fpsLimit_ = 0;			// FPS制限
 

@@ -18,13 +18,13 @@ OptionScene::~OptionScene()
 void OptionScene::Init()
 {
 	// カテゴリーはメイン、項目はサブを使用する
-	categoryFontHandle_ = CreateFontToHandle("MS Mincho", 48, -1, DX_FONTTYPE_ANTIALIASING);
-	itemFontHandle_ = CreateFontToHandle("MS Mincho", 32, -1, DX_FONTTYPE_ANTIALIASING);
+	categoryFontHandle_ = CreateFontToHandle("MS PMincho", 48, -1, DX_FONTTYPE_ANTIALIASING);
+	itemFontHandle_ = CreateFontToHandle("MS PMincho", 32, -1, DX_FONTTYPE_ANTIALIASING);
 
 	LoadOptionValues();	
 
 	CalculateItemDisplayInfo();
-		
+
 	backgroundHandle_ = resMng_.Load(ResourceManager::SRC::OPTION_BACKGROUND).handleId_;
 	
 	// スライダー用画像の読み込み
@@ -144,7 +144,7 @@ OptionScene::SliderConfig OptionScene::GetSliderConfig(int itemIndex) const
         return { SliderConfig::ValueType::FLOAT, 0.0f, 100.0f, 1.0f };
         
     case IDX_BRIGHTNESS:
-        return { SliderConfig::ValueType::FLOAT, 0.0f, 200.0f, 1.0f };
+        return { SliderConfig::ValueType::INT, 0.0f, 100.0f, 1.0f };
         
     case IDX_MOUSE_SENSITIVITY:
         return { SliderConfig::ValueType::INT, 1.0f, 20.0f, 1.0f };
@@ -640,9 +640,16 @@ void OptionScene::LoadOptionValues()
 	//bVolume_ = audioIns->GetBGMVolume();
 	//sVolume_ = audioIns->GetSEVolume();
 	//isMute_ = audioIns->IsMute();
-	//brightness_ = appIns.GetBrightness();
+	brightness_ = appIns.GetBrightness();
 	//enableShader_ = appIns.IsShaderEnabled();
-	//fpsLimit_ = appIns.GetFPSLimit();
+	
+	// FPSリミット: 実際のFPS値をドロップダウンのインデックスに変換
+	int actualFPS = appIns.GetFPSLimit();
+	if (actualFPS <= 30) fpsLimit_ = 0;
+	else if (actualFPS <= 60) fpsLimit_ = 1;
+	else if (actualFPS <= 120) fpsLimit_ = 2;
+	else fpsLimit_ = 3; // 無制限
+	
 	//isInvertXAxis_ = appIns.IsInvertXAxis();
 	//isInvertYAxis_ = appIns.IsInvertYAxis();
 	//holdThreshold_ = inputIns->GetHoldThreshold();
@@ -677,9 +684,21 @@ void OptionScene::SaveOptionValues()
 	//audioIns->SetBGMVolume(bVolume_);
 	//audioIns->SetSEVolume(sVolume_);
 	//audioIns->SetMute(isMute_);
-	//appIns.SetBrightness(brightness_);
+	appIns.SetBrightness(brightness_);
 	//appIns.SetShaderEnabled(enableShader_);
-	//appIns.SetFPSLimit(fpsLimit_);
+	
+	// FPSリミット: ドロップダウンのインデックスを実際のFPS値に変換
+	int actualFPS = 60; // デフォルト値
+	switch (fpsLimit_)
+	{
+	case 0: actualFPS = 30; break;
+	case 1: actualFPS = 60; break;
+	case 2: actualFPS = 120; break;
+	case 3: actualFPS = 0; break; // 無制限
+	default: actualFPS = 60; break;
+	}
+	appIns.SetFPSLimit(actualFPS);
+	
 	//appIns.SetInvertXAxis(isInvertXAxis_);
 	//appIns.SetInvertYAxis(isInvertYAxis_);
 	//inputIns->SetHoldThreshold(holdThreshold_);
