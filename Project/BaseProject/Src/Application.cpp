@@ -54,26 +54,6 @@ void Application::Init()
 	// _CrtSetBreakAlloc(123);
 	//_CrtSetBreakAlloc(17282);
 #endif
-
-
-	HRESULT hr = CoInitialize(nullptr);
-	//if (FAILED(hr))
-	//{
-	//	return;
-	//}
-	hr = CoCreateInstance(
-		__uuidof(MMDeviceEnumerator),
-		nullptr,
-		CLSCTX_ALL,
-		__uuidof(IMMDeviceEnumerator),
-		(void**)&pEnumerator_);
-	//if (FAILED(hr))
-	//{
-	//	return;
-	//}
-	InitAudioDevice();
-	float volume = 0.0f;
-	pVolume_->GetMasterVolumeLevelScalar(&volume);
 	
 	// アプリケーションの初期設定
 	SetWindowText("3DAction");
@@ -109,7 +89,9 @@ void Application::Init()
 
 	//サウンド管理初期化
 	AudioManager::CreateInstance();
-	AudioManager::GetInstance()->Init();
+	auto audioManager = AudioManager::GetInstance();
+	audioManager->Init();
+	int volume = audioManager->GetMasterVolume();
 
 	// 入力制御初期化
 	SetUseDirectInputFlag(true);
@@ -245,10 +227,6 @@ void Application::Destroy()
 		isReleaseFail_ = true;
 	}
 
-	pVolume_->Release();
-	pDevice_->Release();
-	pEnumerator_->Release();
-
 	CoUninitialize();
 
 	// インスタンスのメモリ解放
@@ -280,9 +258,6 @@ Application::Application()
 	:
 	isInitFail_(false),
 	isReleaseFail_(false),
-	pEnumerator_(nullptr),
-	pDevice_(nullptr),
-	pVolume_(nullptr),
 	fpsController_(nullptr)
 {
 	isEnd_ = false;
@@ -299,37 +274,6 @@ void Application::InitEffekseer()
 	SetChangeScreenModeGraphicsSystemResetFlag(false);
 
 	Effekseer_SetGraphicsDeviceLostCallbackFunctions();
-}
-
-void Application::InitAudioDevice()
-{
-	// 古いものを解放
-	if (pVolume_)
-	{
-		pVolume_->Release();
-		pVolume_ = nullptr;
-	}
-
-	if (pDevice_)
-	{
-		pDevice_->Release();
-		pDevice_ = nullptr;
-	}
-
-	// 現在の既定デバイス取得
-	pEnumerator_->GetDefaultAudioEndpoint(
-		eRender,
-		eConsole,
-		&pDevice_
-	);
-
-	// 音量操作用インターフェース取得
-	pDevice_->Activate(
-		__uuidof(IAudioEndpointVolume),
-		CLSCTX_ALL,
-		nullptr,
-		(void**)&pVolume_
-	);
 }
 
 int Application::GetBrightness()

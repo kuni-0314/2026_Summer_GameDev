@@ -8,31 +8,53 @@ AudioManager* AudioManager::instance_ = nullptr;
 AudioManager::AudioManager()
 {
 	currentBgm_ = static_cast<SoundID>(-1);
-	bgmVolume_ = 255;
-	seVolume_ = 255;
-	masterVolume_ = 255;
 }
 
 AudioManager::~AudioManager()
 {
 	// 念のため削除関数
 	DeleteAll();
+
+	pVolume_->Release();
+	pDevice_->Release();
+	pEnumerator_->Release();
 }
 
 void AudioManager::Init()
 {
+	HRESULT hr = CoInitialize(nullptr);
+	//if (FAILED(hr))
+	//{
+	//	return;
+	//}
+	hr = CoCreateInstance(
+		__uuidof(MMDeviceEnumerator),
+		nullptr,
+		CLSCTX_ALL,
+		__uuidof(IMMDeviceEnumerator),
+		(void**)&pEnumerator_);
+	//if (FAILED(hr))
+	//{
+	//	return;
+	//}
+	InitAudioDevice();
+	float volume = 0.0f;
+	pVolume_->GetMasterVolumeLevelScalar(&volume);
+
 	// 現在再生されているBGM
 	currentBgm_ = static_cast<SoundID>(-1);
 
-	bgmVolume_ = 255;// bgm音量
-	seVolume_ = 255;// se音量
-	masterVolume_ = 255;// master音量
+	const int DEFAULT_VOLUME = 100;
+	bgmVolume_ = DEFAULT_VOLUME;// bgm音量
+	seVolume_ = DEFAULT_VOLUME;// se音量
+	//masterVolume_ = 255;// master音量
+	masterVolume_ = static_cast<int>(volume * 255.0f);
 }
 
 void AudioManager::LoadSceneSound(LoadScene scene)
 {
 	// 空のテーブルを用意
-	const std::unordered_map<SoundID, std::string>* table = nullptr;
+	const std::unordered_map<SoundID, std::pair<std::string, int>>* table = nullptr;
 
 	// シーンで読み込みたいテーブルを切り替える
 	switch (scene)
@@ -46,17 +68,27 @@ void AudioManager::LoadSceneSound(LoadScene scene)
 	if (!table) return;
 
 	// 指定したテーブルのサウンドを全て読み込む
-	for (auto& [id, path] : *table)
+	for (auto& [id, info] : *table)
 	{
+		const auto& [path, baseVol] = info;
+
+		// すでに読み込まれているか？
+		if (handles_.find(id) != handles_.end())
+			// 読み込まれているのでスキップ
+			continue;
+
 		// サウンドを読み込む
 		handles_[id] = LoadSoundMem(path.c_str());
+		
+		// 基礎音量を設定（0～255に収める）
+		baseVolumes_[id] = std::clamp(baseVol, 0, 255);
 	}
 }
 
 void AudioManager::DeleteSceneSound(LoadScene scene)
 {
 	// 空のテーブルを用意
-	const std::unordered_map<SoundID, std::string>* table = nullptr;
+	const std::unordered_map<SoundID, std::pair<std::string, int>>* table = nullptr;
 
 	// シーンで削除したいテーブルを切り替える
 	switch (scene)
@@ -108,7 +140,7 @@ void AudioManager::PlayBGM(SoundID id)
 	currentBgm_ = id;
 
 	// 実音量を計算
-	int volume = static_cast<int>(bgmVolume_ * (masterVolume_ / 255.0f));
+	int volume = isMuted_ ? 0 : static_cast<int>(bgmVolume_ * baseVolumes_[id] / 255);
 
 	// 音量を変更
 	ChangeVolumeSoundMem(volume, it->second);
@@ -146,7 +178,7 @@ void AudioManager::PlaySE(SoundID id)
 		return;
 
 	// 実音量を計算
-	int volume = static_cast<int>(seVolume_ * (masterVolume_ / 255.0f));
+	int volume = isMuted_ ? 0 : static_cast<int>(seVolume_ * baseVolumes_[id] / 255);
 
 	// 音量を変更
 	ChangeVolumeSoundMem(volume, it->second);
@@ -191,7 +223,7 @@ void AudioManager::SetBgmVolume(int volume)
 		if (it != handles_.end())
 		{
 			// 実音量を計算
-			int volume = static_cast<int>(bgmVolume_ * (masterVolume_ / 255.0f));
+			int volume = isMuted_ ? 0 : static_cast<int>(bgmVolume_ * baseVolumes_[currentBgm_] / 255);
 
 			// 音量を変更
 			ChangeVolumeSoundMem(volume, it->second);
@@ -202,7 +234,7 @@ void AudioManager::SetBgmVolume(int volume)
 void AudioManager::SetSeVolume(int volume)
 {
 	// 0 ～ 255 までに収める
-	seVolume_ = std::clamp(volume, 0, 255);
+	seVolume_ = (std::clamp(volume, 0, 255));
 }
 
 void AudioManager::SetMasterVolume(int volume)
@@ -210,21 +242,59 @@ void AudioManager::SetMasterVolume(int volume)
 	// 0 ～ 255 までに収める
 	masterVolume_ = std::clamp(volume, 0, 255);
 
-	// 再生中のBGMに即時反映
+	pVolume_->SetMasterVolumeLevelScalar(static_cast<float>(masterVolume_) / 255.0f, nullptr);
+}
+
+void AudioManager::SetMute(bool mute)
+{
+	if (isMuted_ == mute)
+		return;
+	isMuted_ = mute;
+	
+	// 現在のBGMが再生中
 	if (currentBgm_ != static_cast<SoundID>(-1))
 	{
 		// IDからサウンドハンドルを抽出
 		auto it = handles_.find(currentBgm_);
-
 		// サウンドが読み込まれているか？
 		if (it != handles_.end())
 		{
 			// 実音量を計算
-			int volume = static_cast<int>(bgmVolume_ * (masterVolume_ / 255.0f));
-
+			int volume = isMuted_ ? 0 : static_cast<int>(bgmVolume_ * baseVolumes_[currentBgm_] / 255);
 			// 音量を変更
 			ChangeVolumeSoundMem(volume, it->second);
 		}
 	}
+}
+
+void AudioManager::InitAudioDevice()
+{
+	// 古いものを解放
+	if (pVolume_)
+	{
+		pVolume_->Release();
+		pVolume_ = nullptr;
+	}
+
+	if (pDevice_)
+	{
+		pDevice_->Release();
+		pDevice_ = nullptr;
+	}
+
+	// 現在の既定デバイス取得
+	pEnumerator_->GetDefaultAudioEndpoint(
+		eRender,
+		eConsole,
+		&pDevice_
+	);
+
+	// 音量操作用インターフェース取得
+	pDevice_->Activate(
+		__uuidof(IAudioEndpointVolume),
+		CLSCTX_ALL,
+		nullptr,
+		(void**)&pVolume_
+	);
 }
 

@@ -3,8 +3,6 @@
 #include <windows.h>
 //#include <Wbemidl.h>
 //#include <comdef.h>
-#include <mmdeviceapi.h>
-#include <endpointvolume.h>
 class FpsController;
 
 class Application
@@ -43,6 +41,17 @@ public:
 	static const std::string PATH_KEY_CONFIG_KEYBOARD;
 	//-------------------------------------------
 
+	struct ShowInfos
+	{
+		bool fps = false;				// FPSの表示
+		bool memoryUsage = false;		// メモリ使用量の表示
+		bool batteryStatus = false;		// バッテリー残量の表示
+		bool collider = false;			// コライダー表示
+		bool xyzAxis = false;			// XYZ軸の表示
+		bool playerPosition = false;	// プレイヤー座標の表示
+	};
+	ShowInfos showInfos_;
+
 	// インスタンスを明示的に生成
 	static void CreateInstance();
 
@@ -78,6 +87,8 @@ public:
 	int GetFPSLimit() const { return fpsLimit_; }
 	void SetFPSLimit(int fpsLimit);
 
+	ShowInfos& GetShowInfos() { return showInfos_; }
+
 private:
 
 	// 静的インスタンス
@@ -108,18 +119,13 @@ private:
 	// エフェクシアの初期化
 	void InitEffekseer();
 
-	// オーディオデバイスの初期化
-	void InitAudioDevice();
-
 	// FPS制御
 	FpsController* fpsController_;
-
-	// オーディオ関連
-	IMMDeviceEnumerator* pEnumerator_;	// デバイス列挙子
-	IMMDevice* pDevice_;				// オーディオデバイス
-	IAudioEndpointVolume* pVolume_;		// ボリュームコントロール
 
 	float brightness_ = 100.0f;	// 明るさ（0～100）
 
 	int fpsLimit_ = 60;	// FPS制限（0で制限なし）
+
+
+	bool isShowBatteryStatus_ = false;		// バッテリー残量の表示
 };

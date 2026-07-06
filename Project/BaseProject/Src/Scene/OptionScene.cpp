@@ -77,8 +77,11 @@ void OptionScene::Update()
 			cursorX >= info.left && cursorX <= info.right && 
 			cursorY >= info.top && cursorY <= info.bottom)
 		{
-			currentItemNum_ = i;
-			break;
+			if (ins->IsMouseTrgDown(MOUSE_INPUT_LEFT))
+			{
+				currentItemNum_ = i;
+				break;
+			}
 		}
 	}
 
@@ -141,7 +144,7 @@ OptionScene::SliderConfig OptionScene::GetSliderConfig(int itemIndex) const
     case IDX_MASTER_VOLUME:
     case IDX_BGM_VOLUME:
     case IDX_SE_VOLUME:
-        return { SliderConfig::ValueType::FLOAT, 0.0f, 100.0f, 1.0f };
+        return { SliderConfig::ValueType::INT, 0.0f, 255.0f, 1.0f };
         
     case IDX_BRIGHTNESS:
         return { SliderConfig::ValueType::INT, 0.0f, 100.0f, 1.0f };
@@ -639,7 +642,7 @@ void OptionScene::LoadOptionValues()
 	mVolume_ = audioIns->GetMasterVolume();
 	bVolume_ = audioIns->GetBgmVolume();
 	sVolume_ = audioIns->GetSeVolume();
-	//isMute_ = audioIns->IsMute();
+	isMute_ = audioIns->IsMute();
 	brightness_ = appIns.GetBrightness();
 	//enableShader_ = appIns.IsShaderEnabled();
 	
@@ -663,12 +666,14 @@ void OptionScene::LoadOptionValues()
 	//enableVibration_ = inputIns->IsVibrationEnabled();
 	//vibrationStrength_ = inputIns->GetVibrationStrength();
 	//currentColorAccessibilityNum_ = inputIns->GetColorAccessibilityNum();
-	//isShowFPS_ = inputIns->IsShowFPS();
-	//isShowMemoryUsage_ = inputIns->IsShowMemoryUsage();
-	//isShowCollider_ = inputIns->IsShowCollider();
-	//isShowXYZAxis_ = inputIns->IsShowXYZAxis();
-	//isShowPlayerPosition_ = inputIns->IsShowPlayerPosition();
-	//isShowBatteryStatus_ = inputIns->IsShowBatteryStatus();
+
+	Application::ShowInfos& showInfos = appIns.GetShowInfos();
+	isShowFPS_ = showInfos.fps;
+	isShowMemoryUsage_ = showInfos.memoryUsage;
+	isShowBatteryStatus_ = showInfos.batteryStatus;
+	isShowCollider_ = showInfos.collider;
+	isShowXYZAxis_ = showInfos.xyzAxis;
+	isShowPlayerPosition_ = showInfos.playerPosition;
 }
 
 void OptionScene::SaveOptionValues()
@@ -683,7 +688,7 @@ void OptionScene::SaveOptionValues()
 	audioIns->SetMasterVolume(mVolume_);
 	audioIns->SetBgmVolume(bVolume_);
 	audioIns->SetSeVolume(sVolume_);
-	//audioIns->SetMute(isMute_);
+	audioIns->SetMute(isMute_);
 	appIns.SetBrightness(brightness_);
 	//appIns.SetShaderEnabled(enableShader_);
 	
@@ -712,17 +717,21 @@ void OptionScene::SaveOptionValues()
 	//inputIns->SetVibrationEnabled(enableVibration_);
 	//inputIns->SetVibrationStrength(vibrationStrength_);
 	//inputIns->SetColorAccessibilityNum(currentColorAccessibilityNum_);
-	//inputIns->SetShowFPS(isShowFPS_);
-	//inputIns->SetShowMemoryUsage(isShowMemoryUsage_);
-	//inputIns->SetShowCollider(isShowCollider_);
-	//inputIns->SetShowXYZAxis(isShowXYZAxis_);
-	//inputIns->SetShowPlayerPosition(isShowPlayerPosition_);
-	//inputIns->SetShowBatteryStatus(isShowBatteryStatus_);
+
+	Application::ShowInfos& showInfos = appIns.GetShowInfos();
+	showInfos.fps = isShowFPS_;
+	showInfos.memoryUsage = isShowMemoryUsage_;
+	showInfos.batteryStatus = isShowBatteryStatus_;
+	showInfos.collider = isShowCollider_;
+	showInfos.xyzAxis = isShowXYZAxis_;
+	showInfos.playerPosition = isShowPlayerPosition_;
 
 	// TODO: 設定ファイルへの保存処理を実装
 	// 例: SaveToFile("Config/Options.ini");
 }
 
+	
+	
 //void OptionScene::ApplyOptionValues()
 //{
 //	// 設定を即座に反映する場合に使用

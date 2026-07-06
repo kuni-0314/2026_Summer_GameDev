@@ -53,7 +53,7 @@ void TitleScene::Init()
 
 	AudioManager::GetInstance()->LoadSceneSound(LoadScene::TITLE);
 	AudioManager::GetInstance()->PlayBGM(SoundID::BGM_TITLE);
-	AudioManager::GetInstance()->SetBgmVolume(120);
+	//AudioManager::GetInstance()->SetBgmVolume(120);
 
 }
 
@@ -276,7 +276,7 @@ void TitleScene::SelectChange(SELECT next)
 		//nextScene_ = SceneManager::SCENE_ID::TUTORIAL;
 		break;
 	case SELECT::OPTION:
-		AudioManager::GetInstance()->StopBGM();
+		//AudioManager::GetInstance()->StopBGM();
 		nextScene_ = SceneManager::SCENE_ID::OPTION;
 		break;
 	case SELECT::EXIT:
@@ -309,7 +309,7 @@ void TitleScene::SelectUpdate()
 	if (ins->IsTrgDown(KEY_INPUT_UP) || ins->IsGamepadTrgUp(InputManager::PadInput::Up, 0))
 	{
 		//選択SE
-		AudioManager::GetInstance()->SetSeVolume(150);
+		//AudioManager::GetInstance()->SetSeVolume(150);
 		AudioManager::GetInstance()->PlaySE(SoundID::SE_TITLE_SELECT);
 		selectCount_--;
 		if (selectCount_ < minIndex)
@@ -321,7 +321,7 @@ void TitleScene::SelectUpdate()
 	if (ins->IsTrgDown(KEY_INPUT_DOWN) || ins->IsGamepadTrgDown(InputManager::PadInput::Down, 0))
 	{
 		//選択SE
-		AudioManager::GetInstance()->SetSeVolume(150);
+		//AudioManager::GetInstance()->SetSeVolume(150);
 		AudioManager::GetInstance()->PlaySE(SoundID::SE_TITLE_SELECT);
 		selectCount_++;
 		if (selectCount_ > maxIndex)
@@ -346,7 +346,7 @@ void TitleScene::SelectUpdate()
 				mouseY_ >= IMG_CHOICE_POS_Y && mouseY_ <= IMG_CHOICE_POS_Y + imgHeight_)
 			{
 				selectCount_ = static_cast<int>(SELECT::GAME);
-				AudioManager::GetInstance()->SetSeVolume(150);
+				//AudioManager::GetInstance()->SetSeVolume(150);
 				AudioManager::GetInstance()->PlaySE(SoundID::SE_TITLE_SELECT);
 			}
 		}
@@ -359,7 +359,7 @@ void TitleScene::SelectUpdate()
 				mouseY_ >= IMG_CHOICE_POS_Y + IMG_CHOICE_POS_Y_OFFSET && mouseY_ <= IMG_CHOICE_POS_Y + IMG_CHOICE_POS_Y_OFFSET + imgHeight_)
 			{
 				selectCount_ = static_cast<int>(SELECT::TUTORIAL);
-				AudioManager::GetInstance()->SetSeVolume(150);
+				//AudioManager::GetInstance()->SetSeVolume(150);
 				AudioManager::GetInstance()->PlaySE(SoundID::SE_TITLE_SELECT);
 			}
 		}
@@ -372,7 +372,7 @@ void TitleScene::SelectUpdate()
 				mouseY_ >= IMG_CHOICE_POS_Y + IMG_CHOICE_POS_Y_OFFSET * 2 && mouseY_ <= IMG_CHOICE_POS_Y + IMG_CHOICE_POS_Y_OFFSET * 2 + imgHeight_)
 			{
 				selectCount_ = static_cast<int>(SELECT::OPTION);
-				AudioManager::GetInstance()->SetSeVolume(150);
+				//AudioManager::GetInstance()->SetSeVolume(150);
 				AudioManager::GetInstance()->PlaySE(SoundID::SE_TITLE_SELECT);
 			}
 		}
@@ -385,7 +385,7 @@ void TitleScene::SelectUpdate()
 				mouseY_ >= IMG_CHOICE_POS_Y + IMG_CHOICE_POS_Y_OFFSET * 3 && mouseY_ <= IMG_CHOICE_POS_Y + IMG_CHOICE_POS_Y_OFFSET * 3 + imgHeight_)
 			{
 				selectCount_ = static_cast<int>(SELECT::EXIT);
-				AudioManager::GetInstance()->SetSeVolume(150);
+				//AudioManager::GetInstance()->SetSeVolume(150);
 				AudioManager::GetInstance()->PlaySE(SoundID::SE_TITLE_SELECT);
 			}
 		}
@@ -394,14 +394,14 @@ void TitleScene::SelectUpdate()
 	// SpaceキーまたはゲームパッドのAボタンで決定
 	if (ins->IsTrgDown(KEY_INPUT_SPACE) || ins->IsGamepadTrgDown(InputManager::PadInput::A, 0))//決定
 	{
-		AudioManager::GetInstance()->SetSeVolume(80);
+		//AudioManager::GetInstance()->SetSeVolume(80);
 		AudioManager::GetInstance()->PlaySE(SoundID::SE_TITLE_DECISION);
 		SelectChange((SELECT)selectCount_);
 	}
 	// マウスクリックで決定
 	if (ins->IsMouseTrgDown(MOUSE_INPUT_LEFT))
 	{
-		AudioManager::GetInstance()->SetSeVolume(80);
+		//AudioManager::GetInstance()->SetSeVolume(80);
 		AudioManager::GetInstance()->PlaySE(SoundID::SE_TITLE_DECISION);
 		SelectChange((SELECT)selectCount_);
 	}

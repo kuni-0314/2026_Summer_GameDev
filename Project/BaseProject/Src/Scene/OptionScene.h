@@ -137,9 +137,9 @@ private:
 	
 	// AudioManager
 	int currentAudioDeviceNum_ = 0;		// 出力デバイスの番号
-	float mVolume_ = 0.0f;				// 主音量
-	float bVolume_ = 0.0f;				// BGM音量
-	float sVolume_ = 0.0f;				// 効果音音量
+	int mVolume_ = 0;				// 主音量
+	int bVolume_ = 0;				// BGM音量
+	int sVolume_ = 0;				// 効果音音量
 	bool isMute_ = false;				// ミュートの有無
 
 	// 画面関連

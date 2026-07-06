@@ -1,4 +1,6 @@
 #pragma once
+#include <mmdeviceapi.h>
+#include <endpointvolume.h>
 #include "SoundTable.h"
 
 class AudioManager
@@ -47,8 +49,16 @@ public:
 	int GetSeVolume() const { return seVolume_; }
 	int GetMasterVolume() const { return masterVolume_; }
 
+	void SetMute(bool mute);
+	bool IsMute() const { return isMuted_; }
+
 private:
+
+	// オーディオデバイスの初期化
+	void InitAudioDevice();
+
 	std::unordered_map<SoundID, int> handles_;	// ハンドル管理用
+	std::unordered_map<SoundID, int> baseVolumes_; // 基礎音量
 
 	// 現在再生されているBGM
 	SoundID currentBgm_;
@@ -56,4 +66,12 @@ private:
 	int bgmVolume_;		// bgm音量
 	int seVolume_;		// se音量
 	int masterVolume_;	// master音量
+
+	// ミュート状態
+	bool isMuted_;
+
+	// オーディオ関連
+	IMMDeviceEnumerator* pEnumerator_;	// デバイス列挙子
+	IMMDevice* pDevice_;				// オーディオデバイス
+	IAudioEndpointVolume* pVolume_;		// ボリュームコントロール
 };
