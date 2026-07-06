@@ -636,9 +636,9 @@ void OptionScene::LoadOptionValues()
 
 	// コメントアウトの分は未実装
 	//currentAudioDeviceNum_ = audioIns->GetCurrentDeviceId();
-	//mVolume_ = audioIns->GetMasterVolume();
-	//bVolume_ = audioIns->GetBGMVolume();
-	//sVolume_ = audioIns->GetSEVolume();
+	mVolume_ = audioIns->GetMasterVolume();
+	bVolume_ = audioIns->GetBgmVolume();
+	sVolume_ = audioIns->GetSeVolume();
 	//isMute_ = audioIns->IsMute();
 	brightness_ = appIns.GetBrightness();
 	//enableShader_ = appIns.IsShaderEnabled();
@@ -680,9 +680,9 @@ void OptionScene::SaveOptionValues()
 	// 設定を各マネージャーに反映
 	// コメントアウトの分は未実装
 	//audioIns->SetCurrentDeviceId(currentAudioDeviceNum_);
-	//audioIns->SetMasterVolume(mVolume_);
-	//audioIns->SetBGMVolume(bVolume_);
-	//audioIns->SetSEVolume(sVolume_);
+	audioIns->SetMasterVolume(mVolume_);
+	audioIns->SetBgmVolume(bVolume_);
+	audioIns->SetSeVolume(sVolume_);
 	//audioIns->SetMute(isMute_);
 	appIns.SetBrightness(brightness_);
 	//appIns.SetShaderEnabled(enableShader_);
