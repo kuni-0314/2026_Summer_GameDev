@@ -2,6 +2,7 @@
 #include <DxLib.h>
 #include <functional>
 #include <memory>
+#include <vector>
 #include "../EnemyBase.h"
 
 class Player;
@@ -67,7 +68,6 @@ protected:
 	void UpdateProcessPost() override;
 
 
-
 private:
 
 	ItemManger* itemManager_;
@@ -78,13 +78,10 @@ private:
 	static constexpr int  ANIM_INDX_DEAD = 0;//END
 	static constexpr int  ANIM_INDX_CHARGE = 5;	//チャージ
 
-
 	static constexpr float SCALE = 2.5f;				// モデルの大きさ
 
 	static constexpr float RING_SCALE = 0.3f;			//衝撃波初期サイズ
 	static constexpr float RING_MAX_SCALE = 12.0f;		//衝撃波最大サイズ
-
-
 
 	// モデルのローカル回転
 	static constexpr VECTOR ROT = { 0.0f, 180.0f * DX_PI_F / 180.0f, 0.0f };
@@ -102,7 +99,7 @@ private:
 	static constexpr VECTOR COLBODY_CAPSULE_TOP_LOCAL_POS = { 0.0f, 200.0f, -60.0f };
 	static constexpr VECTOR COLBODY_CAPSULE_DOWN_LOCAL_POS = { 0.0f, 70.0f, -60.0f };
 
-	static constexpr VECTOR RING_ADD_SCL = { 0.1f, 0.0f, 0.1f };
+	static constexpr VECTOR RING_ADD_SCL = { 0.1f, 0.1f, 0.1f };
 
 	// 衝突判定用カプセル球体半径
 	static constexpr float COL_CAPSULE_RADIUS = 40.0f;
@@ -125,11 +122,14 @@ private:
 	static constexpr float COL_SWICH_RADIUS = 250.0f;
 
 	const float SWICH_DISTANCE = 200.0f;		// 攻撃切り替え距離
-	const float ATTACK_RUN_END_POINT = 500.0f;	//突進１の移動終了距離
+	const float ATTACK_RUN_END_POINT = 600.0f;	//突進１の移動終了距離
 
 	// ATTACK_DROP内でジャンプを行うタイミング(フレーム)
 	static constexpr float ATTACK_DROP_JUMP_TIME_RATIO = 0.42f;	//ジャンプ開始
 	static constexpr float ATTACK_DROP_JUMP_TIME_WAVE = 0.56f;	//衝撃波開始
+
+	// 対象フレーム
+	const std::vector<std::string> TARGET_FRAME_NAMES = { "トーラス", };
 
 	// 更新ステップ
 	float step_;// 状態管理(更新ステップ)

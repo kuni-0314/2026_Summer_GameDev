@@ -122,6 +122,18 @@ void EnemyLarge::InitCollider()
 		COLBODY_CAPSULE_TOP_LOCAL_POS, COLBODY_CAPSULE_DOWN_LOCAL_POS,
 		COL_CAPSULE_RADIUS);
 	ownColliders_.emplace(COLLIDER_KEY_BODY_BACK, colBackCapsule_);*/
+
+	// DxLib側の衝突情報セットアップ
+	MV1SetupCollInfo(transform_.modelId);
+	// モデルのコライダ
+	ColliderModel* colModel =
+		new ColliderModel(ColliderBase::TAG::STAGE, &transform_);
+
+	//対象とするフレーム
+	for (const std::string& name : TARGET_FRAME_NAMES)
+	{
+		colModel->AddTargetFrameIds(name);
+	}
 }
 
 void EnemyLarge::InitAnimation()
@@ -151,6 +163,9 @@ void EnemyLarge::InitPost()
 	stateChanges_.emplace(static_cast<int>(STATE::IDLE),
 		std::bind(&EnemyLarge::ChangeStateIdle, this));
 
+	stateChanges_.emplace(static_cast<int>(STATE::THINK),
+		std::bind(&EnemyLarge::ChangeStateThink, this));
+
 	stateChanges_.emplace(static_cast<int>(STATE::MOVE),
 		std::bind(&EnemyLarge::ChangeStateMove, this));
 
@@ -168,17 +183,23 @@ void EnemyLarge::InitPost()
 
 	stateChanges_.emplace(static_cast<int>(STATE::HIT),
 		std::bind(&EnemyLarge::ChangeStateHit, this));
-
-
 	// 初期状態設定
 	ChangeState(STATE::IDLE);
+
+	if (hp_ > hp_ / 2)
+	{
+		power_ = 2;
+	}
+	else
+	{
+		power_ = 3;
+	}
+
+
 }
 
 void EnemyLarge::UpdateProcess()
 {
-
-	
-
 	//プレイヤー情報関連
 	playerPos_ = player_->GetPos();
 	playerRad_ = player_->GetCollRadius();
@@ -202,7 +223,7 @@ void EnemyLarge::UpdateProcess()
 	CheckPlayerSwordCollision();
 	if (hp_ < preHp_)
 	{
-		ChangeState(STATE::HIT);
+		//ChangeState(STATE::HIT);
 	}
 
 	//衝撃波
@@ -261,6 +282,23 @@ void EnemyLarge::ChangeStateIdle()
 		static_cast<int>(ANIM_TYPE::IDLE), true);
 }
 
+void EnemyLarge::ChangeStateThink()
+{
+	stateUpdate_ = std::bind(&EnemyLarge::UpdateThink, this);
+
+	//IDLEと同じ
+
+	look_ = false;
+
+	// ランダムな待機時間
+	step_ = 3.0f + static_cast<float>(GetRand(3));
+	// 移動量ゼロ
+	movePow_ = AsoUtility::VECTOR_ZERO;
+	// 待機アニメーション再生
+	animationController_->Play(
+		static_cast<int>(ANIM_TYPE::IDLE), true);
+}
+
 void EnemyLarge::ChangeStateCharge()
 {
 	stateUpdate_ = std::bind(&EnemyLarge::UpdateCharge, this);
@@ -295,7 +333,15 @@ void EnemyLarge::ChangeStateAttackRun()
 
 	look_ = true;
 
-	moveSpeed_ = 6.0f;
+	
+	if (hp_ > hp_ / 2)
+	{
+		moveSpeed_ = 8.0f;
+	}
+	else
+	{
+		moveSpeed_ = 10.0f;
+	}
 
 	// 待機アニメーション再生
 	animationController_->Play(
@@ -352,10 +398,25 @@ void EnemyLarge::UpdateIdle()
 	if (countMax < countUp)
 	{
 		countUp = 0;
-		ChangeState(STATE::CHARGE);
+		ChangeState(STATE::THINK);
 	}
 
 	movePow_ = AsoUtility::VECTOR_ZERO;
+}
+
+void EnemyLarge::UpdateThink()
+{
+
+	int rand = GetRand(100);
+
+	if (rand >= 30)
+	{
+		ChangeState(STATE::CHARGE);
+	}
+	else
+	{
+		ChangeState(STATE::ATTACK_DROP);
+	}
 }
 
 void EnemyLarge::UpdateCharge()
@@ -382,7 +443,7 @@ void EnemyLarge::UpdateAttackPunch()
 		// 攻撃判定
 		if (AsoUtility::IsHitSpheres(attackWorldPos_, COL_SPHERE_RADIUS, playerPos_, playerRad_))
 		{
-			player_->Damege(2);
+			player_->Damege(power_);
 			isAttack_ = true;
 		}
 	}
@@ -390,7 +451,7 @@ void EnemyLarge::UpdateAttackPunch()
 	if(animationController_->IsEnd())
 	{
 		
-		ChangeState(STATE::ATTACK_DROP);
+		ChangeState(STATE::IDLE);
 	}
 
 	movePow_ = AsoUtility::VECTOR_ZERO;
@@ -408,8 +469,8 @@ void EnemyLarge::UpdateAttackRun()
 	}
 
 	//進行方向を決めた後移動
-	//移動距離
-	float dist =VSize(VSub(transform_.pos, startPos));
+	
+	float dist =VSize(VSub(transform_.pos, startPos)); //移動距離
 
 	if (dist > ATTACK_RUN_END_POINT)
 	{
@@ -445,6 +506,7 @@ void EnemyLarge::UpdateAttackDrop()
 	{
 		// 発生の瞬間に一度だけ座標をセット
 		ringTransform_->pos = transform_.pos;
+		ringTransform_->pos.y += 20;
 		ringTransform_->scl = { RING_SCALE,RING_SCALE ,RING_SCALE };
 		isDrop_ = true;
 		attackriggerRing_ = true;
