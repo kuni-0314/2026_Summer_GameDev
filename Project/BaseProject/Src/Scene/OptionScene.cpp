@@ -671,9 +671,9 @@ void OptionScene::LoadOptionValues()
 	isShowFPS_ = showInfos.fps;
 	isShowMemoryUsage_ = showInfos.memoryUsage;
 	isShowBatteryStatus_ = showInfos.batteryStatus;
+	isShowPlayerPosition_ = showInfos.playerPosition;
 	isShowCollider_ = showInfos.collider;
 	isShowXYZAxis_ = showInfos.xyzAxis;
-	isShowPlayerPosition_ = showInfos.playerPosition;
 }
 
 void OptionScene::SaveOptionValues()
@@ -722,9 +722,9 @@ void OptionScene::SaveOptionValues()
 	showInfos.fps = isShowFPS_;
 	showInfos.memoryUsage = isShowMemoryUsage_;
 	showInfos.batteryStatus = isShowBatteryStatus_;
+	showInfos.playerPosition = isShowPlayerPosition_;
 	showInfos.collider = isShowCollider_;
 	showInfos.xyzAxis = isShowXYZAxis_;
-	showInfos.playerPosition = isShowPlayerPosition_;
 
 	// TODO: ê›íËÉtÉ@ÉCÉãÇ÷ÇÃï€ë∂èàóùÇé¿ëï
 	// ó·: SaveToFile("Config/Options.ini");
@@ -813,10 +813,10 @@ void* OptionScene::GetItemValuePtr(int itemIndex)
 	case IDX_COLOR_ACCESSIBILITY:		return &currentColorAccessibilityNum_;
 	case IDX_FPS:						return &isShowFPS_;
 	case IDX_MEMORY_USAGE:				return &isShowMemoryUsage_;
+	case IDX_BATTERY_STATUS:			return &isShowBatteryStatus_;
+	case IDX_PLAYER_POSITION:			return &isShowPlayerPosition_;
 	case IDX_COLLIDER:					return &isShowCollider_;
 	case IDX_XYZ_AXIS:					return &isShowXYZAxis_;
-	case IDX_PLAYER_POSITION:			return &isShowPlayerPosition_;
-	case IDX_BATTERY_STATUS:			return &isShowBatteryStatus_;
 	default: return nullptr;
 	}
 }

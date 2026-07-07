@@ -80,10 +80,10 @@ private:
 		// デバッグ
 		IDX_FPS,
 		IDX_MEMORY_USAGE,
+		IDX_BATTERY_STATUS,
+		IDX_PLAYER_POSITION,
 		IDX_COLLIDER,
 		IDX_XYZ_AXIS,
-		IDX_PLAYER_POSITION,
-		IDX_BATTERY_STATUS,
 		
 		IDX_MAX
 	};
@@ -220,20 +220,20 @@ private:
 	{
 		FPS,				// FPSの表示
 		MEMORY_USAGE,		// メモリ使用量の表示
+		BATTERY_STATUS,		// バッテリー残量の表示
+		PLAYER_POSITION,	// プレイヤー座標の表示
 		COLLIDER,			// コライダー表示
 		XYZ_AXIS,			// XYZ軸の表示
-		PLAYER_POSITION,	// プレイヤー座標の表示
-		BATTERY_STATUS,		// バッテリー残量の表示
 		DEBUG_MAX
 	};
 
 	// Application
 	bool isShowFPS_ = false;				// FPSの表示
 	bool isShowMemoryUsage_ = false;		// メモリ使用量の表示
+	bool isShowBatteryStatus_ = false;		// バッテリー残量の表示
+	bool isShowPlayerPosition_ = false;		// プレイヤー座標の表示
 	bool isShowCollider_ = false;			// コライダー表示
 	bool isShowXYZAxis_ = false;			// XYZ軸の表示
-	bool isShowPlayerPosition_ = false;		// プレイヤー座標の表示
-	bool isShowBatteryStatus_ = false;		// バッテリー残量の表示
 
 	// カテゴリヘッダー数（APPLY, EXITを除く）
 	static constexpr int CATEGORY_COUNT = 7;
@@ -286,10 +286,10 @@ private:
 		"【デバッグ】",
 		"FPS",
 		"メモリ使用量",
+		"バッテリー残量",
+		"プレイヤー座標",
 		"コライダー",
 		"XYZ軸",
-		"プレイヤー座標",
-		"バッテリー残量"
 	};
 
 	const std::string OPTION_ITEM_NAME[OPTION_MAX] =
@@ -358,10 +358,10 @@ private:
 		CATEGORY_HEADER,	// 【デバッグ】
 		CHECKBOX,			// FPS
 		CHECKBOX,			// メモリ使用量
-		CHECKBOX,			// コライダー
-		CHECKBOX,			// XYZ軸
+		CHECKBOX,			// バッテリー残量
 		CHECKBOX,			// プレイヤー座標
-		CHECKBOX			// バッテリー残量
+		CHECKBOX,			// コライダー
+		CHECKBOX			// XYZ軸
 	};
 
 	int categoryFontHandle_ = 0;	// メインフォントハンドル

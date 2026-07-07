@@ -6,6 +6,7 @@
 #include "Application.h"
 #include "Common/FpsController.h"
 #include "Sound/AudioManager.h"
+#include "Common/DebugStringDrawer.h"
 #define _CRTDBG_MAP_ALLOC
 
 #pragma comment(lib, "wbemuuid.lib")
@@ -141,7 +142,6 @@ void Application::Init()
 
 void Application::Run()
 {
-
 	InputManager* inputManager = InputManager::GetInstance();
 	SceneManager& sceneManager = SceneManager::GetInstance();
 
@@ -182,11 +182,12 @@ void Application::Run()
 
 		sceneManager.Draw();
 
-		#ifdef _DEBUG
-		// 平均FPS描画
-		fpsController_->Draw();
-		#endif // _DEBUG
+		UpdateMemoryUsage();
+		UpdateBatteryStatus();
 
+		CheckInfo();
+		DebugStringDrawer::GetInstance().Draw();
+		
 		SetDrawBlendMode(DX_BLENDMODE_ALPHA, 255 * 0.8f * (1.0f - brightness_ / 100.0f));
 		DrawBox(0, 0, SCREEN_SIZE_X, SCREEN_SIZE_Y, GetColor(0, 0, 0), TRUE);
 		SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
@@ -195,8 +196,6 @@ void Application::Run()
 
 		// 理想FPS経過待ち
 		fpsController_->Wait();
-
-
 	}
 
 }
@@ -276,6 +275,68 @@ void Application::InitEffekseer()
 	Effekseer_SetGraphicsDeviceLostCallbackFunctions();
 }
 
+void Application::CheckInfo()
+{
+	auto& ins = DebugStringDrawer::GetInstance();
+	if (pShowInfos_.fps != showInfos_.fps)
+	{
+		if (showInfos_.fps)
+		{
+			ins.Add("FPS", fpsController_->GetFPSPtr());
+		}
+		else
+		{
+			ins.Remove("FPS");
+		}
+	}
+	if (pShowInfos_.memoryUsage != showInfos_.memoryUsage)
+	{
+		if (showInfos_.memoryUsage)
+		{
+			ins.Add("総メモリ", &totalMemory_);
+			ins.Add("使用可能メモリ", &availableMemory_);
+			ins.Add("使用中メモリ", &usedMemory_);
+		}
+		else
+		{
+			ins.Remove("総メモリ");
+			ins.Remove("使用可能メモリ");
+			ins.Remove("使用中メモリ");
+		}
+	}
+	if (pShowInfos_.batteryStatus != showInfos_.batteryStatus)
+	{
+		if (showInfos_.batteryStatus)
+		{
+			ins.Add("バッテリー残量", &batteryStatus_.BatteryLifePercent);
+			ins.Add("AC電源接続状態", &batteryStatus_.ACLineStatus);
+		}
+		else
+		{
+			ins.Remove("バッテリー残量");
+			ins.Remove("AC電源接続状態");
+		}
+	}
+	pShowInfos_ = showInfos_;
+}
+
+void Application::UpdateMemoryUsage()
+{
+	MEMORYSTATUSEX mem = {};
+	mem.dwLength = sizeof(mem);
+
+	GlobalMemoryStatusEx(&mem);
+
+	totalMemory_.bytes = mem.ullTotalPhys;
+	availableMemory_.bytes = mem.ullAvailPhys;
+	usedMemory_.bytes = totalMemory_.bytes - availableMemory_.bytes;
+}
+
+void Application::UpdateBatteryStatus()
+{
+	GetSystemPowerStatus(&batteryStatus_);
+}
+
 int Application::GetBrightness()
 {
 	return brightness_;
@@ -299,4 +360,9 @@ void Application::SetFPSLimit(int fpsLimit)
 	// 0（無制限）の場合は非常に高い値に変換
 	int actualFPS = (fpsLimit == 0) ? 1200 : fpsLimit;
 	fpsController_->ChangeFixedFPS(actualFPS);
+}
+
+Application::ShowInfos& Application::GetShowInfos()
+{
+	return showInfos_;
 }

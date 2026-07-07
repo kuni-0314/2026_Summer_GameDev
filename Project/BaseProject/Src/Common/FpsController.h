@@ -26,6 +26,9 @@ public:
     // 現在のFPSを取得
     float GetFPS() const { return fps_; }
 
+	// FPSのポインタを取得
+	float* GetFPSPtr() { return &fps_; }
+
     // 固定FPSを変更
     void ChangeFixedFPS(int newFixedFPS);
 
