@@ -121,27 +121,7 @@ private:
 	
 	int audioHandle_;
 
-<<<<<<< HEAD
-	
 	std::vector<int> hpHandles_;//Hpハンドル
 	std::vector<int> playerUiHandles_;	//プレイヤーUI
 
-	
-=======
-	// 後々固定長に
-	std::vector<int> hpHandles_;
-
-	//HPUI画像ハンドル
-	//int hpHandle0_;
-	//int hpHandle1_;
-	//int hpHandle2_;
-	//int hpHandle3_;
-	//int hpHandle4_;
-	//int hpHandle5_;
-	//int hpHandle6_;
-	//int hpHandle7_;
-	//int hpHandle8_;
-	//int hpHandle9_;
-	//int hpHandle10_;
->>>>>>> main
 };
