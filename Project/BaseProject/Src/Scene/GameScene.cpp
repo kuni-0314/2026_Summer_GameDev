@@ -15,15 +15,12 @@
 #include "../Object/Weapon/Sword/KeyBlade1.h"
 #include "../Object/Collider/ColliderBase.h"
 #include "../Object/Collider/Sphere/ColliderSphere.h"
-<<<<<<< HEAD
-=======
 #include "../Effect/EffectManager.h"
 #include "../Effect/LoadEffekseer/EffekseerEffect.h"
 #include "../Sound/AudioManager.h"
->>>>>>> origin/EF
 #include "GameScene.h"
 #include <EffekseerForDXLib.h>
-// 別プロジェクト
+
 GameScene::GameScene()
 	: SceneBase(),
 	stage_(nullptr),
@@ -313,7 +310,7 @@ void GameScene::Update()
 		return;
 	}
 
-<<<<<<< HEAD
+
 	// ゲームクリア判定
 	if (enemyManager_->GetEnemyDead())
 	{
@@ -325,7 +322,6 @@ void GameScene::Update()
 		return;
 	}
 
-=======
 	//// ゲームクリア判定
 	//if (enemyManager_->GetEnemyDead())
 	//{
@@ -336,7 +332,6 @@ void GameScene::Update()
 	//	sceMng_.ChangeScene(SceneManager::SCENE_ID::CLEAR);
 	//	return;
 	//}
->>>>>>> origin/EF
 
 }
 
@@ -352,14 +347,14 @@ void GameScene::Draw()
 	itemManger_->Draw();
 	enemyManager_->Draw();
 
-<<<<<<< HEAD
+
 	PlayerHpDraw();
-=======
+
 	// エフェクトを一番手前に描画
 	EffectManager::GetInstance().Draw();
 
 	DrawEffekseer3D();
->>>>>>> origin/EF
+
 
 	// 一時スクリーンにメイン画面をコピー
 	int tempScreen = MakeScreen(Application::SCREEN_SIZE_X, Application::SCREEN_SIZE_Y, false);

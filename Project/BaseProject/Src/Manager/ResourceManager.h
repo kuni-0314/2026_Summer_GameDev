@@ -29,7 +29,6 @@ public:
 		SKY_DOME,				//スカイドーム（ゲームシーン
 		PLAYER_SHADOW,			//シャドウ
 		ENEMY_RAT,
-<<<<<<< HEAD
 		ENEMY_RASE,				//らせ
 		ENEMY_RASE_BALL,		//攻撃用モデル
 		ENEMY_LARGE,
@@ -71,22 +70,9 @@ public:
 		IMG_PLAYER_UI_DEF,		
 		IMG_PLAYER_UI_DAMEGE,
 		IMG_PLAYRE_UI_WARNIG,
-=======
-		ENEMY_RASE,			//らせ
-		ENEMY_RASE_BALL,	//攻撃用モデル
-		VIEW_RANGE,			//敵の視野
-		CELL_RED,			// 赤色セル
-		BATTLE_STAGE,		//バトルステージ
-		BATTLE_WALL,		//ステージ壁
-		ITEM_HP,			//体力アイテム
-		ITEM_SKILL,			//スキルアイテム
-		KEY_BLADE_1,	//キーブレード１
-		KEY_BLADE_2,	//キーブレード２
-		KEY_BLADE_3,	//キーブレード３
 		EFFECT_POWER_UP,	//パワーアップエフェクト
 		EFFECT_HEAL,			//回復エフェクト
 		EFFECT_HIT,				//ヒットエフェクト
->>>>>>> origin/EF
 		MAX
 	};
 
