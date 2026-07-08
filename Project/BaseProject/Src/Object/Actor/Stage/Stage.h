@@ -6,9 +6,9 @@ class Stage :public ActorBase
 public:
 
 
-	static constexpr float SCL_MAIN_STAGE_X = 10.0f;
+	static constexpr float SCL_MAIN_STAGE_X = 30.0f;
 	static constexpr float SCL_MAIN_STAGE_Y = 1.0f;
-	static constexpr float SCL_MAIN_STAGE_Z = 10.0f;
+	static constexpr float SCL_MAIN_STAGE_Z = 30.0f;
 
 	static constexpr VECTOR POS_MAIN_STAGE = { 0.0f, -100.0f, 0.0f };
 

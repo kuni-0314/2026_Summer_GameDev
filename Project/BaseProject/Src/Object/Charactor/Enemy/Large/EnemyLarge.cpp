@@ -452,6 +452,7 @@ void EnemyLarge::UpdateAttackPunch()
 	{
 		
 		ChangeState(STATE::IDLE);
+		isAttack_ = false;
 	}
 
 	movePow_ = AsoUtility::VECTOR_ZERO;

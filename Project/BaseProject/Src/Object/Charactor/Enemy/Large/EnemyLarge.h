@@ -104,7 +104,7 @@ private:
 	// 衝突判定用カプセル球体半径
 	static constexpr float COL_CAPSULE_RADIUS = 40.0f;
 	// 衝突判定用カプセル球体半径（球体判定用）
-	static constexpr float COL_SPHERE_RADIUS = 50.0f;
+	static constexpr float COL_SPHERE_RADIUS = 80.0f;
 
 
 	//固有で管理するコライダー番号
