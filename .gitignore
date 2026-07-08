@@ -26,4 +26,4 @@ bld/
 Log.txt
 
 # シェーダー
-.cso
+*.cso
