@@ -275,4 +275,7 @@ private:
 	static constexpr VECTOR KEY_BLADE_3_LOCAL_POS_START = { 0.0f, 30.0f, 0.0f };
 	static constexpr VECTOR KEY_BLADE_3_LOCAL_POS_END = { 0.0f, 120.0f, 0.0f };
 	static constexpr float KEY_BLADE_3_RADIUS = 40.0f;
+
+	static constexpr int THUNDER_COUNT = 10;
+	VECTOR thunderPosOffsets_[THUNDER_COUNT];
 };

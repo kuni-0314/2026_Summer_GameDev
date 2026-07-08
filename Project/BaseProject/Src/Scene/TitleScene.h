@@ -83,6 +83,7 @@ private:
 	SELECT select_; //選択コマンド
 
 	int selectCount_ = 0; //選択中のコマンド
+	int pSelectCount_ = 0; //前回の選択中のコマンド
 
 	//アニメ―ションコントローラのポインタを作成
 	AnimationController* animationController_;

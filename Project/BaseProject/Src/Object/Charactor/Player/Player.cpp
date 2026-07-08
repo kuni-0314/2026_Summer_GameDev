@@ -16,6 +16,8 @@
 #include "../../Weapon/Sword/KeyBlade3.h"
 #include "../../../Effect/LoadEffekseer/EffekseerEffect.h" // パスは環境に合わせて調整してください
 #include "../../../Effect/EffectManager.h"
+#include "../../../Sound/AudioManager.h"
+#include "../../../Sound/SoundTable.h"
 #include "PlayerIdleState.h"
 #include "PlayerRunState.h"
 #include "PlayerFastRunState.h"
@@ -299,6 +301,55 @@ void Player::UpdateProcess()
 	{
 		PlayBlinkEffect();
 	}
+
+	if (InputManager::GetInstance()->IsTrgDown(KEY_INPUT_T))
+	{
+		// 雷の位置をランダムに設定
+		for (int i = 0; i < THUNDER_COUNT; i++)
+		{
+			float randomAngle = (GetRand(180) - 90) * DX_PI_F / 180.0f;
+
+			const float DIST_MAX = 300.0f;
+
+			float randomRadius =
+				sqrtf(GetRand(100) / 100.0f) * DIST_MAX;
+
+			float randomX = sinf(randomAngle) * randomRadius;
+			float randomZ = cosf(randomAngle) * randomRadius;
+
+			VECTOR randomPos =
+			{
+				randomX,
+				0.0f,
+				randomZ
+			};
+
+			randomPos = transform_.quaRot.PosAxis(randomPos);
+
+			thunderPosOffsets_[i] = randomPos;
+		}
+
+		AudioManager::GetInstance()->PlaySE(SoundID::SE_THUNDER);
+	}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 }
 
 void Player::UpdateProcessPost()
@@ -400,7 +451,34 @@ void Player::Draw()
 	DrawSphere3D(lineY, 5.0f, 16, 0x00FF00, 0x00FF00, true);
 	DrawSphere3D(lineZ, 5.0f, 16, 0x0000FF, 0x0000FF, true);
 	DrawSphere3D(rot, 5.0f, 16, 0xFFFF00, 0xFFFF00, true);
+	
+	for (int i = 0; i < THUNDER_COUNT; i++)
+	{
+		VECTOR randomPos = thunderPosOffsets_[i];
+		VECTOR spherePos = VAdd(transform_.pos, randomPos);
+		DrawSphere3D(spherePos, 10.0f, 16, 0xff00ff, 0xff00ff, false);
+	}
 
+	VECTOR test = transform_.quaRot.PosAxis(VGet(0, 0, -100));
+
+	DrawSphere3D(
+		VAdd(transform_.pos, test),
+		20,
+		16,
+		0xff0000,
+		0xff0000,
+		true
+	);
+
+	//DrawFormatString(0, 400, 0xffffff, "<Player> Pos : (%.2f, %.2f, %.2f)", transform_.pos.x, transform_.pos.y, transform_.pos.z);
+	DrawFormatString(
+		0, 450, 0xffffff,
+		"<Player> Rot : (%.2f, %.2f, %.2f, %.2f)",
+		transform_.quaRot.w,
+		transform_.quaRot.x,
+		transform_.quaRot.y,
+		transform_.quaRot.z
+	);
 	//DrawFormatString(0, 500, 0xffffff, "<Player> HP : %d", hp_);
 #endif // _DEBUG
 }

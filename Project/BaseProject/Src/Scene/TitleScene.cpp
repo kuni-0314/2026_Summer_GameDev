@@ -68,6 +68,7 @@ void TitleScene::Update()
 	
 
 	if (!isFadeIn_) SelectUpdate();
+	
 	else effectTime_ += FADE_SPEED;
 
 	if (effectTime_ >= 1.0f)
@@ -306,6 +307,7 @@ void TitleScene::SelectUpdate()
 
 	//選択コマンド変更
 
+	pSelectCount_ = selectCount_;
 	if (ins->IsTrgDown(KEY_INPUT_UP) || ins->IsGamepadTrgUp(InputManager::PadInput::Up, 0))
 	{
 		//選択SE
@@ -404,5 +406,10 @@ void TitleScene::SelectUpdate()
 		//AudioManager::GetInstance()->SetSeVolume(80);
 		AudioManager::GetInstance()->PlaySE(SoundID::SE_TITLE_DECISION);
 		SelectChange((SELECT)selectCount_);
+	}
+
+	if (selectCount_ != pSelectCount_)
+	{
+		StartJoypadVibration(1, 1000, 30, -1);
 	}
 }

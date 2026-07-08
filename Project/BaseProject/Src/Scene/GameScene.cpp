@@ -99,8 +99,9 @@ void GameScene::Init()
 
 	audioHandle_ = LoadSoundMem("Data/Sound/BGM/GameBGM.wav");
 	wargnigHandle_ = LoadSoundMem("Data/Sound/BGM/WarnigBgm.wav");
-	ChangeVolumeSoundMem(120, audioHandle_);
-	PlaySoundMem(audioHandle_, DX_PLAYTYPE_LOOP);
+	//ChangeVolumeSoundMem(120, audioHandle_);
+	//PlaySoundMem(audioHandle_, DX_PLAYTYPE_LOOP);
+	AudioManager::GetInstance()->PlayBGM(SoundID::BGM_GAME);
 	// ‰¹—Ê
 
 	hpHandles_.resize(11);
