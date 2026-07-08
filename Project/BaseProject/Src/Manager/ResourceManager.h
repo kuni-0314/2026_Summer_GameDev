@@ -11,37 +11,37 @@ public:
 	// リソース名
 	enum class SRC
 	{
-		TITLE, //タイトル画像
-		TITLE_PUSH,	//push画像
-		TITLE_GAMESTART,	//スタート画像
-		TITLE_NOT_GAMESTART,//非選択スタート画像
-		TITLE_END,	//終了画像
-		TITLE_NOT_END,//非選択終了画像
-		TITLE_TUTORIAL,	//チュートリアル画像
-		TITLE_NOT_TUTORIAL,//非選択チュートリアル画像
-		TITLE_OPTION,	//オプション画像
-		TITLE_NOT_OPTION,//非選択オプション画像
-		TITLE_PLAYER,	//タイトルプレイヤー
-		PIT_FALL_PLANET,	//メイン惑星
-		SPHERE_PLANET,		//サブ惑星
-		PLAYER,				//プレイヤー
-		MAIN_STAGE,			//ステージ（ゲームシーン）
-		SKY_DOME,			//スカイドーム（ゲームシーン
-		PLAYER_SHADOW,		//シャドウ
+		TITLE,					//タイトル画像
+		TITLE_PUSH,				//push画像
+		TITLE_GAMESTART,		//スタート画像
+		TITLE_NOT_GAMESTART,	//非選択スタート画像
+		TITLE_END,				//終了画像
+		TITLE_NOT_END,			//非選択終了画像
+		TITLE_TUTORIAL,			//チュートリアル画像
+		TITLE_NOT_TUTORIAL,		//非選択チュートリアル画像
+		TITLE_OPTION,			//オプション画像
+		TITLE_NOT_OPTION,		//非選択オプション画像
+		TITLE_PLAYER,			//タイトルプレイヤー
+		PIT_FALL_PLANET,		//メイン惑星
+		SPHERE_PLANET,			//サブ惑星
+		PLAYER,					//プレイヤー
+		MAIN_STAGE,				//ステージ（ゲームシーン）
+		SKY_DOME,				//スカイドーム（ゲームシーン
+		PLAYER_SHADOW,			//シャドウ
 		ENEMY_RAT,
-		ENEMY_RASE,			//らせ
-		ENEMY_RASE_BALL,	//攻撃用モデル
+		ENEMY_RASE,				//らせ
+		ENEMY_RASE_BALL,		//攻撃用モデル
 		ENEMY_LARGE,
-		VIEW_RANGE,			//敵の視野
-		CELL_RED,			// 赤色セル
-		BATTLE_STAGE,		//バトルステージ
-		BATTLE_WALL,		//ステージ壁
-		ITEM_HP,			//体力アイテム
-		ITEM_SKILL,			//スキルアイテム
-		KEY_BLADE_1,	//キーブレード１
-		KEY_BLADE_2,	//キーブレード２
-		KEY_BLADE_3,	//キーブレード３
-		IMG_PLAYER_HP_0,	//プレイヤーHPUI
+		VIEW_RANGE,				//敵の視野
+		CELL_RED,				// 赤色セル
+		BATTLE_STAGE,			//バトルステージ
+		BATTLE_WALL,			//ステージ壁
+		ITEM_HP,				//体力アイテム
+		ITEM_SKILL,				//スキルアイテム
+		KEY_BLADE_1,			//キーブレード１
+		KEY_BLADE_2,			//キーブレード２
+		KEY_BLADE_3,			//キーブレード３
+		IMG_PLAYER_HP_0,		//プレイヤーHPUI
 		IMG_PLAYER_HP_1,
 		IMG_PLAYER_HP_2,
 		IMG_PLAYER_HP_3,
@@ -52,13 +52,13 @@ public:
 		IMG_PLAYER_HP_8,
 		IMG_PLAYER_HP_9,
 		IMG_PLAYER_HP_10,
-		IMG_ON_CONTINUE,	//ゲームオーバー選択コマンド
+		IMG_ON_CONTINUE,		//ゲームオーバー選択コマンド
 		IMG_ON_TITLE,
 		IMG_ON_RETRY,
 		IMG_OFF_CONTINUE,
 		IMG_OFF_TITLE,
 		IMG_OFF_RETRY,
-		PLAYER_GAMEOVER,	//ゲームオーバー用プレイヤー
+		PLAYER_GAMEOVER,		//ゲームオーバー用プレイヤー
 		TARGET_CURSOR_ORANGE,	//ターゲットカーソルオレンジ
 		TARGET_CURSOR_BLUE,	//ターゲットカーソルブルー
 		OPTION_BACKGROUND,	//オプション背景
@@ -67,6 +67,12 @@ public:
 		CHECKBOX_ON,	//チェックボックスON
 		CHECKBOX_OFF,	//チェックボックスOFF
 		ENEMY_LARGE_RING,
+		IMG_PLAYER_UI_DEF,		
+		IMG_PLAYER_UI_DAMEGE,
+		IMG_PLAYRE_UI_WARNIG,
+		EFFECT_POWER_UP,	//パワーアップエフェクト
+		EFFECT_HEAL,			//回復エフェクト
+		EFFECT_HIT,				//ヒットエフェクト
 		MAX
 	};
 

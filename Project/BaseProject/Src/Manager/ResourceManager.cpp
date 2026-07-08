@@ -193,6 +193,20 @@ void ResourceManager::Init()
 	// チェックボックスOFF
 	res = new RES(RES_T::IMG, PATH_IMG + "UI/CheckOFF.png");
 	resourcesMap_.emplace(SRC::CHECKBOX_OFF, res);	//mapに登録
+
+	//いったんエフェクトを置いときますわ
+	//パワーアップエフェクト
+	res = new RES(RES_T::EFFEKSEER, PATH_EFF + "PowerUp/PowerUp.efkefc");
+	resourcesMap_.emplace(SRC::EFFECT_POWER_UP, res);	//mapに登録
+
+	//回復エフェクト
+	res = new RES(RES_T::EFFEKSEER, PATH_EFF + "Heal/Heal.efkefc");
+	resourcesMap_.emplace(SRC::EFFECT_HEAL, res);	//mapに登録
+
+	//ヒットエフェクト
+	res = new RES(RES_T::EFFEKSEER, PATH_EFF + "Ster/Ster.efkefc");
+	resourcesMap_.emplace(SRC::EFFECT_HIT, res);	//mapに登録
+
 }
 
 void ResourceManager::Release()

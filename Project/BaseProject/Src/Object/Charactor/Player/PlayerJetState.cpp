@@ -9,6 +9,9 @@ void PlayerJetState::Enter(Player* player)
 	player->SetMovePow(VScale(player->GetMoveDir(), Player::POW_JET));
 	player->SetJet(true);
 	player->SetJetTime(0.0f);
+
+	//’Ç‰Á
+	player->PlayBlinkEffect();
 }
 
 void PlayerJetState::Update(Player* player)

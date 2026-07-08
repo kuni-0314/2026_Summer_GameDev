@@ -14,6 +14,8 @@
 #include "../../Weapon/Sword/KeyBlade1.h"
 #include "../../Weapon/Sword/KeyBlade2.h"
 #include "../../Weapon/Sword/KeyBlade3.h"
+#include "../../../Effect/LoadEffekseer/EffekseerEffect.h" // パスは環境に合わせて調整してください
+#include "../../../Effect/EffectManager.h"
 #include "PlayerIdleState.h"
 #include "PlayerRunState.h"
 #include "PlayerFastRunState.h"
@@ -58,18 +60,21 @@ void Player::Update()
 
 	// 各キャラクターごとの更新処理
 	UpdateProcess();
-	// 移動方向に応じて徐々に回転
-	DelayRotate();
-	// 重力による移動量
-	CalcGravityPow();
-	// 衝突判定前準備
-	CollisionReserve();
-	// 衝突判定
-	Collision();
+	if (!m_isPowerUp)
+	{
+		// 移動方向に応じて徐々に回転
+		DelayRotate();
+		// 重力による移動量
+		CalcGravityPow();
+		// 衝突判定前準備
+		CollisionReserve();
+		// 衝突判定
+		Collision();
+		// アニメーション再生
+		animationController_->Update();
+	}
 	// モデル制御更新
 	transform_.Update();
-	// アニメーション再生
-	animationController_->Update();
 	// 各キャラクターごとの更新後処理
 	UpdateProcessPost();
 
@@ -247,10 +252,32 @@ void Player::InitPost()
 	// 武器初期化
 	sword_ = new KeyBlade3(KEY_BLADE_3_LOCAL_POS_START, KEY_BLADE_3_LOCAL_POS_END, KEY_BLADE_3_RADIUS, transform_);
 	sword_->Init();
+
+	
 }
 
 void Player::UpdateProcess()
 {
+	// パワーアップ中
+	if (m_isPowerUp)
+	{
+		m_powerUpTimer--;
+
+		// 終了
+		if (m_powerUpTimer <= 0)
+		{
+			m_isPowerUp = false;
+		}
+	}
+	else
+	{
+		// 通常時だけ操作可能
+		if (currentState_ != nullptr)
+		{
+			currentState_->Update(this);
+		}
+	}
+
 	// 状態別更新処理
 	if (currentState_ != nullptr)
 	{
@@ -261,6 +288,16 @@ void Player::UpdateProcess()
 	{
 		// リスポーン
 		transform_.pos = POS_PLAYER;
+	}
+
+	if (InputManager::GetInstance()->IsTrgDown(KEY_INPUT_P))
+	{
+		ActivatePowerUp();
+	}
+
+	if (InputManager::GetInstance()->IsTrgDown(KEY_INPUT_B))
+	{
+		PlayBlinkEffect();
 	}
 }
 
@@ -274,9 +311,6 @@ void Player::UpdateProcessPost()
 
 void Player::Draw()
 {
-
-
-
 	//基底クラスの描画処理
 	ActorBase::Draw();
 	// 丸影の描画
@@ -288,9 +322,6 @@ void Player::Draw()
 		sword_->Draw();
 	}
 #ifdef _DEBUG
-
-
-
 	// ステータス描画
 	int x = 20;
 	int y = 20;
@@ -379,6 +410,58 @@ void Player::ChangeState(STATE newState)
 	currentState_->Exit(this);
 	currentState_ = states_[newState];
 	currentState_->Enter(this);
+}
+
+void Player::ActivatePowerUp()
+{
+	if (m_isPowerUp) return;
+
+	m_isPowerUp = true;
+
+	// エフェクト再生時間
+	m_powerUpTimer = 60; // 約1秒(60FPSの場合)
+
+	VECTOR effectPos = transform_.pos;
+	// エフェクトの再生位置をプレイヤーの座標に設定
+	auto effect = std::make_shared<EffekseerEffect>(
+		L"Data/Effect/PowerUp/PowerUp2.efkefc",
+		effectPos
+	);
+	// エフェクトを再生
+	effect->Play(
+		effectPos,
+		transform_.quaRot
+	);
+
+	EffectManager::GetInstance().RegisterEffect(effect);
+}
+
+void Player::PlayBlinkEffect()
+{
+	// エフェクト再生時間
+	auto effect = std::make_shared<EffekseerEffect>(
+		L"Data/Effect/Bring/Blink.efkefc",
+		transform_.pos
+	);
+	// エフェクトの再生位置をプレイヤーの背後に設定
+	VECTOR back = transform_.quaRot.GetBack();
+	// 50.0fの距離を背後に設定
+	VECTOR backPos = VScale(
+		back,
+		50.0f
+	);
+	// プレイヤーの座標に背後の位置を加算
+	backPos = VAdd(
+		transform_.pos,
+		backPos
+	);
+	// エフェクトを再生
+	effect->Play(
+		backPos,
+		transform_.quaRot
+	);
+	// エフェクトをエフェクトマネージャーに登録
+	EffectManager::GetInstance().RegisterEffect(effect);
 }
 
 void Player::GrantStatus(int index)

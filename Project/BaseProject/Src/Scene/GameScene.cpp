@@ -15,7 +15,11 @@
 #include "../Object/Weapon/Sword/KeyBlade1.h"
 #include "../Object/Collider/ColliderBase.h"
 #include "../Object/Collider/Sphere/ColliderSphere.h"
+#include "../Effect/EffectManager.h"
+#include "../Effect/LoadEffekseer/EffekseerEffect.h"
+#include "../Sound/AudioManager.h"
 #include "GameScene.h"
+#include <EffekseerForDXLib.h>
 
 GameScene::GameScene()
 	: SceneBase(),
@@ -112,12 +116,15 @@ void GameScene::Init()
 	hpHandles_[8] = resMng_.Load(ResourceManager::SRC::IMG_PLAYER_HP_2).handleId_;
 	hpHandles_[9] = resMng_.Load(ResourceManager::SRC::IMG_PLAYER_HP_1).handleId_;
 	hpHandles_[10] = resMng_.Load(ResourceManager::SRC::IMG_PLAYER_HP_0).handleId_;
+
+
 }
 
 void GameScene::Update()
 {
 	auto const ins = InputManager::GetInstance();
 
+	UpdateEffekseer3D();
 
 	// 各オブジェクトの更新
 	stage_->Update();
@@ -126,6 +133,8 @@ void GameScene::Update()
 	//weapon_->Update();
 	enemyManager_->Update();
 	itemManger_->Update();
+
+	
 	
 	if (!enemyManager_->GetEnemyDead())
 	{
@@ -301,6 +310,7 @@ void GameScene::Update()
 		return;
 	}
 
+
 	// ゲームクリア判定
 	if (enemyManager_->GetEnemyDead())
 	{
@@ -312,6 +322,16 @@ void GameScene::Update()
 		return;
 	}
 
+	//// ゲームクリア判定
+	//if (enemyManager_->GetEnemyDead())
+	//{
+	//	// 強制的に全サウンド停止
+	//	StopMusic();
+	//	StopSoundMem(audioHandle_);
+	//	AudioManager::GetInstance()->StopBGM();
+	//	sceMng_.ChangeScene(SceneManager::SCENE_ID::CLEAR);
+	//	return;
+	//}
 
 }
 
@@ -327,7 +347,14 @@ void GameScene::Draw()
 	itemManger_->Draw();
 	enemyManager_->Draw();
 
+
 	PlayerHpDraw();
+
+	// エフェクトを一番手前に描画
+	EffectManager::GetInstance().Draw();
+
+	DrawEffekseer3D();
+
 
 	// 一時スクリーンにメイン画面をコピー
 	int tempScreen = MakeScreen(Application::SCREEN_SIZE_X, Application::SCREEN_SIZE_Y, false);
