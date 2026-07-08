@@ -34,6 +34,13 @@ public:
 		TARGETING,
 	};;
 
+	enum COMMAND
+	{
+		SANDER,
+		FIRE,
+		RECOVERY
+	};
+
 	// コンストラクタ
 	GameScene();
 
@@ -76,6 +83,11 @@ private:
 	static constexpr int IMG_HP_X = 1500;
 	static constexpr int IMG_HP_Y = 700;
 
+	//コマンド
+	COMMAND command_;
+
+	int selectCommand_;
+
 
 	// 攻撃コライダーリスト
 	std::vector<AttackColliderData*> attackColliders_;
@@ -95,17 +107,11 @@ private:
 	// エフェクトの時間パラメータ
 	float effectTime_;
 
-	// ターゲット敵のID
-	int targetEnemyId_;
-
-	//HPUi用
-	int hpUiCount_;
-
-	// ターゲット位置
-	VECTOR targetPos_;
-
-	// カメラモード
-	CAM_MODE camMode_;
+	int targetEnemyId_;		// ターゲット敵のID
+	int hpUiCount_;			//HPUi用
+	
+	VECTOR targetPos_;		// ターゲット位置
+	CAM_MODE camMode_;		// カメラモード
 
 	// エフェクトをトグル(追加/削除)
 	void ToggleEffect(PostEffectManager::EFFECT_TYPE effectType);
@@ -116,13 +122,20 @@ private:
 	//プレイヤーHPUI
 	void PlayerHpDraw();
 
+	//コマンドUI
+
 	bool warnigOn_ = false;
 
 	int wargnigHandle_;
 	
 	int audioHandle_;
 
-	std::vector<int> hpHandles_;//Hpハンドル
+	std::vector<int> hpHandles_;		//Hpハンドル
 	std::vector<int> playerUiHandles_;	//プレイヤーUI
+	std::vector<int> commandHandles;	//コマンドハンドル
+
+	void SelectCommand(COMMAND command);
+	void CommandUpdate();
+	void CommandDraw();
 
 };

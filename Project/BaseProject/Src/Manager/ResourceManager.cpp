@@ -102,6 +102,13 @@ void ResourceManager::Init()
 	res = new RES(RES_T::IMG, PATH_IMG + "GameOver/ON_Title.png");
 	resourcesMap_.emplace(SRC::IMG_ON_TITLE, res);	//map‚É“o˜^
 
+	res = new RES(RES_T::IMG, PATH_IMG + "UI/Command_Center.png");
+	resourcesMap_.emplace(SRC::IMG_SELECT_FIRE, res);	//map‚É“o˜^
+	res = new RES(RES_T::IMG, PATH_IMG + "UI/Command_Down.png");
+	resourcesMap_.emplace(SRC::IMG_SELECT_RECOVERY, res);	//map‚É“o˜^
+	res = new RES(RES_T::IMG, PATH_IMG + "UI/Command_Up.png");
+	resourcesMap_.emplace(SRC::IMG_SELECT_SANDER, res);	//map‚É“o˜^
+
 
 
 	//ƒ‚ƒfƒ‹“o˜^ 

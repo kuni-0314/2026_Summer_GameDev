@@ -118,6 +118,13 @@ void GameScene::Init()
 	hpHandles_[9] = resMng_.Load(ResourceManager::SRC::IMG_PLAYER_HP_1).handleId_;
 	hpHandles_[10] = resMng_.Load(ResourceManager::SRC::IMG_PLAYER_HP_0).handleId_;
 
+	commandHandles.resize(3);
+
+	commandHandles[static_cast <int>(COMMAND::SANDER)] = resMng_.Load(ResourceManager::SRC::IMG_SELECT_SANDER).handleId_;
+	commandHandles[static_cast <int>(COMMAND::FIRE)] = resMng_.Load(ResourceManager::SRC::IMG_SELECT_FIRE).handleId_;
+	commandHandles[static_cast <int>(COMMAND::RECOVERY)] = resMng_.Load(ResourceManager::SRC::IMG_SELECT_RECOVERY).handleId_;
+
+	selectCommand_ = static_cast<int>(COMMAND::FIRE);
 
 }
 
@@ -334,6 +341,28 @@ void GameScene::Update()
 	//	return;
 	//}
 
+#ifdef _DEBUG
+
+	if (ins->IsTrgDown(KEY_INPUT_UP))
+	{
+		selectCommand_--;
+		if (selectCommand_ < static_cast <int>(COMMAND::SANDER))
+		{
+			selectCommand_ = static_cast <int>(COMMAND::RECOVERY);
+		}
+	}
+
+	if (ins->IsTrgDown(KEY_INPUT_DOWN))
+	{
+		selectCommand_++;
+		if (selectCommand_ > static_cast <int>(COMMAND::RECOVERY))
+		{
+			selectCommand_ = static_cast <int>(COMMAND::SANDER);
+		}
+	}
+
+#endif
+
 }
 
 void GameScene::Draw()
@@ -350,6 +379,7 @@ void GameScene::Draw()
 
 
 	PlayerHpDraw();
+	CommandDraw();
 
 	// エフェクトを一番手前に描画
 	EffectManager::GetInstance().Draw();
@@ -518,6 +548,24 @@ void GameScene::CreateAttackCollider(ColliderBase::TAG tag, VECTOR pos, float ra
 	attackColliders_.push_back(data);
 }
 
+void GameScene::SelectCommand(COMMAND command)
+{
+	selectCommand_ = command;
+
+	switch (command)
+	{
+	case GameScene::SANDER:
+		break;
+	case GameScene::FIRE:
+		break;
+	case GameScene::RECOVERY:
+		break;
+	default:
+		break;
+	}
+}
+
+
 void GameScene::ToggleEffect(PostEffectManager::EFFECT_TYPE effectType)
 {
 	// NORMALは追加しない
@@ -595,4 +643,11 @@ void GameScene::PlayerHpDraw()
 	DrawGraph(IMG_HP_X, IMG_HP_Y, hpHandles_[index], true);
 }
 
+void GameScene::CommandUpdate()
+{
+}
 
+void GameScene::CommandDraw()
+{
+	DrawGraph(0, 735, commandHandles[selectCommand_],true);
+}

@@ -73,6 +73,9 @@ public:
 		EFFECT_POWER_UP,	//パワーアップエフェクト
 		EFFECT_HEAL,			//回復エフェクト
 		EFFECT_HIT,				//ヒットエフェクト
+		IMG_SELECT_SANDER,
+		IMG_SELECT_RECOVERY,
+		IMG_SELECT_FIRE,
 		MAX
 	};
 
