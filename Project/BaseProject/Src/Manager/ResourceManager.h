@@ -59,6 +59,7 @@ public:
 		IMG_OFF_TITLE,
 		IMG_OFF_RETRY,
 		PLAYER_GAMEOVER,	//ƒQ[ƒ€ƒI[ƒo[—pƒvƒŒƒCƒ„[
+<<<<<<< HEAD
 		TARGET_CURSOR_ORANGE,	//ƒ^[ƒQƒbƒgƒJ[ƒ\ƒ‹ƒIƒŒƒ“ƒW
 		TARGET_CURSOR_BLUE,	//ƒ^[ƒQƒbƒgƒJ[ƒ\ƒ‹ƒuƒ‹[
 		OPTION_BACKGROUND,	//ƒIƒvƒVƒ‡ƒ“”wŒi
@@ -66,6 +67,9 @@ public:
 		SLIDER_KNOB,	//ƒXƒ‰ƒCƒ_[ƒmƒu
 		CHECKBOX_ON,	//ƒ`ƒFƒbƒNƒ{ƒbƒNƒXON
 		CHECKBOX_OFF,	//ƒ`ƒFƒbƒNƒ{ƒbƒNƒXOFF
+=======
+		ENEMY_LARGE_RING,
+>>>>>>> origin/dxlibãƒ†ã‚¹ãƒˆ
 		MAX
 	};
 

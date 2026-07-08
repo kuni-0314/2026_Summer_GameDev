@@ -168,6 +168,9 @@ void ResourceManager::Init()
 	//ラージエネミー
 	res = new RES(RES_T::MODEL, PATH_MDL + "Enemy/Large/Idle.mv1");
 	resourcesMap_.emplace(SRC::ENEMY_LARGE, res);	//mapに登録
+
+	res = new RES(RES_T::MODEL, PATH_MDL + "Enemy/Large/Ring.mv1");
+	resourcesMap_.emplace(SRC::ENEMY_LARGE_RING, res);	//mapに登録
 	//プレイヤーゲームオーバー用
 	res = new RES(RES_T::MODEL, PATH_MDL + "Player/Player_GameOver.mv1");
 	resourcesMap_.emplace(SRC::PLAYER_GAMEOVER, res);	//mapに登録

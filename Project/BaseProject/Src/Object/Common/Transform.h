@@ -1,5 +1,6 @@
 #pragma once
 #include <DxLib.h>
+#include <memory>
 #include "../../Common/Quaternion.h"
 
 /// <summary>
@@ -36,6 +37,8 @@ public:
 	// ローカル回転
 	Quaternion quaRotLocal;
 
+
+
 	// コンストラクタ
 	Transform();
 
@@ -50,6 +53,7 @@ public:
 
 	// モデルのハンドルIDを設定
 	void SetModel(int modelHId);
+
 
 	// 前方方向を取得
 	VECTOR GetForward() const;

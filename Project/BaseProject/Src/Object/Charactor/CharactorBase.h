@@ -104,7 +104,6 @@ protected:
 	// d—ÍŒvZ
 	void CalcGravityPow();
 
-
 	// Õ“Ë”»’è
 	virtual void  CollisionReserve() {}
 	void Collision();

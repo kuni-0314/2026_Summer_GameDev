@@ -126,6 +126,8 @@ void CharactorBase::CalcGravityPow()
 
 }
 
+
+
 void CharactorBase::Collision()
 {
 	// Õ“Ë(ƒJƒvƒZƒ‹)

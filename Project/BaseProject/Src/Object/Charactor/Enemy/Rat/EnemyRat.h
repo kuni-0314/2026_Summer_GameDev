@@ -117,7 +117,7 @@ private:
 	// 状態
 	STATE state_;
 
-	VECTOR worldPos;
+	VECTOR attackWorldPos_;
 	//プレイヤー方向
 	VECTOR toPlayer_;
 	//プレイヤー座標

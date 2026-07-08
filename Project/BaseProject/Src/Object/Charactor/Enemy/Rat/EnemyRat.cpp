@@ -32,15 +32,6 @@ void EnemyRat::Draw()
 	CharactorBase::Draw();
 
 
-	//デバッグ用攻撃範囲描画
-	VECTOR local = ATTACK_SPHERE_LOCAL_POS;
-	// 回転を適用
-	VECTOR rotated = transform_.quaRot.PosAxis(local);
-
-	// ワールド座標へ
-	worldPos = VAdd(transform_.pos, rotated);
-
-
 	STATE next = state_;
 
 	const char* name = "";
@@ -164,6 +155,15 @@ void EnemyRat::UpdateProcess()
 	if (distance_ < SEARCH_DISTANCE){look_ = true;}
 	if (look_){LookPlayer();}
 	
+
+	
+	//デバッグ用攻撃範囲描画
+	VECTOR local = ATTACK_SPHERE_LOCAL_POS;
+	// 回転を適用
+	VECTOR rotated = transform_.quaRot.PosAxis(local);
+
+	// ワールド座標へ
+	attackWorldPos_ = VAdd(transform_.pos, rotated);
 
 	////判定のコライダーがで使えるまで
 	//if (distance_ < MIN_DISTANCE)
@@ -380,7 +380,7 @@ void EnemyRat::UpdateAttack(void)
 	if (!isAttack_)
 	{
 		// 攻撃判定
-		if (AsoUtility::IsHitSpheres(worldPos, COL_ATTACK_RADIUS, playerPos_, playerRad_))
+		if (AsoUtility::IsHitSpheres(attackWorldPos_, COL_ATTACK_RADIUS, playerPos_, playerRad_))
 		{
 			player_->Damege(1);
 			isAttack_ = true;

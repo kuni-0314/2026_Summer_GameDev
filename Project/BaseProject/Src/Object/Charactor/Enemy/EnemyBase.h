@@ -65,6 +65,9 @@ protected:
 	int preHp_;
 	// ó‘ÔŠÇ—
 	int stateBase_;
+	//“G‚ÌUŒ‚—Í
+	int power_;
+
 	//wave
 	int wave_;
 	// ó‘ÔŠÇ—(ó‘Ô‘JˆÚ‰Šúˆ—)
