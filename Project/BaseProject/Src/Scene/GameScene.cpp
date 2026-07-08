@@ -16,7 +16,7 @@
 #include "../Object/Collider/ColliderBase.h"
 #include "../Object/Collider/Sphere/ColliderSphere.h"
 #include "GameScene.h"
-// 別プロジェクト
+
 GameScene::GameScene()
 	: SceneBase(),
 	stage_(nullptr),
