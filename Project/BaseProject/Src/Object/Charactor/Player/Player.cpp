@@ -279,10 +279,10 @@ void Player::UpdateProcess()
 	}
 
 	// ó‘Ô•ÊXVˆ—
-	if (currentState_ != nullptr)
-	{
-		currentState_->Update(this);
-	}
+	//if (currentState_ != nullptr)
+	//{
+	//	currentState_->Update(this);
+	//}
 
 	if (InputManager::GetInstance()->IsTrgDown(KEY_INPUT_R))
 	{
