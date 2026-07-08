@@ -1,5 +1,6 @@
 #include "PlayerAttackState.h"
 #include "Player.h"
+#include "../../../Manager/SceneManager.h"
 #include "../../../Manager/InputManager.h"
 #include "../../../Scene/GameScene.h"
 #include "../../../Object/Collider/ColliderBase.h"
@@ -64,6 +65,64 @@ void PlayerAttackState::Update(Player* player)
 		}
 	
 		player->SetMovePow(movePow);
+	}
+
+	auto ins = InputManager::GetInstance();
+	bool enableKAM = ins->IsEnableKeyAndMouse();
+	bool isGamepadConnected = (GetJoypadNum() > 0);
+	// ジャンプキーが入力されているか
+	bool isJumpKeyPressed = false;
+	if (player->IsJump())
+	{
+		if (isGamepadConnected)
+		{
+			if (enableKAM)
+			{
+				if (ins->IsNew(KEY_INPUT_SPACE) || ins->IsGamepadNew(InputManager::PadInput::A, player->GetPadNum()))
+				{
+					if (player->GetStepJump() < Player::TIME_JUMP_INPUT)
+					{
+						player->SetJumpPow(VAdd(player->GetJumpPow(), VScale(AsoUtility::DIR_U, Player::POW_JUMP_KEEP)));
+						player->SetStepJump(player->GetStepJump() + SceneManager::GetInstance().GetDeltaTime());
+					}
+					isJumpKeyPressed = true;
+				}
+			}
+			else
+			{
+				if (ins->IsGamepadNew(InputManager::PadInput::A, player->GetPadNum()))
+				{
+					if (player->GetStepJump() < Player::TIME_JUMP_INPUT)
+					{
+						player->SetJumpPow(VAdd(player->GetJumpPow(), VScale(AsoUtility::DIR_U, Player::POW_JUMP_KEEP)));
+						player->SetStepJump(player->GetStepJump() + SceneManager::GetInstance().GetDeltaTime());
+					}
+					isJumpKeyPressed = true;
+				}
+			}
+		}
+		else
+		{
+			if (ins->IsNew(KEY_INPUT_SPACE))
+			{
+				if (player->GetStepJump() < Player::TIME_JUMP_INPUT)
+				{
+					player->SetJumpPow(VAdd(player->GetJumpPow(), VScale(AsoUtility::DIR_U, Player::POW_JUMP_KEEP)));
+					player->SetStepJump(player->GetStepJump() + SceneManager::GetInstance().GetDeltaTime());
+				}
+				isJumpKeyPressed = true;
+			}
+		}
+
+		if (!isJumpKeyPressed)
+		{
+			if (player->GetStepJump() < Player::TIME_JUMP_INPUT)
+			{
+				player->SetJumpPow(VAdd(player->GetJumpPow(), VScale(AsoUtility::DIR_U, Player::POW_JUMP_NEUTRAL)));
+				player->SetStepJump(player->GetStepJump() + SceneManager::GetInstance().GetDeltaTime());
+			}
+			isJumpKeyPressed = true;
+		}
 	}
 
 	// 移動量の減衰を無効化(ルートモーションで制御)

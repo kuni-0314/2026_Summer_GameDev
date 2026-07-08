@@ -1,3 +1,4 @@
+#include <Windows.h>
 #include <DxLib.h>
 #include "InputManager.h"
 
@@ -189,6 +190,20 @@ void InputManager::Update()
 	// マウスホイールの更新
 	mouseWheel_ = GetMouseWheelRotVol();
 
+	// マウスの座標の更新
+	int mouseX_, mouseY_;
+	GetMousePoint(&mouseX_, &mouseY_);
+	if (mouseX_ != prevMouseX_ || mouseY_ != prevMouseY_)
+	{
+		isMouseMoved_ = true;
+	}
+	else
+	{
+		isMouseMoved_ = false;
+	}
+	prevMouseX_ = mouseX_;
+	prevMouseY_ = mouseY_;
+
 	// ゲームパッドの更新
 	UpdateGamePad();
 }
@@ -339,13 +354,18 @@ bool InputManager::IsMouseTrgUp(int button)
 // マウスホイールの回転量を取得
 int InputManager::GetMouseWheel()
 {
-	return mouseWheel_;
+	return mouseWheel_ * wheelSensitivity_;
 }
 
 // マウスの座標を取得
 void InputManager::GetMousePos(int& x, int& y)
 {
 	GetMousePoint(&x, &y);
+}
+
+bool InputManager::IsMouseMoved()
+{
+	return isMouseMoved_;
 }
 
 int InputManager::GetMouseLastHoldTime(int button)
@@ -564,6 +584,42 @@ void InputManager::GetStickDirXZ(VECTOR& vec, int gamepadIndex, bool isLeftStick
 		vec.z = normalizedY;
 	}
 }
+
+int InputManager::GetMouseSensitivity() const
+{
+	int speed = 0;
+	// 現在の速度を取得
+	SystemParametersInfoA(
+		SPI_GETMOUSESPEED,
+		0,
+		&speed,
+		0
+	);
+	return speed;
+}
+
+void InputManager::SetMouseSensitivity(int value)
+{
+	if (value < 0) value = 0;
+	SystemParametersInfoA(
+		SPI_SETMOUSESPEED,
+		0,
+		(PVOID)value,
+		0
+	);
+}
+
+float InputManager::GetMouseWheelSensitivity()
+{
+	return wheelSensitivity_;
+}
+
+void InputManager::SetMouseWheelSensitivity(float value)
+{
+	if (value < 0.0f) value = 0.0f;
+	wheelSensitivity_ = value;
+}
+
 
 // ゲームパッドの更新
 void InputManager::UpdateGamePad()

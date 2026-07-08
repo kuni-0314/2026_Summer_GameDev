@@ -67,6 +67,10 @@ void Camera::SetBeforeDraw()
 		break;
 	case Camera::MODE::TARGETING:
 		SetBeforeDrawTargeting();
+		break;
+	case Camera::MODE::OPENING:
+		SetBeforeDrawOpening();
+		break;
 	}
 
 	// カメラの設定(位置と注視点による制御)
@@ -192,6 +196,10 @@ void Camera::ChangeMode(MODE mode)
 	case Camera::MODE::MANUAL:
 		// マウスカーソルを画面中央に固定
 		SetMouseDispFlag(false);
+		break;
+	case Camera::MODE::OPENING:
+		// オープニング演出の初期化
+		openingTimer_ = 0.0f;
 		break;
 	}
 
@@ -472,6 +480,62 @@ void Camera::SetBeforeDrawTargeting()
 
 	// 当たり判定
 	Collision();
+}
+
+void Camera::SetBeforeDrawOpening()
+{
+	if (followTransform_ == nullptr) return;
+
+	openingTimer_ += 1.0f / 60.0f;
+
+	float t = openingTimer_ / OPENING_TIME;
+	if (t > 1.0f) t = 1.0f;
+
+	// SmoothStep
+	t = t * t * (3.0f - 2.0f * t);
+
+	// 顔位置
+	VECTOR headPos = MV1GetFramePosition(followTransform_->modelId, 10);
+	headPos.y += OPENING_HEIGHT;
+
+	// プレイヤーの前方向
+	VECTOR forward = VNorm(
+		followTransform_->quaRot.PosAxis(AsoUtility::DIR_F)
+	);
+
+	// 距離
+	float distance =
+		OPENING_START_DISTANCE +
+		(OPENING_END_DISTANCE - OPENING_START_DISTANCE) * t;
+
+	// ★プレイヤーの前へ配置（VSubではなくVAdd）
+	transform_.pos = VAdd(
+		headPos,
+		VScale(forward, distance)
+	);
+
+	// 顔を見る
+	targetPos_ = headPos;
+
+	// カメラ姿勢
+	VECTOR dir = VNorm(VSub(targetPos_, transform_.pos));
+
+	float yaw = atan2f(dir.x, dir.z);
+	float pitch = atan2f(
+		dir.y,
+		sqrtf(dir.x * dir.x + dir.z * dir.z));
+
+	angles_.x = pitch;
+	angles_.y = yaw;
+
+	rotY_ = Quaternion::AngleAxis(yaw, AsoUtility::AXIS_Y);
+	transform_.quaRot =
+		rotY_.Mult(Quaternion::AngleAxis(pitch, AsoUtility::AXIS_X));
+
+	if (openingTimer_ >= OPENING_TIME)
+	{
+		ChangeMode(MODE::MANUAL);
+	}
 }
 
 void Camera::Collision()

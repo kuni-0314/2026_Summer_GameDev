@@ -6,7 +6,7 @@ FpsController::FpsController(int fixedFps)
 	// 最大FPSを超えないように制限
     fixedFps_(fixedFps > MAX_FPS ? MAX_FPS : fixedFps),
 	// 1フレームの理想時間を計算
-	idealFrameTime_(1.0f / static_cast<double>(fixedFps_)),
+	idealFrameTime_(1.0 / static_cast<double>(fixedFps_)),
     fps_(0.0f),
 	timeList_(),
 	prevTime_()
@@ -21,6 +21,15 @@ FpsController::FpsController(int fixedFps)
 
 FpsController::~FpsController()
 {
+}
+
+void FpsController::ChangeFixedFPS(int newFixedFPS)
+{
+	// 最大FPSを超えないように制限
+	fixedFps_ = (newFixedFPS > MAX_FPS) ? MAX_FPS : newFixedFPS;
+	
+	// 理想フレーム時間を再計算
+	idealFrameTime_ = 1.0 / static_cast<double>(fixedFps_);
 }
 
 void FpsController::Wait()
@@ -94,6 +103,6 @@ void FpsController::Draw()
     int y = MARGIN;
 
     // 右寄せ描画
-    DrawFormatString(x, y, COLOR, TEXT_FORMAT.c_str(), fps_);
+    DrawFormatString(x, y, GetRand(0xffffff), TEXT_FORMAT.c_str(), fps_);
 
 }

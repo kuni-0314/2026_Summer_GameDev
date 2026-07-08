@@ -1,5 +1,3 @@
-#define _CRTDBG_MAP_ALLOC
-#include <crtdbg.h>
 #include <DxLib.h>
 #include <EffekseerForDXLib.h>
 #include "Manager/InputManager.h"
@@ -8,6 +6,10 @@
 #include "Application.h"
 #include "Common/FpsController.h"
 #include "Sound/AudioManager.h"
+#include "Common/DebugStringDrawer.h"
+#define _CRTDBG_MAP_ALLOC
+
+#pragma comment(lib, "wbemuuid.lib")
 
 #ifdef _DEBUG
 #define new new(_NORMAL_BLOCK, __FILE__, __LINE__)
@@ -22,6 +24,7 @@ const std::string Application::PATH_SHADER = "Data/Shader/";
 const std::string Application::PATH_CSV = "Data/Csv/";
 const std::string Application::PATH_SOUND_SE = "Data/Sound/SE/";
 const std::string Application::PATH_SOUND_BGM = "Data/Sound/BGM/";
+const std::string Application::PATH_FONT = "Data/Font/";
 
 
 void Application::CreateInstance()
@@ -52,7 +55,7 @@ void Application::Init()
 	// _CrtSetBreakAlloc(123);
 	//_CrtSetBreakAlloc(17282);
 #endif
-
+	
 	// アプリケーションの初期設定
 	SetWindowText("3DAction");
 
@@ -61,7 +64,7 @@ void Application::Init()
 	ChangeWindowMode(true);
 
 	// FPS制御初期化
-	fpsController_ = new FpsController(FRAME_RATE);
+	fpsController_ = new FpsController(fpsLimit_);
 
 	// DxLibの初期化
 	SetUseDirect3DVersion(DX_DIRECT3D_11);
@@ -85,10 +88,11 @@ void Application::Init()
 	// 設定する数値によって、ランダムの出方が変わる
 	SRand(date.Year + date.Mon + date.Day + date.Hour + date.Min + date.Sec);
 
-
 	//サウンド管理初期化
 	AudioManager::CreateInstance();
-	AudioManager::GetInstance()->Init();
+	auto audioManager = AudioManager::GetInstance();
+	audioManager->Init();
+	int volume = audioManager->GetMasterVolume();
 
 	// 入力制御初期化
 	SetUseDirectInputFlag(true);
@@ -103,34 +107,95 @@ void Application::Init()
 	// シーン管理初期化
 	SceneManager::CreateInstance();
 
+#ifndef _DEBUG
+	if (volume < 0.01f)
+	{
+		int result = MessageBoxA(
+			nullptr,
+			"音量が0やんけ、試遊なのに音なしでするんか？",
+			"確認",
+			MB_YESNO | MB_ICONEXCLAMATION
+		);
+		if (result == IDYES)
+		{
+			MessageBoxA(
+				nullptr,
+				"音量上げてね",
+				"確認",
+				MB_OK | MB_ICONINFORMATION
+			);
+			isEnd_ = true;
+		}
+		else
+		{
+			MessageBoxA(
+				nullptr,
+				"じゃあ遊べんなぁ",
+				"残念",
+				MB_OK | MB_ICONERROR
+			);
+			isEnd_ = true;
+		}
+	}
+#endif
 }
 
 void Application::Run()
 {
-
 	InputManager* inputManager = InputManager::GetInstance();
 	SceneManager& sceneManager = SceneManager::GetInstance();
 
 	// ゲームループ
-	while (ProcessMessage() == 0 && CheckHitKey(KEY_INPUT_ESCAPE) == 0 && !isEnd_)
+	while (ProcessMessage() == 0 && !isEnd_)
 	{
+		// Escapeキーが押されたか判定
+		if (CheckHitKey(KEY_INPUT_ESCAPE) || isExitRequested_)
+		{
+			SetMouseDispFlag(true);
+			int result = MessageBoxA
+			(
+				nullptr,
+				"ゲームを終了しウィンドウを閉じますか？セーブしていないゲームデータは失われます。",
+				"確認",
+				MB_YESNO | MB_ICONEXCLAMATION
+			);
+
+			if (result == IDYES)
+			{
+				break;
+			}
+			else
+			{
+				if (isExitRequested_)
+				{
+					isExitRequested_ = false;	// 終了要求フラグをリセット
+				}
+			}
+		}
+
+		//InitAudioDevice();
+		//float volume = 0.0f;
+		//pVolume_->GetMasterVolumeLevelScalar(&volume);
 
 		inputManager->Update();
 		sceneManager.Update();
 
 		sceneManager.Draw();
 
-		#ifdef _DEBUG
-		// 平均FPS描画
-		fpsController_->Draw();
-		#endif // _DEBUG
+		UpdateMemoryUsage();
+		UpdateBatteryStatus();
+
+		CheckInfo();
+		DebugStringDrawer::GetInstance().Draw();
+		
+		SetDrawBlendMode(DX_BLENDMODE_ALPHA, 255 * 0.8f * (1.0f - brightness_ / 100.0f));
+		DrawBox(0, 0, SCREEN_SIZE_X, SCREEN_SIZE_Y, GetColor(0, 0, 0), TRUE);
+		SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
 
 		ScreenFlip();
 
 		// 理想FPS経過待ち
 		fpsController_->Wait();
-
-
 	}
 
 }
@@ -161,6 +226,8 @@ void Application::Destroy()
 		isReleaseFail_ = true;
 	}
 
+	CoUninitialize();
+
 	// インスタンスのメモリ解放
 	delete instance_;
 	instance_ = nullptr;
@@ -169,6 +236,11 @@ void Application::Destroy()
 	// プログラム終了直前にメモリリークレポートを出力
 	_CrtDumpMemoryLeaks();
 	#endif
+}
+
+void Application::RequestExit(void)
+{
+	isExitRequested_ = true;
 }
 
 bool Application::IsInitFail() const
@@ -184,8 +256,11 @@ bool Application::IsReleaseFail() const
 Application::Application()
 	:
 	isInitFail_(false),
-	isReleaseFail_(false)
+	isReleaseFail_(false),
+	fpsController_(nullptr)
 {
+	isEnd_ = false;
+	isExitRequested_ = false;
 }
 
 void Application::InitEffekseer()
@@ -198,4 +273,96 @@ void Application::InitEffekseer()
 	SetChangeScreenModeGraphicsSystemResetFlag(false);
 
 	Effekseer_SetGraphicsDeviceLostCallbackFunctions();
+}
+
+void Application::CheckInfo()
+{
+	auto& ins = DebugStringDrawer::GetInstance();
+	if (pShowInfos_.fps != showInfos_.fps)
+	{
+		if (showInfos_.fps)
+		{
+			ins.Add("FPS", fpsController_->GetFPSPtr());
+		}
+		else
+		{
+			ins.Remove("FPS");
+		}
+	}
+	if (pShowInfos_.memoryUsage != showInfos_.memoryUsage)
+	{
+		if (showInfos_.memoryUsage)
+		{
+			ins.Add("総メモリ", &totalMemory_);
+			ins.Add("使用可能メモリ", &availableMemory_);
+			ins.Add("使用中メモリ", &usedMemory_);
+		}
+		else
+		{
+			ins.Remove("総メモリ");
+			ins.Remove("使用可能メモリ");
+			ins.Remove("使用中メモリ");
+		}
+	}
+	if (pShowInfos_.batteryStatus != showInfos_.batteryStatus)
+	{
+		if (showInfos_.batteryStatus)
+		{
+			ins.Add("バッテリー残量", &batteryStatus_.BatteryLifePercent);
+			ins.Add("AC電源接続状態", &batteryStatus_.ACLineStatus);
+		}
+		else
+		{
+			ins.Remove("バッテリー残量");
+			ins.Remove("AC電源接続状態");
+		}
+	}
+	pShowInfos_ = showInfos_;
+}
+
+void Application::UpdateMemoryUsage()
+{
+	MEMORYSTATUSEX mem = {};
+	mem.dwLength = sizeof(mem);
+
+	GlobalMemoryStatusEx(&mem);
+
+	totalMemory_.bytes = mem.ullTotalPhys;
+	availableMemory_.bytes = mem.ullAvailPhys;
+	usedMemory_.bytes = totalMemory_.bytes - availableMemory_.bytes;
+}
+
+void Application::UpdateBatteryStatus()
+{
+	GetSystemPowerStatus(&batteryStatus_);
+}
+
+int Application::GetBrightness()
+{
+	return brightness_;
+}
+
+void Application::SetBrightness(int value)
+{
+	if (value < 0)
+		value = 0; // 範囲外の場合は0に設定
+	else if (value > 100)
+		value = 100; // 範囲外の場合は100に設定
+	brightness_ = value;
+}
+
+void Application::SetFPSLimit(int fpsLimit)
+{
+	if (fpsLimit == fpsLimit_) return;
+	
+	fpsLimit_ = fpsLimit;
+	
+	// 0（無制限）の場合は非常に高い値に変換
+	int actualFPS = (fpsLimit == 0) ? 1200 : fpsLimit;
+	fpsController_->ChangeFixedFPS(actualFPS);
+}
+
+Application::ShowInfos& Application::GetShowInfos()
+{
+	return showInfos_;
 }

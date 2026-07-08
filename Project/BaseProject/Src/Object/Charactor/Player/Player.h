@@ -107,9 +107,9 @@ public:
 	static constexpr VECTOR COL_CAPSULE_DOWN_JUMP_LOCAL_POS = { 0.0f, 80.0f, 0.0f };
 
 	// 移動速度(通常)
-	static constexpr float SPEED_MOVE = 5.0f;
+	static constexpr float SPEED_MOVE = 8.0f;
 	// 移動速度(ダッシュ)
-	static constexpr float SPEED_DASH = 10.0f;
+	//static constexpr float SPEED_DASH = 10.0f;
 
 	// 衝突判定用線分開始(ジャンプ時)
 	static constexpr VECTOR COL_LINE_JUMP_START_LOCAL_POS = { 0.0f, 130.0f, 0.0f };
@@ -121,7 +121,9 @@ public:
 	// 連打ジャンプ力
 	static constexpr float POW_JUMP_KEEP = 8.5f;
 	// ジャンプ力付与時間
-	static constexpr float TIME_JUMP_INPUT = 0.5f;
+	static constexpr float TIME_JUMP_INPUT = 1.5f;
+	// ニュートラル状態でのジャンプ力
+	static constexpr float POW_JUMP_NEUTRAL = 7.0f;
 
 	
 	static constexpr float POW_JET = 80.0f;
@@ -160,6 +162,14 @@ public:
 	// 攻撃判定の開始フレーム
 	static constexpr int ATTACK_HITBOX_START_FRAME = 22;
 	static constexpr int ATTACK_HITBOX_END_FRAME = 29;
+
+	// ダメージ処理
+	void Damege(int damege);
+
+	// HPの回復処理
+	void HealHp(int heal) override;
+
+	static constexpr int MAX_HP = 20;
 
 protected:
 

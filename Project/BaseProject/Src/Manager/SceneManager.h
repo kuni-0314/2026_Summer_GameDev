@@ -31,6 +31,7 @@ public:
 		CLEAR,
 		OVER,
 		DEBUG,
+		OPTION,
 	};
 	
 	// インスタンスの生成

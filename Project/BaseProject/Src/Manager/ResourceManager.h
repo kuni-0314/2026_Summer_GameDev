@@ -58,7 +58,18 @@ public:
 		IMG_OFF_CONTINUE,
 		IMG_OFF_TITLE,
 		IMG_OFF_RETRY,
+<<<<<<< HEAD
 		PLAYER_GAMEOVER,		//ゲームオーバー用プレイヤー
+=======
+		PLAYER_GAMEOVER,	//ゲームオーバー用プレイヤー
+		TARGET_CURSOR_ORANGE,	//ターゲットカーソルオレンジ
+		TARGET_CURSOR_BLUE,	//ターゲットカーソルブルー
+		OPTION_BACKGROUND,	//オプション背景
+		SLIDER_FRAME,	//スライダー枠
+		SLIDER_KNOB,	//スライダーノブ
+		CHECKBOX_ON,	//チェックボックスON
+		CHECKBOX_OFF,	//チェックボックスOFF
+>>>>>>> main
 		ENEMY_LARGE_RING,
 		IMG_PLAYER_UI_DEF,		
 		IMG_PLAYER_UI_DAMEGE,

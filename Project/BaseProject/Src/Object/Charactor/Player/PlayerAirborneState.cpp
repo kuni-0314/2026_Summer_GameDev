@@ -67,13 +67,12 @@ void PlayerAirborneState::Update(Player* player)
 		
 		if (!isJumpKeyPressed)
 		{
-			VECTOR jumpPow = player->GetJumpPow();
-			if (jumpPow.y > 0.0f)
+			if (player->GetStepJump() < Player::TIME_JUMP_INPUT)
 			{
-				jumpPow.y *= 0.0f;
-				player->SetJumpPow(jumpPow);
+				player->SetJumpPow(VAdd(player->GetJumpPow(), VScale(AsoUtility::DIR_U, Player::POW_JUMP_NEUTRAL)));
+				player->SetStepJump(player->GetStepJump() + SceneManager::GetInstance().GetDeltaTime());
 			}
-			player->SetStepJump(Player::TIME_JUMP_INPUT);
+			isJumpKeyPressed = true;
 		}
 	}
 
@@ -113,14 +112,14 @@ void PlayerAirborneState::Update(Player* player)
 	{
 		// ˆÚ“®‘¬“x‚ðÝ’è
 		float speed = 0.0f;
-		if (ins->IsNew(KEY_INPUT_LSHIFT))
-		{
-			speed = Player::SPEED_DASH;
-		}
-		else
-		{
+		//if (ins->IsNew(KEY_INPUT_LSHIFT))
+		//{
+		//	speed = Player::SPEED_DASH;
+		//}
+		//else
+		//{
 			speed = Player::SPEED_MOVE;
-		}
+		//}
 
 		//YŽ²‚Ì‚Ý‚ÌƒJƒƒ‰Šp“x‚ðŽæ“¾
 		Quaternion cameraRot = SceneManager::GetInstance().GetCamera()->GetQuaRotY();

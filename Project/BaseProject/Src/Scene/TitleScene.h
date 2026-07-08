@@ -1,5 +1,6 @@
 #pragma once
 #include "SceneBase.h"
+#include "../Manager/SceneManager.h"
 #include "../Object/Common/Transform.h"
 
 class AnimationController;
@@ -28,6 +29,8 @@ public:
 	static constexpr int IMG_NOT_CHOICE_POS_X = 180;
 
 	static constexpr int IMG_CHOICE_POS_Y = 650;
+
+	static constexpr int IMG_CHOICE_POS_Y_OFFSET = 100;
 
 
 
@@ -117,8 +120,16 @@ private:
 
 	bool pushAlive_ = true;
 
-	bool IsSelect_ = false;
+	//bool IsSelect_ = false;
 
-	int mainScreen_;
+	//int mainScreen_;
+
+	int postEffectScreen_;
+
+	bool isFadeIn_;
+	float effectTime_;
+	static constexpr float FADE_SPEED = 0.02f;
+
+	SceneManager::SCENE_ID nextScene_;
 
 };

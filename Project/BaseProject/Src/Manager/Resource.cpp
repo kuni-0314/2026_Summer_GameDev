@@ -75,7 +75,6 @@ void Resource::Load()
 
 		handleId_ = LoadEffekseerEffect(path_.c_str());
 		break;
-
 	}
 
 }
@@ -115,7 +114,6 @@ void Resource::Release()
 
 		DeleteEffekseerEffect(handleId_);
 		break;
-
 	}
 
 }

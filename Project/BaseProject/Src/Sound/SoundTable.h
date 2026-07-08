@@ -29,6 +29,7 @@ enum class LoadScene
 	SYSTEM,		// システム
 	TITLE,		// タイトル
 	GAME,		// ゲーム
+	OPTION,		// オプション
 	SKILL,
 };
 

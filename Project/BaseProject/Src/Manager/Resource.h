@@ -14,7 +14,7 @@ public:
 		IMG,
 		IMGS,
 		MODEL,
-		EFFEKSEER
+		EFFEKSEER,
 	};
 
 	// コンストラクタ

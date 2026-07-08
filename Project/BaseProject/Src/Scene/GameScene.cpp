@@ -329,7 +329,8 @@ void GameScene::Draw()
 	itemManger_->Draw();
 	enemyManager_->Draw();
 
-	PlayerHpUpdate();
+	PlayerHpDraw();
+
 	// 一時スクリーンにメイン画面をコピー
 	int tempScreen = MakeScreen(Application::SCREEN_SIZE_X, Application::SCREEN_SIZE_Y, false);
 	SetDrawScreen(tempScreen);
@@ -554,15 +555,18 @@ const char* GameScene::GetEffectName(PostEffectManager::EFFECT_TYPE effectType)
 	}
 }
 
-void GameScene::PlayerHpUpdate()
+void GameScene::PlayerHpDraw()
 {
-	int hp = player_->GetHp();
+	// 最大の方がインデックスが０ 
+	// 最小の方がインデックスが１０
+	// ややこしいねぇ
 
-	hpUiCount_ = (hp + 1) / 2;
-	hpUiCount_ = std::clamp(hpUiCount_, 0, 10);
+	int index = /*hpHandles_.size() -*/ std::ceil(player_->GetHp() * hpHandles_.size() / Player::MAX_HP);
+	
+	if (index < 0) index = 0;
+	if (index >= hpHandles_.size()) index = hpHandles_.size() - 1;
 
-	DrawGraph(IMG_HP_X,IMG_HP_Y,
-		hpHandles_[hpUiCount_],true);
+	DrawGraph(IMG_HP_X, IMG_HP_Y, hpHandles_[index], true);
 }
 
 

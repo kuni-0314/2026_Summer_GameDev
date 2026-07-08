@@ -70,6 +70,7 @@ public:
 	bool IsMouseHold(int button, int holdTime);	// マウスボタンが指定時間以上押されているか
 	int GetMouseWheel();			// マウスホイールの回転量を取得
 	void GetMousePos(int& x, int& y);	// マウスの座標を取得
+	bool IsMouseMoved();				// マウスが動いたか
 	int GetMouseLastHoldTime(int button);	// マウスボタンが最後に離されるまで押されていた時間を取得
 
 	bool IsGamepadNew(int button, int gamepadIndex);		// ゲームパッドボタンが押されているか
@@ -131,6 +132,11 @@ public:
 
 	void SetKeyAndMouseEnabled(bool enabled) { isKeyAndMouseEnabled_ = enabled; }	// キーとマウスの両方を有効/無効にする
 	bool IsEnableKeyAndMouse() const { return isKeyAndMouseEnabled_; }	// キーとマウスの両方が有効か
+
+	int GetMouseSensitivity() const;	// マウスの感度の取得
+	void SetMouseSensitivity(int value);	// マウスの感度の設定
+	float GetMouseWheelSensitivity();	// マウスホイールの回転感度の取得
+	void SetMouseWheelSensitivity(float value);	// マウスホイールの回転感度の設定
 
 private:
 	InputManager();		// コンストラクタ
@@ -201,7 +207,12 @@ private:
 	void Add(int key);				// 判定を行うキーを追加
 	void AddMouse(int button);		// 判定を行うマウスボタンを追加
 
-	int mouseWheel_;	// マウスホイールの回転量
+	//float mouseSensitivity_ = 1.0f;	// マウスの感度
+	int mouseWheel_;					// マウスホイールの回転量
+	float wheelSensitivity_ = 10.0f;	// マウスホイールの回転感度
+	int prevMouseX_;					// 前フレームのマウスX座標
+	int prevMouseY_;					// 前フレームのマウスY座標
+	bool isMouseMoved_;					// マウスが動いたか
 
 	std::map<int, Info> keyInfos_;			// キーと情報紐付け
 	std::map<int, MouseInfo> mouseInfos_;	// マウスボタンと情報の紐付け

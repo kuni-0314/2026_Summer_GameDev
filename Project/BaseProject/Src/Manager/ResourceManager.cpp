@@ -28,6 +28,7 @@ void ResourceManager::Init()
 	static std::string PATH_IMG = Application::PATH_IMAGE;
 	static std::string PATH_MDL = Application::PATH_MODEL;
 	static std::string PATH_EFF = Application::PATH_EFFECT;
+	static std::string PATH_FNT = Application::PATH_FONT;
 
 	Resource* res = nullptr;
 
@@ -58,6 +59,11 @@ void ResourceManager::Init()
 	resourcesMap_.emplace(SRC::TITLE_END, res);	//mapに登録
 	res = new RES(RES_T::IMG, PATH_IMG + "Title/NotChoice_End.png");
 	resourcesMap_.emplace(SRC::TITLE_NOT_END, res);	//mapに登録
+	// カーソル画像
+	res = new RES(RES_T::IMG, PATH_IMG + "UI/Target_Cursor_Orange.png");
+	resourcesMap_.emplace(SRC::TARGET_CURSOR_ORANGE, res);	//mapに登録
+	res = new RES(RES_T::IMG, PATH_IMG + "UI/Target_Cursor_Blue.png");
+	resourcesMap_.emplace(SRC::TARGET_CURSOR_BLUE, res);	//mapに登録
 	//PlayerHPUI画像
 	res = new RES(RES_T::IMG, PATH_IMG + "PlayerHP/PlayerHP_0.png");
 	resourcesMap_.emplace(SRC::IMG_PLAYER_HP_0, res);	//mapに登録
@@ -168,6 +174,25 @@ void ResourceManager::Init()
 	//プレイヤーゲームオーバー用
 	res = new RES(RES_T::MODEL, PATH_MDL + "Player/Player_GameOver.mv1");
 	resourcesMap_.emplace(SRC::PLAYER_GAMEOVER, res);	//mapに登録
+
+	// オプション背景
+	res = new RES(RES_T::IMG, PATH_IMG + "Title.png");
+	resourcesMap_.emplace(SRC::OPTION_BACKGROUND, res);	//mapに登録
+
+	// スライダー枠
+	res = new RES(RES_T::IMG, PATH_IMG + "UI/SliderFrame.png");
+	resourcesMap_.emplace(SRC::SLIDER_FRAME, res);	//mapに登録
+
+	// スライダーノブ
+	res = new RES(RES_T::IMG, PATH_IMG + "UI/SliderKnob.png");
+	resourcesMap_.emplace(SRC::SLIDER_KNOB, res);	//mapに登録
+
+	// チェックボックスON
+	res = new RES(RES_T::IMG, PATH_IMG + "UI/CheckON.png");
+	resourcesMap_.emplace(SRC::CHECKBOX_ON, res);	//mapに登録
+	// チェックボックスOFF
+	res = new RES(RES_T::IMG, PATH_IMG + "UI/CheckOFF.png");
+	resourcesMap_.emplace(SRC::CHECKBOX_OFF, res);	//mapに登録
 }
 
 void ResourceManager::Release()

@@ -118,6 +118,25 @@ void Player::Update()
 
 }
 
+void Player::Damege(int damege)
+{
+	hp_ -= damege;
+	int a = StartJoypadVibration(padNum_ + 1, 1000, 500, -1);
+	if (hp_ <= 0)
+	{
+		hp_ = 0;
+	}
+}
+
+void Player::HealHp(int heal)
+{
+	hp_ += heal;
+	if (hp_ > MAX_HP)
+	{
+		hp_ = MAX_HP;
+	}
+}
+
 void Player::InitLoad()
 {
 	transform_.SetModel(resMng_.LoadModelDuplicate(ResourceManager::SRC::PLAYER));
@@ -221,13 +240,12 @@ void Player::InitPost()
 	currentGrantStatusIndex_ = 4;
 	pendingPoints_ = 30;
 
-	hp_ = 20;
-	maxHp_ = hp_;
+	hp_ = MAX_HP;
 
 	InitState();
 
 	// •Ší‰Šú‰»
-	sword_ = new KeyBlade3(KEY_BLADE_2_LOCAL_POS_START, KEY_BLADE_2_LOCAL_POS_END, KEY_BLADE_2_RADIUS, transform_);
+	sword_ = new KeyBlade3(KEY_BLADE_3_LOCAL_POS_START, KEY_BLADE_3_LOCAL_POS_END, KEY_BLADE_3_RADIUS, transform_);
 	sword_->Init();
 }
 
@@ -323,7 +341,7 @@ void Player::Draw()
 	//DrawFormatString(x, y, color, "PendingPoints   : %d", pendingPoints_);
 
 	//y += lineHeight;
-	//DrawFormatString(x, y, 0xffffff, "jumpPow   : %f.", jumpPow_.y);
+	DrawFormatString(x, y, 0xffffff, "jumpPow   : %f.", jumpPow_.y);
 
 	VECTOR lineStart = transform_.pos;
 	VECTOR lineEnd = { transform_.pos.x, transform_.pos.y + jumpPow_.y * 10.0f, transform_.pos.z };

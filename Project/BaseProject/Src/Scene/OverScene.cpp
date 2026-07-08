@@ -43,6 +43,7 @@ void OverScene::Init()
 	VECTOR playerPos_;
 	playerPos_ = { 0,150,0 };
 
+	SetMouseDispFlag(true);
 
 	MV1SetPosition(playerHandle_, playerPos_);
 	

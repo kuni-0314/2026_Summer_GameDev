@@ -19,6 +19,7 @@ ClearScene::~ClearScene()
 
 void ClearScene::Init()
 {
+	SetMouseDispFlag(true);
 }
 
 void ClearScene::Update()
