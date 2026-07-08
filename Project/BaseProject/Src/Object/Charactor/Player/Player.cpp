@@ -309,7 +309,7 @@ void Player::UpdateProcess()
 		{
 			float randomAngle = (GetRand(180) - 90) * DX_PI_F / 180.0f;
 
-			const float DIST_MAX = 300.0f;
+			const float DIST_MAX = 500.0f;
 
 			float randomRadius =
 				sqrtf(GetRand(100) / 100.0f) * DIST_MAX;
@@ -326,13 +326,23 @@ void Player::UpdateProcess()
 
 			randomPos = transform_.quaRot.PosAxis(randomPos);
 
-			thunderPosOffsets_[i] = randomPos;
+			thunderInfos_[i].pos = VAdd(transform_.pos, randomPos);
+			thunderInfos_[i].timer = 0;	//tmp
+			thunderInfos_[i].isActive = false;
 		}
-
-		AudioManager::GetInstance()->PlaySE(SoundID::SE_THUNDER);
 	}
 
+	for (int i = 0; i < THUNDER_COUNT; i++)
+	{
+		thunderInfos_[i].timer++;
+		if (thunderInfos_[i].timer > i * 5 && !thunderInfos_[i].isActive)
+		{
+			thunderInfos_[i].isActive = true;
+			AudioManager::GetInstance()->PlaySE(SoundID::SE_THUNDER);
+			AudioManager::GetInstance()->PlaySE(SoundID::SE_EXPLOSION);
 
+		}
+	}
 
 
 
@@ -454,8 +464,8 @@ void Player::Draw()
 	
 	for (int i = 0; i < THUNDER_COUNT; i++)
 	{
-		VECTOR randomPos = thunderPosOffsets_[i];
-		VECTOR spherePos = VAdd(transform_.pos, randomPos);
+		if (!thunderInfos_[i].isActive) continue;
+		VECTOR spherePos = thunderInfos_[i].pos;
 		DrawSphere3D(spherePos, 10.0f, 16, 0xff00ff, 0xff00ff, false);
 	}
 

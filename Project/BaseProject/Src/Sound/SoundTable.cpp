@@ -45,7 +45,8 @@ namespace SoundTable_Game
 		{ SoundID::SE_ATTACK_1, {"Data/Sound/SE/Attack1.wav", 255} },
 		{ SoundID::SE_ENEMY_HIT, {"Data/Sound/SE/Enemy_Hit.wav", 255} },
 		{ SoundID::BGM_WARNIG, {"Data/Sound/BGM/WarnigBgm.wav", 255} },
-		{ SoundID::SE_THUNDER, {"Data/Sound/SE/Thunder.wav", 255} } 
+		{ SoundID::SE_THUNDER, {"Data/Sound/SE/Thunder.wav", 255} } ,
+		{ SoundID::SE_EXPLOSION, {"Data/Sound/SE/Explosion.wav", 255} }
 	};
 }
 

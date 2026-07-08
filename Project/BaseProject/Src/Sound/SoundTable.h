@@ -20,6 +20,7 @@ enum class SoundID
 	SE_ENEMY_RASE_ATTACK,
 	SE_ENEMY_HIT,
 	SE_THUNDER,
+	SE_EXPLOSION,
 	MAX
 
 };
