@@ -112,6 +112,8 @@ void GameScene::Init()
 	hpHandles_[8] = resMng_.Load(ResourceManager::SRC::IMG_PLAYER_HP_2).handleId_;
 	hpHandles_[9] = resMng_.Load(ResourceManager::SRC::IMG_PLAYER_HP_1).handleId_;
 	hpHandles_[10] = resMng_.Load(ResourceManager::SRC::IMG_PLAYER_HP_0).handleId_;
+
+
 }
 
 void GameScene::Update()
