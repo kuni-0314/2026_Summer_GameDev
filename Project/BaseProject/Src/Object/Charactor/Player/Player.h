@@ -163,6 +163,10 @@ public:
 	static constexpr int ATTACK_HITBOX_START_FRAME = 22;
 	static constexpr int ATTACK_HITBOX_END_FRAME = 29;
 
+	// ƒ_ƒ[ƒWˆ—
+	void Damege(int damege);
+
+	// HP‚Ì‰ñ•œˆ—
 	void HealHp(int heal) override;
 
 	static constexpr int MAX_HP = 20;

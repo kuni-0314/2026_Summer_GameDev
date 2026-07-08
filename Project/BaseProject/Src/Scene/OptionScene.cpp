@@ -656,7 +656,7 @@ void OptionScene::LoadOptionValues()
 	//isInvertXAxis_ = appIns.IsInvertXAxis();
 	//isInvertYAxis_ = appIns.IsInvertYAxis();
 	//holdThreshold_ = inputIns->GetHoldThreshold();
-	//isAcceptKeyboardInput_ = inputIns->IsAcceptKeyboardInput();
+	isAcceptKeyboardInput_ = inputIns->IsEnableKeyAndMouse();
 	mouseSensitivity_ = static_cast<float>(inputIns->GetMouseSensitivity());
 	wheelSensitivity_ = inputIns->GetMouseWheelSensitivity();
 	//leftStickSensitivity_ = inputIns->GetLeftStickSensitivity();
@@ -707,7 +707,7 @@ void OptionScene::SaveOptionValues()
 	//appIns.SetInvertXAxis(isInvertXAxis_);
 	//appIns.SetInvertYAxis(isInvertYAxis_);
 	//inputIns->SetHoldThreshold(holdThreshold_);
-	//inputIns->SetAcceptKeyboardInput(isAcceptKeyboardInput_);
+	inputIns->SetKeyAndMouseEnabled(isAcceptKeyboardInput_);
 	inputIns->SetMouseSensitivity(mouseSensitivity_);
 	inputIns->SetMouseWheelSensitivity(wheelSensitivity_);
 	//inputIns->SetLeftStickSensitivity(leftStickSensitivity_);

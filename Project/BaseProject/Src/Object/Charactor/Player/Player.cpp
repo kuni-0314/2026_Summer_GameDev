@@ -118,6 +118,16 @@ void Player::Update()
 
 }
 
+void Player::Damege(int damege)
+{
+	hp_ -= damege;
+	int a = StartJoypadVibration(padNum_ + 1, 1000, 500, -1);
+	if (hp_ <= 0)
+	{
+		hp_ = 0;
+	}
+}
+
 void Player::HealHp(int heal)
 {
 	hp_ += heal;
