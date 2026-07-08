@@ -1,3 +1,4 @@
+#include  <filesystem>
 #include "EffekseerEffect.h"
 #include <EffekseerForDXLib.h>
 #include "../../Common/Quaternion.h"
@@ -8,9 +9,18 @@ EffekseerEffect::EffekseerEffect(const std::wstring& filePath, const VECTOR& pos
     m_playingHandle(-1),
     m_pos3D(pos)
 {
-
+    if (!std::filesystem::exists(filePath))
+    {
+        printf("ファイルがありません\n");
+    }
+    else
+    {
+        printf("ファイル発見\n");
+    }
+	// Effekseerのエフェクトをロード
     m_effectHandle = LoadEffekseerEffect(filePath.c_str(), 1.0f);
 
+	// エフェクトのロードに失敗した場合は即座に消滅フラグを立てる
     if (m_effectHandle == -1)
     {
         m_isDead = true;
@@ -35,9 +45,30 @@ void EffekseerEffect::Update()
 {
     if (m_isDead) return;
 
-    // 3D表示のエフェクトが再生終了（-1）しているか取得
-    if (m_playingHandle == -1 || IsEffekseer3DEffectPlaying(m_playingHandle) == -1) {
-        m_isDead = true; // 終了していたら消滅フラグを立ててManagerに消してもらう
+
+    // 任意寿命設定
+    if (m_lifeTime > 0)
+    {
+        m_playFrame++;
+
+        if (m_playFrame >= m_lifeTime)
+        {
+            if (m_playingHandle != -1)
+            {
+                StopEffekseer3DEffect(m_playingHandle);
+            }
+
+            m_isDead = true;
+            return;
+        }
+    }
+
+
+    // Effekseer側の終了判定
+    if (m_playingHandle != -1 &&
+        IsEffekseer3DEffectPlaying(m_playingHandle) == -1)
+    {
+        m_isDead = true;
     }
 }
 
@@ -87,4 +118,9 @@ void EffekseerEffect::SetPosition(const VECTOR& pos)
         SetPosPlayingEffekseer3DEffect(m_playingHandle, m_pos3D.x, m_pos3D.y, m_pos3D.z);
         SetScalePlayingEffekseer3DEffect(m_playingHandle,50.0f,50.0f,50.0f);
 	}
+}
+
+void EffekseerEffect::SetLifeTime(int frame)
+{
+    m_lifeTime = frame;
 }

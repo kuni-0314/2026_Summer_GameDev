@@ -6,6 +6,9 @@
 #include "../../../Utility/AsoUtility.h"
 #include "../../Charactor/Player/Player.h"
 #include "../../../Sound/AudioManager.h"
+#include "../../../Effect/LoadEffekseer/EffekseerEffect.h"
+#include "../../../Effect/EffectManager.h"
+#include "../../../Common/Quaternion.h"
 #include "HpItem.h"
 
 
@@ -139,6 +142,22 @@ void HpItem::PlayerHpGet()
             player_->HealHp(HEAL_HP);
             AudioManager::GetInstance()->SetSeVolume(150);
             AudioManager::GetInstance()->PlaySE(SoundID::SE_HEAL);
+
+			// 回復エフェクト再生
+            auto effect = std::make_shared<EffekseerEffect>(
+                L"Data/Effect/Heal/Heal.efkefc",
+                player_->GetPos()
+            );
+
+            // ヒールは少し長め
+            effect->SetLifeTime(60);
+
+            effect->Play(
+                player_->GetPos(),
+                Quaternion()
+            );
+
+            EffectManager::GetInstance().RegisterEffect(effect);
 
             isAlive_ = false;
         }

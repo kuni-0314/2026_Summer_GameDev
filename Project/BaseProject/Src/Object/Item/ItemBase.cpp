@@ -344,5 +344,25 @@ void ItemBase::DrawShadow()
 	SetUseZBuffer3D(false);
 }
 
+//void ItemBase::PlayHealEffect()
+//{
+//	auto effect = std::make_shared<EffekseerEffect>(
+//		L"Data/Effect/Heal/Heal.efkefc",
+//		transform_.pos
+//	);
+//
+//
+//	effect->SetLifeTime(60); // 1•b
+//
+//
+//	effect->Play(
+//		transform_.pos,
+//		Quaternion()
+//	);
+//
+//
+//	EffectManager::GetInstance().RegisterEffect(effect);
+//}
+
 
 

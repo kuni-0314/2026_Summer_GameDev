@@ -24,6 +24,7 @@ public:
 		ColliderBase* collider;
 		float damage;
 		int lifeTime;
+		bool isHit = false;
 	};
 
 	// 

@@ -6,6 +6,9 @@
 #include "../../Collider/ColliderBase.h"
 #include "../../Collider/Capsule/ColliderCapsule.h"
 #include "../../../Sound/AudioManager.h"
+#include "../../../Effect/LoadEffekseer/EffekseerEffect.h"
+#include "../../../Effect/EffectManager.h"
+#include "../../../Common/Quaternion.h"
 #include "EnemyBase.h"
 
 
@@ -49,6 +52,23 @@ void EnemyBase::Draw()
 void EnemyBase::Release(void)
 {
 	CharactorBase::Release();
+}
+
+void EnemyBase::HitEffect(const VECTOR& pos, const VECTOR& normal, float size)
+{
+	//エフェクトの読み込み
+	auto effect = std::make_shared<EffekseerEffect>(
+		L"Data/Effect/Ster/Ster.efkefc",
+		transform_.pos
+	);
+
+	effect->Play(
+		pos,
+		Quaternion::LookRotation(normal)
+	);
+
+	//エフェクトの再生
+	EffectManager::GetInstance().RegisterEffect(effect);
 }
 
 bool EnemyBase::InMovableRange(void) const
@@ -154,6 +174,15 @@ void EnemyBase::CheckPlayerSwordCollision()
 				// ダメージ処理
 				Damege(1);
 				AudioManager::GetInstance()->PlaySE(SoundID::SE_ENEMY_HIT);
+
+				// エフェクト再生
+				VECTOR hitPos = VAdd(
+					ownColCapsule->GetCenter(),
+					swordColCapsule->GetCenter());
+
+				hitPos = VScale(hitPos, 0.5f);
+
+				HitEffect(hitPos, VNorm(VSub(hitPos, transform_.pos)), 1.0f);
 
 				// 一度あったらフラグ
 				wasHit_ = true;
