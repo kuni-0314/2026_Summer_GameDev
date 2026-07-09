@@ -92,3 +92,12 @@ void ActorBase::ClearHitCollider()
 {
 	hitColliders_.clear();
 }
+
+void ActorBase::RemoveHitCollider(const ColliderBase* hitCollider)
+{
+	auto it = std::find(hitColliders_.begin(), hitColliders_.end(), hitCollider);
+	if (it != hitColliders_.end())
+	{
+		hitColliders_.erase(it);
+	}
+}

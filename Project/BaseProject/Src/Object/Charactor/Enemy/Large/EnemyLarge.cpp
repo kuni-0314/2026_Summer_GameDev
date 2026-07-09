@@ -43,12 +43,6 @@ void EnemyLarge::Draw(void)
 	}
 
 #ifdef _DEBUG
-
-	
-
-#endif //_DEBUG
-
-
 	STATE next = state_;
 	const char* name = "";
 	if (next == STATE::THINK) name = "THINK";
@@ -58,9 +52,44 @@ void EnemyLarge::Draw(void)
 	else if (next == STATE::CHARGE) name = "CHARGE";
 	else if (next == STATE::ATTACK_DROP) name = "ATTACK_DROP";
 
-	DrawFormatString(0, 500, GetColor(255, 255, 255), "STATE: %s", name);
-	DrawFormatString(0, 400, GetColor(255, 255, 255), "POS: %.2f", transform_.pos.y);
+	// 状態表示
+	DrawFormatString(0, 400, GetColor(255, 255, 255), "STATE: %s", name);
+	DrawFormatString(0, 420, GetColor(255, 255, 255), "POS: %.2f", transform_.pos.y);
 
+	// コライダ情報表示（右側に配置）
+	int x = 800;
+	int y = 50;
+	
+	DrawFormatString(x, y, 0xffffff, "=== Collider Debug ===");
+	y += 25;
+	DrawFormatString(x, y, 0xffffff, "hitColliders_ size: %d", hitColliders_.size());
+	y += 25;
+
+	int magicCount = 0;
+	int colliderIndex = 0;
+	
+	// 登録されているコライダのタグを表示
+	for (const auto& hitCol : hitColliders_)
+	{
+		DrawFormatString(x, y, 0xffffff, "[%d] Tag: %d", colliderIndex, static_cast<int>(hitCol->GetTag()));
+		y += 20;
+		colliderIndex++;
+
+		if (hitCol->GetTag() == ColliderBase::TAG::PLAYER_MAGIC)
+		{
+			magicCount++;
+		}
+	}
+	
+	y += 10;
+	DrawFormatString(x, y, 0xffff00, "PLAYER_MAGIC count: %d", magicCount);
+	y += 25;
+	DrawFormatString(x, y, 0xffffff, "HP: %d", hp_);
+	y += 25;
+	DrawFormatString(x, y, wasHit_ ? 0xff0000 : 0x00ff00, "wasHit_: %s", wasHit_ ? "true" : "false");
+	y += 25;
+	DrawFormatString(x, y, player_->IsAliveMagic() ? 0x00ff00 : 0xff0000, "isAliveMagic: %s", player_->IsAliveMagic() ? "true" : "false");
+#endif // _DEBUG
 }
 
 void EnemyLarge::Release(void)
@@ -221,6 +250,7 @@ void EnemyLarge::UpdateProcess()
 	preHp_ = hp_;//被ダメージ前HP保存
 
 	CheckPlayerSwordCollision();
+	CheckPlayerMagicCollision();
 	if (hp_ < preHp_)
 	{
 		//ChangeState(STATE::HIT);

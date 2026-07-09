@@ -72,8 +72,6 @@ VECTOR ColliderSphere::GetPosPushBackAlongNormal(const MV1_COLL_RESULT_POLY& hit
 	return tmpTransform.pos;
 }
 
-
-
 void ColliderSphere::DrawDebug(int color)
 {
 	

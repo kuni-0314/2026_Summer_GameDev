@@ -19,6 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Src\Object\Charactor\Player\PlayerMagicState.cpp" />
     <ClCompile Include="Src\Common\DebugStringDrawer.cpp" />
     <ClCompile Include="Src\Scene\OptionScene.cpp" />
     <ClCompile Include="Src\Object\Charactor\Enemy\Large\EnemyLarge.cpp" />
@@ -89,6 +90,7 @@
     <ClCompile Include="Src\Object\Weapon\Sword\SwordBase.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Src\Object\Charactor\Player\PlayerMagicState.h" />
     <ClInclude Include="Src\Common\DebugStringDrawer.h" />
     <ClInclude Include="Src\Scene\OptionScene.h" />
     <ClInclude Include="Src\Object\Charactor\Enemy\Large\EnemyLarge.h" />

@@ -25,7 +25,8 @@ public:
 		VIEW_RANGE,
 		ENEMY_ATTACK,
 		ITEM,
-		ENEMY_RASE_ATTACK
+		ENEMY_RASE_ATTACK,
+		PLAYER_MAGIC,
 
 	};
 	// コンストラクタ

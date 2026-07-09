@@ -518,6 +518,16 @@ void GameScene::CreateAttackCollider(ColliderBase::TAG tag, VECTOR pos, float ra
 	attackColliders_.push_back(data);
 }
 
+void GameScene::AddEnemyHitCollider(const ColliderBase* hitCollider)
+{
+	enemyManager_->AddHitCollider(hitCollider);
+}
+
+void GameScene::RemoveEnemyHitCollider(const ColliderBase* hitCollider)
+{
+	enemyManager_->RemoveHitCollider(hitCollider);
+}
+
 void GameScene::ToggleEffect(PostEffectManager::EFFECT_TYPE effectType)
 {
 	// NORMAL‚Í’Ç‰Á‚µ‚È‚¢

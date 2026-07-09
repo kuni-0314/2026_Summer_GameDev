@@ -27,3 +27,6 @@ Log.txt
 
 # シェーダー
 *.cso
+
+# 個人用
+*/BaseProject/.github/copilot-instructions.md

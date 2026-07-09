@@ -3,6 +3,7 @@
 #include "../ColliderBase.h"
 class Transform;
 class ColliderModel;
+class ColliderSphere;
 class ColliderCapsule : public ColliderBase
 {
 public:
@@ -46,6 +47,10 @@ public:
 
 	// 衝突判定の判定渡し（カプセル用）
 	bool IsHit(const ColliderCapsule* colliderCapsule,
+		bool isExclude = false, bool isTarget = false) const;
+
+	// 衝突判定の判定渡し（球用）
+	bool IsHit(const ColliderSphere* colliderSphere,
 		bool isExclude = false, bool isTarget = false) const;
 
 	// デバッグ用描画のON/OFF

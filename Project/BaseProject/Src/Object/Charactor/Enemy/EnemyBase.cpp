@@ -10,6 +10,7 @@
 #include "../../../Effect/EffectManager.h"
 #include "../../../Common/Quaternion.h"
 #include "EnemyBase.h"
+#include "../../Collider/Sphere/ColliderSphere.h"
 
 
 EnemyBase::EnemyBase(const EnemyBase::EnemyData& data, int attackModel, Player* player)
@@ -43,10 +44,7 @@ void EnemyBase::Draw()
 {
 	CharactorBase::Draw();
 
-#ifdef _DEBUG
-	// 移動可能範囲のデバッグ描画
-	//DrawSphere3D(defaultPos_, 500.0f, 16, 0x000099, 0x000099, false);
-#endif // _DEBUG
+
 }
 
 void EnemyBase::Release(void)
@@ -193,6 +191,67 @@ void EnemyBase::CheckPlayerSwordCollision()
 
 }
 
+void EnemyBase::CheckPlayerMagicCollision()
+{
+	// 死亡状態なら処理しない
+	if (!isAlive_) return;
+
+	// プレイヤーの魔法が残存していないなら処理しない
+	if (!player_->IsAliveMagic())
+	{
+		wasHit_ = false; // 残存していないなら被ダメージフラグをリセット
+		return;
+	}
+
+	if (wasHit_) return;
+
+	// 自身のカプセルコライダを取得
+	ColliderCapsule* ownColCapsule = nullptr;
+	for (const auto& ownCol : ownColliders_)
+	{
+		if (ownCol.second->GetTag() == ColliderBase::TAG::ENEMY)
+		{
+			ownColCapsule = dynamic_cast<ColliderCapsule*>(ownCol.second);
+		}
+	}
+
+	if (ownColCapsule == nullptr) return;
+
+	// プレイヤーの雷魔法コライダをチェック
+	for (const auto& hitCol : hitColliders_)
+	{
+		if (hitCol->GetTag() == ColliderBase::TAG::PLAYER_MAGIC)
+		{
+			// 雷魔法は球体コライダ
+			const ColliderSphere* magicColSphere =
+				dynamic_cast<const ColliderSphere*>(hitCol);
+
+			if (magicColSphere == nullptr) continue;
+
+			// カプセルと球体の衝突判定
+			if (HitCheck_Sphere_Capsule(
+				magicColSphere->GetPos(),
+				magicColSphere->GetRadius(),
+				ownColCapsule->GetPosTop(),
+				ownColCapsule->GetPosDown(),
+				ownColCapsule->GetRadius()) == true)
+			{
+				// ダメージ処理
+				Damege(1);
+				AudioManager::GetInstance()->PlaySE(SoundID::SE_ENEMY_HIT);
+
+				// エフェクト再生
+				VECTOR hitPos = VAdd(ownColCapsule->GetCenter(), magicColSphere->GetPos());
+				hitPos = VScale(hitPos, 0.5f);
+
+				HitEffect(hitPos, VNorm(VSub(hitPos, transform_.pos)), 1.5f);
+
+				// 一度あったらフラグ
+				wasHit_ = true;
+			}
+		}
+	}
+}
 void EnemyBase::CheckEnemy()
 {
 }

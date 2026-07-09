@@ -56,8 +56,12 @@ public:
 
 	// 衝突対象となるコライダを登録
 	void AddHitCollider(const ColliderBase* hitCollider);
+
 	// 衝突対象となるコライダをクリア
 	void ClearHitCollider();
+
+	// 衝突対象となるコライダを指定して削除
+	void RemoveHitCollider(const ColliderBase* hitCollider);
 
 	// 生存状態の取得
 	bool IsAlive() const { return isAlive_; }

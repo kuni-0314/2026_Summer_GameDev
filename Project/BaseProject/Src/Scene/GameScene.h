@@ -48,7 +48,13 @@ public:
 	// 攻撃コライダー生成
 	void CreateAttackCollider(ColliderBase::TAG tag, VECTOR pos, float radius, float damage, int lifeTime);
 
+	void AddEnemyHitCollider(const ColliderBase* hitCollider);
+	void RemoveEnemyHitCollider(const ColliderBase* hitCollider);
+
 	ItemManger* GetItemManger() const { return itemManger_; }
+
+	// ゲームシーンを取得
+	const GameScene& GetGameScene() const { return *this; }
 
 private:
 

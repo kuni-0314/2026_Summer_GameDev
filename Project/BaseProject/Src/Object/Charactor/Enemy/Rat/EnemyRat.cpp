@@ -183,6 +183,7 @@ void EnemyRat::UpdateProcess()
 	preHp_ = hp_;
 
 	CheckPlayerSwordCollision();
+	CheckPlayerMagicCollision();
 
 	if (hp_ < preHp_)
 	{

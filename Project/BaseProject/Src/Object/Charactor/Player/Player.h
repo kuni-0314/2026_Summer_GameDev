@@ -6,6 +6,7 @@ class AnimationController;
 class PlayerState;
 class SwordBase;
 class EffekseerEffect;
+class ColliderSphere;
 
 class Player : public CharactorBase
 {
@@ -21,6 +22,7 @@ public:
 		JET, 
 		FALL,
 		ATTACK,
+		MAGIC,  // 追加
 		MAX
 	};
 
@@ -44,6 +46,7 @@ public:
 		ATK_A4,
 		ATK_A5,
 		ATK_F,
+		MAGIC,
 	};
 
 	//コンストラクタ
@@ -89,6 +92,8 @@ public:
 	void SetAnimStartModelPos(const VECTOR& pos) { animStartModelPos_ = pos; }
 	bool IsAttacking() const { return isAttacking_; }
 	void SetAttacking(const bool attacking) { isAttacking_ = attacking; }
+	bool IsAliveMagic() const { return isAliveMagic_; }
+	void SetAliveMagic(const bool alive) { isAliveMagic_ = alive; }
 	void ActivatePowerUp();
 	void PlayBlinkEffect();
 
@@ -206,6 +211,19 @@ private:
 
 	void InitState();
 
+	struct ThunderInfo
+	{
+		Transform transform = {};
+		ColliderSphere* collider = nullptr;
+		//VECTOR pos;
+		int timer = 0;
+		bool isActive = false;
+		bool isDestroyed = false;
+	};
+	void CreateThunderCollider(ThunderInfo& thunderInfo);
+
+	void DestroyThunderCollider(const ThunderInfo& thunderInfo);
+
 	const int padNum_;
 
 	Status status_;
@@ -276,14 +294,16 @@ private:
 	static constexpr VECTOR KEY_BLADE_3_LOCAL_POS_END = { 0.0f, 120.0f, 0.0f };
 	static constexpr float KEY_BLADE_3_RADIUS = 40.0f;
 
-	struct ThunderInfo
-	{
-		VECTOR pos;
-		int timer;
-		bool isActive;
-	};
-	static constexpr int THUNDER_COUNT = 15;
-	ThunderInfo thunderInfos_[THUNDER_COUNT];
+
+	bool isAliveMagic_;
+	int magicTimer_;
+
+	static constexpr int THUNDER_COUNT = 10;		// 雷の数
+	ThunderInfo thunderInfos_[THUNDER_COUNT];		// 雷の情報配列
+	static constexpr int THUNDER_LIFETIME = 60;		// 生存時間
+	static constexpr int THUNDER_INTERVAL = 10;		// 発生間隔
+	static constexpr float THUNDER_RADIUS = 80.0f;	// 雷の半径
 	//VECTOR thunderPosOffsets_[THUNDER_COUNT];
+
 
 };

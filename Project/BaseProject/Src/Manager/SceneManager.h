@@ -70,6 +70,8 @@ public:
 	// メインスクリーンの取得
 	int GetMainScreen() const;
 
+	SceneBase* GetScene() const { return scene_; }
+
 private:
 
 	// 静的インスタンス

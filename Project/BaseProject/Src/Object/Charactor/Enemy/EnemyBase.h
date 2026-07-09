@@ -43,6 +43,8 @@ public:
 	// プレイヤーの剣との衝突判定を行う
 	void CheckPlayerSwordCollision();
 
+	void CheckPlayerMagicCollision();
+
 	void CheckEnemy();
 
 	void Release(void) override;

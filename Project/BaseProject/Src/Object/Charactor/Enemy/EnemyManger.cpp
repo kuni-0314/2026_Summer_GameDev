@@ -86,6 +86,21 @@ void EnemyManager::AddHitCollider(const ColliderBase* hitCollider)
 	}
 }
 
+void EnemyManager::RemoveHitCollider(const ColliderBase* hitCollider)
+{
+	auto it = std::find(hitColliders_.begin(), hitColliders_.end(), hitCollider);
+	if (it != hitColliders_.end())
+	{
+		hitColliders_.erase(it);
+	}
+
+	// Õ“Ë”»’è‚Ìíœ
+	for (auto& enemy : enemies_)
+	{
+		enemy->RemoveHitCollider(hitCollider);
+	}
+}
+
 void EnemyManager::LoadCsvData()
 {
 	// ƒtƒ@ƒCƒ‹‚Ì“Ç

@@ -11,6 +11,7 @@
 #include "../../../Object/Collider/ColliderBase.h"
 #include "../../../Object/Collider/Line/ColliderLine.h"
 #include "../../../Object/Collider/Capsule/ColliderCapsule.h"
+#include "../../../Object/Collider/Sphere/ColliderSphere.h"
 #include "../../Weapon/Sword/KeyBlade1.h"
 #include "../../Weapon/Sword/KeyBlade2.h"
 #include "../../Weapon/Sword/KeyBlade3.h"
@@ -18,6 +19,7 @@
 #include "../../../Effect/EffectManager.h"
 #include "../../../Sound/AudioManager.h"
 #include "../../../Sound/SoundTable.h"
+#include "../../../Scene/GameScene.h"
 #include "PlayerIdleState.h"
 #include "PlayerRunState.h"
 #include "PlayerFastRunState.h"
@@ -25,6 +27,7 @@
 #include "PlayerJetState.h"
 #include "PlayerFallState.h"
 #include "PlayerAttackState.h"
+#include "PlayerMagicState.h"
 
 
 Player::Player(int padNum)
@@ -229,6 +232,8 @@ void Player::InitAnimation()
 		, 60.0f, Application::PATH_MODEL + "Player/Attack1.mv1");//tmp
 	animationController_->Add(static_cast<int>(ANIM_TYPE::ATK_F)
 		, 40.0f, Application::PATH_MODEL + "Player/Attack1.mv1");//tmp
+	animationController_->Add(static_cast<int>(ANIM_TYPE::MAGIC)
+		, 40.0f, Application::PATH_MODEL + "Player/Spell Cast.mv1");
 	//初期アニメーション再生
 	animationController_->Play(static_cast<int>(ANIM_TYPE::IDLE), true);
 }
@@ -326,39 +331,64 @@ void Player::UpdateProcess()
 
 			randomPos = transform_.quaRot.PosAxis(randomPos);
 
-			thunderInfos_[i].pos = VAdd(transform_.pos, randomPos);
-			thunderInfos_[i].timer = 0;	//tmp
+			thunderInfos_[i].transform.pos = VAdd(transform_.pos, randomPos);
+			thunderInfos_[i].timer = 0;
 			thunderInfos_[i].isActive = false;
+			thunderInfos_[i].isDestroyed = false;
 		}
+		magicTimer_ = 0;
 	}
+
+	// 魔法開始からカウント
+	magicTimer_++;
+
+	// 魔法がまだ生存しているかどうか
+	isAliveMagic_ = false;
 
 	for (int i = 0; i < THUNDER_COUNT; i++)
 	{
-		thunderInfos_[i].timer++;
-		if (thunderInfos_[i].timer > i * 5 && !thunderInfos_[i].isActive)
+		// 雷が発生したか
+		if (thunderInfos_[i].isActive)
 		{
-			thunderInfos_[i].isActive = true;
-			AudioManager::GetInstance()->PlaySE(SoundID::SE_THUNDER);
-			AudioManager::GetInstance()->PlaySE(SoundID::SE_EXPLOSION);
+			// 雷は削除済みか
+			if (thunderInfos_[i].isDestroyed)
+			{
+				continue;
+			}
+			else
+			{
+				// 雷は生存時間外か
+				if (thunderInfos_[i].timer >= THUNDER_LIFETIME)
+				{
+					// 雷のコライダを消す
+					DestroyThunderCollider(thunderInfos_[i]);
 
+					// 破壊フラグを立てる
+					thunderInfos_[i].isDestroyed = true;
+				}
+				else
+				{
+					thunderInfos_[i].timer++;
+					isAliveMagic_ = true;
+				}
+			}
+		}
+		else
+		{
+			// 一定時間後雷を発生させる
+			if (magicTimer_ >= i * THUNDER_INTERVAL)
+			{
+				// 雷を有効にする
+				thunderInfos_[i].isActive = true;
+
+				// 雷のコライダを作る
+				CreateThunderCollider(thunderInfos_[i]);
+
+				// 音を鳴らす
+				AudioManager::GetInstance()->PlaySE(SoundID::SE_THUNDER);
+			}
 		}
 	}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 }
 
@@ -465,30 +495,11 @@ void Player::Draw()
 	for (int i = 0; i < THUNDER_COUNT; i++)
 	{
 		if (!thunderInfos_[i].isActive) continue;
-		VECTOR spherePos = thunderInfos_[i].pos;
-		DrawSphere3D(spherePos, 10.0f, 16, 0xff00ff, 0xff00ff, false);
+		VECTOR spherePos = thunderInfos_[i].transform.pos;
+		DrawSphere3D(spherePos, 100.0f, 16, 0xff00ff, 0xff00ff, false);
 	}
 
 	VECTOR test = transform_.quaRot.PosAxis(VGet(0, 0, -100));
-
-	DrawSphere3D(
-		VAdd(transform_.pos, test),
-		20,
-		16,
-		0xff0000,
-		0xff0000,
-		true
-	);
-
-	//DrawFormatString(0, 400, 0xffffff, "<Player> Pos : (%.2f, %.2f, %.2f)", transform_.pos.x, transform_.pos.y, transform_.pos.z);
-	DrawFormatString(
-		0, 450, 0xffffff,
-		"<Player> Rot : (%.2f, %.2f, %.2f, %.2f)",
-		transform_.quaRot.w,
-		transform_.quaRot.x,
-		transform_.quaRot.y,
-		transform_.quaRot.z
-	);
 	//DrawFormatString(0, 500, 0xffffff, "<Player> HP : %d", hp_);
 #endif // _DEBUG
 }
@@ -654,7 +665,22 @@ void Player::InitState()
 	states_[STATE::JET] = new PlayerJetState();
 	states_[STATE::FALL] = new PlayerFallState();
 	states_[STATE::ATTACK] = new PlayerAttackState();
+	states_[STATE::MAGIC] = new PlayerMagicState();  // 追加
 	currentState_ = states_[STATE::IDLE];
 }
 
+void Player::CreateThunderCollider(ThunderInfo& thunderInfo)
+{
+	ColliderSphere* colSphere = new ColliderSphere(
+		ColliderBase::TAG::PLAYER_MAGIC, &thunderInfo.transform,
+		{ 0.0f,0.0f,0.0f }, THUNDER_RADIUS);
+	thunderInfo.collider = colSphere;
+	GameScene* gameScene = dynamic_cast<GameScene*>(SceneManager::GetInstance().GetScene());
+	gameScene->AddEnemyHitCollider(colSphere);
+}
 
+void Player::DestroyThunderCollider(const ThunderInfo& thunderInfo)
+{
+	GameScene* gameScene = dynamic_cast<GameScene*>(SceneManager::GetInstance().GetScene());
+	gameScene->RemoveEnemyHitCollider(thunderInfo.collider);
+}

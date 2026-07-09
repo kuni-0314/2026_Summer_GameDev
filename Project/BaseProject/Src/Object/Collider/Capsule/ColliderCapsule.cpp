@@ -2,6 +2,7 @@
 #include "../../Common/Transform.h"
 #include "ColliderCapsule.h"
 #include "../Model/ColliderModel.h"
+#include "../Sphere/ColliderSphere.h"
 ColliderCapsule::ColliderCapsule(
 	TAG tag, const Transform * follow,
 	const VECTOR & localPosTop, const VECTOR & localPosDown, float radius)
@@ -219,4 +220,11 @@ bool ColliderCapsule::IsHit(const ColliderCapsule* colliderCapsule, bool isExclu
 	return HitCheck_Capsule_Capsule(
 		GetPosTop(), GetPosDown(), GetRadius(),
 		colliderCapsule->GetPosTop(), colliderCapsule->GetPosDown(), colliderCapsule->GetRadius());
+}
+
+bool ColliderCapsule::IsHit(const ColliderSphere* colliderSphere, bool isExclude, bool isTarget) const
+{
+	return HitCheck_Sphere_Capsule(
+		colliderSphere->GetPos(), colliderSphere->GetRadius(),
+		GetPosTop(), GetPosDown(), GetRadius());
 }

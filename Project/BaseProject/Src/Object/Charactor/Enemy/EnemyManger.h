@@ -41,6 +41,8 @@ public:
 	const std::vector<EnemyBase*>& GetEnemies() const { return enemies_; }
 	// 衝突対象となるコライダを登録
 	void AddHitCollider(const ColliderBase* hitCollider);
+	// 衝突対象となるコライダを指定して削除
+	void RemoveHitCollider(const ColliderBase* hitCollider);
 
 	// CSVから敵情報の読取を行う
 	void LoadCsvData();

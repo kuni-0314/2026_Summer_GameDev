@@ -185,6 +185,7 @@ void EnemyRase::UpdateProcess()
 	preHp_ = hp_;//被ダメージ前HP保存
 
 	CheckPlayerSwordCollision();
+	CheckPlayerMagicCollision();
 	if (hp_ < preHp_)
 	{
 		ChangeState(STATE::HIT);
