@@ -38,7 +38,22 @@ public:
 	{
 		SANDER,
 		FIRE,
-		RECOVERY
+		RECOVERY,
+		MAX
+	};
+
+	enum COMMAND_STATE
+	{
+		NOT_USE,
+		USE
+	};
+
+	enum PLAYRE_HP_STATE
+	{
+		DEF,
+		DAMEGE,
+		WARNIG,
+		STATE_MAX
 	};
 
 	// コンストラクタ
@@ -80,7 +95,7 @@ private:
 	// 武器
 	//WeaponBase* weapon_;
 	
-	static constexpr int IMG_HP_X = 1500;
+	static constexpr int IMG_HP_X = 1550;
 	static constexpr int IMG_HP_Y = 700;
 
 	//コマンド
@@ -130,9 +145,12 @@ private:
 	
 	int audioHandle_;
 
-	std::vector<int> hpHandles_;		//Hpハンドル
-	std::vector<int> playerUiHandles_;	//プレイヤーUI
-	std::vector<int> commandHandles;	//コマンドハンドル
+	std::vector<int> hpHandles_;			//Hpハンドル
+	std::vector<int> playerUiHandles_;		//プレイヤーUI
+	std::vector<int> commandHandles;		//コマンドハンドル
+	//std::vector<int> fontCommandHandles_[(int)COMMAND::MAX][2];	//コマンドフォントハンドル
+
+	int fontCommandHandles_ [static_cast<int>(COMMAND::MAX)][2];
 
 	void SelectCommand(COMMAND command);
 	void CommandUpdate();

@@ -69,6 +69,7 @@ void GameScene::Init()
 	enemyManager_->AddHitCollider(player_->GetSword()->GetOwnCollider(static_cast<int>(ActorBase::COLLIDER_TYPE::CAPSULE)));
 
 
+
 	// スカイドーム初期化
 	skyDome_ = new SkyDome(player_->GetTransform());
 	skyDome_->Init();
@@ -125,6 +126,21 @@ void GameScene::Init()
 	commandHandles[static_cast <int>(COMMAND::RECOVERY)] = resMng_.Load(ResourceManager::SRC::IMG_SELECT_RECOVERY).handleId_;
 
 	selectCommand_ = static_cast<int>(COMMAND::FIRE);
+
+	commandHandles.resize(6);
+
+	fontCommandHandles_[static_cast <int>(COMMAND::SANDER)][(int)COMMAND_STATE::NOT_USE] = resMng_.Load(ResourceManager::SRC::IMG_NOTUSE_SANDER).handleId_;
+	fontCommandHandles_[static_cast <int>(COMMAND::SANDER)][(int)COMMAND_STATE::USE] = resMng_.Load(ResourceManager::SRC::IMG_USE_SANDER).handleId_;
+	fontCommandHandles_[static_cast <int>(COMMAND::FIRE)][(int)COMMAND_STATE::NOT_USE] = resMng_.Load(ResourceManager::SRC::IMG_NOTUSE_FIRE).handleId_;
+	fontCommandHandles_[static_cast <int>(COMMAND::FIRE)][(int)COMMAND_STATE::USE] = resMng_.Load(ResourceManager::SRC::IMG_USE_FIRE).handleId_;
+	fontCommandHandles_[static_cast <int>(COMMAND::RECOVERY)][(int)COMMAND_STATE::NOT_USE] = resMng_.Load(ResourceManager::SRC::IMG_NOTUSE_RECOVERY).handleId_;
+	fontCommandHandles_[static_cast <int>(COMMAND::RECOVERY)][(int)COMMAND_STATE::USE] = resMng_.Load(ResourceManager::SRC::IMG_USE_RECOVERY).handleId_;
+
+	playerUiHandles_.resize(static_cast<int>(PLAYRE_HP_STATE::STATE_MAX));
+
+	playerUiHandles_[static_cast<int>(PLAYRE_HP_STATE::DEF)] = resMng_.Load(ResourceManager::SRC::IMG_PLAYER_UI_DEF).handleId_;
+	playerUiHandles_[static_cast<int>(PLAYRE_HP_STATE::DAMEGE)] = resMng_.Load(ResourceManager::SRC::IMG_PLAYER_UI_DAMEGE).handleId_;
+	playerUiHandles_[static_cast<int>(PLAYRE_HP_STATE::WARNIG)] = resMng_.Load(ResourceManager::SRC::IMG_PLAYER_UI_WARNIG).handleId_;
 
 }
 
@@ -345,6 +361,8 @@ void GameScene::Update()
 
 	if (ins->IsTrgDown(KEY_INPUT_UP))
 	{
+		AudioManager::GetInstance()->PlaySE(SoundID::SE_COMMAND_SELECT);
+
 		selectCommand_--;
 		if (selectCommand_ < static_cast <int>(COMMAND::SANDER))
 		{
@@ -354,6 +372,8 @@ void GameScene::Update()
 
 	if (ins->IsTrgDown(KEY_INPUT_DOWN))
 	{
+		AudioManager::GetInstance()->PlaySE(SoundID::SE_COMMAND_SELECT);
+
 		selectCommand_++;
 		if (selectCommand_ > static_cast <int>(COMMAND::RECOVERY))
 		{
@@ -641,6 +661,7 @@ void GameScene::PlayerHpDraw()
 	if (index >= hpHandles_.size()) index = hpHandles_.size() - 1;
 
 	DrawGraph(IMG_HP_X, IMG_HP_Y, hpHandles_[index], true);
+	DrawGraph(IMG_HP_X, IMG_HP_Y, playerUiHandles_[static_cast<int>(PLAYRE_HP_STATE::DEF)], true);
 }
 
 void GameScene::CommandUpdate()
@@ -649,5 +670,19 @@ void GameScene::CommandUpdate()
 
 void GameScene::CommandDraw()
 {
-	DrawGraph(0, 735, commandHandles[selectCommand_],true);
+	DrawGraph(0, 735, commandHandles[selectCommand_], true);
+
+	const int baseX = 45;
+	const int selectOffset = 90;
+
+	for (int i = 0; i < static_cast<int>(COMMAND::MAX); i++)
+	{
+		bool isSelect = (i == selectCommand_);
+
+		DrawGraph(
+			baseX + (isSelect ? selectOffset : 0),
+			780 + i * 75,
+			fontCommandHandles_[i][0],
+			true);
+	}
 }

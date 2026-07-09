@@ -125,16 +125,6 @@ void Player::Update()
 
 }
 
-void Player::Damege(int damege)
-{
-	hp_ -= damege;
-	int a = StartJoypadVibration(padNum_ + 1, 1000, 500, -1);
-	if (hp_ <= 0)
-	{
-		hp_ = 0;
-	}
-}
-
 void Player::HealHp(int heal)
 {
 	hp_ += heal;
@@ -150,6 +140,7 @@ void Player::InitLoad()
 
 	//基底クラスのリソースロード
 	CharactorBase::InitLoad();
+	AudioManager::GetInstance()->LoadSceneSound(LoadScene::GAME);
 }
 
 void Player::InitTransform()
@@ -343,21 +334,6 @@ void Player::UpdateProcess()
 
 		}
 	}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 }
@@ -657,4 +633,13 @@ void Player::InitState()
 	currentState_ = states_[STATE::IDLE];
 }
 
-
+void Player::Damege(int damege)
+{
+	AudioManager::GetInstance()->PlaySE(SoundID::VOICE_PLAYER_DAMEGE_0);
+	hp_ -= damege;
+	int a = StartJoypadVibration(padNum_ + 1, 1000, 500, -1);
+	if (hp_ <= 0)
+	{
+		hp_ = 0;
+	}
+}

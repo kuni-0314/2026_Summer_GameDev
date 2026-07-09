@@ -40,6 +40,21 @@ void EnemyManager::Update()
 {
 	//waveXV
 	UpdateWave();
+
+	for (size_t i = 0; i < enemies_.size(); i++)
+	{
+		for (size_t j = i + 1; j < enemies_.size(); j++)
+		{
+			EnemyBase* enemyA = enemies_[i];
+			EnemyBase* enemyB = enemies_[j];
+
+			enemyA->PushOutSphere(
+				enemyA->GetPos(),
+				enemyA->GetCollRadius(),
+				enemyB->GetPos(),
+				enemyB->GetCollRadius());
+		}
+	}
 }
 
 void EnemyManager::Draw()

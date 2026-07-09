@@ -96,8 +96,8 @@ private:
 	static constexpr VECTOR COL_CAPSULE_DOWN_LOCAL_POS = { 0.0f, 70.0f, 60.0f };
 
 	// 後半分用のカプセルローカル座標（体を前半/後半に分割）
-	static constexpr VECTOR COLBODY_CAPSULE_TOP_LOCAL_POS = { 0.0f, 200.0f, -60.0f };
-	static constexpr VECTOR COLBODY_CAPSULE_DOWN_LOCAL_POS = { 0.0f, 70.0f, -60.0f };
+	static constexpr VECTOR COLBODY_CAPSULE_TOP_LOCAL_POS = { 0.0f, 200.0f, -80.0f };
+	static constexpr VECTOR COLBODY_CAPSULE_DOWN_LOCAL_POS = { 0.0f, 70.0f, -80.0f };
 
 	static constexpr VECTOR RING_ADD_SCL = { 0.1f, 0.1f, 0.1f };
 
@@ -121,8 +121,9 @@ private:
 	// 行動切り替え用カプセル球体半径
 	static constexpr float COL_SWICH_RADIUS = 250.0f;
 
-	const float SWICH_DISTANCE = 200.0f;		// 攻撃切り替え距離
-	const float ATTACK_RUN_END_POINT = 600.0f;	//突進１の移動終了距離
+	const float SWICH_DISTANCE = 450.0f;			// 攻撃切り替え距離
+	const float CONTIUATION_DISTANCE = 450.0f;		// 攻撃継続距離
+	const float ATTACK_RUN_END_POINT = 600.0f;		//突進１の移動終了距離
 
 	// ATTACK_DROP内でジャンプを行うタイミング(フレーム)
 	static constexpr float ATTACK_DROP_JUMP_TIME_RATIO = 0.42f;	//ジャンプ開始

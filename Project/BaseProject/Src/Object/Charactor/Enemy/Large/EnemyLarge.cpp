@@ -58,9 +58,19 @@ void EnemyLarge::Draw(void)
 	else if (next == STATE::CHARGE) name = "CHARGE";
 	else if (next == STATE::ATTACK_DROP) name = "ATTACK_DROP";
 
-	DrawFormatString(0, 500, GetColor(255, 255, 255), "STATE: %s", name);
-	DrawFormatString(0, 400, GetColor(255, 255, 255), "POS: %.2f", transform_.pos.y);
+	DrawFormatString(0, 200, GetColor(255, 255, 255), "STATE: %s", name);
+	DrawFormatString(0, 250, GetColor(255, 255, 255), "距離: %.2f", distance_);
 
+#ifdef _DEBUG
+
+	// Aの球（赤）
+	DrawSphere3D(transform_.pos, pushOutRadius_, 16, GetColor(255, 0, 0), GetColor(255, 0, 0), FALSE);
+	// Bの球（青）
+	DrawSphere3D(playerPos_, playerRad_, 16, GetColor(0, 0, 255), GetColor(0, 0, 255), FALSE);
+	// 中心を結ぶ線（緑）
+	DrawLine3D(transform_.pos, playerPos_, GetColor(0, 255, 0));
+
+#endif
 }
 
 void EnemyLarge::Release(void)
@@ -73,7 +83,8 @@ void EnemyLarge::InitLoad()
 	CharactorBase::InitLoad();
 	transform_.SetModel(resMng_.LoadModelDuplicate(ResourceManager::SRC::ENEMY_LARGE));
 
-
+	//SE読み込み
+	AudioManager::GetInstance()->LoadSceneSound(LoadScene::GAME);
 	
 }
 
@@ -109,31 +120,20 @@ void EnemyLarge::InitCollider()
 		COL_CAPSULE_RADIUS);
 	ownColliders_.emplace(static_cast<int>(COLLIDER_TYPE::CAPSULE), colCapsule);
 
-	// 前半分用カプセル（キー: COLLIDER_KEY_BODY_FRONT）
-	/*colFrontCapsule_ = new ColliderCapsule(
-		ColliderBase::TAG::ENEMY, &transform_,
-		COL_CAPSULE_TOP_LOCAL_POS, COL_CAPSULE_DOWN_LOCAL_POS,
-		COL_CAPSULE_RADIUS);
-	ownColliders_.emplace(COLLIDER_KEY_BODY_FRONT, colFrontCapsule_);*/
-
-	 //後半分用カプセル（キー: COLLIDER_KEY_BODY_BACK）
-	/*colBackCapsule_ = new ColliderCapsule(
-		ColliderBase::TAG::ENEMY, &transform_,
-		COLBODY_CAPSULE_TOP_LOCAL_POS, COLBODY_CAPSULE_DOWN_LOCAL_POS,
-		COL_CAPSULE_RADIUS);
-	ownColliders_.emplace(COLLIDER_KEY_BODY_BACK, colBackCapsule_);*/
 
 	// DxLib側の衝突情報セットアップ
 	MV1SetupCollInfo(transform_.modelId);
 	// モデルのコライダ
 	ColliderModel* colModel =
 		new ColliderModel(ColliderBase::TAG::STAGE, &transform_);
-
 	//対象とするフレーム
 	for (const std::string& name : TARGET_FRAME_NAMES)
 	{
 		colModel->AddTargetFrameIds(name);
 	}
+
+	ownColliders_.emplace(static_cast<int>(COLLIDER_TYPE::MODEL), colModel);
+	//
 }
 
 void EnemyLarge::InitAnimation()
@@ -186,15 +186,9 @@ void EnemyLarge::InitPost()
 	// 初期状態設定
 	ChangeState(STATE::IDLE);
 
-	if (hp_ > hp_ / 2)
-	{
-		power_ = 2;
-	}
-	else
-	{
-		power_ = 3;
-	}
 
+	power_ = 2;
+	pushOutRadius_  = 150.0f;
 
 }
 
@@ -226,6 +220,11 @@ void EnemyLarge::UpdateProcess()
 		//ChangeState(STATE::HIT);
 	}
 
+	PushOutSphere(transform_.pos,pushOutRadius_,
+		player_->GetPos(),player_->GetCollRadius(),true); 
+	
+
+
 	//衝撃波
 	if (isDrop_)
 	{
@@ -243,7 +242,6 @@ void EnemyLarge::UpdateProcess()
 	
 
 	//パンチ攻撃判定座標更新
-	
 	// フレーム22のワールドマトリクスを取得
 	MATRIX mat = MV1GetFrameLocalWorldMatrix(transform_.modelId, 22);
 	// 位置補正（プレイヤーの向きに合わせて微調整）
@@ -303,7 +301,7 @@ void EnemyLarge::ChangeStateCharge()
 {
 	stateUpdate_ = std::bind(&EnemyLarge::UpdateCharge, this);
 
-	look_ = true;
+	look_ = false;
 
 	// ランダムな待機時間
 	step_ = 3.0f + static_cast<float>(GetRand(3));
@@ -318,7 +316,7 @@ void EnemyLarge::ChangeStateAttackPunch()
 {
 	stateUpdate_ = std::bind(&EnemyLarge::UpdateAttackPunch, this);
 
-	look_ = false;
+	look_ = true;
 
 	// 移動量ゼロ
 	movePow_ = AsoUtility::VECTOR_ZERO;
@@ -409,7 +407,17 @@ void EnemyLarge::UpdateThink()
 
 	int rand = GetRand(100);
 
-	if (rand >= 30)
+	//距離が近かったらパンチ
+	if (distance_ < SWICH_DISTANCE)
+	{
+		if (rand <= 20)
+		{
+			ChangeState(STATE::IDLE);
+		}
+		else
+		ChangeState(STATE::ATTACK_PUNCH);
+	}
+	else if (rand >= 30)
 	{
 		ChangeState(STATE::CHARGE);
 	}
@@ -417,16 +425,27 @@ void EnemyLarge::UpdateThink()
 	{
 		ChangeState(STATE::ATTACK_DROP);
 	}
+
+	
 }
 
 void EnemyLarge::UpdateCharge()
 {
+	int rand = GetRand(100);
+
 	countUp++;
 
 	if (countMax /2 < countUp)
 	{
 		countUp = 0;
-		ChangeState(STATE::ATTACK_RUN);
+		if (rand < 70)
+		{
+			ChangeState(STATE::ATTACK_RUN);
+		}
+		else
+		{
+			ChangeState(STATE::IDLE);
+		}
 	}
 
 	movePow_ = AsoUtility::VECTOR_ZERO;
@@ -437,6 +456,12 @@ void EnemyLarge::UpdateAttackPunch()
 
 	// Transform の更新
 	transform_.Update();
+
+	//進行方向を決める
+	if (look_)
+	{
+		look_ = false;
+	}
 
 	if (!isAttack_)
 	{
@@ -450,8 +475,8 @@ void EnemyLarge::UpdateAttackPunch()
 
 	if(animationController_->IsEnd())
 	{
-		
-		ChangeState(STATE::IDLE);
+
+		ChangeState(STATE::THINK);
 		isAttack_ = false;
 	}
 
@@ -473,9 +498,14 @@ void EnemyLarge::UpdateAttackRun()
 	
 	float dist =VSize(VSub(transform_.pos, startPos)); //移動距離
 
+	if (distance_ <= SWICH_DISTANCE)
+	{
+		ChangeState(STATE::THINK);
+	}
+
 	if (dist > ATTACK_RUN_END_POINT)
 	{
-		ChangeState(STATE::ATTACK_PUNCH);
+		ChangeState(STATE::CHARGE);
 	}
 
 	movePow_ = VScale(moveDir_, moveSpeed_);
@@ -505,6 +535,7 @@ void EnemyLarge::UpdateAttackDrop()
 
 	if (!attackriggerRing_ && anim.step >= attackTriggerTime)
 	{
+		AudioManager::GetInstance()->PlaySE(SoundID::SE_ENEMY_LARGE_ATTACK_DROP);
 		// 発生の瞬間に一度だけ座標をセット
 		ringTransform_->pos = transform_.pos;
 		ringTransform_->pos.y += 20;

@@ -50,6 +50,19 @@ public:
 	//エフェクト
 	void HitEffect(const VECTOR& pos, const VECTOR& normal, float size);
 
+	// 球同士の押し出し（Aだけを押し出す）
+	static bool PushOutSphere(
+		VECTOR& posA,
+		float radiusA,
+		const VECTOR& posB,
+		float radiusB,
+		bool debugDraw = false);
+
+
+	float GetCollRadius();
+	VECTOR& GetPos();
+
+
 protected:
 
 	Player* player_;
@@ -61,6 +74,7 @@ protected:
 	const VECTOR defaultPos_;
 	float movableRange_;
 	float playerRad_;
+	float pushOutRadius_;
 
 	//攻撃用モデル(魔法の弾とか）
 	int attackModle_;
@@ -70,6 +84,10 @@ protected:
 	int stateBase_;
 	//敵の攻撃力
 	int power_;
+	//視認判定
+	bool look_;
+	//生存判定
+	bool isAlive_ = true;
 
 	//wave
 	int wave_;
@@ -103,6 +121,7 @@ protected:
 
 	//視線ベクトル
 	void LookPlayer();
+
 
 
 };

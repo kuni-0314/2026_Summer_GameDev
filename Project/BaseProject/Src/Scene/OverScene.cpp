@@ -46,6 +46,9 @@ void OverScene::Init()
 	SetMouseDispFlag(true);
 
 	MV1SetPosition(playerHandle_, playerPos_);
+
+
+	sceMng_.GetCamera()->ChangeMode(Camera::MODE::FIXED_POINT);
 	
 }
 
