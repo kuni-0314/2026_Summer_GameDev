@@ -81,7 +81,7 @@ private:
 	static constexpr float SCALE = 2.5f;				// モデルの大きさ
 
 	static constexpr float RING_SCALE = 0.3f;			//衝撃波初期サイズ
-	static constexpr float RING_MAX_SCALE = 12.0f;		//衝撃波最大サイズ
+	static constexpr float RING_MAX_SCALE = 15.0f;		//衝撃波最大サイズ
 
 	// モデルのローカル回転
 	static constexpr VECTOR ROT = { 0.0f, 180.0f * DX_PI_F / 180.0f, 0.0f };
@@ -130,7 +130,8 @@ private:
 
 	// 対象フレーム
 	const std::vector<std::string> TARGET_FRAME_NAMES = { "トーラス", };
-
+	// 除外フレーム名称
+	const std::vector<std::string> EXCLUDE_FRAME_NAMES = { };
 	// 更新ステップ
 	float step_;// 状態管理(更新ステップ)
 	//プレイヤーとの距離
@@ -149,7 +150,7 @@ private:
 	bool attackHit_ = false;//連続攻撃判定
 	bool jumpApplied_ = false;	//ジャンプ処理実行判定
 	bool isDrop_ = false;		//衝撃破生存判定
-	bool attackriggerRing_ = false;	//衝撃波生成判定
+	bool attackTriggerRing_ = false;	//衝撃波生成判定
 
 	VECTOR worldPos;
 	//プレイヤー方向
@@ -198,7 +199,8 @@ private:
 	void UpdateEnd();
 	void UpdateCharge();
 
-
+	static constexpr VECTOR RING_INIT_POS = { 0.0f, -1000.0f, 0.0f };	//衝撃波初期位置
+	bool wasHitRing_;
 };
 
 

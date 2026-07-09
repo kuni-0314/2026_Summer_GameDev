@@ -134,11 +134,11 @@ void EnemyBase::CheckPlayerSwordCollision()
 	// プレイヤーが剣を振っていない場合は処理しない
 	if (!player_->IsAttacking()) 
 	{
-		wasHit_ = false; // 攻撃していないなら被ダメージフラグをリセット
+		wasHitSword_ = false; // 攻撃していないなら被ダメージフラグをリセット
 		return;
 	}
 
-	if (wasHit_) return;
+	if (wasHitSword_) return;
 
 
 	// 自身のカプセルコライダを取得
@@ -183,7 +183,7 @@ void EnemyBase::CheckPlayerSwordCollision()
 				HitEffect(hitPos, VNorm(VSub(hitPos, transform_.pos)), 1.0f);
 
 				// 一度あったらフラグ
-				wasHit_ = true;
+				wasHitSword_ = true;
 			}
 		}
 	}
@@ -199,11 +199,11 @@ void EnemyBase::CheckPlayerMagicCollision()
 	// プレイヤーの魔法が残存していないなら処理しない
 	if (!player_->IsAliveMagic())
 	{
-		wasHit_ = false; // 残存していないなら被ダメージフラグをリセット
+		wasHitMagic_ = false; // 残存していないなら被ダメージフラグをリセット
 		return;
 	}
 
-	if (wasHit_) return;
+	if (wasHitMagic_) return;
 
 	// 自身のカプセルコライダを取得
 	ColliderCapsule* ownColCapsule = nullptr;
@@ -228,13 +228,19 @@ void EnemyBase::CheckPlayerMagicCollision()
 
 			if (magicColSphere == nullptr) continue;
 
+			VECTOR aaa = magicColSphere->GetPos();
+			float bbb = magicColSphere->GetRadius();
+			VECTOR ccc = ownColCapsule->GetPosTop();
+			VECTOR ddd = ownColCapsule->GetPosDown();
+			float eee = ownColCapsule->GetRadius();
+
 			// カプセルと球体の衝突判定
 			if (HitCheck_Sphere_Capsule(
-				magicColSphere->GetPos(),
-				magicColSphere->GetRadius(),
-				ownColCapsule->GetPosTop(),
-				ownColCapsule->GetPosDown(),
-				ownColCapsule->GetRadius()) == true)
+				aaa,
+				bbb,
+				ccc,
+				ddd,
+				eee) == true)
 			{
 				// ダメージ処理
 				Damege(1);
@@ -247,7 +253,7 @@ void EnemyBase::CheckPlayerMagicCollision()
 				HitEffect(hitPos, VNorm(VSub(hitPos, transform_.pos)), 1.5f);
 
 				// 一度あったらフラグ
-				wasHit_ = true;
+				wasHitMagic_ = true;
 			}
 		}
 	}

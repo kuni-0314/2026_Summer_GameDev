@@ -70,16 +70,10 @@ void EnemyManager::Release()
 }
 void EnemyManager::AddHitCollider(const ColliderBase* hitCollider)
 {
-	//重複登録を避けるため、既存の敵に登録されているかの確認
-	if (std::find(hitColliders_.begin(), hitColliders_.end(), hitCollider) == hitColliders_.end())
-	{
-		hitColliders_.push_back(hitCollider);
-	}
-
-	hitCollider_ = hitCollider;
-
-
-	//衝突判定の追加
+	// hitColliders_リストに追加
+	hitColliders_.push_back(hitCollider);
+	
+	// 既存の全てのエネミーに新しいコライダを追加
 	for (auto& enemy : enemies_)
 	{
 		enemy->AddHitCollider(hitCollider);
@@ -88,17 +82,18 @@ void EnemyManager::AddHitCollider(const ColliderBase* hitCollider)
 
 void EnemyManager::RemoveHitCollider(const ColliderBase* hitCollider)
 {
-	auto it = std::find(hitColliders_.begin(), hitColliders_.end(), hitCollider);
-	if (it != hitColliders_.end())
-	{
-		hitColliders_.erase(it);
-	}
-
-	// 衝突判定の削除
-	for (auto& enemy : enemies_)
-	{
-		enemy->RemoveHitCollider(hitCollider);
-	}
+    // hitColliders_リストから削除
+    auto it = std::find(hitColliders_.begin(), hitColliders_.end(), hitCollider);
+    if (it != hitColliders_.end())
+    {
+        hitColliders_.erase(it);
+    }
+    
+    // 全てのエネミーからコライダを削除
+    for (auto& enemy : enemies_)
+    {
+        enemy->RemoveHitCollider(hitCollider);
+    }
 }
 
 void EnemyManager::LoadCsvData()
@@ -159,10 +154,9 @@ void EnemyManager::LoadCsvData()
 
 EnemyBase* EnemyManager::Create(const EnemyBase::EnemyData& data, const Player* player)
 {
-	
-	EnemyBase* enemy = nullptr;
-	switch (data.type)
-	{
+    EnemyBase* enemy = nullptr;
+    switch (data.type)
+    {
 	case EnemyBase::TYPE::RAT:
 		enemy = new EnemyRat(data,-1, const_cast<Player*>(player));
 		break;
@@ -179,20 +173,17 @@ EnemyBase* EnemyManager::Create(const EnemyBase::EnemyData& data, const Player* 
 	if (enemy != nullptr)
 	{
 		enemy->Init();
-
-		//新たに生成される敵に対して、コライダを追加
-		for (const auto* collider : hitColliders_)
+		
+		// 登録済みの全てのhitColliderを新しいエネミーに追加
+		for (const auto& hitCollider : hitColliders_)
 		{
-			if (collider != nullptr)
-			{
-				enemy->AddHitCollider(collider);
-			}
+			enemy->AddHitCollider(hitCollider);
 		}
-
-		enemies_.emplace_back(enemy);
+		
+		enemies_.push_back(enemy);
 	}
-
-	return enemy;
+	
+    return enemy;
 
 }
 

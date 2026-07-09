@@ -23,6 +23,7 @@ public:
 		PLAYER,
 		PLAYER_SWORD,
 		ITEM,
+		ENEMY_RING,
 		MAX,
 	};
 

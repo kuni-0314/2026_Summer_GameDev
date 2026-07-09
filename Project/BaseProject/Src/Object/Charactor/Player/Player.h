@@ -206,6 +206,8 @@ protected:
 
 private:
 
+	void CheckPlayerRingCollision();
+
 	void GrantStatus(int index);
 	void RevokeStatus(int index);
 
@@ -301,8 +303,8 @@ private:
 	static constexpr int THUNDER_COUNT = 10;		// —‹‚Ì”
 	ThunderInfo thunderInfos_[THUNDER_COUNT];		// —‹‚Ìî•ñ”z—ñ
 	static constexpr int THUNDER_LIFETIME = 60;		// ¶‘¶ŠÔ
-	static constexpr int THUNDER_INTERVAL = 10;		// ”­¶ŠÔŠu
-	static constexpr float THUNDER_RADIUS = 80.0f;	// —‹‚Ì”¼Œa
+	static constexpr int THUNDER_INTERVAL = 5;		// ”­¶ŠÔŠu
+	static constexpr float THUNDER_RADIUS = 100.0f;	// —‹‚Ì”¼Œa
 	//VECTOR thunderPosOffsets_[THUNDER_COUNT];
 
 

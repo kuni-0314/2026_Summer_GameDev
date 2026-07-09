@@ -270,7 +270,6 @@ void Player::UpdateProcess()
 	{
 		m_powerUpTimer--;
 
-		// 終了
 		if (m_powerUpTimer <= 0)
 		{
 			m_isPowerUp = false;
@@ -278,120 +277,123 @@ void Player::UpdateProcess()
 	}
 	else
 	{
-		// 通常時だけ操作可能
 		if (currentState_ != nullptr)
 		{
 			currentState_->Update(this);
 		}
 	}
-
-	// 状態別更新処理
-	//if (currentState_ != nullptr)
-	//{
-	//	currentState_->Update(this);
-	//}
-
-	if (InputManager::GetInstance()->IsTrgDown(KEY_INPUT_R))
+	
+	auto ins = InputManager::GetInstance();
+	if (ins->IsTrgDown(KEY_INPUT_R))
 	{
-		// リスポーン
 		transform_.pos = POS_PLAYER;
 	}
 
-	if (InputManager::GetInstance()->IsTrgDown(KEY_INPUT_P))
+	if (ins->IsTrgDown(KEY_INPUT_P))
 	{
 		ActivatePowerUp();
 	}
 
-	if (InputManager::GetInstance()->IsTrgDown(KEY_INPUT_B))
+	if (ins->IsTrgDown(KEY_INPUT_B))
 	{
 		PlayBlinkEffect();
 	}
 
-	if (InputManager::GetInstance()->IsTrgDown(KEY_INPUT_T))
+	// 雷魔法開始
+	if (!isAliveMagic_ &&
+		(ins->IsTrgDown(KEY_INPUT_T) || ins->IsGamepadTrgDown(InputManager::PadInput::Y, padNum_)))
 	{
-		// 雷の位置をランダムに設定
+		magicTimer_ = 0;
+		isAliveMagic_ = true;
+
 		for (int i = 0; i < THUNDER_COUNT; i++)
 		{
-			float randomAngle = (GetRand(180) - 90) * DX_PI_F / 180.0f;
+			// 角度範囲を狭く: -60度から+60度(前方120度の範囲)
+			float randomAngle = (GetRand(120) - 60) * DX_PI_F / 180.0f;
 
-			const float DIST_MAX = 500.0f;
+			const float DIST_MAX = 700.0f;
 
 			float randomRadius =
 				sqrtf(GetRand(100) / 100.0f) * DIST_MAX;
 
-			float randomX = sinf(randomAngle) * randomRadius;
-			float randomZ = cosf(randomAngle) * randomRadius;
-
 			VECTOR randomPos =
 			{
-				randomX,
+				sinf(randomAngle) * randomRadius,
 				0.0f,
-				randomZ
+				cosf(randomAngle) * randomRadius
 			};
 
 			randomPos = transform_.quaRot.PosAxis(randomPos);
 
-			thunderInfos_[i].transform.pos = VAdd(transform_.pos, randomPos);
+			thunderInfos_[i].transform.pos =
+				VAdd(transform_.pos, randomPos);
 			thunderInfos_[i].timer = 0;
 			thunderInfos_[i].isActive = false;
 			thunderInfos_[i].isDestroyed = false;
 		}
-		magicTimer_ = 0;
 	}
 
-	// 魔法開始からカウント
-	magicTimer_++;
-
-	// 魔法がまだ生存しているかどうか
-	isAliveMagic_ = false;
-
-	for (int i = 0; i < THUNDER_COUNT; i++)
+	// 魔法処理
+	if (isAliveMagic_)
 	{
-		// 雷が発生したか
-		if (thunderInfos_[i].isActive)
+		magicTimer_++;
+
+		bool alive = false;
+
+		for (int i = 0; i < THUNDER_COUNT; i++)
 		{
-			// 雷は削除済みか
-			if (thunderInfos_[i].isDestroyed)
+			if (thunderInfos_[i].isActive)
 			{
-				continue;
-			}
-			else
-			{
-				// 雷は生存時間外か
+				if (thunderInfos_[i].isDestroyed)
+				{
+					continue;
+				}
+
 				if (thunderInfos_[i].timer >= THUNDER_LIFETIME)
 				{
-					// 雷のコライダを消す
 					DestroyThunderCollider(thunderInfos_[i]);
-
-					// 破壊フラグを立てる
 					thunderInfos_[i].isDestroyed = true;
 				}
 				else
 				{
 					thunderInfos_[i].timer++;
-					isAliveMagic_ = true;
+					alive = true;
+				}
+			}
+			else
+			{
+				if (magicTimer_ >= i * THUNDER_INTERVAL)
+				{
+					thunderInfos_[i].isActive = true;
+
+					CreateThunderCollider(thunderInfos_[i]);
+
+					AudioManager::GetInstance()
+						->PlaySE(SoundID::SE_THUNDER);
+
+					alive = true;
 				}
 			}
 		}
-		else
+
+		// 全部終了
+		if (!alive)
 		{
-			// 一定時間後雷を発生させる
-			if (magicTimer_ >= i * THUNDER_INTERVAL)
+			isAliveMagic_ = false;
+		}
+
+		for (int i = 0; i < THUNDER_COUNT; i++)
+		{
+			if (thunderInfos_[i].isActive)
 			{
-				// 雷を有効にする
-				thunderInfos_[i].isActive = true;
-
-				// 雷のコライダを作る
-				CreateThunderCollider(thunderInfos_[i]);
-
-				// 音を鳴らす
-				AudioManager::GetInstance()->PlaySE(SoundID::SE_THUNDER);
+				thunderInfos_[i].transform.Update();
 			}
 		}
 	}
 
+	CheckPlayerRingCollision();
+	
 }
-
 void Player::UpdateProcessPost()
 {
 	if (sword_ != nullptr)
@@ -561,6 +563,47 @@ void Player::PlayBlinkEffect()
 	);
 	// エフェクトをエフェクトマネージャーに登録
 	EffectManager::GetInstance().RegisterEffect(effect);
+}
+
+void Player::CheckPlayerRingCollision()
+{
+	//// プレイヤーのカプセルコライダを取得
+	//ColliderCapsule* playerCollider =
+	//	dynamic_cast<ColliderCapsule*>(ownColliders_[static_cast<int>(COLLIDER_TYPE::CAPSULE)]);
+
+	//if (playerCollider == nullptr) return;
+
+	////衝突情報更新
+	//MV1RefreshCollInfo(playerCollider->GetFollow()->modelId);
+
+	//// 登録されている衝突物を全てチェック
+	//bool isHit = false;
+	//for (const auto& hitCol : hitColliders_)
+	//{
+	//	if (hitCol->GetTag() != ColliderBase::TAG::ENEMY_RING) continue;
+
+	//	// 派生クラスへキャスト
+	//	const ColliderModel* ringCollider =
+	//		dynamic_cast<const ColliderModel*>(hitCol);
+
+	//	if (ringCollider == nullptr) continue;
+	//	//モデルとカプセルの諸突判定
+	//	auto hits = MV1CollCheck_Capsule(
+	//		ringCollider->GetFollow()->modelId, -1,
+	//		playerCollider->GetPosTop(), playerCollider->GetPosDown(), playerCollider->GetRadius());
+
+	//	// 衝突した複数のポリゴンと衝突回避するまで、位置を移動させる
+	//	for (int i = 0; i < hits.HitNum; i++)
+	//	{
+	//		auto hitPoly = hits.Dim[i];
+	//		isHit = true;
+	//		break;
+	//	}
+	//	// 検出した地面ポリゴン情報の後始末
+	//	MV1CollResultPolyDimTerminate(hits);
+	//}
+
+	//if (isHit) Damege(1);
 }
 
 void Player::GrantStatus(int index)

@@ -339,58 +339,53 @@ void TitleScene::SelectUpdate()
 		int mouseX_, mouseY_;
 		ins->GetMousePos(mouseX_, mouseY_);
 		int imgWidth_, imgHeight_;
+		bool isMouseOver = false;
 
 		// ゲームスタート
-		if (selectCount_ != static_cast<int>(SELECT::GAME))
+		GetGraphSize(selectCount_ == static_cast<int>(SELECT::GAME) ? imgGameStart_ : imgNotGameStart_, &imgWidth_, &imgHeight_);
+		if (mouseX_ >= IMG_CHOICE_POS_X && mouseX_ <= IMG_CHOICE_POS_X + imgWidth_ &&
+			mouseY_ >= IMG_CHOICE_POS_Y && mouseY_ <= IMG_CHOICE_POS_Y + imgHeight_)
 		{
-			GetGraphSize(selectCount_ == static_cast<int>(SELECT::GAME) ? imgGameStart_ : imgNotGameStart_, &imgWidth_, &imgHeight_);
-			if (mouseX_ >= IMG_CHOICE_POS_X && mouseX_ <= IMG_CHOICE_POS_X + imgWidth_ &&
-				mouseY_ >= IMG_CHOICE_POS_Y && mouseY_ <= IMG_CHOICE_POS_Y + imgHeight_)
-			{
-				selectCount_ = static_cast<int>(SELECT::GAME);
-				//AudioManager::GetInstance()->SetSeVolume(150);
-				AudioManager::GetInstance()->PlaySE(SoundID::SE_TITLE_SELECT);
-			}
+			selectCount_ = static_cast<int>(SELECT::GAME);
+			//AudioManager::GetInstance()->SetSeVolume(150);
+			isMouseOver = true;
 		}
 
 		// チュートリアル
-		if (selectCount_ != static_cast<int>(SELECT::TUTORIAL))
+		GetGraphSize(selectCount_ == static_cast<int>(SELECT::TUTORIAL) ? imgTutorial_ : imgNotTutorial_, &imgWidth_, &imgHeight_);
+		if (mouseX_ >= IMG_CHOICE_POS_X && mouseX_ <= IMG_CHOICE_POS_X + imgWidth_ &&
+			mouseY_ >= IMG_CHOICE_POS_Y + IMG_CHOICE_POS_Y_OFFSET && mouseY_ <= IMG_CHOICE_POS_Y + IMG_CHOICE_POS_Y_OFFSET + imgHeight_)
 		{
-			GetGraphSize(selectCount_ == static_cast<int>(SELECT::TUTORIAL) ? imgTutorial_ : imgNotTutorial_, &imgWidth_, &imgHeight_);
-			if (mouseX_ >= IMG_CHOICE_POS_X && mouseX_ <= IMG_CHOICE_POS_X + imgWidth_ &&
-				mouseY_ >= IMG_CHOICE_POS_Y + IMG_CHOICE_POS_Y_OFFSET && mouseY_ <= IMG_CHOICE_POS_Y + IMG_CHOICE_POS_Y_OFFSET + imgHeight_)
-			{
-				selectCount_ = static_cast<int>(SELECT::TUTORIAL);
-				//AudioManager::GetInstance()->SetSeVolume(150);
-				AudioManager::GetInstance()->PlaySE(SoundID::SE_TITLE_SELECT);
-			}
+			selectCount_ = static_cast<int>(SELECT::TUTORIAL);
+			//AudioManager::GetInstance()->SetSeVolume(150);
+			isMouseOver = true;
 		}
 
 		// オプション
-		if (selectCount_ != static_cast<int>(SELECT::OPTION))
+		GetGraphSize(selectCount_ == static_cast<int>(SELECT::OPTION) ? imgOption_ : imgNotOption_, &imgWidth_, &imgHeight_);
+		if (mouseX_ >= IMG_CHOICE_POS_X && mouseX_ <= IMG_CHOICE_POS_X + imgWidth_ &&
+			mouseY_ >= IMG_CHOICE_POS_Y + IMG_CHOICE_POS_Y_OFFSET * 2 && mouseY_ <= IMG_CHOICE_POS_Y + IMG_CHOICE_POS_Y_OFFSET * 2 + imgHeight_)
 		{
-			GetGraphSize(selectCount_ == static_cast<int>(SELECT::OPTION) ? imgOption_ : imgNotOption_, &imgWidth_, &imgHeight_);
-			if (mouseX_ >= IMG_CHOICE_POS_X && mouseX_ <= IMG_CHOICE_POS_X + imgWidth_ &&
-				mouseY_ >= IMG_CHOICE_POS_Y + IMG_CHOICE_POS_Y_OFFSET * 2 && mouseY_ <= IMG_CHOICE_POS_Y + IMG_CHOICE_POS_Y_OFFSET * 2 + imgHeight_)
-			{
-				selectCount_ = static_cast<int>(SELECT::OPTION);
-				//AudioManager::GetInstance()->SetSeVolume(150);
-				AudioManager::GetInstance()->PlaySE(SoundID::SE_TITLE_SELECT);
-			}
+			selectCount_ = static_cast<int>(SELECT::OPTION);
+			//AudioManager::GetInstance()->SetSeVolume(150);
+			isMouseOver = true;
 		}
 
 		// 終了
-		if (selectCount_ != static_cast<int>(SELECT::EXIT))
+		GetGraphSize(selectCount_ == static_cast<int>(SELECT::EXIT) ? imgEnd_ : imgNotEnd_, &imgWidth_, &imgHeight_);
+		if (mouseX_ >= IMG_CHOICE_POS_X && mouseX_ <= IMG_CHOICE_POS_X + imgWidth_ &&
+			mouseY_ >= IMG_CHOICE_POS_Y + IMG_CHOICE_POS_Y_OFFSET * 3 && mouseY_ <= IMG_CHOICE_POS_Y + IMG_CHOICE_POS_Y_OFFSET * 3 + imgHeight_)
 		{
-			GetGraphSize(selectCount_ == static_cast<int>(SELECT::EXIT) ? imgEnd_ : imgNotEnd_, &imgWidth_, &imgHeight_);
-			if (mouseX_ >= IMG_CHOICE_POS_X && mouseX_ <= IMG_CHOICE_POS_X + imgWidth_ &&
-				mouseY_ >= IMG_CHOICE_POS_Y + IMG_CHOICE_POS_Y_OFFSET * 3 && mouseY_ <= IMG_CHOICE_POS_Y + IMG_CHOICE_POS_Y_OFFSET * 3 + imgHeight_)
-			{
-				selectCount_ = static_cast<int>(SELECT::EXIT);
-				//AudioManager::GetInstance()->SetSeVolume(150);
-				AudioManager::GetInstance()->PlaySE(SoundID::SE_TITLE_SELECT);
-			}
+			selectCount_ = static_cast<int>(SELECT::EXIT);
+			//AudioManager::GetInstance()->SetSeVolume(150);
+			isMouseOver = true;
 		}
+
+		// ｔｍｐ
+		//if (!isMouseOver)
+		//{
+		//	selectCount_ = -1;
+		//}
 	}
 
 	// SpaceキーまたはゲームパッドのAボタンで決定
@@ -410,6 +405,8 @@ void TitleScene::SelectUpdate()
 
 	if (selectCount_ != pSelectCount_)
 	{
-		StartJoypadVibration(1, 1000, 30, -1);
+		StartJoypadVibration(1, 1000, 1, -1);
+		AudioManager::GetInstance()->PlaySE(SoundID::SE_TITLE_SELECT);
+
 	}
 }

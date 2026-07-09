@@ -81,7 +81,8 @@ protected:
 	std::function<void()> stateUpdate_;
 
 	// ダメージを受けたかどうか
-	bool wasHit_ = false;
+	bool wasHitSword_ = false;
+	bool wasHitMagic_ = false;
 
 	// リソースロード
 	void InitLoad() override {}
