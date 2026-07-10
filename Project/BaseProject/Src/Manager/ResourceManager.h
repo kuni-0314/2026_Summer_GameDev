@@ -83,6 +83,7 @@ public:
 		IMG_NOTUSE_RECOVERY,
 		IMG_USE_RECOVERY,
 		OPTION_FRAME,
+		EFFECT_DEATH,				//死亡エフェクト
 		MAX
 	};
 

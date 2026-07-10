@@ -355,11 +355,16 @@ void GameScene::Update()
 	// ゲームクリア判定
 	if (enemyManager_->GetEnemyDead())
 	{
-		// 強制的に全サウンド停止
-		StopMusic();
-		StopSoundMem(audioHandle_);
-		AudioManager::GetInstance()->StopBGM();
-		sceMng_.ChangeScene(SceneManager::SCENE_ID::CLEAR);
+		clearTimer_++;
+
+		if (clearTimer_ > 60)   // Deathエフェクト終了後
+		{
+			StopMusic();
+			StopSoundMem(audioHandle_);
+			AudioManager::GetInstance()->StopBGM();
+			sceMng_.ChangeScene(SceneManager::SCENE_ID::CLEAR);
+		}
+
 		return;
 	}
 
@@ -504,6 +509,9 @@ void GameScene::Release()
 		postEffectScreen_ = -1;
 	}
 
+	// エフェクトマネージャー解放
+	EffectManager::GetInstance().Clear();
+
 	// 攻撃コライダー解放
 	for (auto data : attackColliders_)
 	{
@@ -516,9 +524,6 @@ void GameScene::Release()
 		delete data;
 	}
 	attackColliders_.clear();
-
-	// エフェクトマネージャー解放
-	EffectManager::GetInstance().Clear();
 
 	// アイテムマネージャー解放
 	if (itemManger_ != nullptr)

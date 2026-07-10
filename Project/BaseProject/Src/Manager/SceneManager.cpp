@@ -9,6 +9,7 @@
 #include "../Scene/ClearScene.h"
 #include "../Scene/OverScene.h"
 #include "../Scene/OptionScene.h"
+#include "../Effect/EffectManager.h"
 #include "Camera.h"
 #include "ResourceManager.h"
 #include "SceneManager.h"
@@ -151,6 +152,9 @@ void SceneManager::Destroy()
 		delete scene_;
 		scene_ = nullptr;
 	}
+
+	// エフェクト
+	EffectManager::GetInstance().Clear();
 
 	// フェード機能の解放
 	delete fader_;

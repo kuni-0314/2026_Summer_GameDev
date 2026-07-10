@@ -1,6 +1,7 @@
 #pragma once
 #include <memory>
 #include "../../Charactor/CharactorBase.h"
+#include "../../../Effect/LoadEffekseer/EffekseerEffect.h"
 class GameScene;
 class AnimationController;
 class PlayerState;
@@ -225,6 +226,7 @@ private:
 		int timer = 0;
 		bool isActive = false;
 		bool isDestroyed = false;
+		std::shared_ptr<EffekseerEffect> effect;
 	};
 	void CreateThunderCollider(ThunderInfo& thunderInfo);
 

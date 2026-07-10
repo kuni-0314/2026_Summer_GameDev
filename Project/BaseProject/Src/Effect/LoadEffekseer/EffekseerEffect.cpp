@@ -134,3 +134,10 @@ void EffekseerEffect::Stop()
 
     m_isDead = true;
 }
+
+void EffekseerEffect::SetScale(float scale)
+{
+    if (m_playingHandle != -1 && IsEffekseer3DEffectPlaying(m_playingHandle) == 0) {
+        SetScalePlayingEffekseer3DEffect(m_playingHandle, scale, scale, scale);
+	}
+}

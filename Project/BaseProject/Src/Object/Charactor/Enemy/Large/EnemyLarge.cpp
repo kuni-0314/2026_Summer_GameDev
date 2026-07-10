@@ -47,7 +47,6 @@ void EnemyLarge::Draw(void)
 	{
 		if (player_->IsAttacking())
 		{
-			//ここで正面のエフェクト
 			
 		}
 	}
@@ -238,13 +237,18 @@ void EnemyLarge::UpdateProcess()
 	CheckPlayerSwordCollision();
 
 	//正面にPlayerがいるのか
-	if (InFront())
+	bool isATField_;
+	isATField_ = false;
+
+	if (!isATField_ && InFront() && player_->IsAttacking())
 	{
-		if (player_->IsAttacking())
-		{
-			//ここで正面のエフェクトDrawString(500, 100, "攻撃中", 0xffffff);
-			
-		}
+		isATField_ = true;
+		ATfield(transform_.pos);
+	}
+
+	if (!player_->IsAttacking())
+	{
+		isATField_ = false;
 	}
 
 	if (hp_ < preHp_)
@@ -293,6 +297,27 @@ void EnemyLarge::UpdateProcess()
 void EnemyLarge::UpdateProcessPost()
 {
 	stateUpdate_();
+
+}
+
+void EnemyLarge::ATfield(const VECTOR& pos)
+{
+	VECTOR effectPos = VAdd(pos, VScale(moveDir_, 150.0f));
+	effectPos.y += 100.0f;
+
+	auto effect = std::make_shared<EffekseerEffect>(
+		L"Data/Effect/Hit/Hit.efkefc",
+		effectPos
+	);
+
+	effect->SetScale(80.0f);
+
+	effect->Play(
+		effectPos,
+		Quaternion()
+	);
+
+	EffectManager::GetInstance().RegisterEffect(effect);
 
 }
 
@@ -509,6 +534,11 @@ void EnemyLarge::UpdateCharge()
 bool EnemyLarge::InFront()
 {
 	VECTOR toPlayer = VSub(player_->GetPos(), transform_.pos);
+	float distance = VSize(toPlayer);
+
+	if (distance > 200.0f)
+		return false;
+
 	toPlayer.y = 0.0f;
 	toPlayer = VNorm(toPlayer);
 

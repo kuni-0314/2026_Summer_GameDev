@@ -67,6 +67,8 @@ protected:
 	void UpdateProcess() override;
 	void UpdateProcessPost() override;
 
+	void ATfield(const VECTOR& pos);
+
 
 private:
 
@@ -155,6 +157,7 @@ private:
 	bool jumpApplied_ = false;	//ジャンプ処理実行判定
 	bool isDrop_ = false;		//衝撃破生存判定
 	bool attackTriggerRing_ = false;	//衝撃波生成判定
+	bool ATfieldTrigger_ = false;	//ATフィールド生成判定
 
 	VECTOR worldPos;
 	//プレイヤー方向
