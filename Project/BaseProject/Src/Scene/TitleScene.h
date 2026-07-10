@@ -34,21 +34,10 @@ public:
 
 
 
-	//サブ惑星の大きさ
-	static constexpr float SCL_SUB_PLANET = 0.7f;
-	//サブ惑星の回転
-	static constexpr VECTOR ROT_SUB_PLANET = {90.0f * DX_PI_F/180.0f,0.0f, 0.0f};
-	//サブ惑星の座標
-	static constexpr VECTOR POS_SUB_PLANET= { -250.0f, -100.0f, -100.0f };
-
-	//playerの大きさ
-	static constexpr float SCL_PLAYER = 0.4f;
-	//playerの回転
-	static constexpr VECTOR ROT_PLAYER = { 0.0f, -90.0f * DX_PI_F / 180.0f,0.0f };
-	//playerの回転
-	static constexpr VECTOR ROT_LOCAL_PLAYER = { 0.0f, 180.0f * DX_PI_F / 180.0f,0.0f };
-	//playerの座標
-	static constexpr VECTOR POS_PLAYER = { -250.0f, -32.0f, -105.0f };
+	static constexpr float SCL_PLAYER = 0.4f;//playerの大きさ
+	static constexpr VECTOR ROT_PLAYER = { 0.0f, -90.0f * DX_PI_F / 180.0f,0.0f };	//playerの回転
+	static constexpr VECTOR ROT_LOCAL_PLAYER = { 0.0f, 180.0f * DX_PI_F / 180.0f,0.0f };	//playerの回転
+	static constexpr VECTOR POS_PLAYER = { -250.0f, -32.0f, -105.0f };//playerの座標
 
 
 	// コンストラクタ

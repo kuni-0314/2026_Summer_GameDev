@@ -288,7 +288,12 @@ void Player::UpdateProcess()
 	auto ins = InputManager::GetInstance();
 	if (ins->IsTrgDown(KEY_INPUT_R))
 	{
+<<<<<<< HEAD
 		transform_.pos = POS_PLAYER;
+=======
+		// リスポーン
+		//transform_.pos = POS_PLAYER;
+>>>>>>> origin/ﾎｲ
 	}
 
 	if (ins->IsTrgDown(KEY_INPUT_P))
@@ -296,6 +301,7 @@ void Player::UpdateProcess()
 		ActivatePowerUp();
 	}
 
+<<<<<<< HEAD
 	if (ins->IsTrgDown(KEY_INPUT_B))
 	{
 		PlayBlinkEffect();
@@ -305,6 +311,9 @@ void Player::UpdateProcess()
 	// 調整中（フラグがサンダーしかない）
 	if (!isAliveThunder_ &&
 		(ins->IsTrgDown(KEY_INPUT_E) || ins->IsGamepadTrgDown(InputManager::PadInput::Y, padNum_)))
+=======
+	if (InputManager::GetInstance()->IsTrgDown(KEY_INPUT_T))
+>>>>>>> origin/ﾎｲ
 	{
 		GameScene* gameScene = dynamic_cast<GameScene*>(scnMng_.GetScene());
 		switch (gameScene->GetSelectedCommand())
@@ -328,8 +337,11 @@ void Player::UpdateProcess()
 	// 魔法処理
 	UpdateMagic();
 
+<<<<<<< HEAD
 	CheckPlayerRingCollision();
 
+=======
+>>>>>>> origin/ﾎｲ
 }
 void Player::UpdateProcessPost()
 {
@@ -656,6 +668,7 @@ void Player::InitState()
 
 void Player::CreateThunderCollider(ThunderInfo& thunderInfo)
 {
+<<<<<<< HEAD
 	ColliderSphere* colSphere = new ColliderSphere(
 		ColliderBase::TAG::PLAYER_MAGIC, &thunderInfo.transform,
 		{ 0.0f,0.0f,0.0f }, THUNDER_RADIUS);
@@ -701,6 +714,16 @@ void Player::CreateThunderMagic()
 	isAliveThunder_ = true;
 
 	for (int i = 0; i < THUNDER_COUNT; i++)
+=======
+	AudioManager::GetInstance()->PlaySE(SoundID::VOICE_PLAYER_DAMEGE_0);
+	hp_ -= damege;
+	//ダメージUIフラグ
+	bool damegeflag = true;
+	gameScene_->SetDamegeFlag(damegeflag);
+
+	int a = StartJoypadVibration(padNum_ + 1, 1000, 500, -1);
+	if (hp_ <= 0)
+>>>>>>> origin/ﾎｲ
 	{
 		// 角度範囲を狭く: -60度から+60度(前方120度の範囲)
 		float randomAngle = (GetRand(120) - 60) * DX_PI_F / 180.0f;

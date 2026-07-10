@@ -42,7 +42,19 @@ void EnemyLarge::Draw(void)
 		MV1DrawModel(ringModelHandle_);
 	}
 
+	//正面にPlayerがいるのか
+	if (InFront())
+	{
+		if (player_->IsAttacking())
+		{
+			//ここで正面のエフェクト
+			
+		}
+	}
+
 #ifdef _DEBUG
+
+
 	STATE next = state_;
 	const char* name = "";
 	if (next == STATE::THINK) name = "THINK";
@@ -52,72 +64,30 @@ void EnemyLarge::Draw(void)
 	else if (next == STATE::CHARGE) name = "CHARGE";
 	else if (next == STATE::ATTACK_DROP) name = "ATTACK_DROP";
 
-	// 状態表示
-	DrawFormatString(0, 400, GetColor(255, 255, 255), "STATE: %s", name);
-	DrawFormatString(0, 420, GetColor(255, 255, 255), "POS: %.2f", transform_.pos.y);
+	DrawFormatString(0, 200, GetColor(255, 255, 255), "STATE: %s", name);
+	DrawFormatString(0, 250, GetColor(255, 255, 255), "距離: %.2f", distance_);
 
-	// コライダ情報表示（右側に配置）
-	int x = 800;
-	int y = 50;
+	DrawFormatString(500, 250, GetColor(255, 255, 255), "距離: %d", isAttack_);
 
-	DrawFormatString(x, y, 0xffffff, "=== Collider Debug ===");
-	y += 25;
-	DrawFormatString(x, y, 0xffffff, "hitColliders_ size: %d", hitColliders_.size());
-	y += 25;
+	// Aの球（赤）
+	DrawSphere3D(transform_.pos, pushOutRadius_, 16, GetColor(255, 0, 0), GetColor(255, 0, 0), FALSE);
+	// Bの球（青）
+	DrawSphere3D(playerPos_, playerRad_, 16, GetColor(0, 0, 255), GetColor(0, 0, 255), FALSE);
+	// 中心を結ぶ線（緑）
+	DrawLine3D(transform_.pos, playerPos_, GetColor(0, 255, 0));
 
-	int magicCount = 0;
-	int colliderIndex = 0;
-
-	// 登録されているコライダのタグを表示
-	for (const auto& hitCol : hitColliders_)
+	//正面にPlayerがいるのか
+	if (InFront())
 	{
-		DrawFormatString(x, y, 0xffffff, "[%d] Tag: %d", colliderIndex, static_cast<int>(hitCol->GetTag()));
-		y += 20;
-		colliderIndex++;
-
-		if (hitCol->GetTag() == ColliderBase::TAG::PLAYER_MAGIC)
+		if (player_->IsAttacking())
 		{
-			magicCount++;
+			//ここで正面のエフェクト
+			DrawString(500, 140, "正面の攻撃はねぇよ", 0xffffff);
 		}
 	}
 
-	if (player_->IsAliveMagic())
-	{
-		// 雷の位置を表示
-		for (const auto& hitCol : hitColliders_)
-		{
-			if (hitCol->GetTag() == ColliderBase::TAG::PLAYER_MAGIC)
-			{
-				const ColliderSphere* magicSphere =
-					dynamic_cast<const ColliderSphere*>(hitCol);
-				if (magicSphere != nullptr)
-				{
-					VECTOR magicPos = magicSphere->GetPos();
-					VECTOR enemyPos = transform_.pos;
-					float distance = VSize(VSub(magicPos, enemyPos));
 
-					// 雷の球体を描画
-					DrawSphere3D(magicPos, magicSphere->GetRadius(),
-						16, 0xff00ff, 0xff00ff, false);
-
-					// 距離を表示
-					DrawFormatString(x, y, 0xffffff,
-						"Distance to thunder: %.2f", distance);
-					y += 20;
-				}
-			}
-		}
-	}
-	y += 10;
-	DrawFormatString(x, y, 0xffff00, "PLAYER_MAGIC count: %d", magicCount);
-	y += 25;
-	DrawFormatString(x, y, 0xffffff, "HP: %d", hp_);
-	//y += 25;
-	DrawFormatString(1000, 10, wasHitSword_ ? 0xff0000 : 0x00ff00, "wasHitSword_: %s", wasHitSword_ ? "true" : "false");
-	//y += 25;
-	DrawFormatString(1000, 30, player_->IsAliveMagic() ? 0x00ff00 : 0xff0000, "isAliveMagic: %s", player_->IsAliveMagic() ? "true" : "false");
-#endif // _DEBUG
-	DrawSphere3D(ringTransform_.get()->pos, ringTransform_->scl.x * 97.5f, 16, GetColor(0, 0, 255), GetColor(0, 0, 255), false);
+#endif
 }
 
 void EnemyLarge::Release(void)
@@ -130,7 +100,8 @@ void EnemyLarge::InitLoad()
 	CharactorBase::InitLoad();
 	transform_.SetModel(resMng_.LoadModelDuplicate(ResourceManager::SRC::ENEMY_LARGE));
 
-
+	//SE読み込み
+	AudioManager::GetInstance()->LoadSceneSound(LoadScene::GAME);
 	
 }
 
@@ -146,9 +117,8 @@ void EnemyLarge::InitTransform()
 	ringTransform_->SetModel(resMng_.LoadModelDuplicate(ResourceManager::SRC::ENEMY_LARGE_RING));
 	ringModelHandle_ = ringTransform_->modelId;
 	ringTransform_->scl = { RING_SCALE ,RING_SCALE ,RING_SCALE };
-	ringTransform_->quaRot = Quaternion::Identity();
-	ringTransform_->quaRotLocal = Quaternion::Euler(ROT);
-	ringTransform_->pos = RING_INIT_POS;
+	ringTransform_ ->quaRot = Quaternion::Identity();
+	ringTransform_ ->quaRotLocal = Quaternion::Euler(ROT);
 	ringTransform_->Update();
 }
 
@@ -167,39 +137,20 @@ void EnemyLarge::InitCollider()
 		COL_CAPSULE_RADIUS);
 	ownColliders_.emplace(static_cast<int>(COLLIDER_TYPE::CAPSULE), colCapsule);
 
-	// 前半分用カプセル（キー: COLLIDER_KEY_BODY_FRONT）
-	/*colFrontCapsule_ = new ColliderCapsule(
-		ColliderBase::TAG::ENEMY, &transform_,
-		COL_CAPSULE_TOP_LOCAL_POS, COL_CAPSULE_DOWN_LOCAL_POS,
-		COL_CAPSULE_RADIUS);
-	ownColliders_.emplace(COLLIDER_KEY_BODY_FRONT, colFrontCapsule_);*/
-
-	 //後半分用カプセル（キー: COLLIDER_KEY_BODY_BACK）
-	/*colBackCapsule_ = new ColliderCapsule(
-		ColliderBase::TAG::ENEMY, &transform_,
-		COLBODY_CAPSULE_TOP_LOCAL_POS, COLBODY_CAPSULE_DOWN_LOCAL_POS,
-		COL_CAPSULE_RADIUS);
-	ownColliders_.emplace(COLLIDER_KEY_BODY_BACK, colBackCapsule_);*/
-
 
 	// DxLib側の衝突情報セットアップ
 	MV1SetupCollInfo(transform_.modelId);
 	// モデルのコライダ
-	ColliderModel* colModel = new ColliderModel(ColliderBase::TAG::ENEMY_RING, ringTransform_.get());
-
-	for (const std::string& name : EXCLUDE_FRAME_NAMES)
-	{
-		colModel->AddExcludeFrameIds(name);
-	}
-
+	ColliderModel* colModel =
+		new ColliderModel(ColliderBase::TAG::STAGE, &transform_);
 	//対象とするフレーム
 	for (const std::string& name : TARGET_FRAME_NAMES)
 	{
 		colModel->AddTargetFrameIds(name);
 	}
 
-	player_->AddHitCollider(colModel);
-
+	ownColliders_.emplace(static_cast<int>(COLLIDER_TYPE::MODEL), colModel);
+	//
 }
 
 void EnemyLarge::InitAnimation()
@@ -249,28 +200,21 @@ void EnemyLarge::InitPost()
 
 	stateChanges_.emplace(static_cast<int>(STATE::HIT),
 		std::bind(&EnemyLarge::ChangeStateHit, this));
+
+	stateChanges_.emplace(static_cast<int>(STATE::DIE),
+		std::bind(&EnemyLarge::ChangeStateDie, this));
+
 	// 初期状態設定
 	ChangeState(STATE::IDLE);
 
-	if (hp_ > hp_ / 2)
-	{
-		power_ = 2;
-	}
-	else
-	{
-		power_ = 3;
-	}
 
+	power_ = 2;
+	pushOutRadius_  = 150.0f;
 
 }
 
 void EnemyLarge::UpdateProcess()
 {
-	// やっつけ: 移動と向きを完全に停止
-	//movePow_ = AsoUtility::VECTOR_ZERO;
-	//look_ = false;
-
-	//return;
 	//プレイヤー情報関連
 	playerPos_ = player_->GetPos();
 	playerRad_ = player_->GetCollRadius();
@@ -292,33 +236,50 @@ void EnemyLarge::UpdateProcess()
 	preHp_ = hp_;//被ダメージ前HP保存
 
 	CheckPlayerSwordCollision();
-	CheckPlayerMagicCollision();
+
+	//正面にPlayerがいるのか
+	if (InFront())
+	{
+		if (player_->IsAttacking())
+		{
+			//ここで正面のエフェクトDrawString(500, 100, "攻撃中", 0xffffff);
+			
+		}
+	}
+
 	if (hp_ < preHp_)
 	{
 		//ChangeState(STATE::HIT);
 	}
 
+	if (hp_ <= 0)
+	{
+		ChangeState(STATE::DIE);
+	}
+
+	//押し出し
+	PushOutSphere(transform_.pos,pushOutRadius_,
+		player_->GetPos(),player_->GetCollRadius(),true); 
+	
+
+
 	//衝撃波
 	if (isDrop_)
 	{
 		ringTransform_->scl = VAdd(ringTransform_->scl, RING_ADD_SCL);
-		static float time = 0.0f;
-		time += 0.1f;
-		ringTransform_->pos.y = sin(time) * 30.0f;
 
 		if (ringTransform_->scl.x >= RING_MAX_SCALE)
 		{
 			isDrop_ = false;
 			ringTransform_->scl = { RING_SCALE, RING_SCALE, RING_SCALE };
-			ringTransform_->pos = RING_INIT_POS;
+		
 		}
+
 		ringTransform_->Update();
 	}
 	
 
-
 	//パンチ攻撃判定座標更新
-	
 	// フレーム22のワールドマトリクスを取得
 	MATRIX mat = MV1GetFrameLocalWorldMatrix(transform_.modelId, 22);
 	// 位置補正（プレイヤーの向きに合わせて微調整）
@@ -327,7 +288,6 @@ void EnemyLarge::UpdateProcess()
 	attackWorldPos_ = VGet(offset.m[3][0], offset.m[3][1], offset.m[3][2]);
 	// 回転をQuaternionに変換
 	Quaternion rot = Quaternion::GetRotation(mat);
-
 }
 
 void EnemyLarge::UpdateProcessPost()
@@ -358,6 +318,14 @@ void EnemyLarge::ChangeStateIdle()
 		static_cast<int>(ANIM_TYPE::IDLE), true);
 }
 
+void EnemyLarge::ChangeStateDie()
+{
+	stateUpdate_ = std::bind(&EnemyLarge::UpdateDie, this);
+	movePow_ = AsoUtility::VECTOR_ZERO;
+	// 待機アニメーション再生
+	animationController_->Play(static_cast<int>(ANIM_TYPE::HIT), false);
+}
+
 void EnemyLarge::ChangeStateThink()
 {
 	stateUpdate_ = std::bind(&EnemyLarge::UpdateThink, this);
@@ -379,7 +347,7 @@ void EnemyLarge::ChangeStateCharge()
 {
 	stateUpdate_ = std::bind(&EnemyLarge::UpdateCharge, this);
 
-	look_ = true;
+	look_ = false;
 
 	// ランダムな待機時間
 	step_ = 3.0f + static_cast<float>(GetRand(3));
@@ -394,7 +362,7 @@ void EnemyLarge::ChangeStateAttackPunch()
 {
 	stateUpdate_ = std::bind(&EnemyLarge::UpdateAttackPunch, this);
 
-	look_ = false;
+	look_ = true;
 
 	// 移動量ゼロ
 	movePow_ = AsoUtility::VECTOR_ZERO;
@@ -437,9 +405,6 @@ void EnemyLarge::ChangeStateAttackDrop()
 	// 待機アニメーション再生
 	animationController_->Play(
 		static_cast<int>(ANIM_TYPE::ATTACK_DROP), false);
-
-
-	
 }
 
 void EnemyLarge::ChangeStateHit()
@@ -483,12 +448,31 @@ void EnemyLarge::UpdateIdle()
 	movePow_ = AsoUtility::VECTOR_ZERO;
 }
 
+void EnemyLarge::UpdateDie()
+{
+
+	if (animationController_->IsEnd())
+	{
+		MV1DeleteModel(transform_.modelId);
+	}
+}
+
 void EnemyLarge::UpdateThink()
 {
 
 	int rand = GetRand(100);
 
-	if (rand >= 30)
+	//距離が近かったらパンチ
+	if (distance_ < SWICH_DISTANCE)
+	{
+		if (rand <= 20)
+		{
+			ChangeState(STATE::IDLE);
+		}
+		else
+		ChangeState(STATE::ATTACK_PUNCH);
+	}
+	else if (rand >= 30)
 	{
 		ChangeState(STATE::CHARGE);
 	}
@@ -496,29 +480,65 @@ void EnemyLarge::UpdateThink()
 	{
 		ChangeState(STATE::ATTACK_DROP);
 	}
+
+	
 }
 
 void EnemyLarge::UpdateCharge()
 {
+	int rand = GetRand(100);
+
 	countUp++;
 
 	if (countMax /2 < countUp)
 	{
 		countUp = 0;
-		ChangeState(STATE::ATTACK_RUN);
+		if (rand < 70)
+		{
+			ChangeState(STATE::ATTACK_RUN);
+		}
+		else
+		{
+			ChangeState(STATE::IDLE);
+		}
 	}
 
 	movePow_ = AsoUtility::VECTOR_ZERO;
 }
 
+bool EnemyLarge::InFront()
+{
+	VECTOR toPlayer = VSub(player_->GetPos(), transform_.pos);
+	toPlayer.y = 0.0f;
+	toPlayer = VNorm(toPlayer);
+
+	return VDot(moveDir_, toPlayer) > 0.5f;
+}
+
 void EnemyLarge::UpdateAttackPunch()
 {
+
+	//アニメーションコントローラーの取得
+	if (animationController_ == nullptr) return;
+	const auto& anim = animationController_->GetPlayAnim();
+	if (anim.totalTime <= 0.0f) return;
 
 	// Transform の更新
 	transform_.Update();
 
+	//進行方向を決める
+	if (look_)
+	{
+		look_ = false;
+	}
+
 	if (!isAttack_)
 	{
+		float attackTriggerTime = anim.totalTime * ATTACK_PUNCH_TINE;
+		if (anim.step >= attackTriggerTime)
+		{
+			isAttack_ = true;
+		}
 		// 攻撃判定
 		if (AsoUtility::IsHitSpheres(attackWorldPos_, COL_SPHERE_RADIUS, playerPos_, playerRad_))
 		{
@@ -529,8 +549,8 @@ void EnemyLarge::UpdateAttackPunch()
 
 	if(animationController_->IsEnd())
 	{
-		
-		ChangeState(STATE::IDLE);
+
+		ChangeState(STATE::THINK);
 		isAttack_ = false;
 	}
 
@@ -552,9 +572,14 @@ void EnemyLarge::UpdateAttackRun()
 	
 	float dist =VSize(VSub(transform_.pos, startPos)); //移動距離
 
+	if (distance_ <= SWICH_DISTANCE)
+	{
+		ChangeState(STATE::THINK);
+	}
+
 	if (dist > ATTACK_RUN_END_POINT)
 	{
-		ChangeState(STATE::ATTACK_PUNCH);
+		ChangeState(STATE::CHARGE);
 	}
 
 	movePow_ = VScale(moveDir_, moveSpeed_);
@@ -580,43 +605,26 @@ void EnemyLarge::UpdateAttackDrop()
 
 	//衝撃波発生
 	float attackTriggerTime = anim.totalTime * ATTACK_DROP_JUMP_TIME_WAVE;
-	
 
-	if (!attackTriggerRing_ && anim.step >= attackTriggerTime)
+
+	if (!attackriggerRing_ && anim.step >= attackTriggerTime)
 	{
+		AudioManager::GetInstance()->PlaySE(SoundID::SE_ENEMY_LARGE_ATTACK_DROP);
 		// 発生の瞬間に一度だけ座標をセット
 		ringTransform_->pos = transform_.pos;
 		ringTransform_->pos.y += 20;
 		ringTransform_->scl = { RING_SCALE,RING_SCALE ,RING_SCALE };
 		isDrop_ = true;
-		attackTriggerRing_ = true;
+		attackriggerRing_ = true;
 	}
-	
+
 	if (animationController_->IsEnd())
 	{
 		isAir_ = false;
 		isJump_ = false;
-		attackTriggerRing_ = false;
+		attackriggerRing_ = false;
 		jumpApplied_ = false;
 		ChangeState(STATE::IDLE);
-	}
-
-	if (!isDrop_)
-	{
-		wasHitRing_ = false;
-		return;
-	}
-	VECTOR playerPos = player_->GetPos();
-	float nowR1 = ringTransform_.get()->scl.x * 97.5f;
-	float nowR2 = ringTransform_.get()->scl.x * 92.5f;
-	VECTOR vec = VSub(playerPos, ringTransform_.get()->pos);
-	float dist = VSize(vec);
-	if (wasHitRing_ == false &&
-		dist <= nowR1 && dist >= nowR2)
-	{
-		if (player_->IsJump()) return;
-		player_->Damege(power_);
-		wasHitMagic_ = true;
 	}
 }
 

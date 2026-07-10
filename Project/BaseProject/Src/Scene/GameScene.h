@@ -75,6 +75,7 @@ public:
 
 	ItemManger* GetItemManger() const { return itemManger_; }
 
+<<<<<<< HEAD
 	// ゲームシーンを取得
 	const GameScene& GetGameScene() const { return *this; }
 
@@ -82,6 +83,10 @@ public:
 	void SelectCommand(COMMAND command);
 
 	COMMAND GetSelectedCommand() const { return static_cast<COMMAND>(selectCommand_); }
+=======
+	void  SetDamegeFlag(bool flag);
+	bool  GetFlag();
+>>>>>>> origin/ﾎｲ
 
 private:
 
@@ -149,22 +154,27 @@ private:
 	void PlayerHpDraw();
 
 	//コマンドUI
-
-	bool warnigOn_ = false;
-
-	int wargnigHandle_;
+	int hpIndex_;
 	
+	bool warnigOn_ = false;//警告生成フラグ
+	bool DamegeOn_ = false;//ダメージ
+	int wargnigHandle_;	
 	int audioHandle_;
+
+	int damegeTimeCount_;
+	bool damegeflag_ = false;
+
 
 	std::vector<int> hpHandles_;			//Hpハンドル
 	std::vector<int> playerUiHandles_;		//プレイヤーUI
 	std::vector<int> commandHandles;		//コマンドハンドル
-	//std::vector<int> fontCommandHandles_[(int)COMMAND::MAX][2];	//コマンドフォントハンドル
 
-	int fontCommandHandles_ [static_cast<int>(COMMAND::MAX)][2];
+	int fontCommandHandles_ [static_cast<int>(COMMAND::MAX)][2];//セレクトコマンドファント
 
 	//void SelectCommand(COMMAND command);
 	void CommandUpdate();
 	void CommandDraw();
+
+	void PlayerFaceUIDrow();
 
 };

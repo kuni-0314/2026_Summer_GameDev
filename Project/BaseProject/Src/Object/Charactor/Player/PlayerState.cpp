@@ -32,6 +32,8 @@ bool PlayerState::CheckTransitions(Player* player)
 	if (isAttackInput && player->GetAttackCoolTime() <= 0)
 	{
 		player->ChangeState(Player::STATE::ATTACK);
+		//UŒ‚’†”»’è
+		player->SetAttacking(true);
 		return true;
 	}
 
@@ -57,6 +59,7 @@ bool PlayerState::CheckTransitions(Player* player)
 	if (isJetInput)
 	{
 		player->ChangeState(Player::STATE::JET);
+		player->SetAttacking(false);
 		return true;
 	}
 
@@ -82,6 +85,7 @@ bool PlayerState::CheckTransitions(Player* player)
 	if (!player->IsAir() && !player->IsJump() && isJumpInput)
 	{
 		player->ChangeState(Player::STATE::JUMP);
+		player->SetAttacking(false);
 		return true;
 	}
 

@@ -76,7 +76,7 @@ protected:
 	const VECTOR defaultPos_;
 	float movableRange_;
 	float playerRad_;
-	float pushOutRadius_;
+	float pushOutRadius_; //各敵ごとに設定
 
 	//攻撃用モデル(魔法の弾とか）
 	int attackModle_;

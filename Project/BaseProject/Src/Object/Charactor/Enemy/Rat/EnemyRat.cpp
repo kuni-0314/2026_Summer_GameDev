@@ -171,7 +171,7 @@ void EnemyRat::UpdateProcess()
 	PushOutSphere(transform_.pos, pushOutRadius_,
 		player_->GetPos(), player_->GetCollRadius(), true);
 
-
+	//攻撃判定
 	preHp_ = hp_;
 
 	CheckPlayerSwordCollision();
