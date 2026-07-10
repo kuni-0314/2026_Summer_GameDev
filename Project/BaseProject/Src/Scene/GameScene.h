@@ -36,7 +36,7 @@ public:
 
 	enum COMMAND
 	{
-		SANDER,
+		THUNDER,
 		FIRE,
 		RECOVERY,
 		MAX
@@ -77,6 +77,11 @@ public:
 
 	// ゲームシーンを取得
 	const GameScene& GetGameScene() const { return *this; }
+
+	// コマンドの変更
+	void SelectCommand(COMMAND command);
+
+	COMMAND GetSelectedCommand() const { return static_cast<COMMAND>(selectCommand_); }
 
 private:
 
@@ -158,7 +163,7 @@ private:
 
 	int fontCommandHandles_ [static_cast<int>(COMMAND::MAX)][2];
 
-	void SelectCommand(COMMAND command);
+	//void SelectCommand(COMMAND command);
 	void CommandUpdate();
 	void CommandDraw();
 

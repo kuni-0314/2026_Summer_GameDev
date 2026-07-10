@@ -299,96 +299,33 @@ void Player::UpdateProcess()
 		PlayBlinkEffect();
 	}
 
-	// 雷魔法開始
+	// 魔法開始
 	if (!isAliveMagic_ &&
-		(ins->IsTrgDown(KEY_INPUT_T) || ins->IsGamepadTrgDown(InputManager::PadInput::Y, padNum_)))
+		(ins->IsTrgDown(KEY_INPUT_E) || ins->IsGamepadTrgDown(InputManager::PadInput::Y, padNum_)))
 	{
-		magicTimer_ = 0;
-		isAliveMagic_ = true;
-
-		for (int i = 0; i < THUNDER_COUNT; i++)
+		GameScene* gameScene = dynamic_cast<GameScene*>(scnMng_.GetScene());
+		switch (gameScene->GetSelectedCommand())
 		{
-			// 角度範囲を狭く: -60度から+60度(前方120度の範囲)
-			float randomAngle = (GetRand(120) - 60) * DX_PI_F / 180.0f;
-
-			const float DIST_MAX = 700.0f;
-
-			float randomRadius =
-				sqrtf(GetRand(100) / 100.0f) * DIST_MAX;
-
-			VECTOR randomPos =
-			{
-				sinf(randomAngle) * randomRadius,
-				0.0f,
-				cosf(randomAngle) * randomRadius
-			};
-
-			randomPos = transform_.quaRot.PosAxis(randomPos);
-
-			thunderInfos_[i].transform.pos =
-				VAdd(transform_.pos, randomPos);
-			thunderInfos_[i].timer = 0;
-			thunderInfos_[i].isActive = false;
-			thunderInfos_[i].isDestroyed = false;
+		case GameScene::COMMAND::FIRE:
+			CreateFireMagic();
+			break;
+		case GameScene::COMMAND::THUNDER:
+			CreateThunderMagic();
+			break;
+		case GameScene::COMMAND::RECOVERY:
+			CreateRecoveryMagic();
+			break;
+		default:
+			break;
 		}
+
+		
 	}
 
 	// 魔法処理
 	if (isAliveMagic_)
 	{
-		magicTimer_++;
-
-		bool alive = false;
-
-		for (int i = 0; i < THUNDER_COUNT; i++)
-		{
-			if (thunderInfos_[i].isActive)
-			{
-				if (thunderInfos_[i].isDestroyed)
-				{
-					continue;
-				}
-
-				if (thunderInfos_[i].timer >= THUNDER_LIFETIME)
-				{
-					DestroyThunderCollider(thunderInfos_[i]);
-					thunderInfos_[i].isDestroyed = true;
-				}
-				else
-				{
-					thunderInfos_[i].timer++;
-					alive = true;
-				}
-			}
-			else
-			{
-				if (magicTimer_ >= i * THUNDER_INTERVAL)
-				{
-					thunderInfos_[i].isActive = true;
-
-					CreateThunderCollider(thunderInfos_[i]);
-
-					AudioManager::GetInstance()
-						->PlaySE(SoundID::SE_THUNDER);
-
-					alive = true;
-				}
-			}
-		}
-
-		// 全部終了
-		if (!alive)
-		{
-			isAliveMagic_ = false;
-		}
-
-		for (int i = 0; i < THUNDER_COUNT; i++)
-		{
-			if (thunderInfos_[i].isActive)
-			{
-				thunderInfos_[i].transform.Update();
-			}
-		}
+		UpdateMagic();
 	}
 
 	CheckPlayerRingCollision();
@@ -726,4 +663,101 @@ void Player::DestroyThunderCollider(const ThunderInfo& thunderInfo)
 {
 	GameScene* gameScene = dynamic_cast<GameScene*>(SceneManager::GetInstance().GetScene());
 	gameScene->RemoveEnemyHitCollider(thunderInfo.collider);
+}
+
+void Player::CreateFireMagic()
+{
+}
+
+void Player::CreateThunderMagic()
+{
+	magicTimer_ = 0;
+	isAliveMagic_ = true;
+
+	for (int i = 0; i < THUNDER_COUNT; i++)
+	{
+		// 角度範囲を狭く: -60度から+60度(前方120度の範囲)
+		float randomAngle = (GetRand(120) - 60) * DX_PI_F / 180.0f;
+
+		const float DIST_MAX = 700.0f;
+
+		float randomRadius =
+			sqrtf(GetRand(100) / 100.0f) * DIST_MAX;
+
+		VECTOR randomPos =
+		{
+			sinf(randomAngle) * randomRadius,
+			0.0f,
+			cosf(randomAngle) * randomRadius
+		};
+
+		randomPos = transform_.quaRot.PosAxis(randomPos);
+
+		thunderInfos_[i].transform.pos =
+			VAdd(transform_.pos, randomPos);
+		thunderInfos_[i].timer = 0;
+		thunderInfos_[i].isActive = false;
+		thunderInfos_[i].isDestroyed = false;
+	}
+}
+
+void Player::CreateRecoveryMagic()
+{
+}
+
+void Player::UpdateMagic()
+{
+	magicTimer_++;
+
+	bool alive = false;
+
+	for (int i = 0; i < THUNDER_COUNT; i++)
+	{
+		if (thunderInfos_[i].isActive)
+		{
+			if (thunderInfos_[i].isDestroyed)
+			{
+				continue;
+			}
+
+			if (thunderInfos_[i].timer >= THUNDER_LIFETIME)
+			{
+				DestroyThunderCollider(thunderInfos_[i]);
+				thunderInfos_[i].isDestroyed = true;
+			}
+			else
+			{
+				thunderInfos_[i].timer++;
+				alive = true;
+			}
+		}
+		else
+		{
+			if (magicTimer_ >= i * THUNDER_INTERVAL)
+			{
+				thunderInfos_[i].isActive = true;
+
+				CreateThunderCollider(thunderInfos_[i]);
+
+				AudioManager::GetInstance()
+					->PlaySE(SoundID::SE_THUNDER);
+
+				alive = true;
+			}
+		}
+	}
+
+	// 全部終了
+	if (!alive)
+	{
+		isAliveMagic_ = false;
+	}
+
+	for (int i = 0; i < THUNDER_COUNT; i++)
+	{
+		if (thunderInfos_[i].isActive)
+		{
+			thunderInfos_[i].transform.Update();
+		}
+	}
 }

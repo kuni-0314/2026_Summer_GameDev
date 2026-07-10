@@ -307,5 +307,10 @@ private:
 	static constexpr float THUNDER_RADIUS = 100.0f;	// —‹‚Ì”¼Œa
 	//VECTOR thunderPosOffsets_[THUNDER_COUNT];
 
+	void CreateFireMagic();
+	void CreateThunderMagic();
+	void CreateRecoveryMagic();
+
+	void UpdateMagic();
 
 };

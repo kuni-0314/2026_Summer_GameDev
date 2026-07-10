@@ -121,16 +121,16 @@ void GameScene::Init()
 
 	commandHandles.resize(3);
 
-	commandHandles[static_cast <int>(COMMAND::SANDER)] = resMng_.Load(ResourceManager::SRC::IMG_SELECT_SANDER).handleId_;
+	commandHandles[static_cast <int>(COMMAND::THUNDER)] = resMng_.Load(ResourceManager::SRC::IMG_SELECT_SANDER).handleId_;
 	commandHandles[static_cast <int>(COMMAND::FIRE)] = resMng_.Load(ResourceManager::SRC::IMG_SELECT_FIRE).handleId_;
 	commandHandles[static_cast <int>(COMMAND::RECOVERY)] = resMng_.Load(ResourceManager::SRC::IMG_SELECT_RECOVERY).handleId_;
 
-	selectCommand_ = static_cast<int>(COMMAND::FIRE);
+	selectCommand_ = static_cast<int>(COMMAND::THUNDER);
 
 	commandHandles.resize(6);
 
-	fontCommandHandles_[static_cast <int>(COMMAND::SANDER)][(int)COMMAND_STATE::NOT_USE] = resMng_.Load(ResourceManager::SRC::IMG_NOTUSE_SANDER).handleId_;
-	fontCommandHandles_[static_cast <int>(COMMAND::SANDER)][(int)COMMAND_STATE::USE] = resMng_.Load(ResourceManager::SRC::IMG_USE_SANDER).handleId_;
+	fontCommandHandles_[static_cast <int>(COMMAND::THUNDER)][(int)COMMAND_STATE::NOT_USE] = resMng_.Load(ResourceManager::SRC::IMG_NOTUSE_SANDER).handleId_;
+	fontCommandHandles_[static_cast <int>(COMMAND::THUNDER)][(int)COMMAND_STATE::USE] = resMng_.Load(ResourceManager::SRC::IMG_USE_SANDER).handleId_;
 	fontCommandHandles_[static_cast <int>(COMMAND::FIRE)][(int)COMMAND_STATE::NOT_USE] = resMng_.Load(ResourceManager::SRC::IMG_NOTUSE_FIRE).handleId_;
 	fontCommandHandles_[static_cast <int>(COMMAND::FIRE)][(int)COMMAND_STATE::USE] = resMng_.Load(ResourceManager::SRC::IMG_USE_FIRE).handleId_;
 	fontCommandHandles_[static_cast <int>(COMMAND::RECOVERY)][(int)COMMAND_STATE::NOT_USE] = resMng_.Load(ResourceManager::SRC::IMG_NOTUSE_RECOVERY).handleId_;
@@ -357,31 +357,31 @@ void GameScene::Update()
 	//	return;
 	//}
 
-#ifdef _DEBUG
+//#ifdef _DEBUG
 
-	if (ins->IsTrgDown(KEY_INPUT_UP))
+	if (ins->IsTrgDown(KEY_INPUT_UP) /*|| ins->IsTrgDown(KEY_INPUT_E)*/|| ins->IsGamepadTrgDown(InputManager::PadInput::Up, 0))
 	{
 		AudioManager::GetInstance()->PlaySE(SoundID::SE_COMMAND_SELECT);
 
 		selectCommand_--;
-		if (selectCommand_ < static_cast <int>(COMMAND::SANDER))
+		if (selectCommand_ < static_cast <int>(COMMAND::THUNDER))
 		{
 			selectCommand_ = static_cast <int>(COMMAND::RECOVERY);
 		}
 	}
 
-	if (ins->IsTrgDown(KEY_INPUT_DOWN))
+	if (ins->IsTrgDown(KEY_INPUT_DOWN) || ins->IsTrgDown(KEY_INPUT_Q)  || ins->IsGamepadTrgDown(InputManager::PadInput::Down, 0))
 	{
 		AudioManager::GetInstance()->PlaySE(SoundID::SE_COMMAND_SELECT);
 
 		selectCommand_++;
 		if (selectCommand_ > static_cast <int>(COMMAND::RECOVERY))
 		{
-			selectCommand_ = static_cast <int>(COMMAND::SANDER);
+			selectCommand_ = static_cast <int>(COMMAND::THUNDER);
 		}
 	}
 
-#endif
+//#endif
 
 }
 
@@ -584,7 +584,7 @@ void GameScene::SelectCommand(COMMAND command)
 
 	switch (command)
 	{
-	case GameScene::SANDER:
+	case GameScene::THUNDER:
 		break;
 	case GameScene::FIRE:
 		break;
