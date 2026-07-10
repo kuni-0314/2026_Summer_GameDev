@@ -607,7 +607,7 @@ void EnemyLarge::UpdateAttackDrop()
 	float attackTriggerTime = anim.totalTime * ATTACK_DROP_JUMP_TIME_WAVE;
 
 
-	if (!attackriggerRing_ && anim.step >= attackTriggerTime)
+	if (!attackTriggerRing_ && anim.step >= attackTriggerTime)
 	{
 		AudioManager::GetInstance()->PlaySE(SoundID::SE_ENEMY_LARGE_ATTACK_DROP);
 		// 発生の瞬間に一度だけ座標をセット
@@ -615,14 +615,14 @@ void EnemyLarge::UpdateAttackDrop()
 		ringTransform_->pos.y += 20;
 		ringTransform_->scl = { RING_SCALE,RING_SCALE ,RING_SCALE };
 		isDrop_ = true;
-		attackriggerRing_ = true;
+		attackTriggerRing_ = true;
 	}
 
 	if (animationController_->IsEnd())
 	{
 		isAir_ = false;
 		isJump_ = false;
-		attackriggerRing_ = false;
+		attackTriggerRing_ = false;
 		jumpApplied_ = false;
 		ChangeState(STATE::IDLE);
 	}

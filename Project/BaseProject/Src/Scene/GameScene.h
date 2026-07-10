@@ -75,7 +75,6 @@ public:
 
 	ItemManger* GetItemManger() const { return itemManger_; }
 
-<<<<<<< HEAD
 	// ゲームシーンを取得
 	const GameScene& GetGameScene() const { return *this; }
 
@@ -83,11 +82,9 @@ public:
 	void SelectCommand(COMMAND command);
 
 	COMMAND GetSelectedCommand() const { return static_cast<COMMAND>(selectCommand_); }
-=======
-	void  SetDamegeFlag(bool flag);
-	bool  GetFlag();
->>>>>>> origin/ﾎｲ
 
+	void  SetDamageFlag(bool flag);
+	bool  GetFlag();
 private:
 
 	// ステージ

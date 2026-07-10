@@ -203,14 +203,10 @@ private:
 	void UpdateEnd();
 	void UpdateCharge();
 
-<<<<<<< HEAD
 	static constexpr VECTOR RING_INIT_POS = { 0.0f, -1000.0f, 0.0f };	//ÕŒ‚”g‰ŠúˆÊ’u
 	bool wasHitRing_;
-=======
 	//³–Ê‚©‚ç‚ÌUŒ‚‚ðŽæ“¾‚·‚é
 	bool InFront();
-
->>>>>>> origin/Î²
 };
 
 

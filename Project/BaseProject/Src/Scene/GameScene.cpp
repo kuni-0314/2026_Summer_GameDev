@@ -586,7 +586,6 @@ void GameScene::CreateAttackCollider(ColliderBase::TAG tag, VECTOR pos, float ra
 	attackColliders_.push_back(data);
 }
 
-<<<<<<< HEAD
 void GameScene::AddEnemyHitCollider(const ColliderBase* hitCollider)
 {
 	enemyManager_->AddHitCollider(hitCollider);
@@ -595,8 +594,10 @@ void GameScene::AddEnemyHitCollider(const ColliderBase* hitCollider)
 void GameScene::RemoveEnemyHitCollider(const ColliderBase* hitCollider)
 {
 	enemyManager_->RemoveHitCollider(hitCollider);
-=======
-void GameScene::SetDamegeFlag(bool flag)
+
+}
+
+void GameScene::SetDamageFlag(bool flag)
 {
 	damegeflag_ = flag;
 }
@@ -604,7 +605,7 @@ void GameScene::SetDamegeFlag(bool flag)
 bool GameScene::GetFlag()
 {
 	return damegeflag_;
->>>>>>> origin/β
+
 }
 
 void GameScene::SelectCommand(COMMAND command)
