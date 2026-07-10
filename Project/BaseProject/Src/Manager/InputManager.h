@@ -138,6 +138,9 @@ public:
 	float GetMouseWheelSensitivity();	// マウスホイールの回転感度の取得
 	void SetMouseWheelSensitivity(float value);	// マウスホイールの回転感度の設定
 
+	void SetVibrationEnabled(bool enabled);	// 振動の有効/無効を設定
+	bool IsVibrationEnabled() const;	// 振動が有効かどうかを取得
+
 private:
 	InputManager();		// コンストラクタ
 	~InputManager();	// デストラクタ
@@ -219,6 +222,14 @@ private:
 	PadInfo gamepadInfos_[GAMEPAD_NUM_MAX];	// ゲームパッドボタンと情報の紐付け
 
 	bool isKeyAndMouseEnabled_;	// キーとマウスの両方が有効か
+
+	// 振動が有効かどうか
+#if _DEBUG
+	bool isVibrationEnabled_ = false;
+#elif
+	bool isVibrationEnabled_ = true;
+#endif
+
 
 	// インスタンス
 	static InputManager* instance_;	// 自己

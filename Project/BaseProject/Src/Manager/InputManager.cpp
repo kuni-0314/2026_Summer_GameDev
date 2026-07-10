@@ -620,6 +620,15 @@ void InputManager::SetMouseWheelSensitivity(float value)
 	wheelSensitivity_ = value;
 }
 
+void InputManager::SetVibrationEnabled(bool enabled)
+{
+	isVibrationEnabled_ = enabled;
+}
+
+bool InputManager::IsVibrationEnabled() const
+{
+	return isVibrationEnabled_;
+}
 
 // ゲームパッドの更新
 void InputManager::UpdateGamePad()

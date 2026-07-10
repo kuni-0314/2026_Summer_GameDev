@@ -30,8 +30,6 @@ void ClearScene::Init()
 	VECTOR playerPos_;
 	playerPos_ = { 0,150,0 };
 
-	SetMouseDispFlag(true);
-
 	MV1SetPosition(playerHandle_, playerPos_);
 	sceMng_.GetCamera()->ChangeMode(Camera::MODE::FIXED_POINT);
 

@@ -663,7 +663,7 @@ void OptionScene::LoadOptionValues()
 	//leftStickDeadZone_ = inputIns->GetLeftStickDeadZone();
 	//rightStickSensitivity_ = inputIns->GetRightStickSensitivity();
 	//rightStickDeadZone_ = inputIns->GetRightStickDeadZone();
-	//enableVibration_ = inputIns->IsVibrationEnabled();
+	enableVibration_ = inputIns->IsVibrationEnabled();
 	//vibrationStrength_ = inputIns->GetVibrationStrength();
 	//currentColorAccessibilityNum_ = inputIns->GetColorAccessibilityNum();
 
@@ -714,7 +714,7 @@ void OptionScene::SaveOptionValues()
 	//inputIns->SetLeftStickDeadZone(leftStickDeadZone_);
 	//inputIns->SetRightStickSensitivity(rightStickSensitivity_);
 	//inputIns->SetRightStickDeadZone(rightStickDeadZone_);
-	//inputIns->SetVibrationEnabled(enableVibration_);
+	inputIns->SetVibrationEnabled(enableVibration_);
 	//inputIns->SetVibrationStrength(vibrationStrength_);
 	//inputIns->SetColorAccessibilityNum(currentColorAccessibilityNum_);
 
