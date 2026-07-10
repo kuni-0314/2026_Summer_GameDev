@@ -29,4 +29,6 @@ public:
     //õ–½ŠÇ—
     void SetLifeTime(int frame);
 
+	void Stop();
+
 };

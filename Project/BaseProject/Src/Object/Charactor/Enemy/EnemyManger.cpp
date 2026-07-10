@@ -15,6 +15,9 @@
 #include "../../Actor/ActorBase.h"
 #include "../../Collider/Sphere/ColliderSphere.h"
 #include "../../Collider/Capsule/ColliderCapsule.h"
+#include "../../../Effect/LoadEffekseer/EffekseerEffect.h"
+#include "../../../Effect/EffectManager.h"
+#include "../../../Common/Quaternion.h"
 #include "../../../Manager/ResourceManager.h"
 #include "EnemyManger.h"
 
@@ -40,21 +43,6 @@ void EnemyManager::Update()
 {
 	//wave更新
 	UpdateWave();
-
-	for (size_t i = 0; i < enemies_.size(); i++)
-	{
-		for (size_t j = i + 1; j < enemies_.size(); j++)
-		{
-			EnemyBase* enemyA = enemies_[i];
-			EnemyBase* enemyB = enemies_[j];
-
-			enemyA->PushOutSphere(
-				enemyA->GetPos(),
-				enemyA->GetCollRadius(),
-				enemyB->GetPos(),
-				enemyB->GetCollRadius());
-		}
-	}
 }
 
 void EnemyManager::Draw()
@@ -85,30 +73,20 @@ void EnemyManager::Release()
 }
 void EnemyManager::AddHitCollider(const ColliderBase* hitCollider)
 {
-	// hitColliders_リストに追加
-	hitColliders_.push_back(hitCollider);
-	
-	// 既存の全てのエネミーに新しいコライダを追加
+	//重複登録を避けるため、既存の敵に登録されているかの確認
+	if (std::find(hitColliders_.begin(), hitColliders_.end(), hitCollider) == hitColliders_.end())
+	{
+		hitColliders_.push_back(hitCollider);
+	}
+
+	hitCollider_ = hitCollider;
+
+
+	//衝突判定の追加
 	for (auto& enemy : enemies_)
 	{
 		enemy->AddHitCollider(hitCollider);
 	}
-}
-
-void EnemyManager::RemoveHitCollider(const ColliderBase* hitCollider)
-{
-    // hitColliders_リストから削除
-    auto it = std::find(hitColliders_.begin(), hitColliders_.end(), hitCollider);
-    if (it != hitColliders_.end())
-    {
-        hitColliders_.erase(it);
-    }
-    
-    // 全てのエネミーからコライダを削除
-    for (auto& enemy : enemies_)
-    {
-        enemy->RemoveHitCollider(hitCollider);
-    }
 }
 
 void EnemyManager::LoadCsvData()
@@ -169,9 +147,10 @@ void EnemyManager::LoadCsvData()
 
 EnemyBase* EnemyManager::Create(const EnemyBase::EnemyData& data, const Player* player)
 {
-    EnemyBase* enemy = nullptr;
-    switch (data.type)
-    {
+	
+	EnemyBase* enemy = nullptr;
+	switch (data.type)
+	{
 	case EnemyBase::TYPE::RAT:
 		enemy = new EnemyRat(data,-1, const_cast<Player*>(player));
 		break;
@@ -188,17 +167,22 @@ EnemyBase* EnemyManager::Create(const EnemyBase::EnemyData& data, const Player* 
 	if (enemy != nullptr)
 	{
 		enemy->Init();
-		
-		// 登録済みの全てのhitColliderを新しいエネミーに追加
-		for (const auto& hitCollider : hitColliders_)
+
+		//新たに生成される敵に対して、コライダを追加
+		for (const auto* collider : hitColliders_)
 		{
-			enemy->AddHitCollider(hitCollider);
+			if (collider != nullptr)
+			{
+				enemy->AddHitCollider(collider);
+			}
 		}
-		
-		enemies_.push_back(enemy);
+
+		enemies_.emplace_back(enemy);
+
+		SpawnEffect(enemy->GetTransform().pos);
 	}
-	
-    return enemy;
+
+	return enemy;
 
 }
 
@@ -249,6 +233,40 @@ bool EnemyManager::GetEnemyDead()
 	return isDead_;
 }
 
+void EnemyManager::SpawnEffect(const VECTOR& pos)
+{
+	auto effect = std::make_shared<EffekseerEffect>(
+		L"Data/Effect/Ribbon/Ribbon.efkefc",
+		pos
+	);
+
+	effect->SetLifeTime(45);   // 約0.75秒
+
+	effect->Play(
+		pos,
+		Quaternion()
+	);
+
+	EffectManager::GetInstance().RegisterEffect(effect);
+}
+
+void EnemyManager::DeadEffect(const VECTOR& pos)
+{
+	VECTOR effectPos = pos;
+	effectPos.y += 80.0f;
+
+	auto effect = std::make_shared<EffekseerEffect>(
+		L"Data/Effect/Death/Death.efkefc",
+		effectPos
+	);
+	effect->SetLifeTime(60);   // 約1秒
+	effect->Play(
+		effectPos,
+		Quaternion()
+	);
+	EffectManager::GetInstance().RegisterEffect(effect);
+}
+
 void EnemyManager::CreateHpItem()
 {
 	for (auto& enemy : enemies_)
@@ -258,6 +276,9 @@ void EnemyManager::CreateHpItem()
 		if (enemy->GetHp() <= 0 && enemy->IsAlive())
 		{
 			
+			// 死亡エフェクト
+			DeadEffect(enemy->GetTransform().pos);
+
 			// HPアイテム生成位置を敵の上に出す
 			VECTOR hpPos = enemy->GetTransform().pos;
 

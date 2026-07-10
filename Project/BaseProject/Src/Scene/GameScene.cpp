@@ -515,6 +515,9 @@ void GameScene::Release()
 	}
 	attackColliders_.clear();
 
+	// エフェクトマネージャー解放
+	EffectManager::GetInstance().Clear();
+
 	// アイテムマネージャー解放
 	if (itemManger_ != nullptr)
 	{

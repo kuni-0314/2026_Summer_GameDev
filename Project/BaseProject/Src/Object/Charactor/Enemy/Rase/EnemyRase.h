@@ -2,6 +2,7 @@
 #include <DxLib.h>
 #include <functional>
 #include <memory>
+#include "../../../../Effect/LoadEffekseer/EffekseerEffect.h"
 #include "../EnemyBase.h"
 
 class Player;
@@ -47,6 +48,7 @@ public:
 		float homingPower = 0.06f;
 		VECTOR dir_;
 		Transform shotTransform_;
+		std::shared_ptr<EffekseerEffect> effect;
 	
 	};
 	// コンストラクタ
@@ -79,6 +81,7 @@ private:
 	ItemManger* itemManager_;
 
 	std::vector<SHOT> shots_;
+
 
 
 	//アニメーション登録番号

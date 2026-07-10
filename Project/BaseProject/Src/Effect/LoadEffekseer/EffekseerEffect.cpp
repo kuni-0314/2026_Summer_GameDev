@@ -124,3 +124,13 @@ void EffekseerEffect::SetLifeTime(int frame)
 {
     m_lifeTime = frame;
 }
+
+void EffekseerEffect::Stop()
+{
+    if (m_playingHandle != -1)
+    {
+        StopEffekseer3DEffect(m_playingHandle);
+    }
+
+    m_isDead = true;
+}
