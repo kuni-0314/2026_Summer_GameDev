@@ -197,7 +197,6 @@ void Application::Run()
 		// —‘zFPSŒo‰ß‘Ò‚¿
 		fpsController_->Wait();
 	}
-
 }
 
 void Application::Destroy()
