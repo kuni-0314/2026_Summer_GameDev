@@ -15,6 +15,7 @@
 #include "../Shot/ShotBase.h"
 #include "../Shot/ShotStraight.h"
 #include "EnemyRase.h"
+#include <EffekseerForDXLib.h>
 
 
 EnemyRase::EnemyRase(const EnemyBase::EnemyData& data, int attackModel, Player* player)
@@ -433,6 +434,14 @@ void EnemyRase::AttackShot(void)
 	//らせの座標位置を取得
 	shot.shotTransform_.pos = transform_.pos;
 
+	// エフェクト再生
+	shot.effect = std::make_shared<EffekseerEffect>(
+		L"Data/Effect/FireBall/FireBall.efkefc",
+		shot.shotTransform_.pos
+	);
+
+	EffectManager::GetInstance().RegisterEffect(shot.effect);
+
 	//弾向き
 	shot.dir_ = VNorm(toPlayer_);
 
@@ -468,6 +477,12 @@ void EnemyRase::UpdateShot(void)
 			VAdd(shot.shotTransform_.pos,
 				VScale(shot.dir_, shot.speed));
 
+		//エフェクトを弾に追従させる
+		if (shot.effect)
+		{
+			shot.effect->SetPosition(shot.shotTransform_.pos);
+		}
+
 		if (shot.shotTransform_.pos.y <= 0)
 		{
 			shot.shotTransform_.pos.y = 0;
@@ -477,6 +492,10 @@ void EnemyRase::UpdateShot(void)
 
 		if (shot.life <= 0)
 		{
+			if (shot.effect)
+			{
+				shot.effect->Stop();
+			}
 			shot.isAlive_ = false;
 			shot.speed = 3.0f;
 			ChangeState(STATE::THINK);
