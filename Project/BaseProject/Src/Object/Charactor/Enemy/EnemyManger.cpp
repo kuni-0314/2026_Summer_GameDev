@@ -64,6 +64,7 @@ void EnemyManager::Draw()
 }
 void EnemyManager::Release()
 {
+	EffectManager::GetInstance().Clear();
 	for (auto& enemy : enemies_)
 	{
 		enemy->Release();
@@ -281,7 +282,7 @@ void EnemyManager::DeadEffect(const VECTOR& pos)
 		L"Data/Effect/Death/Death.efkefc",
 		effectPos
 	);
-	effect->SetLifeTime(60);   // –ñ1•b
+
 	effect->Play(
 		effectPos,
 		Quaternion()

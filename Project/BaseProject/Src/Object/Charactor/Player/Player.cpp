@@ -771,6 +771,24 @@ void Player::UpdateMagic()
 						->PlaySE(SoundID::SE_THUNDER);
 
 					alive = true;
+
+					VECTOR pos = thunderInfos_[i].transform.pos;
+
+					auto effect = std::make_shared<EffekseerEffect>(
+						L"Data/Effect/Thunder/Thunder.efkefc",
+						pos
+					);
+
+					effect->SetLifeTime(30);
+
+					effect->Play(
+						pos,
+						Quaternion()
+					);
+
+					EffectManager::GetInstance().RegisterEffect(effect);
+
+					thunderInfos_[i].effect = effect;
 				}
 			}
 		}

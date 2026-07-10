@@ -161,6 +161,9 @@ private:
 	int damegeTimeCount_;
 	bool damegeflag_ = false;
 
+	int clearTimer_ = 0;
+	bool isClear_ = false;
+
 
 	std::vector<int> hpHandles_;			//Hpハンドル
 	std::vector<int> playerUiHandles_;		//プレイヤーUI
