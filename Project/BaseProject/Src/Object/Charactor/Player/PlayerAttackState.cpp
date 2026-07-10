@@ -150,6 +150,7 @@ void PlayerAttackState::Update(Player* player)
 		}
 		
 		player->ChangeState(Player::STATE::IDLE);
+		player->SetAttacking(false);
 		return;
 	}
 }

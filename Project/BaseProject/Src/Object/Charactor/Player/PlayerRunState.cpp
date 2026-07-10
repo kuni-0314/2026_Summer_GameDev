@@ -106,6 +106,7 @@ void PlayerRunState::Update(Player* player)
 	else
 	{
 		player->ChangeState(Player::STATE::IDLE);
+		player->SetAttacking(false);
 		return;
 	}
 }

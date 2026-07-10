@@ -80,6 +80,7 @@ void PlayerAirborneState::Update(Player* player)
 	if (!player->IsJump())
 	{
 		player->ChangeState(Player::STATE::IDLE);
+		player->SetAttacking(false);
 		return;
 	}
 
@@ -154,6 +155,7 @@ void PlayerAirborneState::Update(Player* player)
 			//else
 			{
 				player->ChangeState(Player::STATE::RUN);
+				player->SetAttacking(false);
 				return;
 			}
 		}

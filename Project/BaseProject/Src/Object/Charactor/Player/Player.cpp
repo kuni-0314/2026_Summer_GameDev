@@ -18,6 +18,7 @@
 #include "../../../Effect/EffectManager.h"
 #include "../../../Sound/AudioManager.h"
 #include "../../../Sound/SoundTable.h"
+#include "../../../Scene/GameScene.h"
 #include "PlayerIdleState.h"
 #include "PlayerRunState.h"
 #include "PlayerFastRunState.h"
@@ -335,7 +336,6 @@ void Player::UpdateProcess()
 		}
 	}
 
-
 }
 
 void Player::UpdateProcessPost()
@@ -637,6 +637,10 @@ void Player::Damege(int damege)
 {
 	AudioManager::GetInstance()->PlaySE(SoundID::VOICE_PLAYER_DAMEGE_0);
 	hp_ -= damege;
+	//ダメージUIフラグ
+	bool damegeflag = true;
+	gameScene_->SetDamegeFlag(damegeflag);
+
 	int a = StartJoypadVibration(padNum_ + 1, 1000, 500, -1);
 	if (hp_ <= 0)
 	{

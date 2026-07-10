@@ -50,6 +50,8 @@ void EnemyRase::Draw()
 
 	DrawFormatString(0, 400, GetColor(255, 255, 255), "STATE: %s", name);
 
+	DrawFormatString(500, 400, GetColor(255, 255, 255), "RASE_HP: %d", hp_);
+
 #endif // _DEBUG
 }
 
@@ -116,6 +118,9 @@ void EnemyRase::InitAnimation()
 	type = static_cast<int>(ANIM_TYPE::HIT);
 	animationController_->AddInFbx(type, 20.0f, ANIM_INDX_HIT);
 
+	type = static_cast<int>(ANIM_TYPE::DIE);
+	animationController_->AddInFbx(type, 20.0f, ANIM_INDX_DEAD);
+
 	animationController_->Play(static_cast<int>(ANIM_TYPE::IDLE), true);
 }
 
@@ -147,6 +152,7 @@ void EnemyRase::InitPost()
 
 	shotCharge_ =  SHOT_CHARGE_COUNT;
 	
+	pushOutRadius_ = 40.0f;
 
 	// 初期状態設定
 	ChangeState(STATE::THINK);
@@ -179,15 +185,26 @@ void EnemyRase::UpdateProcess()
 	}
 
 
+	PushOutSphere(transform_.pos, pushOutRadius_,
+		player_->GetPos(), player_->GetCollRadius(), true);
+
 	auto const ins = InputManager::GetInstance();
 
 	//ダメージヒット処理
 	preHp_ = hp_;//被ダメージ前HP保存
 
 	CheckPlayerSwordCollision();
+
 	if (hp_ < preHp_)
 	{
-		ChangeState(STATE::HIT);
+		if (hp_ <= 0)
+		{
+			ChangeState(STATE::DIE);
+		}
+		else
+		{
+			ChangeState(STATE::HIT);
+		}
 	}
 }
 
@@ -284,7 +301,7 @@ void EnemyRase::ChangeStateDie()
 	stateUpdate_ = std::bind(&EnemyRase::UpdateDie, this);
 	movePow_ = AsoUtility::VECTOR_ZERO;
 	// 待機アニメーション再生
-	animationController_->Play(static_cast<int>(ANIM_TYPE::HIT), true);
+	animationController_->Play(static_cast<int>(ANIM_TYPE::DIE), false);
 
 }
 
@@ -370,12 +387,6 @@ void EnemyRase::UpdateThink(void)
 
 void EnemyRase::UpdateHit()
 {
-	if (hp_ <= 0)
-	{
-		ChangeState(STATE::DIE);
-		return;
-	}
-
 	if (animationController_->IsEnd())
 	{
 		ChangeState(STATE::THINK);

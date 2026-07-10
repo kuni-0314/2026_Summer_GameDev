@@ -129,6 +129,9 @@ private:
 	static constexpr float ATTACK_DROP_JUMP_TIME_RATIO = 0.42f;	//ジャンプ開始
 	static constexpr float ATTACK_DROP_JUMP_TIME_WAVE = 0.56f;	//衝撃波開始
 
+	//パンチの振りかぶり切り時間
+	static constexpr float ATTACK_PUNCH_TINE = 0.45f;	
+
 	// 対象フレーム
 	const std::vector<std::string> TARGET_FRAME_NAMES = { "トーラス", };
 
@@ -199,6 +202,8 @@ private:
 	void UpdateEnd();
 	void UpdateCharge();
 
+	//正面からの攻撃を取得する
+	bool InFront();
 
 };
 

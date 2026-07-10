@@ -107,17 +107,17 @@ void GameScene::Init()
 
 	hpHandles_.resize(11);
 
-	hpHandles_[0] = resMng_.Load(ResourceManager::SRC::IMG_PLAYER_HP_10).handleId_;
-	hpHandles_[1] = resMng_.Load(ResourceManager::SRC::IMG_PLAYER_HP_9).handleId_;
-	hpHandles_[2] = resMng_.Load(ResourceManager::SRC::IMG_PLAYER_HP_8).handleId_;
-	hpHandles_[3] = resMng_.Load(ResourceManager::SRC::IMG_PLAYER_HP_7).handleId_;
-	hpHandles_[4] = resMng_.Load(ResourceManager::SRC::IMG_PLAYER_HP_6).handleId_;
+	hpHandles_[10] = resMng_.Load(ResourceManager::SRC::IMG_PLAYER_HP_10).handleId_;
+	hpHandles_[9] = resMng_.Load(ResourceManager::SRC::IMG_PLAYER_HP_9).handleId_;
+	hpHandles_[8] = resMng_.Load(ResourceManager::SRC::IMG_PLAYER_HP_8).handleId_;
+	hpHandles_[7] = resMng_.Load(ResourceManager::SRC::IMG_PLAYER_HP_7).handleId_;
+	hpHandles_[6] = resMng_.Load(ResourceManager::SRC::IMG_PLAYER_HP_6).handleId_;
 	hpHandles_[5] = resMng_.Load(ResourceManager::SRC::IMG_PLAYER_HP_5).handleId_;
-	hpHandles_[6] = resMng_.Load(ResourceManager::SRC::IMG_PLAYER_HP_4).handleId_;
-	hpHandles_[7] = resMng_.Load(ResourceManager::SRC::IMG_PLAYER_HP_3).handleId_;
-	hpHandles_[8] = resMng_.Load(ResourceManager::SRC::IMG_PLAYER_HP_2).handleId_;
-	hpHandles_[9] = resMng_.Load(ResourceManager::SRC::IMG_PLAYER_HP_1).handleId_;
-	hpHandles_[10] = resMng_.Load(ResourceManager::SRC::IMG_PLAYER_HP_0).handleId_;
+	hpHandles_[4] = resMng_.Load(ResourceManager::SRC::IMG_PLAYER_HP_4).handleId_;
+	hpHandles_[3] = resMng_.Load(ResourceManager::SRC::IMG_PLAYER_HP_3).handleId_;
+	hpHandles_[2] = resMng_.Load(ResourceManager::SRC::IMG_PLAYER_HP_2).handleId_;
+	hpHandles_[1] = resMng_.Load(ResourceManager::SRC::IMG_PLAYER_HP_1).handleId_;
+	hpHandles_[0] = resMng_.Load(ResourceManager::SRC::IMG_PLAYER_HP_0).handleId_;
 
 	commandHandles.resize(3);
 
@@ -262,6 +262,21 @@ void GameScene::Update()
 			}
 		}
 	}
+
+	//プレイヤーダメージUI処理
+	if(damegeflag_)
+	{
+		damegeTimeCount_++;
+
+		//表示時間
+		if (damegeTimeCount_ > 60)
+		{
+			damegeflag_ = false;
+			damegeTimeCount_ = 0;
+		}
+	}
+
+
 
 	// エフェクト時間更新
 	effectTime_ += sceMng_.GetDeltaTime();
@@ -435,6 +450,9 @@ void GameScene::Draw()
 		);
 	}
 
+
+	DrawFormatString(500, 0, 0xffffff, "HP:%d", player_->GetHp());
+
 	// 最終結果をメイン画面に描画
 	SetDrawScreen(mainScreen);
 	DrawGraph(0, 0, postEffectScreen_, false);
@@ -568,6 +586,16 @@ void GameScene::CreateAttackCollider(ColliderBase::TAG tag, VECTOR pos, float ra
 	attackColliders_.push_back(data);
 }
 
+void GameScene::SetDamegeFlag(bool flag)
+{
+	damegeflag_ = flag;
+}
+
+bool GameScene::GetFlag()
+{
+	return damegeflag_;
+}
+
 void GameScene::SelectCommand(COMMAND command)
 {
 	selectCommand_ = command;
@@ -651,17 +679,33 @@ const char* GameScene::GetEffectName(PostEffectManager::EFFECT_TYPE effectType)
 
 void GameScene::PlayerHpDraw()
 {
-	// 最大の方がインデックスが０ 
-	// 最小の方がインデックスが１０
-	// ややこしいねぇ
+	//HPゲージUI描画
+	hpIndex_ = (player_->GetHp() + 2 - 1) / 2;
 
-	int index = /*hpHandles_.size() -*/ std::ceil(player_->GetHp() * hpHandles_.size() / Player::MAX_HP);
-	
-	if (index < 0) index = 0;
-	if (index >= hpHandles_.size()) index = hpHandles_.size() - 1;
+	if (hpIndex_ < 0) hpIndex_ = 0;
+	if (hpIndex_ >= hpHandles_.size()) hpIndex_ = hpHandles_.size() - 1;
 
-	DrawGraph(IMG_HP_X, IMG_HP_Y, hpHandles_[index], true);
-	DrawGraph(IMG_HP_X, IMG_HP_Y, playerUiHandles_[static_cast<int>(PLAYRE_HP_STATE::DEF)], true);
+	DrawGraph(IMG_HP_X, IMG_HP_Y, hpHandles_[hpIndex_], true);
+
+	if(damegeflag_)
+	{
+
+		//ダメージUI
+		DrawGraph(IMG_HP_X, IMG_HP_Y, playerUiHandles_[static_cast<int>(PLAYRE_HP_STATE::DAMEGE)], true);
+	}
+	else
+	{
+		if (player_->GetHp()<= 3)
+		{
+			//瀕死状態UI
+			DrawGraph(IMG_HP_X, IMG_HP_Y, playerUiHandles_[static_cast<int>(PLAYRE_HP_STATE::WARNIG)], true);
+		}
+		else
+		{
+			//デフォルトUI
+			DrawGraph(IMG_HP_X, IMG_HP_Y, playerUiHandles_[static_cast<int>(PLAYRE_HP_STATE::DEF)], true);
+		}
+	}
 }
 
 void GameScene::CommandUpdate()
@@ -685,4 +729,9 @@ void GameScene::CommandDraw()
 			fontCommandHandles_[i][0],
 			true);
 	}
+}
+
+void GameScene::PlayerFaceUIDrow()
+{
+	
 }

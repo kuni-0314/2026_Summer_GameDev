@@ -208,6 +208,8 @@ private:
 
 	const int padNum_;
 
+	STATE state_;
+
 	Status status_;
 	int pendingPoints_;
 	int currentGrantStatusIndex_;
@@ -262,7 +264,7 @@ private:
 	// Œ•
 	SwordBase* sword_;
 
-
+	//UŒ‚’†”»’èƒtƒ‰ƒO
 	bool isAttacking_;
 
 	// ˆê’U‚±‚±‚É‘‚¢‚Æ‚­

@@ -72,6 +72,9 @@ public:
 
 	ItemManger* GetItemManger() const { return itemManger_; }
 
+	void  SetDamegeFlag(bool flag);
+	bool  GetFlag();
+
 private:
 
 	// ステージ
@@ -138,22 +141,27 @@ private:
 	void PlayerHpDraw();
 
 	//コマンドUI
-
-	bool warnigOn_ = false;
-
-	int wargnigHandle_;
+	int hpIndex_;
 	
+	bool warnigOn_ = false;//警告生成フラグ
+	bool DamegeOn_ = false;//ダメージ
+	int wargnigHandle_;	
 	int audioHandle_;
+
+	int damegeTimeCount_;
+	bool damegeflag_ = false;
+
 
 	std::vector<int> hpHandles_;			//Hpハンドル
 	std::vector<int> playerUiHandles_;		//プレイヤーUI
 	std::vector<int> commandHandles;		//コマンドハンドル
-	//std::vector<int> fontCommandHandles_[(int)COMMAND::MAX][2];	//コマンドフォントハンドル
 
-	int fontCommandHandles_ [static_cast<int>(COMMAND::MAX)][2];
+	int fontCommandHandles_ [static_cast<int>(COMMAND::MAX)][2];//セレクトコマンドファント
 
 	void SelectCommand(COMMAND command);
 	void CommandUpdate();
 	void CommandDraw();
+
+	void PlayerFaceUIDrow();
 
 };

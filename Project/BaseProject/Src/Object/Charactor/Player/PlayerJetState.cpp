@@ -28,6 +28,7 @@ void PlayerJetState::Update(Player* player)
 		{
 			// ‹ó’†‚É‚¢‚éê‡‚Í—Ž‰ºó‘Ô‚É‘JˆÚ
 			player->ChangeState(Player::STATE::FALL);
+			player->SetAttacking(false);
 		}
 		else if (ins->IsNew(KEY_INPUT_W) || ins->IsNew(KEY_INPUT_A) || ins->IsNew(KEY_INPUT_S) || ins->IsNew(KEY_INPUT_D))
 		{
@@ -40,12 +41,14 @@ void PlayerJetState::Update(Player* player)
 			{
 				// ˆÚ“®ƒL[‚ª“ü—Í‚³‚ê‚Ä‚¢‚éê‡
 				player->ChangeState(Player::STATE::RUN);
+				player->SetAttacking(false);
 			}
 		}
 		else
 		{
 			// ‚»‚êˆÈŠO‚Í‘Ò‹@ó‘Ô‚É‘JˆÚ
 			player->ChangeState(Player::STATE::IDLE);
+			player->SetAttacking(false);
 		}
 	}
 }

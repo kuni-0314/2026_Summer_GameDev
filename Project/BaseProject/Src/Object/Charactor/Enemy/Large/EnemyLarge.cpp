@@ -42,11 +42,17 @@ void EnemyLarge::Draw(void)
 		MV1DrawModel(ringModelHandle_);
 	}
 
+	//正面にPlayerがいるのか
+	if (InFront())
+	{
+		if (player_->IsAttacking())
+		{
+			//ここで正面のエフェクト
+			
+		}
+	}
+
 #ifdef _DEBUG
-
-	
-
-#endif //_DEBUG
 
 
 	STATE next = state_;
@@ -61,7 +67,7 @@ void EnemyLarge::Draw(void)
 	DrawFormatString(0, 200, GetColor(255, 255, 255), "STATE: %s", name);
 	DrawFormatString(0, 250, GetColor(255, 255, 255), "距離: %.2f", distance_);
 
-#ifdef _DEBUG
+	DrawFormatString(500, 250, GetColor(255, 255, 255), "距離: %d", isAttack_);
 
 	// Aの球（赤）
 	DrawSphere3D(transform_.pos, pushOutRadius_, 16, GetColor(255, 0, 0), GetColor(255, 0, 0), FALSE);
@@ -69,6 +75,17 @@ void EnemyLarge::Draw(void)
 	DrawSphere3D(playerPos_, playerRad_, 16, GetColor(0, 0, 255), GetColor(0, 0, 255), FALSE);
 	// 中心を結ぶ線（緑）
 	DrawLine3D(transform_.pos, playerPos_, GetColor(0, 255, 0));
+
+	//正面にPlayerがいるのか
+	if (InFront())
+	{
+		if (player_->IsAttacking())
+		{
+			//ここで正面のエフェクト
+			DrawString(500, 140, "正面の攻撃はねぇよ", 0xffffff);
+		}
+	}
+
 
 #endif
 }
@@ -183,6 +200,10 @@ void EnemyLarge::InitPost()
 
 	stateChanges_.emplace(static_cast<int>(STATE::HIT),
 		std::bind(&EnemyLarge::ChangeStateHit, this));
+
+	stateChanges_.emplace(static_cast<int>(STATE::DIE),
+		std::bind(&EnemyLarge::ChangeStateDie, this));
+
 	// 初期状態設定
 	ChangeState(STATE::IDLE);
 
@@ -215,11 +236,28 @@ void EnemyLarge::UpdateProcess()
 	preHp_ = hp_;//被ダメージ前HP保存
 
 	CheckPlayerSwordCollision();
+
+	//正面にPlayerがいるのか
+	if (InFront())
+	{
+		if (player_->IsAttacking())
+		{
+			//ここで正面のエフェクトDrawString(500, 100, "攻撃中", 0xffffff);
+			
+		}
+	}
+
 	if (hp_ < preHp_)
 	{
 		//ChangeState(STATE::HIT);
 	}
 
+	if (hp_ <= 0)
+	{
+		ChangeState(STATE::DIE);
+	}
+
+	//押し出し
 	PushOutSphere(transform_.pos,pushOutRadius_,
 		player_->GetPos(),player_->GetCollRadius(),true); 
 	
@@ -278,6 +316,14 @@ void EnemyLarge::ChangeStateIdle()
 	// 待機アニメーション再生
 	animationController_->Play(
 		static_cast<int>(ANIM_TYPE::IDLE), true);
+}
+
+void EnemyLarge::ChangeStateDie()
+{
+	stateUpdate_ = std::bind(&EnemyLarge::UpdateDie, this);
+	movePow_ = AsoUtility::VECTOR_ZERO;
+	// 待機アニメーション再生
+	animationController_->Play(static_cast<int>(ANIM_TYPE::HIT), false);
 }
 
 void EnemyLarge::ChangeStateThink()
@@ -402,6 +448,15 @@ void EnemyLarge::UpdateIdle()
 	movePow_ = AsoUtility::VECTOR_ZERO;
 }
 
+void EnemyLarge::UpdateDie()
+{
+
+	if (animationController_->IsEnd())
+	{
+		MV1DeleteModel(transform_.modelId);
+	}
+}
+
 void EnemyLarge::UpdateThink()
 {
 
@@ -451,8 +506,22 @@ void EnemyLarge::UpdateCharge()
 	movePow_ = AsoUtility::VECTOR_ZERO;
 }
 
+bool EnemyLarge::InFront()
+{
+	VECTOR toPlayer = VSub(player_->GetPos(), transform_.pos);
+	toPlayer.y = 0.0f;
+	toPlayer = VNorm(toPlayer);
+
+	return VDot(moveDir_, toPlayer) > 0.5f;
+}
+
 void EnemyLarge::UpdateAttackPunch()
 {
+
+	//アニメーションコントローラーの取得
+	if (animationController_ == nullptr) return;
+	const auto& anim = animationController_->GetPlayAnim();
+	if (anim.totalTime <= 0.0f) return;
 
 	// Transform の更新
 	transform_.Update();
@@ -465,6 +534,11 @@ void EnemyLarge::UpdateAttackPunch()
 
 	if (!isAttack_)
 	{
+		float attackTriggerTime = anim.totalTime * ATTACK_PUNCH_TINE;
+		if (anim.step >= attackTriggerTime)
+		{
+			isAttack_ = true;
+		}
 		// 攻撃判定
 		if (AsoUtility::IsHitSpheres(attackWorldPos_, COL_SPHERE_RADIUS, playerPos_, playerRad_))
 		{
