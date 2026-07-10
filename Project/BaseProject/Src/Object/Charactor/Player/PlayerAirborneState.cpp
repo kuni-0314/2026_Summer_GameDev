@@ -29,7 +29,7 @@ void PlayerAirborneState::Update(Player* player)
 		{
 			if (enableKAM)
 			{
-				if (ins->IsNew(KEY_INPUT_SPACE) || ins->IsGamepadNew(InputManager::PadInput::A, player->GetPadNum()))
+				if (ins->IsNew(KEY_INPUT_SPACE) || ins->IsGamepadNew(InputManager::PadInput::B, player->GetPadNum()))
 				{
 					if (player->GetStepJump() < Player::TIME_JUMP_INPUT)
 					{
@@ -41,7 +41,7 @@ void PlayerAirborneState::Update(Player* player)
 			}
 			else
 			{
-				if (ins->IsGamepadNew(InputManager::PadInput::A, player->GetPadNum()))
+				if (ins->IsGamepadNew(InputManager::PadInput::B, player->GetPadNum()))
 				{
 					if (player->GetStepJump() < Player::TIME_JUMP_INPUT)
 					{

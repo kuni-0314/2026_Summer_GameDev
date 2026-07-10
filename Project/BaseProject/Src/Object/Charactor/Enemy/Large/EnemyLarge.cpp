@@ -609,7 +609,6 @@ void EnemyLarge::UpdateAttackDrop()
 
 	if (!attackTriggerRing_ && anim.step >= attackTriggerTime)
 	{
-		AudioManager::GetInstance()->PlaySE(SoundID::SE_ENEMY_LARGE_ATTACK_DROP);
 		// 発生の瞬間に一度だけ座標をセット
 		ringTransform_->pos = transform_.pos;
 		ringTransform_->pos.y += 20;
@@ -625,6 +624,25 @@ void EnemyLarge::UpdateAttackDrop()
 		attackTriggerRing_ = false;
 		jumpApplied_ = false;
 		ChangeState(STATE::IDLE);
+	}
+
+	if (!isDrop_)
+	{
+		wasHitRing_ = false;
+		return;
+	}
+	VECTOR playerPos = player_->GetPos();
+	float nowR1 = ringTransform_.get()->scl.x * 97.5f;
+	float nowR2 = ringTransform_.get()->scl.x * 92.5f;
+	VECTOR vec = VSub(playerPos, ringTransform_.get()->pos);
+	float dist = VSize(vec);
+	if (wasHitRing_ == false &&
+		dist <= nowR1 && dist >= nowR2)
+	{
+		if (player_->IsJump()) return;
+		player_->Damege(power_);
+		wasHitRing_ = true;
+		wasHitMagic_ = true;
 	}
 }
 

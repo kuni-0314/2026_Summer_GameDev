@@ -78,7 +78,7 @@ void PlayerAttackState::Update(Player* player)
 		{
 			if (enableKAM)
 			{
-				if (ins->IsNew(KEY_INPUT_SPACE) || ins->IsGamepadNew(InputManager::PadInput::A, player->GetPadNum()))
+				if (ins->IsNew(KEY_INPUT_SPACE) || ins->IsGamepadNew(InputManager::PadInput::B, player->GetPadNum()))
 				{
 					if (player->GetStepJump() < Player::TIME_JUMP_INPUT)
 					{
@@ -90,7 +90,7 @@ void PlayerAttackState::Update(Player* player)
 			}
 			else
 			{
-				if (ins->IsGamepadNew(InputManager::PadInput::A, player->GetPadNum()))
+				if (ins->IsGamepadNew(InputManager::PadInput::B, player->GetPadNum()))
 				{
 					if (player->GetStepJump() < Player::TIME_JUMP_INPUT)
 					{
@@ -192,7 +192,7 @@ PlayerAttackState::ATTACK_TYPE PlayerAttackState::GetNextAttackType(Player* play
 	bool isHeavyAttack = false;
 	if (isGamepadConnected)
 	{
-		isHeavyAttack = ins->GetGamepadLastHoldTime(static_cast<int>(InputManager::PadInput::X), GAMEPAD_INDEX) > 30;
+		isHeavyAttack = ins->GetGamepadLastHoldTime(static_cast<int>(InputManager::PadInput::A), GAMEPAD_INDEX) > 30;
 	}
 	else
 	{

@@ -276,6 +276,8 @@ void GameScene::Update()
 		}
 	}
 
+	//フォント状態更新
+	CommandUpdate();
 
 
 	// エフェクト時間更新
@@ -724,10 +726,34 @@ void GameScene::PlayerHpDraw()
 
 void GameScene::CommandUpdate()
 {
+	if(player_->GetUseRecovery())
+	{
+		recoveryState_ = COMMAND_STATE::USE;
+	}
+	else
+	{
+		recoveryState_ = COMMAND_STATE::NOT_USE;
+	}
+
+	//サンダーフォント切り替え
+	if (player_->GetUseThunder())
+	{
+		thunderState_ = COMMAND_STATE::USE;
+	}
+	else
+	{
+		thunderState_ = COMMAND_STATE::NOT_USE;
+	}
+
+
+	// ファイアは未実装
+	fireState_ = COMMAND_STATE::USE;
+
 }
 
 void GameScene::CommandDraw()
 {
+
 	DrawGraph(0, 735, commandHandles[selectCommand_], true);
 
 	const int baseX = 45;
@@ -737,10 +763,30 @@ void GameScene::CommandDraw()
 	{
 		bool isSelect = (i == selectCommand_);
 
+		COMMAND_STATE state = COMMAND_STATE::NOT_USE;
+
+		switch (static_cast<COMMAND>(i))
+		{
+		case COMMAND::THUNDER:
+			state = thunderState_;
+			break;
+
+		case COMMAND::FIRE:
+			state = fireState_;
+			break;
+
+		case COMMAND::RECOVERY:
+			state = recoveryState_;
+			break;
+
+		default:
+			break;
+		}
+
 		DrawGraph(
 			baseX + (isSelect ? selectOffset : 0),
 			780 + i * 75,
-			fontCommandHandles_[i][0],
+			fontCommandHandles_[i][static_cast<int>(state)],
 			true);
 	}
 }

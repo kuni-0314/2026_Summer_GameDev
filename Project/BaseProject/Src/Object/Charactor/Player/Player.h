@@ -182,6 +182,10 @@ public:
 
 	static constexpr int MAX_HP = 20;
 
+	bool GetUseThunder();
+	bool GetUseFire();
+	bool GetUseRecovery();
+
 protected:
 
 	// リソースロード
@@ -322,6 +326,8 @@ private:
 	void CreateThunderMagic();
 	void CreateRecoveryMagic();
 
+	void MagicCoolTime();//魔法のクールタイム	
+
 	void UpdateMagic();
 	FireInfo fireInfo_;
 
@@ -332,11 +338,14 @@ private:
 	static constexpr int FIRE_COOL_TIME = 180;		// クールタイム
 	int fireCoolTime_ = 0;	// クールタイムカウンタ
 	bool isAliveFire_ = false;	// 火の生存状態
+	bool useFire_ = false;
 	static constexpr int THUNDER_COOL_TIME = 180;	// クールタイム
 	int thunderCoolTime_ = 0;	// クールタイムカウンタ
 	bool isAliveThunder_ = false;	// 雷の生存状態
+	bool useThunder_ = false;
 	static constexpr int RECOVERY_COOL_TIME = 300;	// クールタイム
 	int recoveryCoolTime_ = 0;	// クールタイムカウンタ
+	bool useRecovery_ = false;
 	//bool isAliveRecovery_ = false;	// 回復の生存状態いらんやろ
 
 };

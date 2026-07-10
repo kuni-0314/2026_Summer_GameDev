@@ -42,10 +42,10 @@ public:
 	//弾のパラメーター(
 	struct SHOT
 	{
-		bool isAlive_ = false;
+		bool isShotAlive_ = false;
 		float speed = 4.5f;
 		int life = 180;
-		float homingPower = 0.06f;
+		float homingPower = 0.02f;
 		VECTOR dir_;
 		Transform shotTransform_;
 		std::shared_ptr<EffekseerEffect> effect;

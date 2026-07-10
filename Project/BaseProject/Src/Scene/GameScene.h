@@ -114,6 +114,10 @@ private:
 	//ƒRƒ}ƒ“ƒh
 	COMMAND command_;
 
+	COMMAND_STATE thunderState_;
+	COMMAND_STATE fireState_;
+	COMMAND_STATE recoveryState_;
+
 	int selectCommand_;
 
 

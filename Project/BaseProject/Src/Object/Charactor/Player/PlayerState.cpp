@@ -16,12 +16,12 @@ bool PlayerState::CheckTransitions(Player* player)
 	{
 		if (enableKAM)
 		{
-			isAttackInput = ins->IsGamepadTrgUp(InputManager::PadInput::X, player->GetPadNum());
+			isAttackInput = ins->IsGamepadTrgUp(InputManager::PadInput::A, player->GetPadNum());
 			isAttackInput = isAttackInput || ins->IsMouseTrgUp(MOUSE_INPUT_LEFT);
 		}
 		else
 		{
-			isAttackInput = ins->IsGamepadTrgUp(InputManager::PadInput::X, player->GetPadNum());
+			isAttackInput = ins->IsGamepadTrgUp(InputManager::PadInput::A, player->GetPadNum());
 		}
 	}
 	else
@@ -43,12 +43,12 @@ bool PlayerState::CheckTransitions(Player* player)
 	{
 		if (enableKAM)
 		{
-			isJetInput = ins->IsGamepadTrgDown(InputManager::PadInput::B, player->GetPadNum());
+			isJetInput = ins->IsGamepadTrgDown(InputManager::PadInput::X, player->GetPadNum());
 			isJetInput = isJetInput || ins->IsMouseTrgDown(MOUSE_INPUT_RIGHT);
 		}
 		else
 		{
-			isJetInput = ins->IsGamepadTrgDown(InputManager::PadInput::B, player->GetPadNum());
+			isJetInput = ins->IsGamepadTrgDown(InputManager::PadInput::X, player->GetPadNum());
 		}
 	}
 	else
@@ -69,12 +69,12 @@ bool PlayerState::CheckTransitions(Player* player)
 	{
 		if (enableKAM)
 		{
-			isJumpInput = ins->IsGamepadTrgDown(InputManager::PadInput::A, player->GetPadNum());
+			isJumpInput = ins->IsGamepadTrgDown(InputManager::PadInput::B, player->GetPadNum());
 			isJumpInput = isJumpInput || ins->IsTrgDown(KEY_INPUT_SPACE);
 		}
 		else
 		{
-			isJumpInput = ins->IsGamepadTrgDown(InputManager::PadInput::A, player->GetPadNum());
+			isJumpInput = ins->IsGamepadTrgDown(InputManager::PadInput::B, player->GetPadNum());
 		}
 	}
 	else

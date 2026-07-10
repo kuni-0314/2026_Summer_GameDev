@@ -201,6 +201,7 @@ void EnemyRase::UpdateProcess()
 		if (hp_ <= 0)
 		{
 			ChangeState(STATE::DIE);
+			isAlive_ = false;
 		}
 		else
 		{
@@ -427,7 +428,7 @@ void EnemyRase::AttackShot(void)
 	SHOT shot;
 
 	//’e¶‘¶ƒtƒ‰ƒO
-	shot.isAlive_ = true;
+	shot.isShotAlive_ = true;
 
 
 	//’e‚Ì‘å‚«‚³AÀ•W“™‚Ì‰Šú‰»
@@ -463,7 +464,7 @@ void EnemyRase::UpdateShot(void)
 {
 	for (auto& shot : shots_)
 	{
-		if (!shot.isAlive_) continue;
+		if (!shot.isShotAlive_) continue;
 
 		if (AsoUtility::IsHitSpheres(shot.shotTransform_.pos, COL_SPHERE_RADIUS, playerPos_, playerRad_))
 		{
@@ -507,7 +508,7 @@ void EnemyRase::UpdateShot(void)
 			{
 				shot.effect->Stop();
 			}
-			shot.isAlive_ = false;
+			shot.isShotAlive_ = false;
 			shot.speed = 3.0f;
 			ChangeState(STATE::THINK);
 		}
@@ -518,7 +519,7 @@ void EnemyRase::DrawShot(void)
 {
 	for (auto& shot : shots_)
 	{
-		if (!shot.isAlive_)continue;
+		if (!shot.isShotAlive_)continue;
 
 		shot.shotTransform_.Update();
 

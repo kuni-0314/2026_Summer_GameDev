@@ -337,6 +337,8 @@ void Player::UpdateProcessPost()
 	{
 		sword_->Update();
 	}
+
+	MagicCoolTime();
 }
 
 void Player::Draw()
@@ -372,34 +374,6 @@ void Player::Draw()
 	unsigned int color = 0xFFFFFF;
 	unsigned int highlightColor = 0xFFFF00;
 
-	//DrawFormatString(x, y, color, "Level  : %d", status_.level);
-	//y += lineHeight;
-
-	//DrawFormatString(x, y, (currentGrantStatusIndex_ == 2) ? highlightColor : color, "MovePow : %f", movePow_.x);
-	//y += lineHeight;
-
-	//DrawFormatString(x, y, (currentGrantStatusIndex_ == 3) ? highlightColor : color, "MP     : %d", status_.mp);
-	//y += lineHeight;
-
-	//DrawFormatString(x, y, (currentGrantStatusIndex_ == 4) ? highlightColor : color, "PhysAtk: %d", status_.physAtk);
-	//y += lineHeight;
-
-	//DrawFormatString(x, y, (currentGrantStatusIndex_ == 5) ? highlightColor : color, "PhysDef: %d", status_.physDef);
-	//y += lineHeight;
-
-	//DrawFormatString(x, y, (currentGrantStatusIndex_ == 6) ? highlightColor : color, "MagicAtk: %d", status_.magicAtk);
-	//y += lineHeight;
-
-	//DrawFormatString(x, y, (currentGrantStatusIndex_ == 7) ? highlightColor : color, "MagicDef: %d", status_.magicDef);
-	//y += lineHeight;
-
-	//DrawFormatString(x, y, (currentGrantStatusIndex_ == 8) ? highlightColor : color, "Wisdom : %d", status_.wisdom);
-	//y += lineHeight;
-
-	//DrawFormatString(x, y, (currentGrantStatusIndex_ == 9) ? highlightColor : color, "Luck   : %d", status_.luck);
-	//y += lineHeight;
-
-	//DrawFormatString(x, y, color, "PendingPoints   : %d", pendingPoints_);
 
 	//y += lineHeight;
 	DrawFormatString(x, y, 0xffffff, "jumpPow   : %f.", jumpPow_.y);
@@ -688,6 +662,8 @@ void Player::DestroyFireCollider(const FireInfo& fireInfo)
 
 void Player::CreateFireMagic()
 {
+
+	AudioManager::GetInstance()->PlaySE(SoundID::SE_NOT_MAGIC);
 	// サンダーと違って、コライダはすぐに作成する
 	fireInfo_ = FireInfo();
 	fireInfo_.transform.pos = transform_.pos;
@@ -697,38 +673,95 @@ void Player::CreateFireMagic()
 
 void Player::CreateThunderMagic()
 {
-	thunderTimer_ = 0;
-	isAliveThunder_ = true;
-
-	for (int i = 0; i < THUNDER_COUNT; i++)
+	if (!useThunder_)
 	{
-		// 角度範囲を狭く: -60度から+60度(前方120度の範囲)
-		float randomAngle = (GetRand(120) - 60) * DX_PI_F / 180.0f;
+		thunderTimer_ = 0;
+		isAliveThunder_ = true;
 
-		const float DIST_MAX = 700.0f;
-
-		float randomRadius =
-			sqrtf(GetRand(100) / 100.0f) * DIST_MAX;
-
-		VECTOR randomPos =
+		for (int i = 0; i < THUNDER_COUNT; i++)
 		{
-			sinf(randomAngle) * randomRadius,
-			0.0f,
-			cosf(randomAngle) * randomRadius
-		};
+			// 角度範囲を狭く: -60度から+60度(前方120度の範囲)
+			float randomAngle = (GetRand(120) - 60) * DX_PI_F / 180.0f;
 
-		randomPos = transform_.quaRot.PosAxis(randomPos);
+			const float DIST_MAX = 700.0f;
 
-		thunderInfos_[i].transform.pos =
-			VAdd(transform_.pos, randomPos);
-		thunderInfos_[i].timer = 0;
-		thunderInfos_[i].isActive = false;
-		thunderInfos_[i].isDestroyed = false;
+			float randomRadius =
+				sqrtf(GetRand(100) / 100.0f) * DIST_MAX;
+
+			VECTOR randomPos =
+			{
+				sinf(randomAngle) * randomRadius,
+				0.0f,
+				cosf(randomAngle) * randomRadius
+			};
+
+			randomPos = transform_.quaRot.PosAxis(randomPos);
+
+			thunderInfos_[i].transform.pos =
+				VAdd(transform_.pos, randomPos);
+			thunderInfos_[i].timer = 0;
+			thunderInfos_[i].isActive = false;
+			thunderInfos_[i].isDestroyed = false;
+		}
+
+		useThunder_ = true;
+	}
+	else
+	{
+		AudioManager::GetInstance()->PlaySE(SoundID::SE_NOT_MAGIC);
 	}
 }
 
 void Player::CreateRecoveryMagic()
 {
+	if (!useRecovery_)
+	{
+		AudioManager::GetInstance()->PlaySE(SoundID::SE_MAGIC_HEAL);
+		HealHp(5);
+		useRecovery_ = true;
+	}
+	else
+	{
+		AudioManager::GetInstance()->PlaySE(SoundID::SE_NOT_MAGIC);
+	}
+}
+
+void Player::MagicCoolTime()
+{
+	if (useThunder_)
+	{
+		thunderCoolTime_++;
+		if (thunderCoolTime_ >= FIRE_COOL_TIME)
+		{
+			useThunder_ = false;
+			thunderCoolTime_ = 0;
+		}
+	}
+
+	if (useRecovery_)
+	{
+		recoveryCoolTime_++;
+		if (recoveryCoolTime_ >= RECOVERY_COOL_TIME)
+		{
+			useRecovery_ = false;
+			recoveryCoolTime_ = 0;
+		}
+	}
+}
+
+bool Player::GetUseThunder()
+{
+	return useThunder_;
+}
+
+bool Player::GetUseFire()
+{
+	return useFire_;
+}
+
+bool Player::GetUseRecovery()
+{
+	return useRecovery_;
 }
 
 void Player::UpdateMagic()
