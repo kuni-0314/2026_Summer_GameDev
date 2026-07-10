@@ -288,8 +288,7 @@ void Player::UpdateProcess()
 	auto ins = InputManager::GetInstance();
 	if (ins->IsTrgDown(KEY_INPUT_R))
 	{
-		// リスポーン
-		//transform_.pos = POS_PLAYER;
+		transform_.pos = POS_PLAYER;
 	}
 
 	if (ins->IsTrgDown(KEY_INPUT_P))
@@ -323,7 +322,7 @@ void Player::UpdateProcess()
 			break;
 		}
 
-		
+
 	}
 
 	// 魔法処理
@@ -332,7 +331,6 @@ void Player::UpdateProcess()
 	CheckPlayerRingCollision();
 
 }
-
 void Player::UpdateProcessPost()
 {
 	if (sword_ != nullptr)
@@ -704,38 +702,28 @@ void Player::CreateThunderMagic()
 
 	for (int i = 0; i < THUNDER_COUNT; i++)
 	{
-		if (hp_ <= 0)
+		// 角度範囲を狭く: -60度から+60度(前方120度の範囲)
+		float randomAngle = (GetRand(120) - 60) * DX_PI_F / 180.0f;
+
+		const float DIST_MAX = 700.0f;
+
+		float randomRadius =
+			sqrtf(GetRand(100) / 100.0f) * DIST_MAX;
+
+		VECTOR randomPos =
 		{
-			// 角度範囲を狭く: -60度から+60度(前方120度の範囲)
-			float randomAngle = (GetRand(120) - 60) * DX_PI_F / 180.0f;
+			sinf(randomAngle) * randomRadius,
+			0.0f,
+			cosf(randomAngle) * randomRadius
+		};
 
-			const float DIST_MAX = 700.0f;
+		randomPos = transform_.quaRot.PosAxis(randomPos);
 
-			float randomRadius =
-				sqrtf(GetRand(100) / 100.0f) * DIST_MAX;
-
-			VECTOR randomPos =
-			{
-				sinf(randomAngle) * randomRadius,
-				0.0f,
-				cosf(randomAngle) * randomRadius
-			};
-
-			randomPos = transform_.quaRot.PosAxis(randomPos);
-
-			thunderInfos_[i].transform.pos =
-				VAdd(transform_.pos, randomPos);
-			thunderInfos_[i].timer = 0;
-			thunderInfos_[i].isActive = false;
-			thunderInfos_[i].isDestroyed = false;
-		//	AudioManager::GetInstance()->PlaySE(SoundID::VOICE_PLAYER_DAMEGE_0);
-		//	int damage = 1;//tmp
-		//	hp_ -= damage;
-		//	//ダメージUIフラグ
-		//	bool damageflag = true;
-		//	gameScene_->SetDamageFlag(damageflag);
-		//int a = StartJoypadVibration(padNum_ + 1, 1000, 500, -1);
-		}
+		thunderInfos_[i].transform.pos =
+			VAdd(transform_.pos, randomPos);
+		thunderInfos_[i].timer = 0;
+		thunderInfos_[i].isActive = false;
+		thunderInfos_[i].isDestroyed = false;
 	}
 }
 
@@ -808,7 +796,7 @@ void Player::UpdateMagic()
 		// パラメータは任意
 		//----------
 		const float SPEED = 5.0f;// ヘッダーに移動
-		
+
 		// ヒント
 		// ターゲティング中ならその敵の座標を取得する
 		// ターゲティング中の敵がいない場合は、プレイヤーの前方に
