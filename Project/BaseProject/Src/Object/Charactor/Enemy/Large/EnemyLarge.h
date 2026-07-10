@@ -98,8 +98,8 @@ private:
 	static constexpr VECTOR COL_CAPSULE_DOWN_LOCAL_POS = { 0.0f, 70.0f, 60.0f };
 
 	// 後半分用のカプセルローカル座標（体を前半/後半に分割）
-	static constexpr VECTOR COLBODY_CAPSULE_TOP_LOCAL_POS = { 0.0f, 200.0f, -80.0f };
-	static constexpr VECTOR COLBODY_CAPSULE_DOWN_LOCAL_POS = { 0.0f, 70.0f, -80.0f };
+	static constexpr VECTOR COLBODY_CAPSULE_TOP_LOCAL_POS = { 0.0f, 200.0f, -90.0f };
+	static constexpr VECTOR COLBODY_CAPSULE_DOWN_LOCAL_POS = { 0.0f, 70.0f, -90.0f };
 
 	static constexpr VECTOR RING_ADD_SCL = { 0.1f, 0.1f, 0.1f };
 

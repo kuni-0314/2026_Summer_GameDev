@@ -537,7 +537,7 @@ bool EnemyLarge::InFront()
 	VECTOR toPlayer = VSub(player_->GetPos(), transform_.pos);
 	float distance = VSize(toPlayer);
 
-	if (distance > 200.0f)
+	if (distance > 300.0f)
 		return false;
 
 	toPlayer.y = 0.0f;
