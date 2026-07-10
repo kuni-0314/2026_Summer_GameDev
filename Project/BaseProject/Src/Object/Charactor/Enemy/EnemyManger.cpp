@@ -89,6 +89,28 @@ void EnemyManager::AddHitCollider(const ColliderBase* hitCollider)
 	}
 }
 
+void EnemyManager::RemoveHitCollider(const ColliderBase* hitCollider)
+{
+	// hitColliders_ から削除
+	auto it = std::find(hitColliders_.begin(), hitColliders_.end(), hitCollider);
+	if (it != hitColliders_.end())
+	{
+		hitColliders_.erase(it);
+	}
+
+	// hitCollider_ が同じものを指していた場合はクリア
+	if (hitCollider_ == hitCollider)
+	{
+		hitCollider_ = nullptr;
+	}
+
+	// 各敵からもコライダを削除
+	for (auto& enemy : enemies_)
+	{
+		enemy->RemoveHitCollider(hitCollider);
+	}
+}
+
 void EnemyManager::LoadCsvData()
 {
 	// ファイルの読込

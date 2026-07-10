@@ -58,10 +58,8 @@ public:
 	//enemyの絶滅フラグ渡し
 	bool GetEnemyDead();
 
-	//敵スポーンエフェクト
 	void SpawnEffect(const VECTOR& pos);
 
-	//敵死亡エフェクト
 	void DeadEffect(const VECTOR& pos);
 
 
@@ -106,7 +104,7 @@ private:
 	void EnemysDelete();
 	//enemysの衝突判定
 	void EnemysCollision();
-	
+
 	//WAVE切り替え
 	void ChangeWave(WAVE wave);
 	//WAVEデータ読み込み
