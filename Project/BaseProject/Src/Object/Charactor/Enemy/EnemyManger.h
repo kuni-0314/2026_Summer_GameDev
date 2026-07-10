@@ -56,6 +56,12 @@ public:
 	//enemyの絶滅フラグ渡し
 	bool GetEnemyDead();
 
+	//敵スポーンエフェクト
+	void SpawnEffect(const VECTOR& pos);
+
+	//敵死亡エフェクト
+	void DeadEffect(const VECTOR& pos);
+
 
 private:
 	//プレイヤー

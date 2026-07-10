@@ -15,6 +15,9 @@
 #include "../../Actor/ActorBase.h"
 #include "../../Collider/Sphere/ColliderSphere.h"
 #include "../../Collider/Capsule/ColliderCapsule.h"
+#include "../../../Effect/LoadEffekseer/EffekseerEffect.h"
+#include "../../../Effect/EffectManager.h"
+#include "../../../Common/Quaternion.h"
 #include "../../../Manager/ResourceManager.h"
 #include "EnemyManger.h"
 
@@ -175,6 +178,8 @@ EnemyBase* EnemyManager::Create(const EnemyBase::EnemyData& data, const Player* 
 		}
 
 		enemies_.emplace_back(enemy);
+
+		SpawnEffect(enemy->GetTransform().pos);
 	}
 
 	return enemy;
@@ -228,6 +233,40 @@ bool EnemyManager::GetEnemyDead()
 	return isDead_;
 }
 
+void EnemyManager::SpawnEffect(const VECTOR& pos)
+{
+	auto effect = std::make_shared<EffekseerEffect>(
+		L"Data/Effect/Ribbon/Ribbon.efkefc",
+		pos
+	);
+
+	effect->SetLifeTime(45);   // 約0.75秒
+
+	effect->Play(
+		pos,
+		Quaternion()
+	);
+
+	EffectManager::GetInstance().RegisterEffect(effect);
+}
+
+void EnemyManager::DeadEffect(const VECTOR& pos)
+{
+	VECTOR effectPos = pos;
+	effectPos.y += 80.0f;
+
+	auto effect = std::make_shared<EffekseerEffect>(
+		L"Data/Effect/Death/Death.efkefc",
+		effectPos
+	);
+	effect->SetLifeTime(60);   // 約1秒
+	effect->Play(
+		effectPos,
+		Quaternion()
+	);
+	EffectManager::GetInstance().RegisterEffect(effect);
+}
+
 void EnemyManager::CreateHpItem()
 {
 	for (auto& enemy : enemies_)
@@ -237,6 +276,9 @@ void EnemyManager::CreateHpItem()
 		if (enemy->GetHp() <= 0 && enemy->IsAlive())
 		{
 			
+			// 死亡エフェクト
+			DeadEffect(enemy->GetTransform().pos);
+
 			// HPアイテム生成位置を敵の上に出す
 			VECTOR hpPos = enemy->GetTransform().pos;
 
