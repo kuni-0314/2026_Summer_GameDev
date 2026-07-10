@@ -281,17 +281,12 @@ void Player::UpdateProcess()
 	if (InputManager::GetInstance()->IsTrgDown(KEY_INPUT_R))
 	{
 		// ƒŠƒXƒ|[ƒ“
-		transform_.pos = POS_PLAYER;
+		//transform_.pos = POS_PLAYER;
 	}
 
 	if (InputManager::GetInstance()->IsTrgDown(KEY_INPUT_P))
 	{
 		ActivatePowerUp();
-	}
-
-	if (InputManager::GetInstance()->IsTrgDown(KEY_INPUT_B))
-	{
-		PlayBlinkEffect();
 	}
 
 	if (InputManager::GetInstance()->IsTrgDown(KEY_INPUT_T))

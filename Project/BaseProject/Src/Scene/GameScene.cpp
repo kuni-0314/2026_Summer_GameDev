@@ -162,7 +162,7 @@ void GameScene::Update()
 	
 	if (!enemyManager_->GetEnemyDead())
 	{
-		if (ins->IsGamepadTrgDown(InputManager::PadInput::RB, 0))
+		if (ins->IsGamepadTrgDown(InputManager::PadInput::RB, 0)|| InputManager::GetInstance()->IsTrgDown(KEY_INPUT_R))
 		{
 			if (camMode_ == CAM_MODE::MANUAL)
 			{
@@ -176,7 +176,7 @@ void GameScene::Update()
 			}
 		}
 
-		if (camMode_ == CAM_MODE::TARGETING && ins->IsGamepadTriggerTrgDown(true, 0))
+		if (camMode_ == CAM_MODE::TARGETING && ins->IsGamepadTriggerTrgDown(true, 0)|| InputManager::GetInstance()->IsTrgDown(KEY_INPUT_F))
 		{
 			//Å‘å‚Ü‚ÅŒ¾‚Á‚½‚ç0‚É
 			if (targetEnemyId_ > enemyManager_->GetEnemies().size() - 1)
