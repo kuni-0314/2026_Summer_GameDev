@@ -33,7 +33,7 @@ void EnemyLarge::Draw(void)
 	// Šî’êƒNƒ‰ƒX‚Ì•`‰æˆ—
 	CharactorBase::Draw();
 
-	DrawSphere3D(attackWorldPos_, COL_SPHERE_RADIUS, 16, GetColor(255, 0, 0), GetColor(255, 0, 0), false);
+
 
 	if (isDrop_)
 	{
@@ -53,6 +53,7 @@ void EnemyLarge::Draw(void)
 
 #ifdef _DEBUG
 
+	DrawSphere3D(attackWorldPos_, COL_SPHERE_RADIUS, 16, GetColor(255, 0, 0), GetColor(255, 0, 0), false);
 
 	STATE next = state_;
 	const char* name = "";

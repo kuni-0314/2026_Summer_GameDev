@@ -43,7 +43,7 @@ void EnemyRat::Draw()
 	else if (next == STATE::HIT) name = "HIT";
 	else if (next == STATE::CHARGE) name = "CHARGE";
 
-	DrawFormatString(0, 350, GetColor(255, 255, 255), "RAT_STATE: %s", name);
+	//DrawFormatString(0, 350, GetColor(255, 255, 255), "RAT_STATE: %s", name);
 }
 
 

@@ -458,7 +458,7 @@ void GameScene::Draw()
 	}
 
 
-	DrawFormatString(500, 0, 0xffffff, "HP:%d", player_->GetHp());
+	//DrawFormatString(500, 0, 0xffffff, "HP:%d", player_->GetHp());
 
 	// ÅIŒ‹‰Ê‚ğƒƒCƒ“‰æ–Ê‚É•`‰æ
 	SetDrawScreen(mainScreen);

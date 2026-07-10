@@ -51,7 +51,7 @@ namespace SoundTable_Game
 		{ SoundID::SE_ENEMY_LARGE_ATTACK_DROP, {"Data/Sound/SE/enemy_Drop.wav", 350} },
 		{ SoundID::VOICE_PLAYER_DAMEGE_0, {"Data/Sound/SE/Player_Damege_0.wav", 250} },
 		{ SoundID::SE_MAGIC_HEAL, {"Data/Sound/SE/Magic_Heal.wav", 250} },
-		{ SoundID::SE_NOT_MAGIC, {"Data/Sound/SE/Magic_Notuse.wav", 300} }
+		{ SoundID::SE_NOT_MAGIC, {"Data/Sound/SE/Magic_Notuse.wav", 400} }
 
 	};
 }

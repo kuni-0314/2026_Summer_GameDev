@@ -55,7 +55,7 @@ void EnemyManager::Draw()
 	else if (next == WAVE::WAVE4) name = "WAVE4";
 	else if (next == WAVE::BOSS) name = "BOSS";
 
-	DrawFormatString(0, 100, GetColor(255, 255, 255), "WAVE: %s", name);
+	//DrawFormatString(0, 100, GetColor(255, 255, 255), "WAVE: %s", name);
 
 	for (auto& enemy : enemies_)
 	{

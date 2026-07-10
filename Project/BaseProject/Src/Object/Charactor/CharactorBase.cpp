@@ -95,6 +95,7 @@ void CharactorBase::Damege(int damege)
 
 bool CharactorBase::IsAnimEnd()
 {
+	return animationController_->IsEnd();
 }
 
 void CharactorBase::DelayRotate()
