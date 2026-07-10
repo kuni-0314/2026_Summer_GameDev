@@ -233,6 +233,10 @@ void ResourceManager::Init()
 	res = new RES(RES_T::EFFEKSEER, PATH_EFF + "Ster/Ster.efkefc");
 	resourcesMap_.emplace(SRC::EFFECT_HIT, res);	//map‚É“o˜^
 
+	// ƒIƒvƒVƒ‡ƒ“˜g
+	res = new RES(RES_T::IMG, PATH_IMG + "UI/Option_Frame.png");
+	resourcesMap_.emplace(SRC::OPTION_FRAME, res);	//map‚É“o˜^
+
 }
 
 void ResourceManager::Release()

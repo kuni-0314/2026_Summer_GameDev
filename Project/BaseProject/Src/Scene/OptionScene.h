@@ -275,7 +275,7 @@ private:
 		"左スティックのデッドゾーン（未実装）",
 		"右スティックの感度（未実装）",
 		"右スティックのデッドゾーン（未実装）",
-		"振動の有無（未実装）",
+		"振動の有無",
 		"振動の強さ（未実装）",
 		
 		// その他カテゴリ
@@ -478,4 +478,8 @@ private:
 
 	// スライダー設定を取得
 	SliderConfig GetSliderConfig(int itemIndex) const;
+
+	static constexpr int FRAME_OFFSET = -18;	// フレームのオフセット値
+	static constexpr float FRAME_SCALE = 0.25f;	// フレームの拡大率
+	int optionFrameHandle_ = 0;
 };

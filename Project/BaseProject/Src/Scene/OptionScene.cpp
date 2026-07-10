@@ -34,11 +34,14 @@ void OptionScene::Init()
 	// チェックボックス用画像の読み込み
 	 checkboxOnHandle_ = resMng_.Load(ResourceManager::SRC::CHECKBOX_ON).handleId_;
 	 checkboxOffHandle_ = resMng_.Load(ResourceManager::SRC::CHECKBOX_OFF).handleId_;
-	
+
+	 // オプション枠
+	 optionFrameHandle_ = resMng_.Load(ResourceManager::SRC::OPTION_FRAME).handleId_;
+
 	// ボタン用画像の読み込み
 	// TODO: ResourceManager::SRC に追加する必要があります
-	// buttonApplyHandle_ = resMng_.Load(ResourceManager::SRC::BUTTON_APPLY).handleId_;
-	// buttonExitHandle_ = resMng_.Load(ResourceManager::SRC::BUTTON_EXIT).handleId_;
+	 //buttonApplyHandle_ = resMng_.Load(ResourceManager::SRC::BUTTON_APPLY).handleId_;
+	 //buttonExitHandle_ = resMng_.Load(ResourceManager::SRC::BUTTON_EXIT).handleId_;
 }
 
 void OptionScene::Update()
@@ -66,7 +69,7 @@ void OptionScene::Update()
 
 	CalculateItemDisplayInfo();
 
-	// ホバー判定
+	// ホバー判定（currentItemNum_はホバー中の項目を示す）
 	currentItemNum_ = -1;
 
 	for (int i = 0; i < ALL_ITEM_NUM_MAX; i++)
@@ -77,17 +80,15 @@ void OptionScene::Update()
 			cursorX >= info.left && cursorX <= info.right && 
 			cursorY >= info.top && cursorY <= info.bottom)
 		{
+			currentItemNum_ = i;
+			
+			// クリックされた場合のみ選択状態を更新
 			if (ins->IsMouseTrgDown(MOUSE_INPUT_LEFT))
 			{
-				currentItemNum_ = i;
-				break;
+				lastItemNum_ = i;
 			}
+			break;
 		}
-	}
-
-	if (currentItemNum_ != -1)
-	{
-		lastItemNum_ = currentItemNum_;
 	}
 
 	// 右側のコントロール領域でのインタラクション
@@ -377,7 +378,12 @@ void OptionScene::Draw()
 	{
 		const auto& info = itemDisplayInfos_[i];
 
-		bool isFill = (currentItemNum_ == i);
+		// 選択中かホバー中かを判定
+		bool isSelected = (lastItemNum_ == i);
+		bool isHovered = (currentItemNum_ == i);
+		// クリックの瞬間かどうか
+		bool isClickMoment = isHovered && isSelected;
+		
 		unsigned int boxColor = GetColor(127, 127, 127);
 		unsigned int textColor;
 
@@ -387,15 +393,47 @@ void OptionScene::Draw()
 		}
 		else
 		{
-			textColor = isFill ? GetColor(255, 255, 255) : GetColor(0, 0, 0);
+			// クリックの瞬間だけ黄色、それ以外は黒色
+			textColor = isClickMoment ? GetColor(255, 255, 0) : GetColor(0, 0, 0);
 		}
 
-		if (!info.isCategory && lastItemNum_ == i)
+		// 背景の描画（文字の前に描画）
+		if (!info.isCategory)
 		{
-			DrawBox(info.left, info.top, info.right, info.bottom, boxColor, isFill);
+			if (isClickMoment)
+			{
+				// クリックの瞬間：塗りつぶし
+				DrawBox(info.left, info.top, info.right, info.bottom, boxColor, true);
+			}
+			else if (isHovered)
+			{
+				// ホバー中：枠線のみ
+				DrawBox(info.left, info.top, info.right, info.bottom, boxColor, false);
+			}
 		}
 
+		// 文字を描画
 		DrawFormatStringToHandle(info.textX, info.y, textColor, info.fontHandle, "%s", ITEM_NAMES[i].data());
+
+		// フレーム画像を描画（文字の後に描画）
+		if (!info.isCategory && isSelected)
+		{
+			int frameWidth, frameHeight;
+			GetGraphSize(optionFrameHandle_, &frameWidth, &frameHeight);
+			int leftTopX = info.left - FRAME_OFFSET - frameWidth * FRAME_SCALE / 2;
+			int leftTopY = info.top - FRAME_OFFSET - frameHeight * FRAME_SCALE / 2;
+			int rightTopX = info.right + FRAME_OFFSET + frameWidth * FRAME_SCALE / 2;
+			int rightTopY = info.top - FRAME_OFFSET - frameHeight * FRAME_SCALE / 2;
+			int leftBottomX = info.left - FRAME_OFFSET - frameWidth * FRAME_SCALE / 2;
+			int leftBottomY = info.bottom + FRAME_OFFSET + frameHeight * FRAME_SCALE / 2;
+			int rightBottomX = info.right + FRAME_OFFSET + frameWidth * FRAME_SCALE / 2;
+			int rightBottomY = info.bottom + FRAME_OFFSET + frameHeight * FRAME_SCALE / 2;
+
+			DrawRotaGraph(leftTopX, leftTopY, FRAME_SCALE, 0.0f, optionFrameHandle_, true);
+			DrawRotaGraph(rightTopX, rightTopY, FRAME_SCALE, DX_PI_F / 2.0f, optionFrameHandle_, true);
+			DrawRotaGraph(leftBottomX, leftBottomY, FRAME_SCALE, -DX_PI_F / 2.0f, optionFrameHandle_, true);
+			DrawRotaGraph(rightBottomX, rightBottomY, FRAME_SCALE, DX_PI_F, optionFrameHandle_, true);
+		}
 	}
 
 	// 右側のコントロール描画
@@ -690,7 +728,7 @@ void OptionScene::SaveOptionValues()
 	audioIns->SetSeVolume(sVolume_);
 	audioIns->SetMute(isMute_);
 	appIns.SetBrightness(brightness_);
-	//appIns.SetShaderEnabled(enableShader_);
+	//appIns.SetShaderEnabled(enableShader);
 	
 	// FPSリミット: ドロップダウンのインデックスを実際のFPS値に変換
 	int actualFPS = 60; // デフォルト値

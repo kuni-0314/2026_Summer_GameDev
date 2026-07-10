@@ -1,5 +1,6 @@
 #pragma once
 #include "SceneBase.h"
+//class Application;
 
 class ClearScene : public SceneBase
 {
@@ -31,5 +32,7 @@ private:
 	int playerHandle_;
 
 	int imgOnTitleHandle_;
+	int imgOffTitleHandle_;
 
+	bool isMouseOver_ = false;
 };
