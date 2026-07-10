@@ -28,6 +28,8 @@ public:
 
 private:
 
-	
+	int playerHandle_;
+
+	int imgOnTitleHandle_;
 
 };

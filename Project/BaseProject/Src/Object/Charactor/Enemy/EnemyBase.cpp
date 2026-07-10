@@ -105,6 +105,46 @@ void EnemyBase::LookPlayer()
 	MV1SetRotationXYZ(transform_.modelId, transform_.rot);
 }
 
+bool EnemyBase::PushOutSphere(
+	VECTOR& posA,
+	float radiusA,
+	const VECTOR& posB,
+	float radiusB,
+	bool debugDraw)
+{
+#ifdef _DEBUG
+	if (debugDraw)
+	{
+		// Aの球（赤）
+		DrawSphere3D(posA,radiusA,16,GetColor(255, 0, 0),GetColor(255, 0, 0),FALSE);
+		// Bの球（青）
+		DrawSphere3D(posB,radiusB,16,GetColor(0, 0, 255),GetColor(0, 0, 255),FALSE);
+		// 中心を結ぶ線（緑）
+		DrawLine3D(posA,posB,GetColor(0, 255, 0));
+	}
+#endif
+
+	VECTOR diff = VSub(posA, posB);
+
+	float distance = VSize(diff);
+	float minDistance = radiusA + radiusB + 20.0f;
+
+	if (distance <= 0.001f)
+		return false;
+
+	if (distance >= minDistance)
+		return false;
+
+	VECTOR dir = VNorm(diff);
+
+	float overlap = minDistance - distance;
+
+	posA = VAdd(posA, VScale(dir, overlap));
+
+	return true;
+}
+
+
 
 
 void EnemyBase::ChangeState(int state)
@@ -125,6 +165,18 @@ void EnemyBase::ChangeState(int state)
 		stateUpdate_ = std::function<void()>{};
 	}
 }
+
+float EnemyBase::GetCollRadius()
+{
+	return pushOutRadius_;
+}
+
+VECTOR& EnemyBase::GetPos()
+{
+	return transform_.pos;
+}
+
+
 
 void EnemyBase::CheckPlayerSwordCollision()
 {

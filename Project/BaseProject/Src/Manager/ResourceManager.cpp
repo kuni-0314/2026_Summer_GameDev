@@ -102,6 +102,32 @@ void ResourceManager::Init()
 	res = new RES(RES_T::IMG, PATH_IMG + "GameOver/ON_Title.png");
 	resourcesMap_.emplace(SRC::IMG_ON_TITLE, res);	//map‚É“o˜^
 
+	res = new RES(RES_T::IMG, PATH_IMG + "UI/Command_Center.png");
+	resourcesMap_.emplace(SRC::IMG_SELECT_FIRE, res);	//map‚É“o˜^
+	res = new RES(RES_T::IMG, PATH_IMG + "UI/Command_Down.png");
+	resourcesMap_.emplace(SRC::IMG_SELECT_RECOVERY, res);	//map‚É“o˜^
+	res = new RES(RES_T::IMG, PATH_IMG + "UI/Command_Up.png");
+	resourcesMap_.emplace(SRC::IMG_SELECT_SANDER, res);	//map‚É“o˜^
+
+	res = new RES(RES_T::IMG, PATH_IMG + "UI/notuse_Sander.png");
+	resourcesMap_.emplace(SRC::IMG_NOTUSE_SANDER, res);	//map‚É“o˜^
+	res = new RES(RES_T::IMG, PATH_IMG + "UI/notuse_Fire.png");
+	resourcesMap_.emplace(SRC::IMG_NOTUSE_FIRE, res);	//map‚É“o˜^
+	res = new RES(RES_T::IMG, PATH_IMG + "UI/notuse_Heal.png");
+	resourcesMap_.emplace(SRC::IMG_NOTUSE_RECOVERY, res);	//map‚É“o˜^
+	res = new RES(RES_T::IMG, PATH_IMG + "UI/used_Sander.png");
+	resourcesMap_.emplace(SRC::IMG_USE_SANDER, res);	//map‚É“o˜^
+	res = new RES(RES_T::IMG, PATH_IMG + "UI/used_Fire.png");
+	resourcesMap_.emplace(SRC::IMG_USE_FIRE, res);	//map‚É“o˜^
+	res = new RES(RES_T::IMG, PATH_IMG + "UI/used_Heal.png");
+	resourcesMap_.emplace(SRC::IMG_USE_RECOVERY, res);	//map‚É“o˜^
+
+	res = new RES(RES_T::IMG, PATH_IMG + "PlayerHP/PlayerHP_Normal.png");
+	resourcesMap_.emplace(SRC::IMG_PLAYER_UI_DEF, res);	//map‚É“o˜^
+	res = new RES(RES_T::IMG, PATH_IMG + "PlayerHP/PlayerHP_Damage.png");
+	resourcesMap_.emplace(SRC::IMG_PLAYER_UI_DAMEGE, res);	//map‚É“o˜^
+	res = new RES(RES_T::IMG, PATH_IMG + "PlayerHP/PlayerHP_Limit.png");
+	resourcesMap_.emplace(SRC::IMG_PLAYER_UI_WARNIG, res);	//map‚É“o˜^
 
 
 	//ƒ‚ƒfƒ‹“o˜^ 

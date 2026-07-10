@@ -138,6 +138,9 @@ void EnemyRat::InitPost()
 
 	// 初期状態設定
 	ChangeState(STATE::THINK);
+
+	look_ = false;
+	pushOutRadius_ = 100.0f;
 }
 
 void EnemyRat::UpdateProcess()
@@ -165,20 +168,9 @@ void EnemyRat::UpdateProcess()
 	// ワールド座標へ
 	attackWorldPos_ = VAdd(transform_.pos, rotated);
 
-	////判定のコライダーがで使えるまで
-	//if (distance_ < MIN_DISTANCE)
-	//{
-	//	// プレイヤーからRatへの離れる方向のベクトル
-	//	VECTOR pushDir = VScale(toPlayer_, -1.0f);
-	//	pushDir = VNorm(pushDir);
+	PushOutSphere(transform_.pos, pushOutRadius_,
+		player_->GetPos(), player_->GetCollRadius(), true);
 
-	//	// 食い込んでいる距離を計算
-	//	float overlap = MIN_DISTANCE - distance_;
-
-	//	// 実際にRatの座標を食い込んでいる分だけ押し戻す
-	//	transform_.pos = VAdd(transform_.pos, VScale(pushDir, overlap));
-	//	transform_.Update();
-	//}
 
 	preHp_ = hp_;
 

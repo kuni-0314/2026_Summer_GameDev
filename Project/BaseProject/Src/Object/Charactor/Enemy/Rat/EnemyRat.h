@@ -107,10 +107,8 @@ private:
 
 	//攻撃判定
 	bool isAttack_; 
-	//生存判定
-	bool isAlive_ = true;
+
 	//プレイヤー視認判定
-	bool look_ = false;
 	//連続攻撃判定
 	bool attackHit_ = false;;
 
