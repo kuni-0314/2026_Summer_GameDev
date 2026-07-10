@@ -568,7 +568,6 @@ void GameScene::CreateAttackCollider(ColliderBase::TAG tag, VECTOR pos, float ra
 	attackColliders_.push_back(data);
 }
 
-<<<<<<< .merge_file_kGiJ0G
 void GameScene::AddEnemyHitCollider(const ColliderBase* hitCollider)
 {
 	enemyManager_->AddHitCollider(hitCollider);
@@ -579,7 +578,6 @@ void GameScene::RemoveEnemyHitCollider(const ColliderBase* hitCollider)
 	enemyManager_->RemoveHitCollider(hitCollider);
 }
 
-=======
 void GameScene::SelectCommand(COMMAND command)
 {
 	selectCommand_ = command;
@@ -597,8 +595,6 @@ void GameScene::SelectCommand(COMMAND command)
 	}
 }
 
-
->>>>>>> .merge_file_4E6tbJ
 void GameScene::ToggleEffect(PostEffectManager::EFFECT_TYPE effectType)
 {
 	// NORMAL‚Í’Ç‰Á‚µ‚È‚¢
