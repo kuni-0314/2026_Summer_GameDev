@@ -92,8 +92,8 @@ public:
 	void SetAnimStartModelPos(const VECTOR& pos) { animStartModelPos_ = pos; }
 	bool IsAttacking() const { return isAttacking_; }
 	void SetAttacking(const bool attacking) { isAttacking_ = attacking; }
-	bool IsAliveMagic() const { return isAliveMagic_; }
-	void SetAliveMagic(const bool alive) { isAliveMagic_ = alive; }
+	bool IsAliveMagic() const { return isAliveThunder_; }
+	void SetAliveMagic(const bool alive) { isAliveThunder_ = alive; }
 	void ActivatePowerUp();
 	void PlayBlinkEffect();
 
@@ -226,6 +226,15 @@ private:
 
 	void DestroyThunderCollider(const ThunderInfo& thunderInfo);
 
+	struct FireInfo
+	{
+		Transform transform = {};
+		ColliderSphere* collider = nullptr;
+	};
+	void CreateFireCollider(FireInfo& fireInfo);
+
+	void DestroyFireCollider(const FireInfo& fireInfo);
+
 	const int padNum_;
 
 	Status status_;
@@ -297,8 +306,8 @@ private:
 	static constexpr float KEY_BLADE_3_RADIUS = 40.0f;
 
 
-	bool isAliveMagic_;
-	int magicTimer_;
+	//bool isAliveThunder_;
+	int thunderTimer_;
 
 	static constexpr int THUNDER_COUNT = 10;		// 雷の数
 	ThunderInfo thunderInfos_[THUNDER_COUNT];		// 雷の情報配列
@@ -312,5 +321,20 @@ private:
 	void CreateRecoveryMagic();
 
 	void UpdateMagic();
+	FireInfo fireInfo_;
+
+	static constexpr int FIRE_LIFETIME = 180;		// 生存時間
+	static constexpr float FIRE_RADIUS = 100.0f;	// 火の半径
+
+	// 実装ヨロ　パラメータは任意
+	static constexpr int FIRE_COOL_TIME = 180;		// クールタイム
+	int fireCoolTime_ = 0;	// クールタイムカウンタ
+	bool isAliveFire_ = false;	// 火の生存状態
+	static constexpr int THUNDER_COOL_TIME = 180;	// クールタイム
+	int thunderCoolTime_ = 0;	// クールタイムカウンタ
+	bool isAliveThunder_ = false;	// 雷の生存状態
+	static constexpr int RECOVERY_COOL_TIME = 300;	// クールタイム
+	int recoveryCoolTime_ = 0;	// クールタイムカウンタ
+	//bool isAliveRecovery_ = false;	// 回復の生存状態いらんやろ
 
 };

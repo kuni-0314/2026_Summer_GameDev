@@ -405,7 +405,9 @@ void TitleScene::SelectUpdate()
 
 	if (selectCount_ != pSelectCount_)
 	{
-		StartJoypadVibration(1, 1000, 1, -1);
+		//StartJoypadVibration(1, 1000, 1, -1);
+		//VibrateGamepad(int gamepadIndex, int power, int time)
+		InputManager::GetInstance()->VibrateGamepad(1, 1000, 1);
 		AudioManager::GetInstance()->PlaySE(SoundID::SE_TITLE_SELECT);
 
 	}

@@ -236,6 +236,8 @@ void EnemyBase::CheckPlayerSwordCollision()
 
 				// ˆê“x‚ ‚Á‚½‚çƒtƒ‰ƒO
 				wasHitSword_ = true;
+
+				InputManager::GetInstance()->VibrateGamepad(1, 500, 100);
 			}
 		}
 	}

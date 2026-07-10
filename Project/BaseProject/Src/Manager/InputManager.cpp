@@ -620,6 +620,13 @@ void InputManager::SetMouseWheelSensitivity(float value)
 	wheelSensitivity_ = value;
 }
 
+void InputManager::VibrateGamepad(int gamepadIndex, int power, int time)
+{
+	if (!isVibrationEnabled_) return;
+	if (gamepadIndex < 0 || gamepadIndex >= GAMEPAD_NUM_MAX) return;
+	StartJoypadVibration(gamepadIndex, power, time, -1);
+}
+
 void InputManager::SetVibrationEnabled(bool enabled)
 {
 	isVibrationEnabled_ = enabled;

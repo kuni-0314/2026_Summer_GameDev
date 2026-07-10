@@ -131,7 +131,9 @@ void Player::Update()
 void Player::Damege(int damege)
 {
 	hp_ -= damege;
-	int a = StartJoypadVibration(padNum_ + 1, 1000, 500, -1);
+	//int a = StartJoypadVibration(padNum_ + 1, 1000, 500, -1);
+	//VibrateGamepad(int gamepadIndex, int power, int time)
+	InputManager::GetInstance()->VibrateGamepad(padNum_ + 1, 1000, 500);
 	if (hp_ <= 0)
 	{
 		hp_ = 0;
@@ -300,7 +302,8 @@ void Player::UpdateProcess()
 	}
 
 	// 魔法開始
-	if (!isAliveMagic_ &&
+	// 調整中（フラグがサンダーしかない）
+	if (!isAliveThunder_ &&
 		(ins->IsTrgDown(KEY_INPUT_E) || ins->IsGamepadTrgDown(InputManager::PadInput::Y, padNum_)))
 	{
 		GameScene* gameScene = dynamic_cast<GameScene*>(scnMng_.GetScene());
@@ -323,10 +326,7 @@ void Player::UpdateProcess()
 	}
 
 	// 魔法処理
-	if (isAliveMagic_)
-	{
-		UpdateMagic();
-	}
+	UpdateMagic();
 
 	CheckPlayerRingCollision();
 
@@ -437,6 +437,11 @@ void Player::Draw()
 		VECTOR spherePos = thunderInfos_[i].transform.pos;
 		DrawSphere3D(spherePos, 100.0f, 16, 0xff00ff, 0xff00ff, false);
 	}
+	if (isAliveFire_)
+	{
+		DrawSphere3D(fireInfo_.transform.pos, FIRE_RADIUS, 16, 0xff0000, 0xff0000, false);
+	}
+
 
 	VECTOR test = transform_.quaRot.PosAxis(VGet(0, 0, -100));
 	//DrawFormatString(0, 500, 0xffffff, "<Player> HP : %d", hp_);
@@ -665,14 +670,35 @@ void Player::DestroyThunderCollider(const ThunderInfo& thunderInfo)
 	gameScene->RemoveEnemyHitCollider(thunderInfo.collider);
 }
 
+void Player::CreateFireCollider(FireInfo& fireInfo)
+{
+	ColliderSphere* colSphere = new ColliderSphere(
+		ColliderBase::TAG::PLAYER_MAGIC, &fireInfo.transform,
+		{ 0.0f,0.0f,0.0f }, FIRE_RADIUS);
+	fireInfo.collider = colSphere;
+	GameScene* gameScene = dynamic_cast<GameScene*>(SceneManager::GetInstance().GetScene());
+	gameScene->AddEnemyHitCollider(colSphere);
+}
+
+void Player::DestroyFireCollider(const FireInfo& fireInfo)
+{
+	GameScene* gameScene = dynamic_cast<GameScene*>(SceneManager::GetInstance().GetScene());
+	gameScene->RemoveEnemyHitCollider(fireInfo.collider);
+}
+
 void Player::CreateFireMagic()
 {
+	// サンダーと違って、コライダはすぐに作成する
+	fireInfo_ = FireInfo();
+	fireInfo_.transform.pos = transform_.pos;
+	CreateFireCollider(fireInfo_);
+
 }
 
 void Player::CreateThunderMagic()
 {
-	magicTimer_ = 0;
-	isAliveMagic_ = true;
+	thunderTimer_ = 0;
+	isAliveThunder_ = true;
 
 	for (int i = 0; i < THUNDER_COUNT; i++)
 	{
@@ -707,57 +733,78 @@ void Player::CreateRecoveryMagic()
 
 void Player::UpdateMagic()
 {
-	magicTimer_++;
-
-	bool alive = false;
-
-	for (int i = 0; i < THUNDER_COUNT; i++)
+	if (isAliveThunder_)
 	{
-		if (thunderInfos_[i].isActive)
-		{
-			if (thunderInfos_[i].isDestroyed)
-			{
-				continue;
-			}
+		thunderTimer_++;
 
-			if (thunderInfos_[i].timer >= THUNDER_LIFETIME)
+		bool alive = false;
+
+		for (int i = 0; i < THUNDER_COUNT; i++)
+		{
+			if (thunderInfos_[i].isActive)
 			{
-				DestroyThunderCollider(thunderInfos_[i]);
-				thunderInfos_[i].isDestroyed = true;
+				if (thunderInfos_[i].isDestroyed)
+				{
+					continue;
+				}
+
+				if (thunderInfos_[i].timer >= THUNDER_LIFETIME)
+				{
+					DestroyThunderCollider(thunderInfos_[i]);
+					thunderInfos_[i].isDestroyed = true;
+				}
+				else
+				{
+					thunderInfos_[i].timer++;
+					alive = true;
+				}
 			}
 			else
 			{
-				thunderInfos_[i].timer++;
-				alive = true;
+				if (thunderTimer_ >= i * THUNDER_INTERVAL)
+				{
+					thunderInfos_[i].isActive = true;
+
+					CreateThunderCollider(thunderInfos_[i]);
+
+					AudioManager::GetInstance()
+						->PlaySE(SoundID::SE_THUNDER);
+
+					alive = true;
+				}
 			}
 		}
-		else
+
+		// 全部終了
+		if (!alive)
 		{
-			if (magicTimer_ >= i * THUNDER_INTERVAL)
+			isAliveThunder_ = false;
+		}
+
+		for (int i = 0; i < THUNDER_COUNT; i++)
+		{
+			if (thunderInfos_[i].isActive)
 			{
-				thunderInfos_[i].isActive = true;
-
-				CreateThunderCollider(thunderInfos_[i]);
-
-				AudioManager::GetInstance()
-					->PlaySE(SoundID::SE_THUNDER);
-
-				alive = true;
+				thunderInfos_[i].transform.Update();
 			}
 		}
 	}
 
-	// 全部終了
-	if (!alive)
+	if (isAliveFire_)
 	{
-		isAliveMagic_ = false;
-	}
+		// 敵に向かって移動する処理
+		// パラメータは任意
+		//----------
+		const float SPEED = 5.0f;// ヘッダーに移動
+		
+		// ヒント
+		// ターゲティング中ならその敵の座標を取得する
+		// ターゲティング中の敵がいない場合は、プレイヤーの前方に
+		// ゲームシーンの取得方法
+		// GameScene* gameScene = dynamic_cast<GameScene*>(scnMng_.GetScene());
 
-	for (int i = 0; i < THUNDER_COUNT; i++)
-	{
-		if (thunderInfos_[i].isActive)
-		{
-			thunderInfos_[i].transform.Update();
-		}
+		//----------
+
+		fireInfo_.transform.Update();
 	}
 }
