@@ -176,7 +176,7 @@ void ResourceManager::Init()
 	resourcesMap_.emplace(SRC::CELL_RED, res);
 
 	//ゲームステージ
-	res = new RES(RES_T::MODEL, PATH_MDL + "Stage/MainStage/GameStage/GameStage.mv1");
+	res = new RES(RES_T::MODEL, PATH_MDL + "Stage/MainStage/GameStage/Stage2.mv1");
 	resourcesMap_.emplace(SRC::BATTLE_STAGE, res);	//mapに登録
 
 	//ゲームステージ
