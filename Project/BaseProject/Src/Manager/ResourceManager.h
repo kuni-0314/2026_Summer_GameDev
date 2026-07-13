@@ -84,6 +84,7 @@ public:
 		IMG_USE_RECOVERY,
 		OPTION_FRAME,
 		EFFECT_DEATH,				//死亡エフェクト
+		IMG_LOCKON_FONT_UI,			//ロックオン時用UI（フォント）
 		MAX
 	};
 

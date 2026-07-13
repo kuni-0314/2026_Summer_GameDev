@@ -129,6 +129,9 @@ void ResourceManager::Init()
 	res = new RES(RES_T::IMG, PATH_IMG + "PlayerHP/PlayerHP_Limit.png");
 	resourcesMap_.emplace(SRC::IMG_PLAYER_UI_WARNIG, res);	//map‚É“o˜^
 
+	res = new RES(RES_T::IMG, PATH_IMG + "UI/LockOn.png");
+	resourcesMap_.emplace(SRC::IMG_LOCKON_FONT_UI, res);	//map‚É“o˜^
+
 
 	//ƒ‚ƒfƒ‹“o˜^ 
 	//ƒƒCƒ“‚Ì˜f¯ƒ‚ƒfƒ‹

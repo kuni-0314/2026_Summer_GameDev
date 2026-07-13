@@ -119,15 +119,15 @@ void GameScene::Init()
 	hpHandles_[1] = resMng_.Load(ResourceManager::SRC::IMG_PLAYER_HP_1).handleId_;
 	hpHandles_[0] = resMng_.Load(ResourceManager::SRC::IMG_PLAYER_HP_0).handleId_;
 
-	commandHandles.resize(3);
+	commandHandles_.resize(3);
 
-	commandHandles[static_cast <int>(COMMAND::THUNDER)] = resMng_.Load(ResourceManager::SRC::IMG_SELECT_SANDER).handleId_;
-	commandHandles[static_cast <int>(COMMAND::FIRE)] = resMng_.Load(ResourceManager::SRC::IMG_SELECT_FIRE).handleId_;
-	commandHandles[static_cast <int>(COMMAND::RECOVERY)] = resMng_.Load(ResourceManager::SRC::IMG_SELECT_RECOVERY).handleId_;
+	commandHandles_[static_cast <int>(COMMAND::THUNDER)] = resMng_.Load(ResourceManager::SRC::IMG_SELECT_SANDER).handleId_;
+	commandHandles_[static_cast <int>(COMMAND::FIRE)] = resMng_.Load(ResourceManager::SRC::IMG_SELECT_FIRE).handleId_;
+	commandHandles_[static_cast <int>(COMMAND::RECOVERY)] = resMng_.Load(ResourceManager::SRC::IMG_SELECT_RECOVERY).handleId_;
 
 	selectCommand_ = static_cast<int>(COMMAND::THUNDER);
 
-	commandHandles.resize(6);
+	commandHandles_.resize(6);
 
 	fontCommandHandles_[static_cast <int>(COMMAND::THUNDER)][(int)COMMAND_STATE::NOT_USE] = resMng_.Load(ResourceManager::SRC::IMG_NOTUSE_SANDER).handleId_;
 	fontCommandHandles_[static_cast <int>(COMMAND::THUNDER)][(int)COMMAND_STATE::USE] = resMng_.Load(ResourceManager::SRC::IMG_USE_SANDER).handleId_;
@@ -141,6 +141,10 @@ void GameScene::Init()
 	playerUiHandles_[static_cast<int>(PLAYRE_HP_STATE::DEF)] = resMng_.Load(ResourceManager::SRC::IMG_PLAYER_UI_DEF).handleId_;
 	playerUiHandles_[static_cast<int>(PLAYRE_HP_STATE::DAMEGE)] = resMng_.Load(ResourceManager::SRC::IMG_PLAYER_UI_DAMEGE).handleId_;
 	playerUiHandles_[static_cast<int>(PLAYRE_HP_STATE::WARNIG)] = resMng_.Load(ResourceManager::SRC::IMG_PLAYER_UI_WARNIG).handleId_;
+
+	LockOnHandles_.resize(3);
+
+	LockOnHandles_[0] = resMng_.Load(ResourceManager::SRC::IMG_LOCKON_FONT_UI).handleId_;
 
 }
 
@@ -167,6 +171,8 @@ void GameScene::Update()
 			if (camMode_ == CAM_MODE::MANUAL)
 			{
 				camMode_ = CAM_MODE::TARGETING;
+				AudioManager::GetInstance()->SetSeVolume(300);
+				AudioManager::GetInstance()->PlaySE(SoundID::SE_LOCKON);
 				sceMng_.GetCamera()->ChangeMode(Camera::MODE::TARGETING);
 			}
 			else
@@ -178,6 +184,9 @@ void GameScene::Update()
 
 		if (camMode_ == CAM_MODE::TARGETING && ins->IsGamepadTriggerTrgDown(true, 0)|| InputManager::GetInstance()->IsTrgDown(KEY_INPUT_F))
 		{
+			AudioManager::GetInstance()->SetSeVolume(200);
+			AudioManager::GetInstance()->PlaySE(SoundID::SE_LOCKON_CHANGE);
+
 			//最大まで言ったら0に
 			if (targetEnemyId_ > enemyManager_->GetEnemies().size() - 1)
 			{
@@ -188,6 +197,7 @@ void GameScene::Update()
 				targetEnemyId_++;
 			}
 		}
+
 	}
 
 	// ターゲット切り替え
@@ -423,6 +433,11 @@ void GameScene::Draw()
 	PlayerHpDraw();
 	CommandDraw();
 
+	if (camMode_ == CAM_MODE::TARGETING)
+	{
+		DrawGraph(30, 100, LockOnHandles_[0], true);
+	}
+
 	// エフェクトを一番手前に描画
 	EffectManager::GetInstance().Draw();
 
@@ -579,6 +594,23 @@ void GameScene::Release()
 	//	delete weapon_;
 	//	weapon_ = nullptr;
 	//}
+
+	//UI解放
+	for (int i = 0; i < 11; i++)
+	{	
+		DeleteGraph(hpHandles_[i]);
+	}
+
+	for (int i = 0; i < COMMAND::MAX; i++)
+	{	
+		DeleteGraph(commandHandles_[i]);
+	}
+
+	for (int i = 0;  i < PLAYRE_HP_STATE::STATE_MAX; i++)
+	{
+		DeleteGraph(playerUiHandles_[i]);
+	}
+	
 }
 
 void GameScene::CreateAttackCollider(ColliderBase::TAG tag, VECTOR pos, float radius, float damage, int lifeTime)
@@ -759,7 +791,7 @@ void GameScene::CommandUpdate()
 void GameScene::CommandDraw()
 {
 
-	DrawGraph(0, 735, commandHandles[selectCommand_], true);
+	DrawGraph(0, 735, commandHandles_[selectCommand_], true);
 
 	const int baseX = 45;
 	const int selectOffset = 90;
