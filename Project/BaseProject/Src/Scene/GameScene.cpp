@@ -276,7 +276,7 @@ void GameScene::Update()
 		}
 	}
 
-	//フォント状態更新
+	// コマンドUI処
 	CommandUpdate();
 
 

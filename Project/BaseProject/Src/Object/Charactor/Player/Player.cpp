@@ -662,13 +662,13 @@ void Player::DestroyFireCollider(const FireInfo& fireInfo)
 
 void Player::CreateFireMagic()
 {
-
 	AudioManager::GetInstance()->PlaySE(SoundID::SE_NOT_MAGIC);
-	// サンダーと違って、コライダはすぐに作成する
 	fireInfo_ = FireInfo();
+	fireInfo_.timer = 0;
 	fireInfo_.transform.pos = transform_.pos;
+	fireInfo_.dir = transform_.quaRot.GetForward();
 	CreateFireCollider(fireInfo_);
-
+	isAliveFire_ = true;
 }
 
 void Player::CreateThunderMagic()
@@ -745,6 +745,16 @@ void Player::MagicCoolTime()
 		{
 			useRecovery_ = false;
 			recoveryCoolTime_ = 0;
+		}
+	}
+
+	if (useFire_)
+	{
+		fireCoolTime_++;
+		if (fireCoolTime_ >= FIRE_COOL_TIME)
+		{
+			useFire_ = false;
+			fireCoolTime_ = 0;
 		}
 	}
 }
@@ -843,18 +853,29 @@ void Player::UpdateMagic()
 
 	if (isAliveFire_)
 	{
-		// 敵に向かって移動する処理
-		// パラメータは任意
-		//----------
-		const float SPEED = 5.0f;// ヘッダーに移動
-
-		// ヒント
-		// ターゲティング中ならその敵の座標を取得する
-		// ターゲティング中の敵がいない場合は、プレイヤーの前方に
-		// ゲームシーンの取得方法
-		// GameScene* gameScene = dynamic_cast<GameScene*>(scnMng_.GetScene());
-
-		//----------
+		GameScene::CAM_MODE mode = gameScene_->GetCamMode();
+		if (fireInfo_.timer < FIRE_LIFETIME)
+		{
+			if (mode == GameScene::CAM_MODE::TARGETING)
+			{
+				VECTOR targetPos = gameScene_->GetTargetPos();
+				VECTOR vec = VSub(targetPos, fireInfo_.transform.pos);
+				VECTOR dir = VNorm(vec);
+				VECTOR move = VScale(dir, FIRE_SPEED);
+				fireInfo_.transform.pos = VAdd(fireInfo_.transform.pos, move);
+			}
+			else
+			{
+				VECTOR move = VScale(fireInfo_.dir, FIRE_SPEED);
+				fireInfo_.transform.pos = VAdd(fireInfo_.transform.pos, move);
+			}
+			fireInfo_.timer++;
+		}
+		else
+		{
+			DestroyFireCollider(fireInfo_);
+			isAliveFire_ = false;
+		}
 
 		fireInfo_.transform.Update();
 	}

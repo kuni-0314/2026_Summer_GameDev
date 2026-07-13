@@ -85,6 +85,11 @@ public:
 
 	void  SetDamageFlag(bool flag);
 	bool  GetFlag();
+
+	CAM_MODE GetCamMode() const { return camMode_; }
+
+	VECTOR GetTargetPos() const { return targetPos_; }
+
 private:
 
 	// ステージ

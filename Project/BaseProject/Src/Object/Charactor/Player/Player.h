@@ -236,6 +236,8 @@ private:
 	{
 		Transform transform = {};
 		ColliderSphere* collider = nullptr;
+		int timer = 0;
+		VECTOR dir = {};
 	};
 	void CreateFireCollider(FireInfo& fireInfo);
 
@@ -333,14 +335,15 @@ private:
 	void UpdateMagic();
 	FireInfo fireInfo_;
 
-	static constexpr int FIRE_LIFETIME = 180;		// 生存時間
+	static constexpr int FIRE_LIFETIME = 90;		// 生存時間
 	static constexpr float FIRE_RADIUS = 100.0f;	// 火の半径
+	static constexpr float FIRE_SPEED = 50.0f;		// 火の移動速度
 
-	// 実装ヨロ　パラメータは任意
 	static constexpr int FIRE_COOL_TIME = 180;		// クールタイム
 	int fireCoolTime_ = 0;	// クールタイムカウンタ
 	bool isAliveFire_ = false;	// 火の生存状態
 	bool useFire_ = false;
+	//VECTOR fireDir_ = { 0.0f, 0.0f, 1.0f };	// 火の移動方向
 	static constexpr int THUNDER_COOL_TIME = 180;	// クールタイム
 	int thunderCoolTime_ = 0;	// クールタイムカウンタ
 	bool isAliveThunder_ = false;	// 雷の生存状態

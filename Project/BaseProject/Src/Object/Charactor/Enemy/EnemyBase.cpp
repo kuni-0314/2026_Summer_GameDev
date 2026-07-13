@@ -282,19 +282,19 @@ void EnemyBase::CheckPlayerMagicCollision()
 
 			if (magicColSphere == nullptr) continue;
 
-			VECTOR aaa = magicColSphere->GetPos();
-			float bbb = magicColSphere->GetRadius();
-			VECTOR ccc = ownColCapsule->GetPosTop();
-			VECTOR ddd = ownColCapsule->GetPosDown();
-			float eee = ownColCapsule->GetRadius();
+			VECTOR magicSpherePos = magicColSphere->GetPos();
+			float magicSphereRadius = magicColSphere->GetRadius();
+			VECTOR capsuleTop = ownColCapsule->GetPosTop();
+			VECTOR capsuleBottom = ownColCapsule->GetPosDown();
+			float capsuleRadius = ownColCapsule->GetRadius();
 
 			// カプセルと球体の衝突判定
 			if (HitCheck_Sphere_Capsule(
-				aaa,
-				bbb,
-				ccc,
-				ddd,
-				eee) == true)
+				magicSpherePos,
+				magicSphereRadius,
+				capsuleTop,
+				capsuleBottom,
+				capsuleRadius) == true)
 			{
 				// ダメージ処理
 				Damege(1);
