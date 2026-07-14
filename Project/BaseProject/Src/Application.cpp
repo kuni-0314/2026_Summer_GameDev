@@ -61,7 +61,7 @@ void Application::Init()
 
 	// ウィンドウサイズ
 	SetGraphMode(SCREEN_SIZE_X, SCREEN_SIZE_Y, 32);
-	ChangeWindowMode(true);
+	ChangeWindowMode(false);
 
 	// FPS制御初期化
 	fpsController_ = new FpsController(fpsLimit_);

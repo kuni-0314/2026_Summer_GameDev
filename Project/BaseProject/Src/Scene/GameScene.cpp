@@ -124,6 +124,7 @@ void GameScene::Init()
 	commandHandles_[static_cast <int>(COMMAND::THUNDER)] = resMng_.Load(ResourceManager::SRC::IMG_SELECT_SANDER).handleId_;
 	commandHandles_[static_cast <int>(COMMAND::FIRE)] = resMng_.Load(ResourceManager::SRC::IMG_SELECT_FIRE).handleId_;
 	commandHandles_[static_cast <int>(COMMAND::RECOVERY)] = resMng_.Load(ResourceManager::SRC::IMG_SELECT_RECOVERY).handleId_;
+	commandHandles_[static_cast <int>(COMMAND::MAX)] = resMng_.Load(ResourceManager::SRC::IMG_SELECT_ALL).handleId_;
 
 	selectCommand_ = static_cast<int>(COMMAND::THUNDER);
 
@@ -413,6 +414,12 @@ void GameScene::Update()
 		}
 	}
 
+	if (ins->IsGamepadTrgDown(InputManager::PadInput::LB, 0))
+	{
+		AudioManager::GetInstance()->PlaySE(SoundID::SE_COMMAND_SELECT);
+		selectCommand_ = static_cast <int>(COMMAND::MAX);
+	}
+
 //#endif
 
 }
@@ -662,6 +669,8 @@ void GameScene::SelectCommand(COMMAND command)
 		break;
 	case GameScene::RECOVERY:
 		break;
+	case GameScene::MAX:
+		break;
 	default:
 		break;
 	}
@@ -790,12 +799,13 @@ void GameScene::CommandUpdate()
 
 void GameScene::CommandDraw()
 {
-
+	//選択してるコマンド描画
 	DrawGraph(0, 735, commandHandles_[selectCommand_], true);
 
 	const int baseX = 45;
 	const int selectOffset = 90;
 
+	//
 	for (int i = 0; i < static_cast<int>(COMMAND::MAX); i++)
 	{
 		bool isSelect = (i == selectCommand_);

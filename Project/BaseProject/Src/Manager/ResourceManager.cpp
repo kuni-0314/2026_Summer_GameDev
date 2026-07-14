@@ -108,6 +108,8 @@ void ResourceManager::Init()
 	resourcesMap_.emplace(SRC::IMG_SELECT_RECOVERY, res);	//mapÇ…ìoò^
 	res = new RES(RES_T::IMG, PATH_IMG + "UI/Command_Up.png");
 	resourcesMap_.emplace(SRC::IMG_SELECT_SANDER, res);	//mapÇ…ìoò^
+	res = new RES(RES_T::IMG, PATH_IMG + "UI/Command_AllUp.png");
+	resourcesMap_.emplace(SRC::IMG_SELECT_ALL, res);	//mapÇ…ìoò^
 
 	res = new RES(RES_T::IMG, PATH_IMG + "UI/notuse_Sander.png");
 	resourcesMap_.emplace(SRC::IMG_NOTUSE_SANDER, res);	//mapÇ…ìoò^
@@ -166,9 +168,15 @@ void ResourceManager::Init()
 	res = new RES(RES_T::IMG, PATH_IMG + "Shadow.png");
 	resourcesMap_.emplace(SRC::PLAYER_SHADOW, res);
 
-	//ÉGÉlÉ~Å[ÉâÉbÉg
+	//ÉGÉlÉ~Å[ÉâÉZ
 	res = new RES(RES_T::MODEL, PATH_MDL + "Enemy/Rase/Rase.mv1");
 	resourcesMap_.emplace(SRC::ENEMY_RASE, res);	//mapÇ…ìoò^
+
+	//ÉhÉâÉSÉì(BOSS)
+	res = new RES(RES_T::MODEL, PATH_MDL + "Enemy/Dragon/Idle01.mv1");
+	resourcesMap_.emplace(SRC::ENEMY_DRAGON, res);	//mapÇ…ìoò^
+
+
 
 	//ìGÇÃéãñÏ
 	res = new RES(RES_T::MODEL, PATH_MDL + "Enemy/Robot/Cone.mv1");
