@@ -448,7 +448,7 @@ void EnemyRase::AttackShot(void)
 
 	// エフェクト再生
 	shot.effect = std::make_shared<EffekseerEffect>(
-		L"Data/Effect/FireBall/FireBall.efkefc",
+		L"Data/Effect/Fire/Fire.efkefc",
 		shot.shotTransform_.pos
 	);
 
