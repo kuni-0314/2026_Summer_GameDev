@@ -69,6 +69,24 @@ void EnemyBase::HitEffect(const VECTOR& pos, const VECTOR& normal, float size)
 	EffectManager::GetInstance().RegisterEffect(effect);
 }
 
+void EnemyBase::HitThunderEffect(const VECTOR& pos, const VECTOR& normal, float size)
+{
+	auto effect = std::make_shared<EffekseerEffect>(
+		L"Data/Effect/Thunder/Hit.efkefc", // 好きなエフェクト
+		pos
+	);
+
+	effect->Play(
+		pos,
+		Quaternion::LookRotation(normal)
+	);
+
+	effect->SetScale(size * 30.0f);   // 必要なら
+	effect->SetLifeTime(30);
+
+	EffectManager::GetInstance().RegisterEffect(effect);
+}
+
 bool EnemyBase::InMovableRange(void) const
 {
 	bool ret = false;
@@ -304,7 +322,7 @@ void EnemyBase::CheckPlayerMagicCollision()
 				VECTOR hitPos = VAdd(ownColCapsule->GetCenter(), magicColSphere->GetPos());
 				hitPos = VScale(hitPos, 0.5f);
 
-				HitEffect(hitPos, VNorm(VSub(hitPos, transform_.pos)), 1.5f);
+				HitThunderEffect(hitPos, VNorm(VSub(hitPos, transform_.pos)), 1.5f);
 
 				// 一度あったらフラグ
 				wasHitMagic_ = true;

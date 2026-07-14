@@ -97,7 +97,7 @@ public:
 	void SetAliveMagic(const bool alive) { isAliveThunder_ = alive; }
 	void ActivatePowerUp();
 	void PlayBlinkEffect();
-
+	void DeleteFireEffect();
 
 	//スケール
 	static constexpr float SCL_PlAYER = 0.75f;
@@ -236,6 +236,12 @@ private:
 	{
 		Transform transform = {};
 		ColliderSphere* collider = nullptr;
+
+		VECTOR moveDir;
+
+		int timer = 0;
+
+		std::shared_ptr<EffekseerEffect> effect;
 	};
 	void CreateFireCollider(FireInfo& fireInfo);
 
@@ -277,6 +283,8 @@ private:
 	std::shared_ptr<EffekseerEffect> m_powerUpEffect;
 
 	std::shared_ptr<EffekseerEffect> blinkEffect_;
+
+	std::shared_ptr<EffekseerEffect> recoveryEffect_;
 
 	// 攻撃のクールタイム
 	int attackCoolTime_;

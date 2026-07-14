@@ -63,6 +63,12 @@ void Player::Update()
 		comboTimer_--;
 	}
 
+	// ヒールの時間を減算
+	if (recoveryEffect_)
+	{
+		recoveryEffect_->SetPosition(transform_.pos);
+	}
+
 	// 各キャラクターごとの更新処理
 	UpdateProcess();
 	if (!m_isPowerUp)
@@ -481,6 +487,44 @@ void Player::PlayBlinkEffect()
 	EffectManager::GetInstance().RegisterEffect(effect);
 }
 
+void Player::DeleteFireEffect()
+{
+	if (!isAliveFire_) return;
+
+	VECTOR pos = fireInfo_.transform.pos;
+
+	//------------------------------------
+	// Fireエフェクト停止
+	//------------------------------------
+	if (fireInfo_.effect)
+	{
+		fireInfo_.effect->Stop();
+		fireInfo_.effect.reset();
+	}
+
+	//------------------------------------
+	// Burst生成
+	//------------------------------------
+	auto burst = std::make_shared<EffekseerEffect>(
+		L"Data/Effect/Fire/Burst.efkefc",
+		pos
+	);
+
+	burst->Play(
+		pos,
+		Quaternion()
+	);
+
+	burst->SetLifeTime(60);
+
+	EffectManager::GetInstance().RegisterEffect(burst);
+
+	//------------------------------------
+	// 弾削除
+	//------------------------------------
+	isAliveFire_ = false;
+}
+
 void Player::CheckPlayerRingCollision()
 {
 	//// プレイヤーのカプセルコライダを取得
@@ -666,7 +710,27 @@ void Player::CreateFireMagic()
 	AudioManager::GetInstance()->PlaySE(SoundID::SE_NOT_MAGIC);
 	// サンダーと違って、コライダはすぐに作成する
 	fireInfo_ = FireInfo();
+
 	fireInfo_.transform.pos = transform_.pos;
+	fireInfo_.transform.quaRot = transform_.quaRot;
+
+	// ←ここに追加
+	auto effect = std::make_shared<EffekseerEffect>(
+		L"Data/Effect/Fire/Fire.efkefc",
+		fireInfo_.transform.pos
+	);
+
+	effect->Play(
+		fireInfo_.transform.pos,
+		fireInfo_.transform.quaRot
+	);
+
+	EffectManager::GetInstance().RegisterEffect(effect);
+
+	fireInfo_.effect = effect;
+
+	isAliveFire_ = true;
+
 	CreateFireCollider(fireInfo_);
 
 }
@@ -719,6 +783,20 @@ void Player::CreateRecoveryMagic()
 		AudioManager::GetInstance()->PlaySE(SoundID::SE_MAGIC_HEAL);
 		HealHp(5);
 		useRecovery_ = true;
+
+		auto effect = std::make_shared<EffekseerEffect>(
+			L"Data/Effect/Heal/Heal.efkefc",
+			transform_.pos
+		);
+
+		effect->SetLifeTime(60);
+
+		effect->Play(
+			transform_.pos,
+			transform_.quaRot
+		);
+
+		EffectManager::GetInstance().RegisterEffect(effect);
 	}
 	else
 	{
@@ -846,7 +924,7 @@ void Player::UpdateMagic()
 		// 敵に向かって移動する処理
 		// パラメータは任意
 		//----------
-		const float SPEED = 5.0f;// ヘッダーに移動
+		const float SPEED = 100.0f;// ヘッダーに移動
 
 		// ヒント
 		// ターゲティング中ならその敵の座標を取得する
@@ -856,6 +934,34 @@ void Player::UpdateMagic()
 
 		//----------
 
-		fireInfo_.transform.Update();
+		 // 前へ移動
+		if (isAliveFire_)
+		{
+			fireInfo_.transform.pos =
+				VAdd(
+					fireInfo_.transform.pos,
+					VScale(fireInfo_.moveDir, SPEED)
+				);
+
+			fireInfo_.transform.Update();
+
+			if (fireInfo_.effect)
+			{
+				fireInfo_.effect->SetPosition(fireInfo_.transform.pos);
+			}
+		}
+
+		// 生存時間
+		fireInfo_.timer++;
+
+		if (fireInfo_.timer >= 120)
+		{
+			if (fireInfo_.effect != nullptr)
+			{
+				fireInfo_.effect->Stop();
+			}
+
+			isAliveFire_ = false;
+		}
 	}
 }
