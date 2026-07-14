@@ -28,8 +28,8 @@ EnemyRat::~EnemyRat()
 void EnemyRat::Draw()
 {
 
-	// 基底クラスの描画処理
-	CharactorBase::Draw();
+	// 親クラスの描画処理
+	EnemyBase::Draw();
 
 
 	STATE next = state_;

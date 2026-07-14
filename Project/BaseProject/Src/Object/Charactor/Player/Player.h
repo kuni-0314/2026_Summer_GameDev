@@ -93,8 +93,8 @@ public:
 	void SetAnimStartModelPos(const VECTOR& pos) { animStartModelPos_ = pos; }
 	bool IsAttacking() const { return isAttacking_; }
 	void SetAttacking(const bool attacking) { isAttacking_ = attacking; }
-	bool IsAliveMagic() const { return isAliveThunder_; }
-	void SetAliveMagic(const bool alive) { isAliveThunder_ = alive; }
+	bool IsAliveMagic() const { return isAliveMagic_; }
+	void SetAliveMagic(const bool alive) { isAliveMagic_ = alive; }
 	void ActivatePowerUp();
 	void PlayBlinkEffect();
 
@@ -319,12 +319,13 @@ private:
 	//bool isAliveThunder_;
 	int thunderTimer_;
 
-	static constexpr int THUNDER_COUNT = 10;		// 雷の数
-	ThunderInfo thunderInfos_[THUNDER_COUNT];		// 雷の情報配列
-	static constexpr int THUNDER_LIFETIME = 60;		// 生存時間
-	static constexpr int THUNDER_INTERVAL = 5;		// 発生間隔
-	static constexpr float THUNDER_RADIUS = 100.0f;	// 雷の半径
-	//VECTOR thunderPosOffsets_[THUNDER_COUNT];
+	static constexpr int THUNDER_COUNT = 10;			// 雷の数
+	ThunderInfo thunderInfos_[THUNDER_COUNT];			// 雷の情報配列
+	static constexpr int THUNDER_LIFETIME = 30;			// 生存時間
+	static constexpr int THUNDER_INTERVAL = 5;			// 発生間隔
+	static constexpr float THUNDER_RADIUS = 100.0f;		// 雷の半径
+	static constexpr float THUNDER_FALL_SPEED = 100.0f;	// 雷の落下速度
+	static constexpr float THUNDER_SPAWN_Y = 500.0f;	// 雷の発生位置Y座標
 
 	void CreateFireMagic();
 	void CreateThunderMagic();
@@ -340,6 +341,7 @@ private:
 	static constexpr float FIRE_SPEED = 50.0f;		// 火の移動速度
 
 	static constexpr int FIRE_COOL_TIME = 180;		// クールタイム
+	bool isAliveMagic_ = false;	// 魔法の生存状態
 	int fireCoolTime_ = 0;	// クールタイムカウンタ
 	bool isAliveFire_ = false;	// 火の生存状態
 	bool useFire_ = false;

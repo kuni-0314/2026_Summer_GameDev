@@ -405,16 +405,16 @@ void Player::Draw()
 	DrawSphere3D(lineZ, 5.0f, 16, 0x0000FF, 0x0000FF, true);
 	DrawSphere3D(rot, 5.0f, 16, 0xFFFF00, 0xFFFF00, true);
 
-	for (int i = 0; i < THUNDER_COUNT; i++)
-	{
-		if (!thunderInfos_[i].isActive) continue;
-		VECTOR spherePos = thunderInfos_[i].transform.pos;
-		DrawSphere3D(spherePos, 100.0f, 16, 0xff00ff, 0xff00ff, false);
-	}
-	if (isAliveFire_)
-	{
-		DrawSphere3D(fireInfo_.transform.pos, FIRE_RADIUS, 16, 0xff0000, 0xff0000, false);
-	}
+	//for (int i = 0; i < THUNDER_COUNT; i++)
+	//{
+	//	if (!thunderInfos_[i].isActive) continue;
+	//	VECTOR spherePos = thunderInfos_[i].transform.pos;
+	//	DrawSphere3D(spherePos, 100.0f, 16, 0xff00ff, 0xff00ff, false);
+	//}
+	//if (isAliveFire_)
+	//{
+	//	DrawSphere3D(fireInfo_.transform.pos, FIRE_RADIUS, 16, 0xff0000, 0xff0000, false);
+	//}
 
 
 	VECTOR test = transform_.quaRot.PosAxis(VGet(0, 0, -100));
@@ -879,4 +879,7 @@ void Player::UpdateMagic()
 
 		fireInfo_.transform.Update();
 	}
+
+	if (isAliveThunder_ || isAliveFire_) isAliveMagic_ = true;
+	else isAliveMagic_ = false;
 }

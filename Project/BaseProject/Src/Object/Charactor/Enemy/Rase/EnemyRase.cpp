@@ -33,8 +33,8 @@ EnemyRase::~EnemyRase()
 
 void EnemyRase::Draw()
 {
-	// 基底クラスの描画処理
-	CharactorBase::Draw();
+	// 親クラスの描画処理
+	EnemyBase::Draw();
 	DrawShot();
 
 #ifdef _DEBUG
@@ -195,6 +195,7 @@ void EnemyRase::UpdateProcess()
 	preHp_ = hp_;//被ダメージ前HP保存
 
 	CheckPlayerSwordCollision();
+	CheckPlayerMagicCollision();
 
 	if (hp_ < preHp_)
 	{

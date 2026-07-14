@@ -30,10 +30,8 @@ EnemyLarge::~EnemyLarge()
 
 void EnemyLarge::Draw(void)
 {
-	// 基底クラスの描画処理
-	CharactorBase::Draw();
-
-
+	// 親クラスの描画処理
+	EnemyBase::Draw();
 
 	if (isDrop_)
 	{
@@ -51,8 +49,9 @@ void EnemyLarge::Draw(void)
 		}
 	}
 
-#ifdef _DEBUG
 
+
+#ifdef _DEBUGa
 	DrawSphere3D(attackWorldPos_, COL_SPHERE_RADIUS, 16, GetColor(255, 0, 0), GetColor(255, 0, 0), false);
 
 	STATE next = state_;
@@ -236,6 +235,7 @@ void EnemyLarge::UpdateProcess()
 	preHp_ = hp_;//被ダメージ前HP保存
 
 	CheckPlayerSwordCollision();
+	CheckPlayerMagicCollision();
 
 	//正面にPlayerがいるのか
 	bool isATField_;

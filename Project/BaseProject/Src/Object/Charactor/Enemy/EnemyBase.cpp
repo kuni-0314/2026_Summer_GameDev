@@ -44,7 +44,16 @@ void EnemyBase::Draw()
 {
 	CharactorBase::Draw();
 
+#ifdef _DEBUG
+	for (auto col : hitColliders_)
+	{
+		if (col->GetTag() != ColliderBase::TAG::PLAYER_MAGIC) continue;
+		auto colSphere = dynamic_cast<const ColliderSphere*>(col);
+		DrawSphere3D(colSphere->GetPos(), colSphere->GetRadius(), 16, GetRand(0xffffff), GetColor(0, 255, 0), false);
+	}
 
+
+#endif
 }
 
 void EnemyBase::Release(void)
