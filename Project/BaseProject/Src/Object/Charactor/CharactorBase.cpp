@@ -42,6 +42,12 @@ void CharactorBase::Update()
 	// 移動前座標を更新
 	prevPos_ = transform_.pos;
 
+	// 無敵フレームのカウントダウン
+	if (invincibleFrameCount_ > 0)
+	{
+		invincibleFrameCount_--;
+	}
+
 	// 各キャラクターごとの更新処理
 	UpdateProcess();
 	// 移動方向に応じた遅延回転
@@ -84,13 +90,22 @@ void CharactorBase::Release()
 
 void CharactorBase::Damege(int damege)
 {
+	if (invincibleFrameCount_ > 0)
+	{
+		// 無敵フレーム中はダメージを受けない
+		return;
+	}
+
 	hp_ -= damege;
 	if (hp_ <= 0)
 	{
 		hp_ = 0;
-		// 死亡処理
-		//isAlive_ = false;
+		
+		return;
 	}
+
+	// 原則として無敵フレームを設定する
+	invincibleFrameCount_ = INVINCIBLE_FRAME_COUNT;
 }
 
 bool CharactorBase::IsAnimEnd()

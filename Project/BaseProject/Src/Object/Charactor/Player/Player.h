@@ -183,9 +183,9 @@ public:
 
 	static constexpr int MAX_HP = 20;
 
-	bool GetUseThunder();
-	bool GetUseFire();
-	bool GetUseRecovery();
+	int GetThunderCoolTime();
+	int GetFireCoolTime();
+	int GetHealCoolTime();
 
 protected:
 
@@ -329,7 +329,7 @@ private:
 
 	void CreateFireMagic();
 	void CreateThunderMagic();
-	void CreateRecoveryMagic();
+	void CreateHealMagic();
 
 	void MagicCoolTime();//魔法のクールタイム	
 
@@ -340,19 +340,16 @@ private:
 	static constexpr float FIRE_RADIUS = 100.0f;	// 火の半径
 	static constexpr float FIRE_SPEED = 50.0f;		// 火の移動速度
 
-	static constexpr int FIRE_COOL_TIME = 180;		// クールタイム
+	static constexpr int FIRE_COOL_TIME = 300;		// クールタイム
 	bool isAliveMagic_ = false;	// 魔法の生存状態
 	int fireCoolTime_ = 0;	// クールタイムカウンタ
 	bool isAliveFire_ = false;	// 火の生存状態
-	bool useFire_ = false;
 	//VECTOR fireDir_ = { 0.0f, 0.0f, 1.0f };	// 火の移動方向
-	static constexpr int THUNDER_COOL_TIME = 180;	// クールタイム
+	static constexpr int THUNDER_COOL_TIME = 300;	// クールタイム
 	int thunderCoolTime_ = 0;	// クールタイムカウンタ
 	bool isAliveThunder_ = false;	// 雷の生存状態
-	bool useThunder_ = false;
-	static constexpr int RECOVERY_COOL_TIME = 300;	// クールタイム
-	int recoveryCoolTime_ = 0;	// クールタイムカウンタ
-	bool useRecovery_ = false;
-	//bool isAliveRecovery_ = false;	// 回復の生存状態いらんやろ
+	static constexpr int HEAL_COOL_TIME = 600;	// クールタイム
+	int healCoolTime_ = 0;	// クールタイムカウンタ
+	static constexpr int HEAL_AMOUNT = 5;	// 回復量
 
 };

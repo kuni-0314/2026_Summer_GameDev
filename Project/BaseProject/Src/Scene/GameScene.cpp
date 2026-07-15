@@ -123,7 +123,7 @@ void GameScene::Init()
 
 	commandHandles[static_cast <int>(COMMAND::THUNDER)] = resMng_.Load(ResourceManager::SRC::IMG_SELECT_SANDER).handleId_;
 	commandHandles[static_cast <int>(COMMAND::FIRE)] = resMng_.Load(ResourceManager::SRC::IMG_SELECT_FIRE).handleId_;
-	commandHandles[static_cast <int>(COMMAND::RECOVERY)] = resMng_.Load(ResourceManager::SRC::IMG_SELECT_RECOVERY).handleId_;
+	commandHandles[static_cast <int>(COMMAND::HEAL)] = resMng_.Load(ResourceManager::SRC::IMG_SELECT_RECOVERY).handleId_;
 
 	selectCommand_ = static_cast<int>(COMMAND::THUNDER);
 
@@ -133,8 +133,8 @@ void GameScene::Init()
 	fontCommandHandles_[static_cast <int>(COMMAND::THUNDER)][(int)COMMAND_STATE::USE] = resMng_.Load(ResourceManager::SRC::IMG_USE_SANDER).handleId_;
 	fontCommandHandles_[static_cast <int>(COMMAND::FIRE)][(int)COMMAND_STATE::NOT_USE] = resMng_.Load(ResourceManager::SRC::IMG_NOTUSE_FIRE).handleId_;
 	fontCommandHandles_[static_cast <int>(COMMAND::FIRE)][(int)COMMAND_STATE::USE] = resMng_.Load(ResourceManager::SRC::IMG_USE_FIRE).handleId_;
-	fontCommandHandles_[static_cast <int>(COMMAND::RECOVERY)][(int)COMMAND_STATE::NOT_USE] = resMng_.Load(ResourceManager::SRC::IMG_NOTUSE_RECOVERY).handleId_;
-	fontCommandHandles_[static_cast <int>(COMMAND::RECOVERY)][(int)COMMAND_STATE::USE] = resMng_.Load(ResourceManager::SRC::IMG_USE_RECOVERY).handleId_;
+	fontCommandHandles_[static_cast <int>(COMMAND::HEAL)][(int)COMMAND_STATE::NOT_USE] = resMng_.Load(ResourceManager::SRC::IMG_NOTUSE_RECOVERY).handleId_;
+	fontCommandHandles_[static_cast <int>(COMMAND::HEAL)][(int)COMMAND_STATE::USE] = resMng_.Load(ResourceManager::SRC::IMG_USE_RECOVERY).handleId_;
 
 	playerUiHandles_.resize(static_cast<int>(PLAYRE_HP_STATE::STATE_MAX));
 
@@ -388,7 +388,7 @@ void GameScene::Update()
 		selectCommand_--;
 		if (selectCommand_ < static_cast <int>(COMMAND::THUNDER))
 		{
-			selectCommand_ = static_cast <int>(COMMAND::RECOVERY);
+			selectCommand_ = static_cast <int>(COMMAND::HEAL);
 		}
 	}
 
@@ -397,7 +397,7 @@ void GameScene::Update()
 		AudioManager::GetInstance()->PlaySE(SoundID::SE_COMMAND_SELECT);
 
 		selectCommand_++;
-		if (selectCommand_ > static_cast <int>(COMMAND::RECOVERY))
+		if (selectCommand_ > static_cast <int>(COMMAND::HEAL))
 		{
 			selectCommand_ = static_cast <int>(COMMAND::THUNDER);
 		}
@@ -628,7 +628,7 @@ void GameScene::SelectCommand(COMMAND command)
 		break;
 	case GameScene::FIRE:
 		break;
-	case GameScene::RECOVERY:
+	case GameScene::HEAL:
 		break;
 	default:
 		break;
@@ -731,17 +731,8 @@ void GameScene::PlayerHpDraw()
 
 void GameScene::CommandUpdate()
 {
-	if(player_->GetUseRecovery())
-	{
-		recoveryState_ = COMMAND_STATE::USE;
-	}
-	else
-	{
-		recoveryState_ = COMMAND_STATE::NOT_USE;
-	}
-
-	//サンダーフォント切り替え
-	if (player_->GetUseThunder())
+	//サンダー
+	if (player_->GetThunderCoolTime() > 0)
 	{
 		thunderState_ = COMMAND_STATE::USE;
 	}
@@ -751,9 +742,25 @@ void GameScene::CommandUpdate()
 	}
 
 
-	// ファイアは未実装
-	fireState_ = COMMAND_STATE::USE;
+	// ファイア
+	if (player_->GetFireCoolTime() > 0)
+	{
+		fireState_ = COMMAND_STATE::USE;
+	}
+	else
+	{
+		fireState_ = COMMAND_STATE::NOT_USE;
+	}
 
+	// 回復
+	if(player_->GetHealCoolTime() > 0)
+	{
+		healState_ = COMMAND_STATE::USE;
+	}
+	else
+	{
+		healState_ = COMMAND_STATE::NOT_USE;
+	}
 }
 
 void GameScene::CommandDraw()
@@ -780,8 +787,8 @@ void GameScene::CommandDraw()
 			state = fireState_;
 			break;
 
-		case COMMAND::RECOVERY:
-			state = recoveryState_;
+		case COMMAND::HEAL:
+			state = healState_;
 			break;
 
 		default:

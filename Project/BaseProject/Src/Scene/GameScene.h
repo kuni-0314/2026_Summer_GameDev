@@ -38,7 +38,7 @@ public:
 	{
 		THUNDER,
 		FIRE,
-		RECOVERY,
+		HEAL,
 		MAX
 	};
 
@@ -121,7 +121,7 @@ private:
 
 	COMMAND_STATE thunderState_;
 	COMMAND_STATE fireState_;
-	COMMAND_STATE recoveryState_;
+	COMMAND_STATE healState_;
 
 	int selectCommand_;
 

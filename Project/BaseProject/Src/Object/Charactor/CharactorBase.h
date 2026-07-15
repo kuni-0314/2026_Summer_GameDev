@@ -117,6 +117,8 @@ protected:
 
 	AnimationController* animationController_;
 
+	int GetInvincibleFrameCount() const { return invincibleFrameCount_; }
+
 private:
 
 	int stage_; //影の判定用ステージハンドル
@@ -130,5 +132,9 @@ private:
 	VECTOR SlideVec;//影のベクトル
 	VERTEX3D Vertex[3];
 	
+	// 無敵フレーム数
+	static constexpr int INVINCIBLE_FRAME_COUNT = 10;
+	int invincibleFrameCount_ = 0;
+
 };
 

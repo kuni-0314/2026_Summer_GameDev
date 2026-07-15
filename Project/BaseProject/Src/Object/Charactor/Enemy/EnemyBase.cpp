@@ -232,6 +232,7 @@ void EnemyBase::CheckPlayerSwordCollision()
 			{
 				// ダメージ処理
 				Damege(1);
+
 				AudioManager::GetInstance()->PlaySE(SoundID::SE_ENEMY_HIT);
 
 				// エフェクト再生
@@ -307,6 +308,7 @@ void EnemyBase::CheckPlayerMagicCollision()
 			{
 				// ダメージ処理
 				Damege(1);
+
 				AudioManager::GetInstance()->PlaySE(SoundID::SE_ENEMY_HIT);
 
 				// エフェクト再生
@@ -317,6 +319,7 @@ void EnemyBase::CheckPlayerMagicCollision()
 
 				// 一度あったらフラグ
 				wasHitMagic_ = true;
+				RemoveHitCollider(hitCol);
 			}
 		}
 	}

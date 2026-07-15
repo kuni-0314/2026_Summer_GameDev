@@ -303,20 +303,40 @@ void Player::UpdateProcess()
 
 	// 魔法開始
 	// 調整中（フラグがサンダーしかない）
-	if (!isAliveThunder_ &&
-		(ins->IsTrgDown(KEY_INPUT_E) || ins->IsGamepadTrgDown(InputManager::PadInput::Y, padNum_)))
+	if ((ins->IsTrgDown(KEY_INPUT_E) || ins->IsGamepadTrgDown(InputManager::PadInput::Y, padNum_)))
 	{
 		GameScene* gameScene = dynamic_cast<GameScene*>(scnMng_.GetScene());
 		switch (gameScene->GetSelectedCommand())
 		{
 		case GameScene::COMMAND::FIRE:
-			CreateFireMagic();
+			if (fireCoolTime_ <= 0)
+			{
+				CreateFireMagic();
+			}
+			else
+			{
+				AudioManager::GetInstance()->PlaySE(SoundID::SE_NOT_MAGIC);
+			}
 			break;
 		case GameScene::COMMAND::THUNDER:
-			CreateThunderMagic();
+			if (thunderCoolTime_ <= 0)
+			{
+				CreateThunderMagic();
+			}
+			else
+			{
+				AudioManager::GetInstance()->PlaySE(SoundID::SE_NOT_MAGIC);
+			}
 			break;
-		case GameScene::COMMAND::RECOVERY:
-			CreateRecoveryMagic();
+		case GameScene::COMMAND::HEAL:
+			if (healCoolTime_ <= 0)
+			{
+				CreateHealMagic();
+			}
+			else
+			{
+				AudioManager::GetInstance()->PlaySE(SoundID::SE_NOT_MAGIC);
+			}
 			break;
 		default:
 			break;
@@ -338,7 +358,6 @@ void Player::UpdateProcessPost()
 		sword_->Update();
 	}
 
-	MagicCoolTime();
 }
 
 void Player::Draw()
@@ -662,18 +681,21 @@ void Player::DestroyFireCollider(const FireInfo& fireInfo)
 
 void Player::CreateFireMagic()
 {
-	AudioManager::GetInstance()->PlaySE(SoundID::SE_NOT_MAGIC);
-	fireInfo_ = FireInfo();
-	fireInfo_.timer = 0;
-	fireInfo_.transform.pos = transform_.pos;
-	fireInfo_.dir = transform_.quaRot.GetForward();
-	CreateFireCollider(fireInfo_);
-	isAliveFire_ = true;
+	if (!isAliveFire_)
+	{
+		fireInfo_ = FireInfo();
+		fireInfo_.timer = 0;
+		fireInfo_.transform.pos = transform_.pos;
+		fireInfo_.dir = transform_.quaRot.GetForward();
+		CreateFireCollider(fireInfo_);
+		isAliveFire_ = true;
+		fireCoolTime_ = FIRE_COOL_TIME;
+	}
 }
 
 void Player::CreateThunderMagic()
 {
-	if (!useThunder_)
+	if (!isAliveThunder_)
 	{
 		thunderTimer_ = 0;
 		isAliveThunder_ = true;
@@ -704,78 +726,54 @@ void Player::CreateThunderMagic()
 			thunderInfos_[i].isDestroyed = false;
 		}
 
-		useThunder_ = true;
-	}
-	else
-	{
-		AudioManager::GetInstance()->PlaySE(SoundID::SE_NOT_MAGIC);
+		thunderCoolTime_ = THUNDER_COOL_TIME;
 	}
 }
 
-void Player::CreateRecoveryMagic()
+void Player::CreateHealMagic()
 {
-	if (!useRecovery_)
-	{
-		AudioManager::GetInstance()->PlaySE(SoundID::SE_MAGIC_HEAL);
-		HealHp(5);
-		useRecovery_ = true;
-	}
-	else
-	{
-		AudioManager::GetInstance()->PlaySE(SoundID::SE_NOT_MAGIC);
-	}
+	AudioManager::GetInstance()->PlaySE(SoundID::SE_MAGIC_HEAL);
+	HealHp(HEAL_AMOUNT);
+	healCoolTime_ = HEAL_COOL_TIME;
 }
 
 void Player::MagicCoolTime()
 {
-	if (useThunder_)
+	if (thunderCoolTime_ > 0)
 	{
-		thunderCoolTime_++;
-		if (thunderCoolTime_ >= FIRE_COOL_TIME)
-		{
-			useThunder_ = false;
-			thunderCoolTime_ = 0;
-		}
+		thunderCoolTime_--;
 	}
 
-	if (useRecovery_)
+	if (fireCoolTime_ > 0)
 	{
-		recoveryCoolTime_++;
-		if (recoveryCoolTime_ >= RECOVERY_COOL_TIME)
-		{
-			useRecovery_ = false;
-			recoveryCoolTime_ = 0;
-		}
+		fireCoolTime_--;
 	}
 
-	if (useFire_)
+	if (healCoolTime_ > 0)
 	{
-		fireCoolTime_++;
-		if (fireCoolTime_ >= FIRE_COOL_TIME)
-		{
-			useFire_ = false;
-			fireCoolTime_ = 0;
-		}
+		healCoolTime_--;
 	}
 }
 
-bool Player::GetUseThunder()
+int Player::GetThunderCoolTime()
 {
-	return useThunder_;
+	return thunderCoolTime_;
 }
 
-bool Player::GetUseFire()
+int Player::GetFireCoolTime()
 {
-	return useFire_;
+	return fireCoolTime_;
 }
 
-bool Player::GetUseRecovery()
+int Player::GetHealCoolTime()
 {
-	return useRecovery_;
+	return healCoolTime_;
 }
 
 void Player::UpdateMagic()
 {
+	MagicCoolTime();
+
 	if (isAliveThunder_)
 	{
 		thunderTimer_++;
