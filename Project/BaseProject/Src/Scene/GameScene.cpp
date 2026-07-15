@@ -142,6 +142,8 @@ void GameScene::Init()
 	playerUiHandles_[static_cast<int>(PLAYRE_HP_STATE::DAMEGE)] = resMng_.Load(ResourceManager::SRC::IMG_PLAYER_UI_DAMEGE).handleId_;
 	playerUiHandles_[static_cast<int>(PLAYRE_HP_STATE::WARNIG)] = resMng_.Load(ResourceManager::SRC::IMG_PLAYER_UI_WARNIG).handleId_;
 
+
+	lockOnImageHandle_ = resMng_.Load(ResourceManager::SRC::TARGET_CURSOR_ORANGE).handleId_;
 }
 
 void GameScene::Update()
@@ -422,6 +424,16 @@ void GameScene::Draw()
 
 	PlayerHpDraw();
 	CommandDraw();
+
+	if (camMode_ == TARGETING)
+	{
+		static float angle = 0.0f;
+		angle -= 0.025f;
+		auto pos = targetPos_;
+		pos.y += 80.0f;
+		DrawBillboard3D(pos, 0.5f, 0.5f, 100.0f, angle, lockOnImageHandle_, true);
+	}
+
 
 	// エフェクトを一番手前に描画
 	EffectManager::GetInstance().Draw();

@@ -186,4 +186,5 @@ private:
 
 	void PlayerFaceUIDrow();
 
+	int lockOnImageHandle_;
 };
