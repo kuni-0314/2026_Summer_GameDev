@@ -16,12 +16,18 @@ bool PlayerState::CheckTransitions(Player* player)
 	{
 		if (enableKAM)
 		{
-			isAttackInput = ins->IsGamepadTrgUp(InputManager::PadInput::A, player->GetPadNum());
+			if (!player->GetIsShortCut())
+			{
+				isAttackInput = ins->IsGamepadTrgUp(InputManager::PadInput::A, player->GetPadNum());
+			}
 			isAttackInput = isAttackInput || ins->IsMouseTrgUp(MOUSE_INPUT_LEFT);
 		}
 		else
 		{
-			isAttackInput = ins->IsGamepadTrgUp(InputManager::PadInput::A, player->GetPadNum());
+			if (!player->GetIsShortCut())
+			{
+				isAttackInput = ins->IsGamepadTrgUp(InputManager::PadInput::A, player->GetPadNum());
+			}
 		}
 	}
 	else
@@ -43,7 +49,10 @@ bool PlayerState::CheckTransitions(Player* player)
 	{
 		if (enableKAM)
 		{
-			isJetInput = ins->IsGamepadTrgDown(InputManager::PadInput::X, player->GetPadNum());
+			if (!player->GetIsShortCut())
+			{
+				isJetInput = ins->IsGamepadTrgDown(InputManager::PadInput::X, player->GetPadNum());
+			}
 			isJetInput = isJetInput || ins->IsMouseTrgDown(MOUSE_INPUT_RIGHT);
 		}
 		else
