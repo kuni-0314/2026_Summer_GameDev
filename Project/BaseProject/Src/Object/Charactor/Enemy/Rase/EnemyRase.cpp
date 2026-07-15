@@ -423,47 +423,37 @@ void EnemyRase::UpdateCharge(void)
 	movePow_ = AsoUtility::VECTOR_ZERO;
 }
 
-void EnemyRase::AttackShot(void)
+void EnemyRase::AttackShot()
 {
 	SHOT shot;
 
-	//弾生存フラグ
 	shot.isShotAlive_ = true;
 
-
-	//弾の大きさ、座標等の初期化
-	shot.shotTransform_.scl = { SHOT_SCALE ,SHOT_SCALE ,SHOT_SCALE };
+	shot.shotTransform_.scl = { SHOT_SCALE, SHOT_SCALE, SHOT_SCALE };
 	shot.shotTransform_.quaRot = Quaternion::Identity();
 	shot.shotTransform_.quaRotLocal = Quaternion::Euler(ROT);
 
-	shot.shotTransform_.Update();
-
 	shot.shotTransform_.modelId = shotmodel_;
+	shot.shotTransform_.SetModel(MV1DuplicateModel(shotmodel_));
 
-	//モデルのセット
-	shot.shotTransform_.SetModel(MV1DuplicateModel(shot.shotTransform_.modelId));
-
-	//らせの座標位置を取得
 	shot.shotTransform_.pos = transform_.pos;
-
-	//弾向き
 	shot.dir_ = VNorm(toPlayer_);
 
-	auto effect = std::make_shared<EffekseerEffect>(
+	shot.shotTransform_.Update();
+
+	shot.effect = std::make_shared<EffekseerEffect>(
 		L"Data/Effect/Fire/Fire.efkefc",
 		shot.shotTransform_.pos
 	);
 
-	effect->Play(
+	shot.effect->Play(
 		shot.shotTransform_.pos,
 		Quaternion::LookRotation(shot.dir_)
 	);
 
-	EffectManager::GetInstance().RegisterEffect(effect);
+	EffectManager::GetInstance().RegisterEffect(shot.effect);
 
-	shot.effect = effect;
-
-	shots_.push_back(shot);
+	shots_.emplace_back(std::move(shot));
 }
 
 void EnemyRase::UpdateShot(void)
@@ -493,17 +483,21 @@ void EnemyRase::UpdateShot(void)
 			shot.dir_ =
 				VNorm(VAdd(VScale(shot.dir_, 1.0f - shot.homingPower),
 					VScale(targetDir, shot.homingPower)));
+
 		}
 
 		shot.shotTransform_.pos =
 			VAdd(shot.shotTransform_.pos,
 				VScale(shot.dir_, shot.speed));
 
+		shot.shotTransform_.Update();
+
 		//エフェクトをプレイヤーに追従	
 		if (shot.effect)
 		{
-			shot.effect->SetPosition(shot.shotTransform_.pos);
+			shot.effect->SetPosition({ 0.0f,1000.0f,0.0f });
 			shot.effect->SetRotation(Quaternion::LookRotation(shot.dir_));
+
 		}
 
 
@@ -556,8 +550,4 @@ void EnemyRase::DrawShot(void)
 		MV1DrawModel(shot.shotTransform_.modelId);
 	}
 }
-
-
-
-
 

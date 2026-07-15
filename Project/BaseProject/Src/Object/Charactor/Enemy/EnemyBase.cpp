@@ -72,7 +72,7 @@ void EnemyBase::HitEffect(const VECTOR& pos, const VECTOR& normal, float size)
 void EnemyBase::HitThunderEffect(const VECTOR& pos, const VECTOR& normal, float size)
 {
 	auto effect = std::make_shared<EffekseerEffect>(
-		L"Data/Effect/Thunder/Light.efkefc", // 好きなエフェクト
+		L"Data/Effect/Thunder/N.efkefc", // 好きなエフェクト
 		pos
 	);
 

@@ -43,6 +43,7 @@ public:
 	struct SHOT
 	{
 		bool isShotAlive_ = false;
+		bool isEffectPlayed = false;
 		float speed = 4.5f;
 		int life = 180;
 		float homingPower = 0.02f;
@@ -148,7 +149,6 @@ private:
 	bool attackHit_ = false;;
 
 	bool shotFired_;
-
 
 	// 更新ステップ
 	float step_;// 状態管理(更新ステップ)
