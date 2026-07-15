@@ -756,23 +756,21 @@ void GameScene::PlayerHpDraw()
 
 	if(damegeflag_)
 	{
-
 		//ダメージUI
 		DrawGraph(IMG_HP_X, IMG_HP_Y, playerUiHandles_[static_cast<int>(PLAYRE_HP_STATE::DAMEGE)], true);
 	}
+	
+	if (player_->GetHp()<= 6)
+	{
+		//瀕死状態UI
+		DrawGraph(IMG_HP_X, IMG_HP_Y, playerUiHandles_[static_cast<int>(PLAYRE_HP_STATE::WARNIG)], true);
+	}
 	else
 	{
-		if (player_->GetHp()<= 3)
-		{
-			//瀕死状態UI
-			DrawGraph(IMG_HP_X, IMG_HP_Y, playerUiHandles_[static_cast<int>(PLAYRE_HP_STATE::WARNIG)], true);
-		}
-		else
-		{
-			//デフォルトUI
-			DrawGraph(IMG_HP_X, IMG_HP_Y, playerUiHandles_[static_cast<int>(PLAYRE_HP_STATE::DEF)], true);
-		}
+		//デフォルトUI
+		DrawGraph(IMG_HP_X, IMG_HP_Y, playerUiHandles_[static_cast<int>(PLAYRE_HP_STATE::DEF)], true);
 	}
+	
 }
 
 void GameScene::CommandUpdate()
