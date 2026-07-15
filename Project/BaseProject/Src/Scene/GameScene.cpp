@@ -149,6 +149,7 @@ void GameScene::Update()
 	auto const ins = InputManager::GetInstance();
 
 	UpdateEffekseer3D();
+	//EffectManager::GetInstance().Update();
 
 	// 各オブジェクトの更新
 	stage_->Update();

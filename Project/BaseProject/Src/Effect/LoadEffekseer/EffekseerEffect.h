@@ -26,6 +26,8 @@ public:
 
     void SetPosition(const VECTOR& pos);
 
+	void SetRotation(const Quaternion& rot);
+
     //éıñΩä«óù
     void SetLifeTime(int frame);
 

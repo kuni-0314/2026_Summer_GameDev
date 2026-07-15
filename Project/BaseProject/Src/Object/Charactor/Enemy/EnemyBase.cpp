@@ -72,7 +72,7 @@ void EnemyBase::HitEffect(const VECTOR& pos, const VECTOR& normal, float size)
 void EnemyBase::HitThunderEffect(const VECTOR& pos, const VECTOR& normal, float size)
 {
 	auto effect = std::make_shared<EffekseerEffect>(
-		L"Data/Effect/Thunder/Hit.efkefc", // 好きなエフェクト
+		L"Data/Effect/Thunder/Light.efkefc", // 好きなエフェクト
 		pos
 	);
 
@@ -322,7 +322,7 @@ void EnemyBase::CheckPlayerMagicCollision()
 				VECTOR hitPos = VAdd(ownColCapsule->GetCenter(), magicColSphere->GetPos());
 				hitPos = VScale(hitPos, 0.5f);
 
-				HitThunderEffect(hitPos, VNorm(VSub(hitPos, transform_.pos)), 1.5f);
+				HitThunderEffect(hitPos, VNorm(VSub(hitPos, transform_.pos)), 1.0f);
 
 				// 一度あったらフラグ
 				wasHitMagic_ = true;

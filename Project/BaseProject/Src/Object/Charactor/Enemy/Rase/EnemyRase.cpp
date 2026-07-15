@@ -446,16 +446,22 @@ void EnemyRase::AttackShot(void)
 	//らせの座標位置を取得
 	shot.shotTransform_.pos = transform_.pos;
 
-	// エフェクト再生
-	shot.effect = std::make_shared<EffekseerEffect>(
+	//弾向き
+	shot.dir_ = VNorm(toPlayer_);
+
+	auto effect = std::make_shared<EffekseerEffect>(
 		L"Data/Effect/Fire/Fire.efkefc",
 		shot.shotTransform_.pos
 	);
 
-	EffectManager::GetInstance().RegisterEffect(shot.effect);
+	effect->Play(
+		shot.shotTransform_.pos,
+		Quaternion::LookRotation(shot.dir_)
+	);
 
-	//弾向き
-	shot.dir_ = VNorm(toPlayer_);
+	EffectManager::GetInstance().RegisterEffect(effect);
+
+	shot.effect = effect;
 
 	shots_.push_back(shot);
 }
@@ -466,6 +472,7 @@ void EnemyRase::UpdateShot(void)
 	{
 		if (!shot.isShotAlive_) continue;
 
+		//プレイヤーとの衝突判定
 		if (AsoUtility::IsHitSpheres(shot.shotTransform_.pos, COL_SPHERE_RADIUS, playerPos_, playerRad_))
 		{
 			player_->Damege(1);
@@ -474,12 +481,15 @@ void EnemyRase::UpdateShot(void)
 
 		shot.speed += 0.05;
 
+		// ホーミング処理
 		if (shot.life > 60)
 		{
+			// プレイヤーの方向を計算
 			VECTOR targetDir =
 				VNorm(VSub(player_->GetPos(),
 					shot.shotTransform_.pos));
 
+			// ホーミングの方向を計算
 			shot.dir_ =
 				VNorm(VAdd(VScale(shot.dir_, 1.0f - shot.homingPower),
 					VScale(targetDir, shot.homingPower)));
@@ -489,11 +499,13 @@ void EnemyRase::UpdateShot(void)
 			VAdd(shot.shotTransform_.pos,
 				VScale(shot.dir_, shot.speed));
 
-		//エフェクトを弾に追従させる
+		//エフェクトをプレイヤーに追従	
 		if (shot.effect)
 		{
 			shot.effect->SetPosition(shot.shotTransform_.pos);
+			shot.effect->SetRotation(Quaternion::LookRotation(shot.dir_));
 		}
+
 
 		if (shot.shotTransform_.pos.y <= 0)
 		{
@@ -508,6 +520,22 @@ void EnemyRase::UpdateShot(void)
 			{
 				shot.effect->Stop();
 			}
+
+			// 弾が消滅したときのエフェクトを生成
+			auto burst = std::make_shared<EffekseerEffect>(
+				L"Data/Effect/Fire/Burst.efkefc",
+				shot.shotTransform_.pos
+			);
+
+			burst->Play(
+				shot.shotTransform_.pos,
+				Quaternion()
+			);
+
+			burst->SetLifeTime(120);
+
+			EffectManager::GetInstance().RegisterEffect(burst);
+
 			shot.isShotAlive_ = false;
 			shot.speed = 3.0f;
 			ChangeState(STATE::THINK);
