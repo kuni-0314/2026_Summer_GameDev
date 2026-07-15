@@ -209,15 +209,15 @@ void Player::InitAnimation()
 
 	// 攻撃アニメーション
 	animationController_->Add(static_cast<int>(ANIM_TYPE::ATK_N1)
-		, 60.0f, Application::PATH_MODEL + "Player/Attack1.mv1");
+		, 80.0f, Application::PATH_MODEL + "Player/Attack1.mv1");
 	animationController_->Add(static_cast<int>(ANIM_TYPE::ATK_N2)
-		, 70.0f, Application::PATH_MODEL + "Player/Attack1.mv1");
+		, 60.0f, Application::PATH_MODEL + "Player/Attack2.mv1");
 	animationController_->Add(static_cast<int>(ANIM_TYPE::ATK_N3)
-		, 60.0f, Application::PATH_MODEL + "Player/Attack1.mv1");
+		, 90.0f, Application::PATH_MODEL + "Player/Attack3.mv1");
 	animationController_->Add(static_cast<int>(ANIM_TYPE::ATK_N4)
 		, 50.0f, Application::PATH_MODEL + "Player/Attack1.mv1");
 	animationController_->Add(static_cast<int>(ANIM_TYPE::ATK_N5)
-		, 40.0f, Application::PATH_MODEL + "Player/Attack1.mv1");
+		, 80.0f, Application::PATH_MODEL + "Player/Attack5.mv1");
 	animationController_->Add(static_cast<int>(ANIM_TYPE::ATK_H)
 		, 40.0f, Application::PATH_MODEL + "Player/Attack1.mv1");
 	animationController_->Add(static_cast<int>(ANIM_TYPE::ATK_D)

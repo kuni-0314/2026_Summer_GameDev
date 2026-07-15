@@ -67,55 +67,55 @@ void ColliderCapsule::DrawDebug(int color)
 #ifdef _DEBUG
 
 
-	// îÒèÌÇ…à”ñ°Ç™ñ≥Ç¢
-	auto a = follow_->pos;
-	auto b = follow_->quaRot;
+	//// îÒèÌÇ…à”ñ°Ç™ñ≥Ç¢
+	//auto a = follow_->pos;
+	//auto b = follow_->quaRot;
 
-	// è„ÇÃãÖëÃ
-	VECTOR pos1 = GetPosTop();
-	DrawSphere3D(pos1, radius_, 5, color, color, false);
-	DrawSphere3D(pos1, radius_ * 0.125f, 5, color, color, true);
-	// â∫ÇÃãÖëÃ
-	VECTOR pos2 = GetPosDown();
-	DrawSphere3D(pos2, radius_, 5, color, color, false);
-	DrawSphere3D(pos2, radius_ * 0.125f, 5, color, color, true);
-	VECTOR dir;
-	VECTOR s;
-	VECTOR e;
-	// ãÖëÃÇåqÇÆê¸(X+)
-	dir = follow_->GetRight();
-	s = VAdd(pos1, VScale(dir, radius_));
-	e = VAdd(pos2, VScale(dir, radius_));
-	DrawLine3D(s, e, color);
-	// ãÖëÃÇåqÇÆê¸(X-)
-	dir = follow_->GetLeft();
-	s = VAdd(pos1, VScale(dir, radius_));
-	e = VAdd(pos2, VScale(dir, radius_));
-	DrawLine3D(s, e, color);
-	// ãÖëÃÇåqÇÆê¸(Z+)
-	dir = follow_->GetForward();
-	s = VAdd(pos1, VScale(dir, radius_));
-	e = VAdd(pos2, VScale(dir, radius_));
-	DrawLine3D(s, e, color);
-	// ãÖëÃÇåqÇÆê¸(Z-)
-	dir = follow_->GetBack();
-	s = VAdd(pos1, VScale(dir, radius_));
-	e = VAdd(pos2, VScale(dir, radius_));
-	DrawLine3D(s, e, color);
+	//// è„ÇÃãÖëÃ
+	//VECTOR pos1 = GetPosTop();
+	//DrawSphere3D(pos1, radius_, 5, color, color, false);
+	//DrawSphere3D(pos1, radius_ * 0.125f, 5, color, color, true);
+	//// â∫ÇÃãÖëÃ
+	//VECTOR pos2 = GetPosDown();
+	//DrawSphere3D(pos2, radius_, 5, color, color, false);
+	//DrawSphere3D(pos2, radius_ * 0.125f, 5, color, color, true);
+	//VECTOR dir;
+	//VECTOR s;
+	//VECTOR e;
+	//// ãÖëÃÇåqÇÆê¸(X+)
+	//dir = follow_->GetRight();
+	//s = VAdd(pos1, VScale(dir, radius_));
+	//e = VAdd(pos2, VScale(dir, radius_));
+	//DrawLine3D(s, e, color);
+	//// ãÖëÃÇåqÇÆê¸(X-)
+	//dir = follow_->GetLeft();
+	//s = VAdd(pos1, VScale(dir, radius_));
+	//e = VAdd(pos2, VScale(dir, radius_));
+	//DrawLine3D(s, e, color);
+	//// ãÖëÃÇåqÇÆê¸(Z+)
+	//dir = follow_->GetForward();
+	//s = VAdd(pos1, VScale(dir, radius_));
+	//e = VAdd(pos2, VScale(dir, radius_));
+	//DrawLine3D(s, e, color);
+	//// ãÖëÃÇåqÇÆê¸(Z-)
+	//dir = follow_->GetBack();
+	//s = VAdd(pos1, VScale(dir, radius_));
+	//e = VAdd(pos2, VScale(dir, radius_));
+	//DrawLine3D(s, e, color);
 	// ÉJÉvÉZÉãÇÃíÜêS
 	//DrawSphere3D(GetCenter(), 5.0f, 10, color, color, true);
 
 	// ç¿ïWÇï\é¶ÅiÇPóvëfÇ∏Ç¬â¸çsÅj
-	if (!isDebugDraw_)
-	{
-		return;
-	}
-	DrawFormatString(0, 200, color, "Capsule Pos Top X : %.2f", pos1.x);
-	DrawFormatString(0, 220, color, "Capsule Pos Top Y : %.2f", pos1.y);
-	DrawFormatString(0, 240, color, "Capsule Pos Top Z : %.2f", pos1.z);
-	DrawFormatString(0, 260, color, "Capsule Pos Down X : %.2f", pos2.x);
-	DrawFormatString(0, 280, color, "Capsule Pos Down Y : %.2f", pos2.y);
-	DrawFormatString(0, 300, color, "Capsule Pos Down Z : %.2f", pos2.z);
+	//if (!isDebugDraw_)
+	//{
+	//	return;
+	//}
+	//DrawFormatString(0, 200, color, "Capsule Pos Top X : %.2f", pos1.x);
+	//DrawFormatString(0, 220, color, "Capsule Pos Top Y : %.2f", pos1.y);
+	//DrawFormatString(0, 240, color, "Capsule Pos Top Z : %.2f", pos1.z);
+	//DrawFormatString(0, 260, color, "Capsule Pos Down X : %.2f", pos2.x);
+	//DrawFormatString(0, 280, color, "Capsule Pos Down Y : %.2f", pos2.y);
+	//DrawFormatString(0, 300, color, "Capsule Pos Down Z : %.2f", pos2.z);
 #endif // DEBUG
 }
 
