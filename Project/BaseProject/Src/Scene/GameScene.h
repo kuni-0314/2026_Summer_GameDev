@@ -39,6 +39,7 @@ public:
 		THUNDER,
 		FIRE,
 		RECOVERY,
+		ALL,
 		MAX
 	};
 
@@ -113,6 +114,7 @@ private:
 
 	//ƒRƒ}ƒ“ƒh
 	COMMAND command_;
+	COMMAND usecommand_;
 
 	COMMAND_STATE thunderState_;
 	COMMAND_STATE fireState_;

@@ -95,6 +95,8 @@ public:
 	void SetAttacking(const bool attacking) { isAttacking_ = attacking; }
 	bool IsAliveMagic() const { return isAliveThunder_; }
 	void SetAliveMagic(const bool alive) { isAliveThunder_ = alive; }
+	bool  GetIsShortCut();
+
 	void ActivatePowerUp();
 	void PlayBlinkEffect();
 
@@ -324,13 +326,15 @@ private:
 	static constexpr float THUNDER_RADIUS = 100.0f;	// 雷の半径
 	//VECTOR thunderPosOffsets_[THUNDER_COUNT];
 
+	void CreateMagic();	//魔法生成
+
 	void CreateFireMagic();
 	void CreateThunderMagic();
 	void CreateRecoveryMagic();
 
 	void MagicCoolTime();//魔法のクールタイム	
 
-	void UpdateMagic();
+	void UpdateMagic();//魔法更新
 	FireInfo fireInfo_;
 
 	static constexpr int FIRE_LIFETIME = 180;		// 生存時間
@@ -349,5 +353,8 @@ private:
 	int recoveryCoolTime_ = 0;	// クールタイムカウンタ
 	bool useRecovery_ = false;
 	//bool isAliveRecovery_ = false;	// 回復の生存状態いらんやろ
+
+	bool isShortCut_ = false;
+
 
 };

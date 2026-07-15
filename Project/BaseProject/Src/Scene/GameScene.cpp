@@ -119,12 +119,12 @@ void GameScene::Init()
 	hpHandles_[1] = resMng_.Load(ResourceManager::SRC::IMG_PLAYER_HP_1).handleId_;
 	hpHandles_[0] = resMng_.Load(ResourceManager::SRC::IMG_PLAYER_HP_0).handleId_;
 
-	commandHandles_.resize(3);
+	commandHandles_.resize(4);
 
 	commandHandles_[static_cast <int>(COMMAND::THUNDER)] = resMng_.Load(ResourceManager::SRC::IMG_SELECT_SANDER).handleId_;
 	commandHandles_[static_cast <int>(COMMAND::FIRE)] = resMng_.Load(ResourceManager::SRC::IMG_SELECT_FIRE).handleId_;
 	commandHandles_[static_cast <int>(COMMAND::RECOVERY)] = resMng_.Load(ResourceManager::SRC::IMG_SELECT_RECOVERY).handleId_;
-	commandHandles_[static_cast <int>(COMMAND::MAX)] = resMng_.Load(ResourceManager::SRC::IMG_SELECT_ALL).handleId_;
+	commandHandles_[static_cast <int>(COMMAND::ALL)] = resMng_.Load(ResourceManager::SRC::IMG_SELECT_ALL).handleId_;
 
 	selectCommand_ = static_cast<int>(COMMAND::THUNDER);
 
@@ -391,6 +391,17 @@ void GameScene::Update()
 	//}
 
 //#ifdef _DEBUG
+	if (player_->GetIsShortCut())
+	{
+		selectCommand_ = static_cast<int>(COMMAND::ALL);
+	}
+	else if (selectCommand_ == static_cast<int>(COMMAND::ALL))
+	{
+		selectCommand_ = static_cast<int>(usecommand_);
+	}
+	
+
+
 
 	if (ins->IsTrgDown(KEY_INPUT_UP) /*|| ins->IsTrgDown(KEY_INPUT_E)*/|| ins->IsGamepadTrgDown(InputManager::PadInput::Up, 0))
 	{
@@ -408,16 +419,10 @@ void GameScene::Update()
 		AudioManager::GetInstance()->PlaySE(SoundID::SE_COMMAND_SELECT);
 
 		selectCommand_++;
-		if (selectCommand_ > static_cast <int>(COMMAND::RECOVERY))
+		if (selectCommand_ >  static_cast <int>(COMMAND::RECOVERY))
 		{
 			selectCommand_ = static_cast <int>(COMMAND::THUNDER);
 		}
-	}
-
-	if (ins->IsGamepadTrgDown(InputManager::PadInput::LB, 0))
-	{
-		AudioManager::GetInstance()->PlaySE(SoundID::SE_COMMAND_SELECT);
-		selectCommand_ = static_cast <int>(COMMAND::MAX);
 	}
 
 //#endif
@@ -663,13 +668,13 @@ void GameScene::SelectCommand(COMMAND command)
 
 	switch (command)
 	{
-	case GameScene::THUNDER:
+	case GameScene::COMMAND::THUNDER:
 		break;
-	case GameScene::FIRE:
+	case GameScene::COMMAND::FIRE:
 		break;
-	case GameScene::RECOVERY:
+	case GameScene::COMMAND::RECOVERY:
 		break;
-	case GameScene::MAX:
+	case GameScene::COMMAND::ALL:
 		break;
 	default:
 		break;
@@ -775,6 +780,7 @@ void GameScene::CommandUpdate()
 	if(player_->GetUseRecovery())
 	{
 		recoveryState_ = COMMAND_STATE::USE;
+		usecommand_ = COMMAND::RECOVERY;
 	}
 	else
 	{
@@ -785,6 +791,7 @@ void GameScene::CommandUpdate()
 	if (player_->GetUseThunder())
 	{
 		thunderState_ = COMMAND_STATE::USE;
+		usecommand_ = COMMAND::THUNDER;
 	}
 	else
 	{
@@ -808,7 +815,9 @@ void GameScene::CommandDraw()
 	//
 	for (int i = 0; i < static_cast<int>(COMMAND::MAX); i++)
 	{
-		bool isSelect = (i == selectCommand_);
+		bool isSelect =
+			(selectCommand_ == static_cast<int>(COMMAND::ALL)) ||
+			(i == selectCommand_);
 
 		COMMAND_STATE state = COMMAND_STATE::NOT_USE;
 
@@ -825,9 +834,6 @@ void GameScene::CommandDraw()
 		case COMMAND::RECOVERY:
 			state = recoveryState_;
 			break;
-
-		default:
-			break;
 		}
 
 		DrawGraph(
@@ -837,6 +843,7 @@ void GameScene::CommandDraw()
 			true);
 	}
 }
+
 
 void GameScene::PlayerFaceUIDrow()
 {

@@ -300,32 +300,12 @@ void Player::UpdateProcess()
 	{
 		PlayBlinkEffect();
 	}
-
-	// 魔法開始
-	// 調整中（フラグがサンダーしかない）
-	if (!isAliveThunder_ &&
-		(ins->IsTrgDown(KEY_INPUT_E) || ins->IsGamepadTrgDown(InputManager::PadInput::Y, padNum_)))
-	{
-		GameScene* gameScene = dynamic_cast<GameScene*>(scnMng_.GetScene());
-		switch (gameScene->GetSelectedCommand())
-		{
-		case GameScene::COMMAND::FIRE:
-			CreateFireMagic();
-			break;
-		case GameScene::COMMAND::THUNDER:
-			CreateThunderMagic();
-			break;
-		case GameScene::COMMAND::RECOVERY:
-			CreateRecoveryMagic();
-			break;
-		default:
-			break;
-		}
-
-
-	}
+	
 
 	// 魔法処理
+	
+	CreateMagic();
+
 	UpdateMagic();
 
 	CheckPlayerRingCollision();
@@ -427,6 +407,11 @@ void Player::ChangeState(STATE newState)
 	currentState_->Exit(this);
 	currentState_ = states_[newState];
 	currentState_->Enter(this);
+}
+
+bool Player::GetIsShortCut()
+{
+	return isShortCut_;
 }
 
 void Player::ActivatePowerUp()
@@ -660,6 +645,56 @@ void Player::DestroyFireCollider(const FireInfo& fireInfo)
 	gameScene->RemoveEnemyHitCollider(fireInfo.collider);
 }
 
+void Player::CreateMagic()
+{
+	auto ins = InputManager::GetInstance();
+
+	if (ins->IsGamepadNew(InputManager::PadInput::LB, padNum_))
+	{
+		isShortCut_ = true;
+	}
+	else
+	{
+		isShortCut_ = false;
+	}
+
+	if(isShortCut_&& ins->IsGamepadTrgDown(InputManager::PadInput::Y, padNum_))
+	{
+		CreateThunderMagic();
+	}
+	if (isShortCut_ && ins->IsGamepadTrgDown(InputManager::PadInput::X, padNum_))
+	{
+		CreateFireMagic();
+	}
+	if (isShortCut_ && ins->IsGamepadTrgDown(InputManager::PadInput::A, padNum_))
+	{
+		CreateRecoveryMagic();
+	}
+	else
+	{
+		if (!isAliveThunder_ &&
+			(ins->IsTrgDown(KEY_INPUT_E) || ins->IsGamepadTrgDown(InputManager::PadInput::Y, padNum_)))
+		{
+			GameScene* gameScene = dynamic_cast<GameScene*>(scnMng_.GetScene());
+			switch (gameScene->GetSelectedCommand())
+			{
+			case GameScene::COMMAND::FIRE:
+				CreateFireMagic();
+				break;
+			case GameScene::COMMAND::THUNDER:
+				CreateThunderMagic();
+				break;
+			case GameScene::COMMAND::RECOVERY:
+				CreateRecoveryMagic();
+				break;
+			default:
+				break;
+			}
+
+		}
+	}
+}
+
 void Player::CreateFireMagic()
 {
 
@@ -859,3 +894,4 @@ void Player::UpdateMagic()
 		fireInfo_.transform.Update();
 	}
 }
+
