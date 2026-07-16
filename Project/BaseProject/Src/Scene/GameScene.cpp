@@ -408,6 +408,15 @@ void GameScene::Update()
 
 	//#endif
 
+	if (player_->IsShortCut())
+	{
+		selectCommand_ = static_cast<int>(COMMAND::ALL);
+	}
+	else if (selectCommand_ == static_cast<int>(COMMAND::ALL))
+	{
+		selectCommand_ = static_cast<int>(usecommand_);
+	}
+
 }
 
 void GameScene::Draw()
