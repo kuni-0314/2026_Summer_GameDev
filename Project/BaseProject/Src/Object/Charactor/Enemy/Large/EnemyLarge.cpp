@@ -238,8 +238,8 @@ void EnemyLarge::UpdateProcess()
 	CheckPlayerSwordCollision();
 
 	//³–Ê‚ÉPlayer‚ª‚¢‚é‚Ì‚©
-	bool isATField_;
-	isATField_ = false;
+	/*bool isATField_;
+	isATField_ = false;*/
 
 	if (!isATField_ && InFront() && player_->IsAttacking())
 	{
@@ -303,23 +303,19 @@ void EnemyLarge::UpdateProcessPost()
 
 void EnemyLarge::ATfield(const VECTOR& pos)
 {
-	VECTOR effectPos = VAdd(pos, VScale(moveDir_, 150.0f));
+	VECTOR front = VNorm(moveDir_);
+
+	VECTOR effectPos = VAdd(pos, VScale(front, 120.0f));
 	effectPos.y += 100.0f;
 
 	auto effect = std::make_shared<EffekseerEffect>(
 		L"Data/Effect/Hit/Hit.efkefc",
-		effectPos
-	);
+		effectPos);
 
 	effect->SetScale(80.0f);
-
-	effect->Play(
-		effectPos,
-		Quaternion()
-	);
+	effect->Play(effectPos, Quaternion());
 
 	EffectManager::GetInstance().RegisterEffect(effect);
-
 }
 
 void EnemyLarge::ChangeState(STATE state)

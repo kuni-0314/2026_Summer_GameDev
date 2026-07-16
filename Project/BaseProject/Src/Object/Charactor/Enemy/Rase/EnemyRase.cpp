@@ -58,7 +58,17 @@ void EnemyRase::Draw()
 
 void EnemyRase::Release(void)
 {
-	
+	// Šî’êƒNƒ‰ƒX‚Ì‰ð•úˆ—
+	CharactorBase::Release();
+	// ’e‚Ì‰ð•ú
+	for (auto& shot : shots_)
+	{
+		if (shot.effect)
+		{
+			shot.effect->Stop();
+			shot.effect.reset();
+		}
+	}
 }
 
 void EnemyRase::InitLoad()
