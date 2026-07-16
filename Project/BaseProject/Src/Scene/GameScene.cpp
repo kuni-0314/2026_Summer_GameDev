@@ -780,14 +780,18 @@ void GameScene::CommandUpdate()
 void GameScene::CommandDraw()
 {
 
-	DrawGraph(0, 735, commandHandles_[selectCommand_], true);
+	//選択してるコマンド描画
+		DrawGraph(0, 735, commandHandles_[selectCommand_], true);
 
 	const int baseX = 45;
 	const int selectOffset = 90;
 
+	//
 	for (int i = 0; i < static_cast<int>(COMMAND::MAX); i++)
 	{
-		bool isSelect = (i == selectCommand_);
+		bool isSelect =
+			(selectCommand_ == static_cast<int>(COMMAND::ALL)) ||
+			(i == selectCommand_);
 
 		COMMAND_STATE state = COMMAND_STATE::NOT_USE;
 
@@ -803,9 +807,6 @@ void GameScene::CommandDraw()
 
 		case COMMAND::HEAL:
 			state = healState_;
-			break;
-
-		default:
 			break;
 		}
 
