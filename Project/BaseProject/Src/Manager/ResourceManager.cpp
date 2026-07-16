@@ -108,6 +108,8 @@ void ResourceManager::Init()
 	resourcesMap_.emplace(SRC::IMG_SELECT_RECOVERY, res);	//mapÇ…ìoò^
 	res = new RES(RES_T::IMG, PATH_IMG + "UI/Command_Up.png");
 	resourcesMap_.emplace(SRC::IMG_SELECT_SANDER, res);	//mapÇ…ìoò^
+	res = new RES(RES_T::IMG, PATH_IMG + "UI/Command_AllUp.png");
+	resourcesMap_.emplace(SRC::IMG_SELECT_ALL, res);	//mapÇ…ìoò^
 
 	res = new RES(RES_T::IMG, PATH_IMG + "UI/notuse_Sander.png");
 	resourcesMap_.emplace(SRC::IMG_NOTUSE_SANDER, res);	//mapÇ…ìoò^
@@ -129,6 +131,8 @@ void ResourceManager::Init()
 	res = new RES(RES_T::IMG, PATH_IMG + "PlayerHP/PlayerHP_Limit.png");
 	resourcesMap_.emplace(SRC::IMG_PLAYER_UI_WARNIG, res);	//mapÇ…ìoò^
 
+	res = new RES(RES_T::IMG, PATH_IMG + "UI/LockOn.png");
+	resourcesMap_.emplace(SRC::IMG_LOCKON_FONT_UI, res);	//mapÇ…ìoò^
 
 	//ÉÇÉfÉãìoò^ 
 	//ÉÅÉCÉìÇÃòfêØÉÇÉfÉã

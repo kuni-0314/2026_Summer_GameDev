@@ -119,16 +119,16 @@ void GameScene::Init()
 	hpHandles_[1] = resMng_.Load(ResourceManager::SRC::IMG_PLAYER_HP_1).handleId_;
 	hpHandles_[0] = resMng_.Load(ResourceManager::SRC::IMG_PLAYER_HP_0).handleId_;
 
-	commandHandles.resize(4);
+	commandHandles_.resize(4);
 
-	commandHandles[static_cast <int>(COMMAND::THUNDER)] = resMng_.Load(ResourceManager::SRC::IMG_SELECT_SANDER).handleId_;
-	commandHandles[static_cast <int>(COMMAND::FIRE)] = resMng_.Load(ResourceManager::SRC::IMG_SELECT_FIRE).handleId_;
-	commandHandles[static_cast <int>(COMMAND::HEAL)] = resMng_.Load(ResourceManager::SRC::IMG_SELECT_RECOVERY).handleId_;
+	commandHandles_[static_cast <int>(COMMAND::THUNDER)] = resMng_.Load(ResourceManager::SRC::IMG_SELECT_SANDER).handleId_;
+	commandHandles_[static_cast <int>(COMMAND::FIRE)] = resMng_.Load(ResourceManager::SRC::IMG_SELECT_FIRE).handleId_;
+	commandHandles_[static_cast <int>(COMMAND::HEAL)] = resMng_.Load(ResourceManager::SRC::IMG_SELECT_RECOVERY).handleId_;
 	commandHandles_[static_cast <int>(COMMAND::ALL)] = resMng_.Load(ResourceManager::SRC::IMG_SELECT_ALL).handleId_;
 
 	selectCommand_ = static_cast<int>(COMMAND::THUNDER);
 
-	commandHandles.resize(6);
+	commandHandles_.resize(6);
 
 	fontCommandHandles_[static_cast <int>(COMMAND::THUNDER)][(int)COMMAND_STATE::NOT_USE] = resMng_.Load(ResourceManager::SRC::IMG_NOTUSE_SANDER).handleId_;
 	fontCommandHandles_[static_cast <int>(COMMAND::THUNDER)][(int)COMMAND_STATE::USE] = resMng_.Load(ResourceManager::SRC::IMG_USE_SANDER).handleId_;
@@ -169,7 +169,7 @@ void GameScene::Update()
 	}
 	else if (selectCommand_ == static_cast<int>(COMMAND::ALL))
 	{
-		selectCommand_ = static_cast<int>(usecommand_);
+		//selectCommand_ = static_cast<int>(usecommand_);
 	}
 	
 	if (!enemyManager_->GetEnemyDead())
@@ -779,7 +779,7 @@ void GameScene::CommandUpdate()
 void GameScene::CommandDraw()
 {
 
-	DrawGraph(0, 735, commandHandles[selectCommand_], true);
+	DrawGraph(0, 735, commandHandles_[selectCommand_], true);
 
 	const int baseX = 45;
 	const int selectOffset = 90;
