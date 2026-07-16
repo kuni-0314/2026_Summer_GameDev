@@ -39,6 +39,7 @@ public:
 		THUNDER,
 		FIRE,
 		HEAL,
+		ALL,
 		MAX
 	};
 

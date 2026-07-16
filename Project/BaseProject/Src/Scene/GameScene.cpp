@@ -119,11 +119,12 @@ void GameScene::Init()
 	hpHandles_[1] = resMng_.Load(ResourceManager::SRC::IMG_PLAYER_HP_1).handleId_;
 	hpHandles_[0] = resMng_.Load(ResourceManager::SRC::IMG_PLAYER_HP_0).handleId_;
 
-	commandHandles.resize(3);
+	commandHandles.resize(4);
 
 	commandHandles[static_cast <int>(COMMAND::THUNDER)] = resMng_.Load(ResourceManager::SRC::IMG_SELECT_SANDER).handleId_;
 	commandHandles[static_cast <int>(COMMAND::FIRE)] = resMng_.Load(ResourceManager::SRC::IMG_SELECT_FIRE).handleId_;
 	commandHandles[static_cast <int>(COMMAND::HEAL)] = resMng_.Load(ResourceManager::SRC::IMG_SELECT_RECOVERY).handleId_;
+	commandHandles_[static_cast <int>(COMMAND::ALL)] = resMng_.Load(ResourceManager::SRC::IMG_SELECT_ALL).handleId_;
 
 	selectCommand_ = static_cast<int>(COMMAND::THUNDER);
 
@@ -144,6 +145,8 @@ void GameScene::Init()
 
 
 	lockOnImageHandle_ = resMng_.Load(ResourceManager::SRC::TARGET_CURSOR_ORANGE).handleId_;
+
+	LockOnHandles_[0] = resMng_.Load(ResourceManager::SRC::IMG_LOCKON_FONT_UI).handleId_;
 }
 
 void GameScene::Update()
@@ -160,7 +163,14 @@ void GameScene::Update()
 	enemyManager_->Update();
 	itemManger_->Update();
 
-	
+	if (player_->IsShortCut())
+	{
+		selectCommand_ = static_cast<int>(COMMAND::ALL);
+	}
+	else if (selectCommand_ == static_cast<int>(COMMAND::ALL))
+	{
+		selectCommand_ = static_cast<int>(usecommand_);
+	}
 	
 	if (!enemyManager_->GetEnemyDead())
 	{
@@ -170,11 +180,13 @@ void GameScene::Update()
 			{
 				camMode_ = CAM_MODE::TARGETING;
 				sceMng_.GetCamera()->ChangeMode(Camera::MODE::TARGETING);
+				AudioManager::GetInstance()->PlaySE(SoundID::SE_LOCKON);
 			}
 			else
 			{
 				camMode_ = CAM_MODE::MANUAL;
 				sceMng_.GetCamera()->ChangeMode(Camera::MODE::MANUAL);
+				AudioManager::GetInstance()->PlaySE(SoundID::SE_LOCKON_CHANGE);
 			}
 		}
 
