@@ -49,7 +49,7 @@ bool PlayerState::CheckTransitions(Player* player)
 	{
 		if (enableKAM)
 		{
-			if (!player->GetIsShortCut())
+			if (!player->IsShortCut())
 			{
 				isJetInput = ins->IsGamepadTrgDown(InputManager::PadInput::X, player->GetPadNum());
 			}
