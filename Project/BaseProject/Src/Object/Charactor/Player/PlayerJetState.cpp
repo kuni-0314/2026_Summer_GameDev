@@ -10,6 +10,9 @@ void PlayerRollState::Enter(Player* player)
 	player->SetMovePow(VScale(player->GetMoveDir(), Player::POW_ROLL));
 	player->SetJet(true);
 
+	// ローリング中は無敵状態にする
+	player->SetInvincible(true);
+
 	// アニメーション再生
 	player->GetAnimationController()->Play(
 		static_cast<int>(Player::ANIM_TYPE::ATK_N1), false, true);
@@ -46,4 +49,6 @@ void PlayerRollState::Update(Player* player)
 void PlayerRollState::Exit(Player* player)
 {
 	player->SetJet(false);
+
+	player->SetInvincible(false);
 }

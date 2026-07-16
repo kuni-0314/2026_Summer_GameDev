@@ -43,7 +43,7 @@ public:
 	virtual void Release() override;
 
 	// ダメージ処理
-	virtual void Damege(int damege);
+	virtual void Damage(int damage);
 
 	// HPの取得
 	int GetHp() const { return hp_; }
@@ -53,6 +53,9 @@ public:
 	bool IsAnimEnd();
 
 	virtual void HealHp(int heal) { hp_ += heal; };
+
+	bool IsInvincible() const { return isInvincible_; }
+	void SetInvincible(bool invincible);
 
 protected:
 
@@ -135,6 +138,6 @@ private:
 	// 無敵フレーム数
 	static constexpr int INVINCIBLE_FRAME_COUNT = 10;
 	int invincibleFrameCount_ = 0;
-
+	bool isInvincible_;
 };
 

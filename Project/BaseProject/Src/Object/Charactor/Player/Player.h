@@ -98,6 +98,7 @@ public:
 	void SetAttacking(const bool attacking) { isAttacking_ = attacking; }
 	bool IsAliveMagic() const { return isAliveMagic_; }
 	void SetAliveMagic(const bool alive) { isAliveMagic_ = alive; }
+
 	void ActivatePowerUp();
 	void PlayBlinkEffect();
 
@@ -179,7 +180,7 @@ public:
 	static constexpr int ATTACK_HITBOX_END_FRAME = 29;
 
 	// ƒ_ƒ[ƒWˆ—
-	void Damege(int damege);
+	//void Damege(int damege);
 
 	// HP‚Ì‰ñ•œˆ—
 	void HealHp(int heal) override;

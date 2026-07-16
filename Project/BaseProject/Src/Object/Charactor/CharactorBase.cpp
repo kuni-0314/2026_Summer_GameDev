@@ -48,6 +48,16 @@ void CharactorBase::Update()
 		invincibleFrameCount_--;
 	}
 
+	if (isInvincible_ <= 0)
+	{
+		isInvincible_ = false;
+	}
+	else
+	{
+		isInvincible_ = true;
+	}
+
+
 	// 各キャラクターごとの更新処理
 	UpdateProcess();
 	// 移動方向に応じた遅延回転
@@ -88,15 +98,11 @@ void CharactorBase::Release()
 	ActorBase::Release();
 }
 
-void CharactorBase::Damege(int damege)
+void CharactorBase::Damage(int damage)
 {
-	if (invincibleFrameCount_ > 0)
-	{
-		// 無敵フレーム中はダメージを受けない
-		return;
-	}
+	if (isInvincible_) return;
 
-	hp_ -= damege;
+	hp_ -= damage;
 	if (hp_ <= 0)
 	{
 		hp_ = 0;
@@ -111,6 +117,12 @@ void CharactorBase::Damege(int damege)
 bool CharactorBase::IsAnimEnd()
 {
 	return animationController_->IsEnd();
+}
+
+void CharactorBase::SetInvincible(bool invincible)
+{
+	if (!invincible) invincibleFrameCount_ = 0;	// 強制的に無敵解除
+	isInvincible_ = invincible;
 }
 
 void CharactorBase::DelayRotate()

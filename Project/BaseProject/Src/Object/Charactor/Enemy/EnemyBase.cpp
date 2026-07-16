@@ -231,7 +231,7 @@ void EnemyBase::CheckPlayerSwordCollision()
 			if (ownColCapsule->IsHit(swordColCapsule))
 			{
 				// ダメージ処理
-				Damege(1);
+				Damage(1);
 
 				AudioManager::GetInstance()->PlaySE(SoundID::SE_ENEMY_HIT);
 
@@ -307,7 +307,7 @@ void EnemyBase::CheckPlayerMagicCollision()
 				capsuleRadius) == true)
 			{
 				// ダメージ処理
-				Damege(1);
+				Damage(1);
 
 				AudioManager::GetInstance()->PlaySE(SoundID::SE_ENEMY_HIT);
 

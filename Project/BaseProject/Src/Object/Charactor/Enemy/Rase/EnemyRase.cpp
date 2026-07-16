@@ -61,12 +61,12 @@ void EnemyRase::Release(void)
 	
 }
 
-void EnemyRase::Damege(int damage)
+void EnemyRase::Damage(int damage)
 {
 	if (state_ == STATE::DIE || state_ == STATE::END)
 		return;
 
-	CharactorBase::Damege(damage);
+	CharactorBase::Damage(damage);
 
 	if (hp_ <= 0)
 	{
@@ -477,7 +477,7 @@ void EnemyRase::UpdateShot(void)
 
 		if (AsoUtility::IsHitSpheres(shot.shotTransform_.pos, COL_SPHERE_RADIUS, playerPos_, playerRad_))
 		{
-			player_->Damege(1);
+			player_->Damage(1);
 			shot.life = 0;
 		}
 

@@ -128,17 +128,17 @@ void Player::Update()
 
 }
 
-void Player::Damege(int damege)
-{
-	hp_ -= damege;
-	//int a = StartJoypadVibration(padNum_ + 1, 1000, 500, -1);
-	//VibrateGamepad(int gamepadIndex, int power, int time)
-	InputManager::GetInstance()->VibrateGamepad(padNum_ + 1, 1000, 500);
-	if (hp_ <= 0)
-	{
-		hp_ = 0;
-	}
-}
+//void Player::Damege(int damege)
+//{
+//	hp_ -= damege;
+//	//int a = StartJoypadVibration(padNum_ + 1, 1000, 500, -1);
+//	//VibrateGamepad(int gamepadIndex, int power, int time)
+//	InputManager::GetInstance()->VibrateGamepad(padNum_ + 1, 1000, 500);
+//	if (hp_ <= 0)
+//	{
+//		hp_ = 0;
+//	}
+//}
 
 void Player::HealHp(int heal)
 {

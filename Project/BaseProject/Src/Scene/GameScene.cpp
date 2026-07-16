@@ -223,7 +223,7 @@ void GameScene::Update()
 			float dist = VSize(VSub(playerPos, enemyPos));
 			if (dist < 300.0f)
 			{
-				enemy->Damege(99999);
+				enemy->Damage(99999);
 			}
 		}
 	}
@@ -253,7 +253,7 @@ void GameScene::Update()
 
 					if (distance < sphere->GetRadius())
 					{
-						enemy->Damege(static_cast<int>(data->damage));
+						enemy->Damage(static_cast<int>(data->damage));
 					}
 				}
 			}

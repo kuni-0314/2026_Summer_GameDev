@@ -573,7 +573,7 @@ void EnemyLarge::UpdateAttackPunch()
 		// UŒ‚”»’è
 		if (AsoUtility::IsHitSpheres(attackWorldPos_, COL_SPHERE_RADIUS, playerPos_, playerRad_))
 		{
-			player_->Damege(power_);
+			player_->Damage(power_);
 			isAttack_ = true;
 		}
 	}
@@ -671,7 +671,7 @@ void EnemyLarge::UpdateAttackDrop()
 		dist <= nowR1 && dist >= nowR2)
 	{
 		if (player_->IsJump()) return;
-		player_->Damege(power_);
+		player_->Damage(power_);
 		wasHitRing_ = true;
 		wasHitMagic_ = true;
 	}
