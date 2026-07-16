@@ -49,6 +49,7 @@ public:
 		ATK_F,
 		MAGIC,
 		ROLLING,
+		FALL_END
 	};
 
 	//コンストラクタ
