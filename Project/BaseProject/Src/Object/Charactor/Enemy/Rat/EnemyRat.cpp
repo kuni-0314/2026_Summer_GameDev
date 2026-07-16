@@ -123,6 +123,8 @@ void EnemyRat::InitAnimation()
 
 void EnemyRat::InitPost()
 {
+	weight_ = WEIGHT::NORMAL;
+
 	/// 必要な状態遷移のみにスッキリ整理
 	stateChanges_.emplace(static_cast<int>(STATE::THINK), std::bind(&EnemyRat::ChangeStateThink, this));
 	stateChanges_.emplace(static_cast<int>(STATE::IDLE), std::bind(&EnemyRat::ChangeStateIdle, this));

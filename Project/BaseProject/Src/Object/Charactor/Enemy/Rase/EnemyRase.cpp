@@ -147,6 +147,7 @@ void EnemyRase::InitAnimation()
 
 void EnemyRase::InitPost()
 {
+	weight_ = WEIGHT::LIGHT;
 
 	//Šî€‚Ì‚‚³•Û‘¶
 	baseHeight_ = transform_.pos.y;
@@ -362,6 +363,7 @@ void EnemyRase::UpdateAttack()
 		AttackShot();
 		shotFired_ = true;
 	}
+
 	// ˆÚ“®—Êƒ[ƒ
 	movePow_ = AsoUtility::VECTOR_ZERO;
 }

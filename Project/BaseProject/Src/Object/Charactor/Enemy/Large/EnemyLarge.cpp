@@ -175,6 +175,7 @@ void EnemyLarge::InitAnimation()
 
 void EnemyLarge::InitPost()
 {
+	weight_ = WEIGHT::HEAVY;
 
 	stateChanges_.emplace(static_cast<int>(STATE::IDLE),
 		std::bind(&EnemyLarge::ChangeStateIdle, this));

@@ -128,9 +128,9 @@ void Player::Update()
 
 }
 
-//void Player::Damege(int damege)
+//void Player::Damage(int damage)
 //{
-//	hp_ -= damege;
+//	hp_ -= damage;
 //	//int a = StartJoypadVibration(padNum_ + 1, 1000, 500, -1);
 //	//VibrateGamepad(int gamepadIndex, int power, int time)
 //	InputManager::GetInstance()->VibrateGamepad(padNum_ + 1, 1000, 500);

@@ -57,6 +57,8 @@ void CharactorBase::Update()
 		isInvincible_ = true;
 	}
 
+	movePow_ = knockbackPow_;
+	knockbackPow_ = VScale(knockbackPow_, 0.99f);
 
 	// 各キャラクターごとの更新処理
 	UpdateProcess();
@@ -107,6 +109,52 @@ void CharactorBase::Damage(int damage)
 	{
 		hp_ = 0;
 		
+		return;
+	}
+
+	// 原則として無敵フレームを設定する
+	invincibleFrameCount_ = INVINCIBLE_FRAME_COUNT;
+}
+
+void CharactorBase::Damage(int damage, const VECTOR& hitDir)
+{
+	if (isInvincible_) return;
+
+	float knowbackPow = 0.0f;
+	switch (weight_)
+	{
+	case CharactorBase::WEIGHT::NONE:
+		// めっちゃ吹っ飛ばす
+		knowbackPow = 100.0f;
+		break;
+	case CharactorBase::WEIGHT::LIGHT:
+		// よく吹っ飛ぶ
+		knowbackPow = 10.0f;
+		break;
+	case CharactorBase::WEIGHT::NORMAL:
+		// 飛ぶっちゃ飛ぶ
+		knowbackPow = 3.0f;
+		break;
+	case CharactorBase::WEIGHT::HEAVY:
+		// 若干飛ぶ
+		knowbackPow = 1.0f;
+		break;
+	case CharactorBase::WEIGHT::IMMOBILE:
+		// 飛ばねぇ
+		knowbackPow = 0.0f;
+		break;
+	default:
+		break;
+	}
+	
+	auto dir = VNorm(hitDir);
+	knockbackPow_ = VScale(dir, knowbackPow);
+
+	hp_ -= damage;
+	if (hp_ <= 0)
+	{
+		hp_ = 0;
+
 		return;
 	}
 

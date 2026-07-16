@@ -45,6 +45,8 @@ public:
 	// ダメージ処理
 	virtual void Damage(int damage);
 
+	virtual void Damage(int damage, const VECTOR& hitDir);
+
 	// HPの取得
 	int GetHp() const { return hp_; }
 
@@ -75,6 +77,9 @@ protected:
 	VECTOR jumpPow_;
 	// 移動前の座標
 	VECTOR prevPos_;
+
+	// ノックバック量
+	VECTOR knockbackPow_;
 
 	// ジャンプの入力受付時間
 	float stepJump_;
@@ -122,6 +127,16 @@ protected:
 
 	int GetInvincibleFrameCount() const { return invincibleFrameCount_; }
 
+	// 体重
+	enum class WEIGHT
+	{
+		NONE,		// 体重なし
+		LIGHT,		// 軽い
+		NORMAL,		// 普通
+		HEAVY,		// 重い
+		IMMOBILE	// 不動
+	};
+	WEIGHT weight_;
 private:
 
 	int stage_; //影の判定用ステージハンドル
@@ -139,5 +154,6 @@ private:
 	static constexpr int INVINCIBLE_FRAME_COUNT = 10;
 	int invincibleFrameCount_ = 0;
 	bool isInvincible_;
+
 };
 
