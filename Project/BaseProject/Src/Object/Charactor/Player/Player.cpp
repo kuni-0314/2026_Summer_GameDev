@@ -304,48 +304,84 @@ void Player::UpdateProcess()
 		PlayBlinkEffect();
 	}
 
+	// ショートカットキー判定
+	if (ins->IsGamepadNew(InputManager::PadInput::LB, padNum_))
+	{
+		isShortCut_ = true;
+	}
+	else
+	{
+		isShortCut_ = false;
+	}
+
 	// 魔法開始
-	// 調整中（フラグがサンダーしかない）
+	int activeMagicCount = 0;
+	if (isShortCut_ && ins->IsGamepadTrgDown(InputManager::PadInput::Y, padNum_))
+	{
+		activeMagicCount = 1;
+	}
+	if (isShortCut_ && ins->IsGamepadTrgDown(InputManager::PadInput::X, padNum_))
+	{
+		activeMagicCount = 2;
+	}
+	if (isShortCut_ && ins->IsGamepadTrgDown(InputManager::PadInput::A, padNum_))
+	{
+		activeMagicCount = 3;
+	}
+
 	if ((ins->IsTrgDown(KEY_INPUT_E) || ins->IsGamepadTrgDown(InputManager::PadInput::Y, padNum_)))
 	{
 		GameScene* gameScene = dynamic_cast<GameScene*>(scnMng_.GetScene());
 		switch (gameScene->GetSelectedCommand())
 		{
 		case GameScene::COMMAND::FIRE:
-			if (fireCoolTime_ <= 0)
-			{
-				CreateFireMagic();
-			}
-			else
-			{
-				AudioManager::GetInstance()->PlaySE(SoundID::SE_NOT_MAGIC);
-			}
+			activeMagicCount = 1;
 			break;
 		case GameScene::COMMAND::THUNDER:
-			if (thunderCoolTime_ <= 0)
-			{
-				CreateThunderMagic();
-			}
-			else
-			{
-				AudioManager::GetInstance()->PlaySE(SoundID::SE_NOT_MAGIC);
-			}
+			activeMagicCount = 2;
 			break;
 		case GameScene::COMMAND::HEAL:
-			if (healCoolTime_ <= 0)
-			{
-				CreateHealMagic();
-			}
-			else
-			{
-				AudioManager::GetInstance()->PlaySE(SoundID::SE_NOT_MAGIC);
-			}
+			activeMagicCount = 3;
 			break;
 		default:
 			break;
 		}
+	}
 
-
+	switch (activeMagicCount)
+	{
+	case 1:
+		if (fireCoolTime_ <= 0)
+		{
+			CreateFireMagic();
+		}
+		else
+		{
+			AudioManager::GetInstance()->PlaySE(SoundID::SE_NOT_MAGIC);
+		}
+		break;
+	case 2:
+		if (thunderCoolTime_ <= 0)
+		{
+			CreateThunderMagic();
+		}
+		else
+		{
+			AudioManager::GetInstance()->PlaySE(SoundID::SE_NOT_MAGIC);
+		}
+		break;
+	case 3:
+		if (healCoolTime_ <= 0)
+		{
+			CreateHealMagic();
+		}
+		else
+		{
+			AudioManager::GetInstance()->PlaySE(SoundID::SE_NOT_MAGIC);
+		}
+		break;
+	default:
+		break;
 	}
 
 	// 魔法処理
@@ -449,6 +485,11 @@ void Player::ChangeState(STATE newState)
 	currentState_->Exit(this);
 	currentState_ = states_[newState];
 	currentState_->Enter(this);
+}
+
+bool Player::IsShortCut()
+{
+	return isShortCut_;
 }
 
 void Player::ActivatePowerUp()

@@ -63,6 +63,8 @@ public:
 	void Draw() override;
 	
 	void ChangeState(STATE newState);
+
+	bool IsShortCut();
  
 	AnimationController* GetAnimationController() const { return animationController_;}
 	VECTOR GetMovePow() const { return movePow_; }
@@ -352,5 +354,7 @@ private:
 	static constexpr int HEAL_COOL_TIME = 600;	// クールタイム
 	int healCoolTime_ = 0;	// クールタイムカウンタ
 	static constexpr int HEAL_AMOUNT = 5;	// 回復量
+
+	bool isShortCut_ = false;
 
 };
