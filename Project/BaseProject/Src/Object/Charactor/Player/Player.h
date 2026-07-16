@@ -62,6 +62,8 @@ public:
 	void Draw() override;
 	
 	void ChangeState(STATE newState);
+
+	bool IsShortCut();
  
 	AnimationController* GetAnimationController() const { return animationController_;}
 	VECTOR GetMovePow() const { return movePow_; }
@@ -356,5 +358,7 @@ private:
 
 	bool isShortCut_ = false;
 
+
+	bool isShortCut_ = false;
 
 };
