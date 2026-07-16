@@ -123,7 +123,7 @@ void GameScene::Init()
 
 	commandHandles_[static_cast <int>(COMMAND::THUNDER)] = resMng_.Load(ResourceManager::SRC::IMG_SELECT_SANDER).handleId_;
 	commandHandles_[static_cast <int>(COMMAND::FIRE)] = resMng_.Load(ResourceManager::SRC::IMG_SELECT_FIRE).handleId_;
-	commandHandles_[static_cast <int>(COMMAND::RECOVERY)] = resMng_.Load(ResourceManager::SRC::IMG_SELECT_RECOVERY).handleId_;
+	commandHandles_[static_cast <int>(COMMAND::HEAL)] = resMng_.Load(ResourceManager::SRC::IMG_SELECT_RECOVERY).handleId_;
 	commandHandles_[static_cast <int>(COMMAND::ALL)] = resMng_.Load(ResourceManager::SRC::IMG_SELECT_ALL).handleId_;
 
 	selectCommand_ = static_cast<int>(COMMAND::THUNDER);
@@ -134,8 +134,8 @@ void GameScene::Init()
 	fontCommandHandles_[static_cast <int>(COMMAND::THUNDER)][(int)COMMAND_STATE::USE] = resMng_.Load(ResourceManager::SRC::IMG_USE_SANDER).handleId_;
 	fontCommandHandles_[static_cast <int>(COMMAND::FIRE)][(int)COMMAND_STATE::NOT_USE] = resMng_.Load(ResourceManager::SRC::IMG_NOTUSE_FIRE).handleId_;
 	fontCommandHandles_[static_cast <int>(COMMAND::FIRE)][(int)COMMAND_STATE::USE] = resMng_.Load(ResourceManager::SRC::IMG_USE_FIRE).handleId_;
-	fontCommandHandles_[static_cast <int>(COMMAND::RECOVERY)][(int)COMMAND_STATE::NOT_USE] = resMng_.Load(ResourceManager::SRC::IMG_NOTUSE_RECOVERY).handleId_;
-	fontCommandHandles_[static_cast <int>(COMMAND::RECOVERY)][(int)COMMAND_STATE::USE] = resMng_.Load(ResourceManager::SRC::IMG_USE_RECOVERY).handleId_;
+	fontCommandHandles_[static_cast <int>(COMMAND::HEAL)][(int)COMMAND_STATE::NOT_USE] = resMng_.Load(ResourceManager::SRC::IMG_NOTUSE_RECOVERY).handleId_;
+	fontCommandHandles_[static_cast <int>(COMMAND::HEAL)][(int)COMMAND_STATE::USE] = resMng_.Load(ResourceManager::SRC::IMG_USE_RECOVERY).handleId_;
 
 	playerUiHandles_.resize(static_cast<int>(PLAYRE_HP_STATE::STATE_MAX));
 
@@ -143,10 +143,10 @@ void GameScene::Init()
 	playerUiHandles_[static_cast<int>(PLAYRE_HP_STATE::DAMEGE)] = resMng_.Load(ResourceManager::SRC::IMG_PLAYER_UI_DAMEGE).handleId_;
 	playerUiHandles_[static_cast<int>(PLAYRE_HP_STATE::WARNIG)] = resMng_.Load(ResourceManager::SRC::IMG_PLAYER_UI_WARNIG).handleId_;
 
-	LockOnHandles_.resize(3);
 
-	LockOnHandles_[0] = resMng_.Load(ResourceManager::SRC::IMG_LOCKON_FONT_UI).handleId_;
+	lockOnImageHandle_ = resMng_.Load(ResourceManager::SRC::TARGET_CURSOR_ORANGE).handleId_;
 
+	lockOnFontHandle_ = resMng_.Load(ResourceManager::SRC::IMG_LOCKON_FONT_UI).handleId_;
 }
 
 void GameScene::Update()
@@ -163,7 +163,14 @@ void GameScene::Update()
 	enemyManager_->Update();
 	itemManger_->Update();
 
-	
+	if (player_->IsShortCut())
+	{
+		selectCommand_ = static_cast<int>(COMMAND::ALL);
+	}
+	else if (selectCommand_ == static_cast<int>(COMMAND::ALL))
+	{
+		//selectCommand_ = static_cast<int>(usecommand_);
+	}
 	
 	if (!enemyManager_->GetEnemyDead())
 	{
@@ -172,22 +179,19 @@ void GameScene::Update()
 			if (camMode_ == CAM_MODE::MANUAL)
 			{
 				camMode_ = CAM_MODE::TARGETING;
-				AudioManager::GetInstance()->SetSeVolume(300);
-				AudioManager::GetInstance()->PlaySE(SoundID::SE_LOCKON);
 				sceMng_.GetCamera()->ChangeMode(Camera::MODE::TARGETING);
+				AudioManager::GetInstance()->PlaySE(SoundID::SE_LOCKON);
 			}
 			else
 			{
 				camMode_ = CAM_MODE::MANUAL;
 				sceMng_.GetCamera()->ChangeMode(Camera::MODE::MANUAL);
+				AudioManager::GetInstance()->PlaySE(SoundID::SE_LOCKON_CHANGE);
 			}
 		}
 
 		if (camMode_ == CAM_MODE::TARGETING && ins->IsGamepadTriggerTrgDown(true, 0)|| InputManager::GetInstance()->IsTrgDown(KEY_INPUT_F))
 		{
-			AudioManager::GetInstance()->SetSeVolume(200);
-			AudioManager::GetInstance()->PlaySE(SoundID::SE_LOCKON_CHANGE);
-
 			//最大まで言ったら0に
 			if (targetEnemyId_ > enemyManager_->GetEnemies().size() - 1)
 			{
@@ -198,7 +202,6 @@ void GameScene::Update()
 				targetEnemyId_++;
 			}
 		}
-
 	}
 
 	// ターゲット切り替え
@@ -287,7 +290,7 @@ void GameScene::Update()
 		}
 	}
 
-	//フォント状態更新
+	// コマンドUI処
 	CommandUpdate();
 
 
@@ -379,29 +382,7 @@ void GameScene::Update()
 		return;
 	}
 
-	//// ゲームクリア判定
-	//if (enemyManager_->GetEnemyDead())
-	//{
-	//	// 強制的に全サウンド停止
-	//	StopMusic();
-	//	StopSoundMem(audioHandle_);
-	//	AudioManager::GetInstance()->StopBGM();
-	//	sceMng_.ChangeScene(SceneManager::SCENE_ID::CLEAR);
-	//	return;
-	//}
-
 //#ifdef _DEBUG
-	if (player_->GetIsShortCut())
-	{
-		selectCommand_ = static_cast<int>(COMMAND::ALL);
-	}
-	else if (selectCommand_ == static_cast<int>(COMMAND::ALL))
-	{
-		selectCommand_ = static_cast<int>(usecommand_);
-	}
-	
-
-
 
 	if (ins->IsTrgDown(KEY_INPUT_UP) /*|| ins->IsTrgDown(KEY_INPUT_E)*/|| ins->IsGamepadTrgDown(InputManager::PadInput::Up, 0))
 	{
@@ -410,7 +391,7 @@ void GameScene::Update()
 		selectCommand_--;
 		if (selectCommand_ < static_cast <int>(COMMAND::THUNDER))
 		{
-			selectCommand_ = static_cast <int>(COMMAND::RECOVERY);
+			selectCommand_ = static_cast <int>(COMMAND::HEAL);
 		}
 	}
 
@@ -419,7 +400,7 @@ void GameScene::Update()
 		AudioManager::GetInstance()->PlaySE(SoundID::SE_COMMAND_SELECT);
 
 		selectCommand_++;
-		if (selectCommand_ >  static_cast <int>(COMMAND::RECOVERY))
+		if (selectCommand_ > static_cast <int>(COMMAND::HEAL))
 		{
 			selectCommand_ = static_cast <int>(COMMAND::THUNDER);
 		}
@@ -445,10 +426,16 @@ void GameScene::Draw()
 	PlayerHpDraw();
 	CommandDraw();
 
-	if (camMode_ == CAM_MODE::TARGETING)
+	if (camMode_ == TARGETING)
 	{
-		DrawGraph(30, 100, LockOnHandles_[0], true);
+		static float angle = 0.0f;
+		angle -= 0.025f;
+		auto pos = targetPos_;
+		pos.y += 80.0f;
+		DrawBillboard3D(pos, 0.5f, 0.5f, 100.0f, angle, lockOnImageHandle_, true);
+		DrawGraph(30, 100, lockOnFontHandle_, true);
 	}
+
 
 	// エフェクトを一番手前に描画
 	EffectManager::GetInstance().Draw();
@@ -491,37 +478,37 @@ void GameScene::Draw()
 	SetDrawScreen(mainScreen);
 	DrawGraph(0, 0, postEffectScreen_, false);
 
-	//// デバッグ表示
-	//int y = 10;
-	//DrawFormatString(10, y, 0xFFFF00, "Mode: %s (NumPad5 to toggle)", 
-	//	multiEffectMode_ ? "Multi" : "Single");
-	//y += 20;
-	//// トリガー値を表示
-	//const auto& ins = InputManager::GetInstance();
-	//int leftTrigger = ins->GetGamepadTriggerValue(true, 0);
-	//int rightTrigger = ins->GetGamepadTriggerValue(false, 0);
-	//DrawFormatString(10, y, 0xFFFF00, "Left Trigger: %d, Right Trigger: %d", leftTrigger, rightTrigger);
-	//y += 20;
-	//if (!multiEffectMode_)
-	//{
-	//	DrawFormatString(10, y, 0xFFFF00, "Current Effect: %s (NumPad4/6)", 
-	//		GetEffectName(currentEffect_));
-	//}
-	//else
-	//{
-	//	DrawFormatString(10, y, 0xFFFF00, "Select: %s (Enter to toggle)", 
-	//		GetEffectName(currentEffect_));
-	//	y += 20;
-	//	DrawFormatString(10, y, 0xFFFF00, "Active Effects: %d (NumPad0 to clear)", 
-	//		static_cast<int>(activeEffects_.size()));
-	//	y += 20;
-	//	
-	//	for (const auto& effect : activeEffects_)
-	//	{
-	//		DrawFormatString(10, y, 0x00FF00, "  - %s", GetEffectName(effect));
-	//		y += 18;
-	//	}
-	//}
+	// デバッグ表示
+	int y = 10;
+	DrawFormatString(10, y, 0xFFFF00, "Mode: %s (NumPad5 to toggle)", 
+		multiEffectMode_ ? "Multi" : "Single");
+	y += 20;
+	// トリガー値を表示
+	const auto& ins = InputManager::GetInstance();
+	int leftTrigger = ins->GetGamepadTriggerValue(true, 0);
+	int rightTrigger = ins->GetGamepadTriggerValue(false, 0);
+	DrawFormatString(10, y, 0xFFFF00, "Left Trigger: %d, Right Trigger: %d", leftTrigger, rightTrigger);
+	y += 20;
+	if (!multiEffectMode_)
+	{
+		DrawFormatString(10, y, 0xFFFF00, "Current Effect: %s (NumPad4/6)", 
+			GetEffectName(currentEffect_));
+	}
+	else
+	{
+		DrawFormatString(10, y, 0xFFFF00, "Select: %s (Enter to toggle)", 
+			GetEffectName(currentEffect_));
+		y += 20;
+		DrawFormatString(10, y, 0xFFFF00, "Active Effects: %d (NumPad0 to clear)", 
+			static_cast<int>(activeEffects_.size()));
+		y += 20;
+		
+		for (const auto& effect : activeEffects_)
+		{
+			DrawFormatString(10, y, 0x00FF00, "  - %s", GetEffectName(effect));
+			y += 18;
+		}
+	}
 
 	// 一時スクリーン削除
 	DeleteGraph(tempScreen);
@@ -606,23 +593,6 @@ void GameScene::Release()
 	//	delete weapon_;
 	//	weapon_ = nullptr;
 	//}
-
-	//UI解放
-	for (int i = 0; i < 11; i++)
-	{	
-		DeleteGraph(hpHandles_[i]);
-	}
-
-	for (int i = 0; i < COMMAND::MAX; i++)
-	{	
-		DeleteGraph(commandHandles_[i]);
-	}
-
-	for (int i = 0;  i < PLAYRE_HP_STATE::STATE_MAX; i++)
-	{
-		DeleteGraph(playerUiHandles_[i]);
-	}
-	
 }
 
 void GameScene::CreateAttackCollider(ColliderBase::TAG tag, VECTOR pos, float radius, float damage, int lifeTime)
@@ -668,13 +638,11 @@ void GameScene::SelectCommand(COMMAND command)
 
 	switch (command)
 	{
-	case GameScene::COMMAND::THUNDER:
+	case GameScene::THUNDER:
 		break;
-	case GameScene::COMMAND::FIRE:
+	case GameScene::FIRE:
 		break;
-	case GameScene::COMMAND::RECOVERY:
-		break;
-	case GameScene::COMMAND::ALL:
+	case GameScene::HEAL:
 		break;
 	default:
 		break;
@@ -756,40 +724,31 @@ void GameScene::PlayerHpDraw()
 
 	if(damegeflag_)
 	{
+
 		//ダメージUI
 		DrawGraph(IMG_HP_X, IMG_HP_Y, playerUiHandles_[static_cast<int>(PLAYRE_HP_STATE::DAMEGE)], true);
 	}
-	
-	if (player_->GetHp()<= 6)
-	{
-		//瀕死状態UI
-		DrawGraph(IMG_HP_X, IMG_HP_Y, playerUiHandles_[static_cast<int>(PLAYRE_HP_STATE::WARNIG)], true);
-	}
 	else
 	{
-		//デフォルトUI
-		DrawGraph(IMG_HP_X, IMG_HP_Y, playerUiHandles_[static_cast<int>(PLAYRE_HP_STATE::DEF)], true);
+		if (player_->GetHp()<= 6)
+		{
+			//瀕死状態UI
+			DrawGraph(IMG_HP_X, IMG_HP_Y, playerUiHandles_[static_cast<int>(PLAYRE_HP_STATE::WARNIG)], true);
+		}
+		else
+		{
+			//デフォルトUI
+			DrawGraph(IMG_HP_X, IMG_HP_Y, playerUiHandles_[static_cast<int>(PLAYRE_HP_STATE::DEF)], true);
+		}
 	}
-	
 }
 
 void GameScene::CommandUpdate()
 {
-	if(player_->GetUseRecovery())
-	{
-		recoveryState_ = COMMAND_STATE::USE;
-		usecommand_ = COMMAND::RECOVERY;
-	}
-	else
-	{
-		recoveryState_ = COMMAND_STATE::NOT_USE;
-	}
-
-	//サンダーフォント切り替え
-	if (player_->GetUseThunder())
+	//サンダー
+	if (player_->GetThunderCoolTime() > 0)
 	{
 		thunderState_ = COMMAND_STATE::USE;
-		usecommand_ = COMMAND::THUNDER;
 	}
 	else
 	{
@@ -797,25 +756,38 @@ void GameScene::CommandUpdate()
 	}
 
 
-	// ファイアは未実装
-	fireState_ = COMMAND_STATE::USE;
+	// ファイア
+	if (player_->GetFireCoolTime() > 0)
+	{
+		fireState_ = COMMAND_STATE::USE;
+	}
+	else
+	{
+		fireState_ = COMMAND_STATE::NOT_USE;
+	}
 
+	// 回復
+	if(player_->GetHealCoolTime() > 0)
+	{
+		healState_ = COMMAND_STATE::USE;
+	}
+	else
+	{
+		healState_ = COMMAND_STATE::NOT_USE;
+	}
 }
 
 void GameScene::CommandDraw()
 {
-	//選択してるコマンド描画
+
 	DrawGraph(0, 735, commandHandles_[selectCommand_], true);
 
 	const int baseX = 45;
 	const int selectOffset = 90;
 
-	//
 	for (int i = 0; i < static_cast<int>(COMMAND::MAX); i++)
 	{
-		bool isSelect =
-			(selectCommand_ == static_cast<int>(COMMAND::ALL)) ||
-			(i == selectCommand_);
+		bool isSelect = (i == selectCommand_);
 
 		COMMAND_STATE state = COMMAND_STATE::NOT_USE;
 
@@ -829,8 +801,11 @@ void GameScene::CommandDraw()
 			state = fireState_;
 			break;
 
-		case COMMAND::RECOVERY:
-			state = recoveryState_;
+		case COMMAND::HEAL:
+			state = healState_;
+			break;
+
+		default:
 			break;
 		}
 
@@ -841,7 +816,6 @@ void GameScene::CommandDraw()
 			true);
 	}
 }
-
 
 void GameScene::PlayerFaceUIDrow()
 {

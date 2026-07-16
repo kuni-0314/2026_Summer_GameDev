@@ -134,7 +134,6 @@ void ResourceManager::Init()
 	res = new RES(RES_T::IMG, PATH_IMG + "UI/LockOn.png");
 	resourcesMap_.emplace(SRC::IMG_LOCKON_FONT_UI, res);	//mapに登録
 
-
 	//モデル登録 
 	//メインの惑星モデル
 	res = new RES(RES_T::MODEL, PATH_MDL +"Stage/PitfallPlanet/PitfallPlanet.mv1");
@@ -168,15 +167,9 @@ void ResourceManager::Init()
 	res = new RES(RES_T::IMG, PATH_IMG + "Shadow.png");
 	resourcesMap_.emplace(SRC::PLAYER_SHADOW, res);
 
-	//エネミーラセ
+	//エネミーラット
 	res = new RES(RES_T::MODEL, PATH_MDL + "Enemy/Rase/Rase.mv1");
 	resourcesMap_.emplace(SRC::ENEMY_RASE, res);	//mapに登録
-
-	//ドラゴン(BOSS)
-	res = new RES(RES_T::MODEL, PATH_MDL + "Enemy/Dragon/Idle01.mv1");
-	resourcesMap_.emplace(SRC::ENEMY_DRAGON, res);	//mapに登録
-
-
 
 	//敵の視野
 	res = new RES(RES_T::MODEL, PATH_MDL + "Enemy/Robot/Cone.mv1");
