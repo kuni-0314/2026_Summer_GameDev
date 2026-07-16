@@ -61,7 +61,7 @@ public:
 
 	void Release(void) override;
 
-	void Damage(int damage) override;
+	//void Damage(int damage) override;
 	// ƒ_ƒ[ƒWˆ—
 	void aa(int damege);
 protected:

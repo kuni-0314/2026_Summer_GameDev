@@ -133,7 +133,7 @@ void CharactorBase::Damage(int damage, const VECTOR& hitDir)
 		break;
 	case CharactorBase::WEIGHT::NORMAL:
 		// ”ò‚Ô‚Á‚¿‚á”ò‚Ô
-		knowbackPow = 3.0f;
+		knowbackPow = 4.0f;
 		break;
 	case CharactorBase::WEIGHT::HEAVY:
 		// ŽáŠ±”ò‚Ô

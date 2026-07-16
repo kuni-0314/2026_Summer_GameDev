@@ -61,23 +61,23 @@ void EnemyRase::Release(void)
 	
 }
 
-void EnemyRase::Damage(int damage)
-{
-	if (state_ == STATE::DIE || state_ == STATE::END)
-		return;
-
-	CharactorBase::Damage(damage);
-
-	if (hp_ <= 0)
-	{
-		ChangeState(STATE::DIE);
-		isAlive_ = false;
-	}
-	else
-	{
-		ChangeState(STATE::HIT);
-	}
-}
+//void EnemyRase::Damage(int damage)
+//{
+//	if (state_ == STATE::DIE || state_ == STATE::END)
+//		return;
+//
+//	CharactorBase::Damage(damage);
+//
+//	if (hp_ <= 0)
+//	{
+//		ChangeState(STATE::DIE);
+//		isAlive_ = false;
+//	}
+//	else
+//	{
+//		ChangeState(STATE::HIT);
+//	}
+//}
 
 
 
@@ -212,11 +212,14 @@ void EnemyRase::UpdateProcess()
 
 	auto const ins = InputManager::GetInstance();
 
-	//ダメージヒット処理
-	preHp_ = hp_;//被ダメージ前HP保存
-
 	CheckPlayerSwordCollision();
 	CheckPlayerMagicCollision();
+
+	if (hp_ <= 0)
+	{
+		ChangeState(STATE::DIE);
+	}
+
 
 }
 

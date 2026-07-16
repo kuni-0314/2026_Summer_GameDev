@@ -35,6 +35,7 @@ Player::Player(int padNum)
 	padNum_(padNum),
 	CharactorBase()
 {
+	weight_ = WEIGHT::NORMAL;
 }
 
 Player::~Player()

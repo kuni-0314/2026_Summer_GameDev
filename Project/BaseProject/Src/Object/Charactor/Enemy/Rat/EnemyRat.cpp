@@ -377,7 +377,7 @@ void EnemyRat::UpdateAttack(void)
 		// 攻撃判定
 		if (AsoUtility::IsHitSpheres(attackWorldPos_, COL_ATTACK_RADIUS, playerPos_, playerRad_))
 		{
-			player_->Damage(1);
+			player_->Damage(1, transform_.GetForward());
 			isAttack_ = true;
 		}
 	}

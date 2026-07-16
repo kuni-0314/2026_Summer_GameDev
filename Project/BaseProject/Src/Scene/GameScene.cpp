@@ -179,6 +179,10 @@ void GameScene::Update()
 			if (camMode_ == CAM_MODE::MANUAL)
 			{
 				camMode_ = CAM_MODE::TARGETING;
+				VECTOR pPos = player_->GetTransform().pos;
+				VECTOR ePos = enemyManager_->GetEnemyPos(targetEnemyId_);
+				VECTOR dir = VNorm(VSub(ePos, pPos));
+				player_->SetMoveDir(dir);
 				sceMng_.GetCamera()->ChangeMode(Camera::MODE::TARGETING);
 				AudioManager::GetInstance()->PlaySE(SoundID::SE_LOCKON);
 			}
