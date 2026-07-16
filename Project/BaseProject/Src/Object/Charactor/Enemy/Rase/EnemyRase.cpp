@@ -537,7 +537,7 @@ void EnemyRase::UpdateShot()
 				shot.shotTransform_.pos,
 				shot.shotTransform_.quaRot);
 
-			burst->SetLifeTime(100);
+			burst->SetLifeTime(85);
 
 			EffectManager::GetInstance().RegisterEffect(burst);
 
