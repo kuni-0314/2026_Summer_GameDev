@@ -43,7 +43,7 @@ public:
 	virtual void Release() override;
 
 	// ƒ_ƒ[ƒWˆ—
-	void Damege(int damege);
+	virtual void Damege(int damege);
 
 	// HP‚Ìæ“¾
 	int GetHp() const { return hp_; }

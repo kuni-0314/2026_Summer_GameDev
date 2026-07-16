@@ -32,6 +32,7 @@ public:
 		ENEMY_RASE,				//らせ
 		ENEMY_RASE_BALL,		//攻撃用モデル
 		ENEMY_LARGE,
+		ENEMY_DRAGON,			//ボスドラゴン
 		VIEW_RANGE,				//敵の視野
 		CELL_RED,				// 赤色セル
 		BATTLE_STAGE,			//バトルステージ
@@ -76,6 +77,7 @@ public:
 		IMG_SELECT_SANDER,
 		IMG_SELECT_RECOVERY,
 		IMG_SELECT_FIRE,
+		IMG_SELECT_ALL,
 		IMG_NOTUSE_SANDER,
 		IMG_USE_SANDER,
 		IMG_NOTUSE_FIRE,
@@ -84,6 +86,7 @@ public:
 		IMG_USE_RECOVERY,
 		OPTION_FRAME,
 		EFFECT_DEATH,				//死亡エフェクト
+		IMG_LOCKON_FONT_UI,			//ロックオン時用UI（フォント）
 		MAX
 	};
 

@@ -38,7 +38,8 @@ public:
 	{
 		THUNDER,
 		FIRE,
-		HEAL,
+		RECOVERY,
+		ALL,
 		MAX
 	};
 
@@ -85,11 +86,6 @@ public:
 
 	void  SetDamageFlag(bool flag);
 	bool  GetFlag();
-
-	CAM_MODE GetCamMode() const { return camMode_; }
-
-	VECTOR GetTargetPos() const { return targetPos_; }
-
 private:
 
 	// ステージ
@@ -118,10 +114,11 @@ private:
 
 	//コマンド
 	COMMAND command_;
+	COMMAND usecommand_;
 
 	COMMAND_STATE thunderState_;
 	COMMAND_STATE fireState_;
-	COMMAND_STATE healState_;
+	COMMAND_STATE recoveryState_;
 
 	int selectCommand_;
 
@@ -176,7 +173,8 @@ private:
 
 	std::vector<int> hpHandles_;			//Hpハンドル
 	std::vector<int> playerUiHandles_;		//プレイヤーUI
-	std::vector<int> commandHandles;		//コマンドハンドル
+	std::vector<int> commandHandles_;		//コマンドハンドル
+	std::vector<int> LockOnHandles_;		//ロックオンハンドル
 
 	int fontCommandHandles_ [static_cast<int>(COMMAND::MAX)][2];//セレクトコマンドファント
 
@@ -186,5 +184,4 @@ private:
 
 	void PlayerFaceUIDrow();
 
-	int lockOnImageHandle_;
 };

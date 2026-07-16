@@ -61,6 +61,26 @@ void EnemyRase::Release(void)
 	
 }
 
+void EnemyRase::Damege(int damage)
+{
+	if (state_ == STATE::DIE || state_ == STATE::END)
+		return;
+
+	CharactorBase::Damege(damage);
+
+	if (hp_ <= 0)
+	{
+		ChangeState(STATE::DIE);
+		isAlive_ = false;
+	}
+	else
+	{
+		ChangeState(STATE::HIT);
+	}
+}
+
+
+
 void EnemyRase::InitLoad()
 {
 	//基底クラスのリソースロード
@@ -197,18 +217,6 @@ void EnemyRase::UpdateProcess()
 	CheckPlayerSwordCollision();
 	CheckPlayerMagicCollision();
 
-	if (hp_ < preHp_)
-	{
-		if (hp_ <= 0)
-		{
-			ChangeState(STATE::DIE);
-			isAlive_ = false;
-		}
-		else
-		{
-			ChangeState(STATE::HIT);
-		}
-	}
 }
 
 void EnemyRase::UpdateProcessPost()

@@ -209,15 +209,15 @@ void Player::InitAnimation()
 
 	// 攻撃アニメーション
 	animationController_->Add(static_cast<int>(ANIM_TYPE::ATK_N1)
-		, 80.0f, Application::PATH_MODEL + "Player/Attack1.mv1");
+		, 60.0f, Application::PATH_MODEL + "Player/Attack1.mv1");
 	animationController_->Add(static_cast<int>(ANIM_TYPE::ATK_N2)
-		, 60.0f, Application::PATH_MODEL + "Player/Attack2.mv1");
+		, 70.0f, Application::PATH_MODEL + "Player/Attack1.mv1");
 	animationController_->Add(static_cast<int>(ANIM_TYPE::ATK_N3)
-		, 90.0f, Application::PATH_MODEL + "Player/Attack3.mv1");
+		, 60.0f, Application::PATH_MODEL + "Player/Attack1.mv1");
 	animationController_->Add(static_cast<int>(ANIM_TYPE::ATK_N4)
 		, 50.0f, Application::PATH_MODEL + "Player/Attack1.mv1");
 	animationController_->Add(static_cast<int>(ANIM_TYPE::ATK_N5)
-		, 80.0f, Application::PATH_MODEL + "Player/Attack5.mv1");
+		, 40.0f, Application::PATH_MODEL + "Player/Attack1.mv1");
 	animationController_->Add(static_cast<int>(ANIM_TYPE::ATK_H)
 		, 40.0f, Application::PATH_MODEL + "Player/Attack1.mv1");
 	animationController_->Add(static_cast<int>(ANIM_TYPE::ATK_D)
@@ -236,9 +236,6 @@ void Player::InitAnimation()
 		, 40.0f, Application::PATH_MODEL + "Player/Attack1.mv1");//tmp
 	animationController_->Add(static_cast<int>(ANIM_TYPE::MAGIC)
 		, 40.0f, Application::PATH_MODEL + "Player/Spell Cast.mv1");
-	animationController_->Add(static_cast<int>(ANIM_TYPE::ROLLING)
-		, 65.0f, Application::PATH_MODEL + "Player/Rolling.mv1");
-
 	//初期アニメーション再生
 	animationController_->Play(static_cast<int>(ANIM_TYPE::IDLE), true);
 }
@@ -303,52 +300,12 @@ void Player::UpdateProcess()
 	{
 		PlayBlinkEffect();
 	}
-
-	// 魔法開始
-	// 調整中（フラグがサンダーしかない）
-	if ((ins->IsTrgDown(KEY_INPUT_E) || ins->IsGamepadTrgDown(InputManager::PadInput::Y, padNum_)))
-	{
-		GameScene* gameScene = dynamic_cast<GameScene*>(scnMng_.GetScene());
-		switch (gameScene->GetSelectedCommand())
-		{
-		case GameScene::COMMAND::FIRE:
-			if (fireCoolTime_ <= 0)
-			{
-				CreateFireMagic();
-			}
-			else
-			{
-				AudioManager::GetInstance()->PlaySE(SoundID::SE_NOT_MAGIC);
-			}
-			break;
-		case GameScene::COMMAND::THUNDER:
-			if (thunderCoolTime_ <= 0)
-			{
-				CreateThunderMagic();
-			}
-			else
-			{
-				AudioManager::GetInstance()->PlaySE(SoundID::SE_NOT_MAGIC);
-			}
-			break;
-		case GameScene::COMMAND::HEAL:
-			if (healCoolTime_ <= 0)
-			{
-				CreateHealMagic();
-			}
-			else
-			{
-				AudioManager::GetInstance()->PlaySE(SoundID::SE_NOT_MAGIC);
-			}
-			break;
-		default:
-			break;
-		}
-
-
-	}
+	
 
 	// 魔法処理
+	
+	CreateMagic();
+
 	UpdateMagic();
 
 	CheckPlayerRingCollision();
@@ -361,6 +318,7 @@ void Player::UpdateProcessPost()
 		sword_->Update();
 	}
 
+	MagicCoolTime();
 }
 
 void Player::Draw()
@@ -427,16 +385,16 @@ void Player::Draw()
 	DrawSphere3D(lineZ, 5.0f, 16, 0x0000FF, 0x0000FF, true);
 	DrawSphere3D(rot, 5.0f, 16, 0xFFFF00, 0xFFFF00, true);
 
-	//for (int i = 0; i < THUNDER_COUNT; i++)
-	//{
-	//	if (!thunderInfos_[i].isActive) continue;
-	//	VECTOR spherePos = thunderInfos_[i].transform.pos;
-	//	DrawSphere3D(spherePos, 100.0f, 16, 0xff00ff, 0xff00ff, false);
-	//}
-	//if (isAliveFire_)
-	//{
-	//	DrawSphere3D(fireInfo_.transform.pos, FIRE_RADIUS, 16, 0xff0000, 0xff0000, false);
-	//}
+	for (int i = 0; i < THUNDER_COUNT; i++)
+	{
+		if (!thunderInfos_[i].isActive) continue;
+		VECTOR spherePos = thunderInfos_[i].transform.pos;
+		DrawSphere3D(spherePos, 100.0f, 16, 0xff00ff, 0xff00ff, false);
+	}
+	if (isAliveFire_)
+	{
+		DrawSphere3D(fireInfo_.transform.pos, FIRE_RADIUS, 16, 0xff0000, 0xff0000, false);
+	}
 
 
 	VECTOR test = transform_.quaRot.PosAxis(VGet(0, 0, -100));
@@ -449,6 +407,11 @@ void Player::ChangeState(STATE newState)
 	currentState_->Exit(this);
 	currentState_ = states_[newState];
 	currentState_->Enter(this);
+}
+
+bool Player::GetIsShortCut()
+{
+	return isShortCut_;
 }
 
 void Player::ActivatePowerUp()
@@ -643,7 +606,7 @@ void Player::InitState()
 	states_[STATE::RUN] = new PlayerRunState();
 	//states_[STATE::FAST_RUN] = new PlayerFastRunState();
 	states_[STATE::JUMP] = new PlayerJumpState();
-	states_[STATE::JET] = new PlayerRollState();
+	states_[STATE::JET] = new PlayerJetState();
 	states_[STATE::FALL] = new PlayerFallState();
 	states_[STATE::ATTACK] = new PlayerAttackState();
 	states_[STATE::MAGIC] = new PlayerMagicState();  // 追加
@@ -682,23 +645,70 @@ void Player::DestroyFireCollider(const FireInfo& fireInfo)
 	gameScene->RemoveEnemyHitCollider(fireInfo.collider);
 }
 
+void Player::CreateMagic()
+{
+	auto ins = InputManager::GetInstance();
+
+	if (ins->IsGamepadNew(InputManager::PadInput::LB, padNum_))
+	{
+		isShortCut_ = true;
+	}
+	else
+	{
+		isShortCut_ = false;
+	}
+
+	if(isShortCut_&& ins->IsGamepadTrgDown(InputManager::PadInput::Y, padNum_))
+	{
+		CreateThunderMagic();
+	}
+	if (isShortCut_ && ins->IsGamepadTrgDown(InputManager::PadInput::X, padNum_))
+	{
+		CreateFireMagic();
+	}
+	if (isShortCut_ && ins->IsGamepadTrgDown(InputManager::PadInput::A, padNum_))
+	{
+		CreateRecoveryMagic();
+	}
+	else
+	{
+		if (!isAliveThunder_ &&
+			(ins->IsTrgDown(KEY_INPUT_E) || ins->IsGamepadTrgDown(InputManager::PadInput::Y, padNum_)))
+		{
+			GameScene* gameScene = dynamic_cast<GameScene*>(scnMng_.GetScene());
+			switch (gameScene->GetSelectedCommand())
+			{
+			case GameScene::COMMAND::FIRE:
+				CreateFireMagic();
+				break;
+			case GameScene::COMMAND::THUNDER:
+				CreateThunderMagic();
+				break;
+			case GameScene::COMMAND::RECOVERY:
+				CreateRecoveryMagic();
+				break;
+			default:
+				break;
+			}
+
+		}
+	}
+}
+
 void Player::CreateFireMagic()
 {
-	if (!isAliveFire_)
-	{
-		fireInfo_ = FireInfo();
-		fireInfo_.timer = 0;
-		fireInfo_.transform.pos = transform_.pos;
-		fireInfo_.dir = transform_.quaRot.GetForward();
-		CreateFireCollider(fireInfo_);
-		isAliveFire_ = true;
-		fireCoolTime_ = FIRE_COOL_TIME;
-	}
+
+	AudioManager::GetInstance()->PlaySE(SoundID::SE_NOT_MAGIC);
+	// サンダーと違って、コライダはすぐに作成する
+	fireInfo_ = FireInfo();
+	fireInfo_.transform.pos = transform_.pos;
+	CreateFireCollider(fireInfo_);
+
 }
 
 void Player::CreateThunderMagic()
 {
-	if (!isAliveThunder_)
+	if (!useThunder_)
 	{
 		thunderTimer_ = 0;
 		isAliveThunder_ = true;
@@ -729,54 +739,68 @@ void Player::CreateThunderMagic()
 			thunderInfos_[i].isDestroyed = false;
 		}
 
-		thunderCoolTime_ = THUNDER_COOL_TIME;
+		useThunder_ = true;
+	}
+	else
+	{
+		AudioManager::GetInstance()->PlaySE(SoundID::SE_NOT_MAGIC);
 	}
 }
 
-void Player::CreateHealMagic()
+void Player::CreateRecoveryMagic()
 {
-	AudioManager::GetInstance()->PlaySE(SoundID::SE_MAGIC_HEAL);
-	HealHp(HEAL_AMOUNT);
-	healCoolTime_ = HEAL_COOL_TIME;
+	if (!useRecovery_)
+	{
+		AudioManager::GetInstance()->PlaySE(SoundID::SE_MAGIC_HEAL);
+		HealHp(5);
+		useRecovery_ = true;
+	}
+	else
+	{
+		AudioManager::GetInstance()->PlaySE(SoundID::SE_NOT_MAGIC);
+	}
 }
 
 void Player::MagicCoolTime()
 {
-	if (thunderCoolTime_ > 0)
+	if (useThunder_)
 	{
-		thunderCoolTime_--;
+		thunderCoolTime_++;
+		if (thunderCoolTime_ >= FIRE_COOL_TIME)
+		{
+			useThunder_ = false;
+			thunderCoolTime_ = 0;
+		}
 	}
 
-	if (fireCoolTime_ > 0)
+	if (useRecovery_)
 	{
-		fireCoolTime_--;
-	}
-
-	if (healCoolTime_ > 0)
-	{
-		healCoolTime_--;
+		recoveryCoolTime_++;
+		if (recoveryCoolTime_ >= RECOVERY_COOL_TIME)
+		{
+			useRecovery_ = false;
+			recoveryCoolTime_ = 0;
+		}
 	}
 }
 
-int Player::GetThunderCoolTime()
+bool Player::GetUseThunder()
 {
-	return thunderCoolTime_;
+	return useThunder_;
 }
 
-int Player::GetFireCoolTime()
+bool Player::GetUseFire()
 {
-	return fireCoolTime_;
+	return useFire_;
 }
 
-int Player::GetHealCoolTime()
+bool Player::GetUseRecovery()
 {
-	return healCoolTime_;
+	return useRecovery_;
 }
 
 void Player::UpdateMagic()
 {
-	MagicCoolTime();
-
 	if (isAliveThunder_)
 	{
 		thunderTimer_++;
@@ -854,33 +878,20 @@ void Player::UpdateMagic()
 
 	if (isAliveFire_)
 	{
-		GameScene::CAM_MODE mode = gameScene_->GetCamMode();
-		if (fireInfo_.timer < FIRE_LIFETIME)
-		{
-			if (mode == GameScene::CAM_MODE::TARGETING)
-			{
-				VECTOR targetPos = gameScene_->GetTargetPos();
-				VECTOR vec = VSub(targetPos, fireInfo_.transform.pos);
-				VECTOR dir = VNorm(vec);
-				VECTOR move = VScale(dir, FIRE_SPEED);
-				fireInfo_.transform.pos = VAdd(fireInfo_.transform.pos, move);
-			}
-			else
-			{
-				VECTOR move = VScale(fireInfo_.dir, FIRE_SPEED);
-				fireInfo_.transform.pos = VAdd(fireInfo_.transform.pos, move);
-			}
-			fireInfo_.timer++;
-		}
-		else
-		{
-			DestroyFireCollider(fireInfo_);
-			isAliveFire_ = false;
-		}
+		// 敵に向かって移動する処理
+		// パラメータは任意
+		//----------
+		const float SPEED = 5.0f;// ヘッダーに移動
+
+		// ヒント
+		// ターゲティング中ならその敵の座標を取得する
+		// ターゲティング中の敵がいない場合は、プレイヤーの前方に
+		// ゲームシーンの取得方法
+		// GameScene* gameScene = dynamic_cast<GameScene*>(scnMng_.GetScene());
+
+		//----------
 
 		fireInfo_.transform.Update();
 	}
-
-	if (isAliveThunder_ || isAliveFire_) isAliveMagic_ = true;
-	else isAliveMagic_ = false;
 }
+

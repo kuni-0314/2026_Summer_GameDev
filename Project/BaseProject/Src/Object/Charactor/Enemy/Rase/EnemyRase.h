@@ -60,6 +60,10 @@ public:
 	void Draw(void) override;
 
 	void Release(void) override;
+
+	void Damege(int damage) override;
+	// ダメージ処理
+	void aa(int damege);
 protected:
 	// リソースロード
 	void InitLoad() override;
