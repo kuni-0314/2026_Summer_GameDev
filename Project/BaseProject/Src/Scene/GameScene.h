@@ -178,7 +178,7 @@ private:
 	std::vector<int> hpHandles_;			//Hpハンドル
 	std::vector<int> playerUiHandles_;		//プレイヤーUI
 	std::vector<int> commandHandles_;		//コマンドハンドル
-	std::vector<int> lockOnHandles_;
+	int lockOnFontHandle_;
 
 	int fontCommandHandles_ [static_cast<int>(COMMAND::MAX)][2];//セレクトコマンドファント
 

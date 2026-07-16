@@ -146,7 +146,7 @@ void GameScene::Init()
 
 	lockOnImageHandle_ = resMng_.Load(ResourceManager::SRC::TARGET_CURSOR_ORANGE).handleId_;
 
-	lockOnHandles_[0] = resMng_.Load(ResourceManager::SRC::IMG_LOCKON_FONT_UI).handleId_;
+	lockOnFontHandle_ = resMng_.Load(ResourceManager::SRC::IMG_LOCKON_FONT_UI).handleId_;
 }
 
 void GameScene::Update()
@@ -433,7 +433,7 @@ void GameScene::Draw()
 		auto pos = targetPos_;
 		pos.y += 80.0f;
 		DrawBillboard3D(pos, 0.5f, 0.5f, 100.0f, angle, lockOnImageHandle_, true);
-		DrawGraph(30, 100, lockOnHandles_[0], true);
+		DrawGraph(30, 100, lockOnFontHandle_, true);
 	}
 
 
