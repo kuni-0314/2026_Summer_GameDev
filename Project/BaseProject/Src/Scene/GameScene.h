@@ -113,7 +113,7 @@ private:
 
 	// 武器
 	//WeaponBase* weapon_;
-	
+
 	static constexpr int IMG_HP_X = 1550;
 	static constexpr int IMG_HP_Y = 700;
 
@@ -147,7 +147,7 @@ private:
 
 	int targetEnemyId_;		// ターゲット敵のID
 	int hpUiCount_;			//HPUi用
-	
+
 	VECTOR targetPos_;		// ターゲット位置
 	CAM_MODE camMode_;		// カメラモード
 
@@ -162,10 +162,10 @@ private:
 
 	//コマンドUI
 	int hpIndex_;
-	
+
 	bool warnigOn_ = false;//警告生成フラグ
 	bool DamegeOn_ = false;//ダメージ
-	int wargnigHandle_;	
+	int wargnigHandle_;
 	int audioHandle_;
 
 	int damegeTimeCount_;
@@ -180,7 +180,7 @@ private:
 	std::vector<int> commandHandles_;		//コマンドハンドル
 	int lockOnFontHandle_;
 
-	int fontCommandHandles_ [static_cast<int>(COMMAND::MAX)][2];//セレクトコマンドファント
+	int fontCommandHandles_[static_cast<int>(COMMAND::MAX)][2];//セレクトコマンドファント
 
 	//void SelectCommand(COMMAND command);
 	void CommandUpdate();

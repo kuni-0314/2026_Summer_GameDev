@@ -17,10 +17,10 @@ public:
 	enum class STATE
 	{
 		IDLE,
-		RUN, 
+		RUN,
 		//FAST_RUN, 
-		JUMP, 
-		JET, 
+		JUMP,
+		JET,
 		FALL,
 		ATTACK,
 		MAGIC,  // 追加
@@ -48,6 +48,7 @@ public:
 		ATK_A5,
 		ATK_F,
 		MAGIC,
+		ROLLING,
 	};
 
 	//コンストラクタ
@@ -57,15 +58,15 @@ public:
 
 	void Update() override;
 
-	
+
 
 	void Draw() override;
-	
+
 	void ChangeState(STATE newState);
 
 	bool IsShortCut();
 
-	AnimationController* GetAnimationController() const { return animationController_;}
+	AnimationController* GetAnimationController() const { return animationController_; }
 	VECTOR GetMovePow() const { return movePow_; }
 	void SetMovePow(const VECTOR& pow) { movePow_ = pow; }
 	void SetMoveSpeed(const float speed) { moveSpeed_ = speed; }
@@ -95,10 +96,8 @@ public:
 	void SetAnimStartModelPos(const VECTOR& pos) { animStartModelPos_ = pos; }
 	bool IsAttacking() const { return isAttacking_; }
 	void SetAttacking(const bool attacking) { isAttacking_ = attacking; }
-	bool IsAliveMagic() const { return isAliveThunder_; }
-	void SetAliveMagic(const bool alive) { isAliveThunder_ = alive; }
-	bool  GetIsShortCut();
-
+	bool IsAliveMagic() const { return isAliveMagic_; }
+	void SetAliveMagic(const bool alive) { isAliveMagic_ = alive; }
 	void ActivatePowerUp();
 	void PlayBlinkEffect();
 
@@ -129,7 +128,7 @@ public:
 	static constexpr VECTOR COL_LINE_JUMP_START_LOCAL_POS = { 0.0f, 130.0f, 0.0f };
 	// 衝突判定用線分終了(ジャンプ時)
 	static constexpr VECTOR COL_LINE_JUMP_END_LOCAL_POS = { 0.0f, 50.0f, 0.0f };;
-	
+
 	// ジャンプ力
 	static constexpr float POW_JUMP_INIT = 40.0f;
 	// 連打ジャンプ力
@@ -139,10 +138,10 @@ public:
 	// ニュートラル状態でのジャンプ力
 	static constexpr float POW_JUMP_NEUTRAL = 7.0f;
 
-	
-	static constexpr float POW_JET = 80.0f;
 
-	static constexpr float JET_TIME = 0.25f;
+	static constexpr float POW_ROLL = 20.0f;
+
+	static constexpr float ROLL_TIME = 0.25f;
 
 	// 地上での移動減衰率
 	static constexpr float GROUND_MOVE_DEC_RATE = 0.8f;
@@ -187,9 +186,9 @@ public:
 
 	static constexpr int MAX_HP = 20;
 
-	bool GetUseThunder();
-	bool GetUseFire();
-	bool GetUseRecovery();
+	int GetThunderCoolTime();
+	int GetFireCoolTime();
+	int GetHealCoolTime();
 
 protected:
 
@@ -240,6 +239,8 @@ private:
 	{
 		Transform transform = {};
 		ColliderSphere* collider = nullptr;
+		int timer = 0;
+		VECTOR dir = {};
 	};
 	void CreateFireCollider(FireInfo& fireInfo);
 
@@ -291,12 +292,12 @@ private:
 
 	// アニメーション再生前のモデル座標
 	VECTOR animStartModelPos_;
-	
+
 	// ルートモーションを適用するかどうか
 	bool applyRootMotion_;
 	VECTOR debugPos_;
 	VECTOR debugPosPrev_;
-	
+
 	// 差分
 	VECTOR animDiffPos_;
 
@@ -321,43 +322,38 @@ private:
 	//bool isAliveThunder_;
 	int thunderTimer_;
 
-	static constexpr int THUNDER_COUNT = 10;		// 雷の数
-	ThunderInfo thunderInfos_[THUNDER_COUNT];		// 雷の情報配列
-	static constexpr int THUNDER_LIFETIME = 60;		// 生存時間
-	static constexpr int THUNDER_INTERVAL = 5;		// 発生間隔
-	static constexpr float THUNDER_RADIUS = 100.0f;	// 雷の半径
-	//VECTOR thunderPosOffsets_[THUNDER_COUNT];
-
-	void CreateMagic();	//魔法生成
+	static constexpr int THUNDER_COUNT = 10;			// 雷の数
+	ThunderInfo thunderInfos_[THUNDER_COUNT];			// 雷の情報配列
+	static constexpr int THUNDER_LIFETIME = 30;			// 生存時間
+	static constexpr int THUNDER_INTERVAL = 5;			// 発生間隔
+	static constexpr float THUNDER_RADIUS = 100.0f;		// 雷の半径
+	static constexpr float THUNDER_FALL_SPEED = 100.0f;	// 雷の落下速度
+	static constexpr float THUNDER_SPAWN_Y = 500.0f;	// 雷の発生位置Y座標
 
 	void CreateFireMagic();
 	void CreateThunderMagic();
-	void CreateRecoveryMagic();
+	void CreateHealMagic();
 
 	void MagicCoolTime();//魔法のクールタイム	
 
-	void UpdateMagic();//魔法更新
+	void UpdateMagic();
 	FireInfo fireInfo_;
 
-	static constexpr int FIRE_LIFETIME = 180;		// 生存時間
+	static constexpr int FIRE_LIFETIME = 90;		// 生存時間
 	static constexpr float FIRE_RADIUS = 100.0f;	// 火の半径
+	static constexpr float FIRE_SPEED = 50.0f;		// 火の移動速度
 
-	// 実装ヨロ　パラメータは任意
-	static constexpr int FIRE_COOL_TIME = 180;		// クールタイム
+	static constexpr int FIRE_COOL_TIME = 300;		// クールタイム
+	bool isAliveMagic_ = false;	// 魔法の生存状態
 	int fireCoolTime_ = 0;	// クールタイムカウンタ
 	bool isAliveFire_ = false;	// 火の生存状態
-	bool useFire_ = false;
-	static constexpr int THUNDER_COOL_TIME = 180;	// クールタイム
+	//VECTOR fireDir_ = { 0.0f, 0.0f, 1.0f };	// 火の移動方向
+	static constexpr int THUNDER_COOL_TIME = 300;	// クールタイム
 	int thunderCoolTime_ = 0;	// クールタイムカウンタ
 	bool isAliveThunder_ = false;	// 雷の生存状態
-	bool useThunder_ = false;
-	static constexpr int RECOVERY_COOL_TIME = 300;	// クールタイム
-	int recoveryCoolTime_ = 0;	// クールタイムカウンタ
-	bool useRecovery_ = false;
-	//bool isAliveRecovery_ = false;	// 回復の生存状態いらんやろ
-
-	bool isShortCut_ = false;
-
+	static constexpr int HEAL_COOL_TIME = 600;	// クールタイム
+	int healCoolTime_ = 0;	// クールタイムカウンタ
+	static constexpr int HEAL_AMOUNT = 5;	// 回復量
 
 	bool isShortCut_ = false;
 

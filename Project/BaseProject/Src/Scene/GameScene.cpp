@@ -171,10 +171,10 @@ void GameScene::Update()
 	{
 		//selectCommand_ = static_cast<int>(usecommand_);
 	}
-	
+
 	if (!enemyManager_->GetEnemyDead())
 	{
-		if (ins->IsGamepadTrgDown(InputManager::PadInput::RB, 0)|| InputManager::GetInstance()->IsTrgDown(KEY_INPUT_R))
+		if (ins->IsGamepadTrgDown(InputManager::PadInput::RB, 0) || InputManager::GetInstance()->IsTrgDown(KEY_INPUT_R))
 		{
 			if (camMode_ == CAM_MODE::MANUAL)
 			{
@@ -190,7 +190,7 @@ void GameScene::Update()
 			}
 		}
 
-		if (camMode_ == CAM_MODE::TARGETING && ins->IsGamepadTriggerTrgDown(true, 0)|| InputManager::GetInstance()->IsTrgDown(KEY_INPUT_F))
+		if (camMode_ == CAM_MODE::TARGETING && ins->IsGamepadTriggerTrgDown(true, 0) || InputManager::GetInstance()->IsTrgDown(KEY_INPUT_F))
 		{
 			//最大まで言ったら0に
 			if (targetEnemyId_ > enemyManager_->GetEnemies().size() - 1)
@@ -268,7 +268,7 @@ void GameScene::Update()
 			}
 			else
 			{
-				if (data->collider != nullptr) 
+				if (data->collider != nullptr)
 				{
 					Transform* transform = const_cast<Transform*>(data->collider->GetFollow());
 					transform->pos = player_->GetTransform().pos;
@@ -278,7 +278,7 @@ void GameScene::Update()
 	}
 
 	//プレイヤーダメージUI処理
-	if(damegeflag_)
+	if (damegeflag_)
 	{
 		damegeTimeCount_++;
 
@@ -382,9 +382,9 @@ void GameScene::Update()
 		return;
 	}
 
-//#ifdef _DEBUG
+	//#ifdef _DEBUG
 
-	if (ins->IsTrgDown(KEY_INPUT_UP) /*|| ins->IsTrgDown(KEY_INPUT_E)*/|| ins->IsGamepadTrgDown(InputManager::PadInput::Up, 0))
+	if (ins->IsTrgDown(KEY_INPUT_UP) /*|| ins->IsTrgDown(KEY_INPUT_E)*/ || ins->IsGamepadTrgDown(InputManager::PadInput::Up, 0))
 	{
 		AudioManager::GetInstance()->PlaySE(SoundID::SE_COMMAND_SELECT);
 
@@ -395,7 +395,7 @@ void GameScene::Update()
 		}
 	}
 
-	if (ins->IsTrgDown(KEY_INPUT_DOWN) || ins->IsTrgDown(KEY_INPUT_Q)  || ins->IsGamepadTrgDown(InputManager::PadInput::Down, 0))
+	if (ins->IsTrgDown(KEY_INPUT_DOWN) || ins->IsTrgDown(KEY_INPUT_Q) || ins->IsGamepadTrgDown(InputManager::PadInput::Down, 0))
 	{
 		AudioManager::GetInstance()->PlaySE(SoundID::SE_COMMAND_SELECT);
 
@@ -406,7 +406,7 @@ void GameScene::Update()
 		}
 	}
 
-//#endif
+	//#endif
 
 }
 
@@ -480,7 +480,7 @@ void GameScene::Draw()
 
 	// デバッグ表示
 	int y = 10;
-	DrawFormatString(10, y, 0xFFFF00, "Mode: %s (NumPad5 to toggle)", 
+	DrawFormatString(10, y, 0xFFFF00, "Mode: %s (NumPad5 to toggle)",
 		multiEffectMode_ ? "Multi" : "Single");
 	y += 20;
 	// トリガー値を表示
@@ -491,18 +491,18 @@ void GameScene::Draw()
 	y += 20;
 	if (!multiEffectMode_)
 	{
-		DrawFormatString(10, y, 0xFFFF00, "Current Effect: %s (NumPad4/6)", 
+		DrawFormatString(10, y, 0xFFFF00, "Current Effect: %s (NumPad4/6)",
 			GetEffectName(currentEffect_));
 	}
 	else
 	{
-		DrawFormatString(10, y, 0xFFFF00, "Select: %s (Enter to toggle)", 
+		DrawFormatString(10, y, 0xFFFF00, "Select: %s (Enter to toggle)",
 			GetEffectName(currentEffect_));
 		y += 20;
-		DrawFormatString(10, y, 0xFFFF00, "Active Effects: %d (NumPad0 to clear)", 
+		DrawFormatString(10, y, 0xFFFF00, "Active Effects: %d (NumPad0 to clear)",
 			static_cast<int>(activeEffects_.size()));
 		y += 20;
-		
+
 		for (const auto& effect : activeEffects_)
 		{
 			DrawFormatString(10, y, 0x00FF00, "  - %s", GetEffectName(effect));
@@ -722,7 +722,7 @@ void GameScene::PlayerHpDraw()
 
 	DrawGraph(IMG_HP_X, IMG_HP_Y, hpHandles_[hpIndex_], true);
 
-	if(damegeflag_)
+	if (damegeflag_)
 	{
 
 		//ダメージUI
@@ -730,7 +730,7 @@ void GameScene::PlayerHpDraw()
 	}
 	else
 	{
-		if (player_->GetHp()<= 6)
+		if (player_->GetHp() <= 6)
 		{
 			//瀕死状態UI
 			DrawGraph(IMG_HP_X, IMG_HP_Y, playerUiHandles_[static_cast<int>(PLAYRE_HP_STATE::WARNIG)], true);
@@ -767,7 +767,7 @@ void GameScene::CommandUpdate()
 	}
 
 	// 回復
-	if(player_->GetHealCoolTime() > 0)
+	if (player_->GetHealCoolTime() > 0)
 	{
 		healState_ = COMMAND_STATE::USE;
 	}
@@ -819,5 +819,5 @@ void GameScene::CommandDraw()
 
 void GameScene::PlayerFaceUIDrow()
 {
-	
+
 }

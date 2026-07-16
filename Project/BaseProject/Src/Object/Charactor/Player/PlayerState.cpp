@@ -16,7 +16,7 @@ bool PlayerState::CheckTransitions(Player* player)
 	{
 		if (enableKAM)
 		{
-			if (!player->GetIsShortCut())
+			if (!player->IsShortCut())
 			{
 				isAttackInput = ins->IsGamepadTrgUp(InputManager::PadInput::A, player->GetPadNum());
 			}
@@ -24,7 +24,7 @@ bool PlayerState::CheckTransitions(Player* player)
 		}
 		else
 		{
-			if (!player->GetIsShortCut())
+			if (!player->IsShortCut())
 			{
 				isAttackInput = ins->IsGamepadTrgUp(InputManager::PadInput::A, player->GetPadNum());
 			}
