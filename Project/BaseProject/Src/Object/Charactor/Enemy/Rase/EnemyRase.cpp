@@ -454,100 +454,129 @@ void EnemyRase::AttackShot()
 	EffectManager::GetInstance().RegisterEffect(shot.effect);
 
 	shots_.emplace_back(std::move(shot));
+
 }
 
-void EnemyRase::UpdateShot(void)
+void EnemyRase::UpdateShot()
 {
+	bool shotDeleted = false;
+
 	for (auto& shot : shots_)
 	{
 		if (!shot.isShotAlive_) continue;
 
-		//プレイヤーとの衝突判定
-		if (AsoUtility::IsHitSpheres(shot.shotTransform_.pos, COL_SPHERE_RADIUS, playerPos_, playerRad_))
+		// プレイヤーとの衝突
+		if (AsoUtility::IsHitSpheres(
+			shot.shotTransform_.pos,
+			COL_SPHERE_RADIUS,
+			playerPos_,
+			playerRad_))
 		{
 			player_->Damege(1);
 			shot.life = 0;
 		}
 
-		shot.speed += 0.05;
+		shot.speed += 0.05f;
 
-		// ホーミング処理
+		// ホーミング
 		if (shot.life > 60)
 		{
-			// プレイヤーの方向を計算
 			VECTOR targetDir =
 				VNorm(VSub(player_->GetPos(),
 					shot.shotTransform_.pos));
 
-			// ホーミングの方向を計算
 			shot.dir_ =
-				VNorm(VAdd(VScale(shot.dir_, 1.0f - shot.homingPower),
-					VScale(targetDir, shot.homingPower)));
-
+				VNorm(
+					VAdd(
+						VScale(shot.dir_, 1.0f - shot.homingPower),
+						VScale(targetDir, shot.homingPower)
+					)
+				);
 		}
 
+		// 移動
 		shot.shotTransform_.pos =
-			VAdd(shot.shotTransform_.pos,
-				VScale(shot.dir_, shot.speed));
+			VAdd(
+				shot.shotTransform_.pos,
+				VScale(shot.dir_, shot.speed)
+			);
 
-		shot.shotTransform_.Update();
 
-		//エフェクトをプレイヤーに追従	
+		// エフェクト追従
 		if (shot.effect)
 		{
-			shot.effect->SetPosition({ 0.0f,1000.0f,0.0f });
-			shot.effect->SetRotation(Quaternion::LookRotation(shot.dir_));
-
+			shot.effect->SetPosition(shot.shotTransform_.pos);
+			shot.effect->SetRotation(
+				Quaternion::LookRotation(shot.dir_));
 		}
 
-
-		if (shot.shotTransform_.pos.y <= 0)
+		if (shot.shotTransform_.pos.y < 0.0f)
 		{
-			shot.shotTransform_.pos.y = 0;
+			shot.shotTransform_.pos.y = 0.0f;
 		}
 
 		shot.life--;
+		shot.shotTransform_.Update();
 
 		if (shot.life <= 0)
 		{
 			if (shot.effect)
 			{
 				shot.effect->Stop();
+				shot.effect.reset();
 			}
 
-			// 弾が消滅したときのエフェクトを生成
-			auto burst = std::make_shared<EffekseerEffect>(
-				L"Data/Effect/Fire/Burst.efkefc",
-				shot.shotTransform_.pos
-			);
+			MV1DeleteModel(shot.shotTransform_.modelId);
+
+			auto burst =
+				std::make_shared<EffekseerEffect>(
+					L"Data/Effect/Fire/Burst.efkefc",
+					shot.shotTransform_.pos);
 
 			burst->Play(
 				shot.shotTransform_.pos,
-				Quaternion()
-			);
+				shot.shotTransform_.quaRot);
 
-			burst->SetLifeTime(120);
+			burst->SetLifeTime(100);
 
 			EffectManager::GetInstance().RegisterEffect(burst);
 
 			shot.isShotAlive_ = false;
 			shot.speed = 3.0f;
-			ChangeState(STATE::THINK);
+
+			shotDeleted = true;
 		}
+	}
+
+	// ループ終了後に削除
+	shots_.erase(
+		std::remove_if(
+			shots_.begin(),
+			shots_.end(),
+			[](const SHOT& shot)
+			{
+				return !shot.isShotAlive_;
+			}),
+		shots_.end());
+
+	if (shotDeleted)
+	{
+		ChangeState(STATE::THINK);
 	}
 }
 
-void EnemyRase::DrawShot(void)
+void EnemyRase::DrawShot()
 {
 	for (auto& shot : shots_)
 	{
-		if (!shot.isShotAlive_)continue;
+		if (!shot.isShotAlive_) continue;
 
-		shot.shotTransform_.Update();
+		MV1SetPosition(
+			shot.shotTransform_.modelId,
+			shot.shotTransform_.pos);
 
-		//描画
-		MV1SetPosition(shotmodel_, shot.shotTransform_.pos);
-		MV1DrawModel(shot.shotTransform_.modelId);
+		MV1DrawModel(
+			shot.shotTransform_.modelId);
 	}
 }
 
