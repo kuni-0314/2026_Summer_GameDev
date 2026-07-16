@@ -234,4 +234,7 @@ private:
 
 	// インスタンス
 	static InputManager* instance_;	// 自己
+
+	// 左スティックと左十字キーを同じ入力として扱うか
+	bool isLeftStickAsDpad_ = false;
 };

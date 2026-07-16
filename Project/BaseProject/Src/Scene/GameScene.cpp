@@ -370,17 +370,6 @@ void GameScene::Update()
 		return;
 	}
 
-	//// ゲームクリア判定
-	//if (enemyManager_->GetEnemyDead())
-	//{
-	//	// 強制的に全サウンド停止
-	//	StopMusic();
-	//	StopSoundMem(audioHandle_);
-	//	AudioManager::GetInstance()->StopBGM();
-	//	sceMng_.ChangeScene(SceneManager::SCENE_ID::CLEAR);
-	//	return;
-	//}
-
 //#ifdef _DEBUG
 
 	if (ins->IsTrgDown(KEY_INPUT_UP) /*|| ins->IsTrgDown(KEY_INPUT_E)*/|| ins->IsGamepadTrgDown(InputManager::PadInput::Up, 0))
@@ -476,37 +465,37 @@ void GameScene::Draw()
 	SetDrawScreen(mainScreen);
 	DrawGraph(0, 0, postEffectScreen_, false);
 
-	//// デバッグ表示
-	//int y = 10;
-	//DrawFormatString(10, y, 0xFFFF00, "Mode: %s (NumPad5 to toggle)", 
-	//	multiEffectMode_ ? "Multi" : "Single");
-	//y += 20;
-	//// トリガー値を表示
-	//const auto& ins = InputManager::GetInstance();
-	//int leftTrigger = ins->GetGamepadTriggerValue(true, 0);
-	//int rightTrigger = ins->GetGamepadTriggerValue(false, 0);
-	//DrawFormatString(10, y, 0xFFFF00, "Left Trigger: %d, Right Trigger: %d", leftTrigger, rightTrigger);
-	//y += 20;
-	//if (!multiEffectMode_)
-	//{
-	//	DrawFormatString(10, y, 0xFFFF00, "Current Effect: %s (NumPad4/6)", 
-	//		GetEffectName(currentEffect_));
-	//}
-	//else
-	//{
-	//	DrawFormatString(10, y, 0xFFFF00, "Select: %s (Enter to toggle)", 
-	//		GetEffectName(currentEffect_));
-	//	y += 20;
-	//	DrawFormatString(10, y, 0xFFFF00, "Active Effects: %d (NumPad0 to clear)", 
-	//		static_cast<int>(activeEffects_.size()));
-	//	y += 20;
-	//	
-	//	for (const auto& effect : activeEffects_)
-	//	{
-	//		DrawFormatString(10, y, 0x00FF00, "  - %s", GetEffectName(effect));
-	//		y += 18;
-	//	}
-	//}
+	// デバッグ表示
+	int y = 10;
+	DrawFormatString(10, y, 0xFFFF00, "Mode: %s (NumPad5 to toggle)", 
+		multiEffectMode_ ? "Multi" : "Single");
+	y += 20;
+	// トリガー値を表示
+	const auto& ins = InputManager::GetInstance();
+	int leftTrigger = ins->GetGamepadTriggerValue(true, 0);
+	int rightTrigger = ins->GetGamepadTriggerValue(false, 0);
+	DrawFormatString(10, y, 0xFFFF00, "Left Trigger: %d, Right Trigger: %d", leftTrigger, rightTrigger);
+	y += 20;
+	if (!multiEffectMode_)
+	{
+		DrawFormatString(10, y, 0xFFFF00, "Current Effect: %s (NumPad4/6)", 
+			GetEffectName(currentEffect_));
+	}
+	else
+	{
+		DrawFormatString(10, y, 0xFFFF00, "Select: %s (Enter to toggle)", 
+			GetEffectName(currentEffect_));
+		y += 20;
+		DrawFormatString(10, y, 0xFFFF00, "Active Effects: %d (NumPad0 to clear)", 
+			static_cast<int>(activeEffects_.size()));
+		y += 20;
+		
+		for (const auto& effect : activeEffects_)
+		{
+			DrawFormatString(10, y, 0x00FF00, "  - %s", GetEffectName(effect));
+			y += 18;
+		}
+	}
 
 	// 一時スクリーン削除
 	DeleteGraph(tempScreen);

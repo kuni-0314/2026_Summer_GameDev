@@ -236,6 +236,9 @@ void Player::InitAnimation()
 		, 40.0f, Application::PATH_MODEL + "Player/Attack1.mv1");//tmp
 	animationController_->Add(static_cast<int>(ANIM_TYPE::MAGIC)
 		, 40.0f, Application::PATH_MODEL + "Player/Spell Cast.mv1");
+	animationController_->Add(static_cast<int>(ANIM_TYPE::ROLLING)
+		, 65.0f, Application::PATH_MODEL + "Player/Rolling.mv1");
+
 	//初期アニメーション再生
 	animationController_->Play(static_cast<int>(ANIM_TYPE::IDLE), true);
 }
@@ -640,7 +643,7 @@ void Player::InitState()
 	states_[STATE::RUN] = new PlayerRunState();
 	//states_[STATE::FAST_RUN] = new PlayerFastRunState();
 	states_[STATE::JUMP] = new PlayerJumpState();
-	states_[STATE::JET] = new PlayerJetState();
+	states_[STATE::JET] = new PlayerRollState();
 	states_[STATE::FALL] = new PlayerFallState();
 	states_[STATE::ATTACK] = new PlayerAttackState();
 	states_[STATE::MAGIC] = new PlayerMagicState();  // 追加

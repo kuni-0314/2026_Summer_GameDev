@@ -657,14 +657,28 @@ void InputManager::UpdateGamePad()
 			pad[i].inputs[j].buttonNew = xState.Buttons[j] != 0;
 			if (/*pad[i].isStickAsDpad*/true)
 			{
-				if (static_cast<PadInput>(j) == PadInput::Up)
-					pad[i].inputs[j].buttonNew = pad[i].inputs[j].buttonNew /*|| dState.Y < 0*/;
-				else if (static_cast<PadInput>(j) == PadInput::Down)
-					pad[i].inputs[j].buttonNew = pad[i].inputs[j].buttonNew /*|| dState.Y > 0*/;
-				else if (static_cast<PadInput>(j) == PadInput::Left)
-					pad[i].inputs[j].buttonNew = pad[i].inputs[j].buttonNew /*|| dState.X < 0*/;
-				else if (static_cast<PadInput>(j) == PadInput::Right)
-					pad[i].inputs[j].buttonNew = pad[i].inputs[j].buttonNew /*|| dState.X > 0*/;
+				if (isLeftStickAsDpad_)
+				{
+					if (static_cast<PadInput>(j) == PadInput::Up)
+						pad[i].inputs[j].buttonNew = pad[i].inputs[j].buttonNew || dState.Y < 0;
+					else if (static_cast<PadInput>(j) == PadInput::Down)
+						pad[i].inputs[j].buttonNew = pad[i].inputs[j].buttonNew || dState.Y > 0;
+					else if (static_cast<PadInput>(j) == PadInput::Left)
+						pad[i].inputs[j].buttonNew = pad[i].inputs[j].buttonNew || dState.X < 0;
+					else if (static_cast<PadInput>(j) == PadInput::Right)
+						pad[i].inputs[j].buttonNew = pad[i].inputs[j].buttonNew || dState.X > 0;
+				}
+				else
+				{
+					if (static_cast<PadInput>(j) == PadInput::Up)
+						pad[i].inputs[j].buttonNew = pad[i].inputs[j].buttonNew /*|| dState.Y < 0*/;
+					else if (static_cast<PadInput>(j) == PadInput::Down)
+						pad[i].inputs[j].buttonNew = pad[i].inputs[j].buttonNew /*|| dState.Y > 0*/;
+					else if (static_cast<PadInput>(j) == PadInput::Left)
+						pad[i].inputs[j].buttonNew = pad[i].inputs[j].buttonNew /*|| dState.X < 0*/;
+					else if (static_cast<PadInput>(j) == PadInput::Right)
+						pad[i].inputs[j].buttonNew = pad[i].inputs[j].buttonNew /*|| dState.X > 0*/;
+				}
 			}
 			pad[i].inputs[j].buttonTrgDown = (!pad[i].inputs[j].buttonOld && pad[i].inputs[j].buttonNew);
 			pad[i].inputs[j].buttonTrgUp = (pad[i].inputs[j].buttonOld && !pad[i].inputs[j].buttonNew);

@@ -48,6 +48,7 @@ public:
 		ATK_A5,
 		ATK_F,
 		MAGIC,
+		ROLLING,
 	};
 
 	//コンストラクタ
@@ -136,9 +137,9 @@ public:
 	static constexpr float POW_JUMP_NEUTRAL = 7.0f;
 
 	
-	static constexpr float POW_JET = 80.0f;
+	static constexpr float POW_ROLL = 20.0f;
 
-	static constexpr float JET_TIME = 0.25f;
+	static constexpr float ROLL_TIME = 0.25f;
 
 	// 地上での移動減衰率
 	static constexpr float GROUND_MOVE_DEC_RATE = 0.8f;

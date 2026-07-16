@@ -1,26 +1,26 @@
 #include <DxLib.h>
 #include "../../../Manager/InputManager.h"
 #include "../../../Manager/SceneManager.h"
+#include "../../../Object/Common/AnimationController.h"
 #include "Player.h"
 #include "PlayerJetState.h"
 
-void PlayerJetState::Enter(Player* player)
+void PlayerRollState::Enter(Player* player)
 {
-	player->SetMovePow(VScale(player->GetMoveDir(), Player::POW_JET));
+	player->SetMovePow(VScale(player->GetMoveDir(), Player::POW_ROLL));
 	player->SetJet(true);
-	player->SetJetTime(0.0f);
 
-	//追加
-	player->PlayBlinkEffect();
+	// アニメーション再生
+	player->GetAnimationController()->Play(
+		static_cast<int>(Player::ANIM_TYPE::ATK_N1), false, true);
 }
 
-void PlayerJetState::Update(Player* player)
+void PlayerRollState::Update(Player* player)
 {
-	if (player->GetJetTime() < Player::JET_TIME)
-	{
-		player->SetJetTime(player->GetJetTime() + SceneManager::GetInstance().GetDeltaTime());
-	}
-	else
+	// ローリング(旧ジェット）
+	// ローリング中はその他の入力を受け付けない
+
+	if (player->GetAnimationController()->IsEnd())
 	{
 		auto ins = InputManager::GetInstance();
 
@@ -28,32 +28,22 @@ void PlayerJetState::Update(Player* player)
 		{
 			// 空中にいる場合は落下状態に遷移
 			player->ChangeState(Player::STATE::FALL);
-			player->SetAttacking(false);
 		}
-		else if (ins->IsNew(KEY_INPUT_W) || ins->IsNew(KEY_INPUT_A) || ins->IsNew(KEY_INPUT_S) || ins->IsNew(KEY_INPUT_D))
+		else if (ins->IsNew({ KEY_INPUT_W,KEY_INPUT_A,KEY_INPUT_S,KEY_INPUT_D }) ||
+			ins->GetGamepadTriggerValue(true, player->GetPadNum()) > 0)
 		{
-			//if (ins->IsNew(KEY_INPUT_LSHIFT))
-			//{
-			//	// 移動キーとダッシュキーが入力されている場合
-			//	player->ChangeState(Player::STATE::FAST_RUN);
-			//}
-			//else
-			{
-				// 移動キーが入力されている場合
-				player->ChangeState(Player::STATE::RUN);
-				player->SetAttacking(false);
-			}
+			// 移動キーが入力されている場合
+			player->ChangeState(Player::STATE::RUN);
 		}
 		else
 		{
 			// それ以外は待機状態に遷移
 			player->ChangeState(Player::STATE::IDLE);
-			player->SetAttacking(false);
 		}
 	}
 }
 
-void PlayerJetState::Exit(Player* player)
+void PlayerRollState::Exit(Player* player)
 {
 	player->SetJet(false);
 }
