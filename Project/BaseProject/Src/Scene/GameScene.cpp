@@ -146,7 +146,7 @@ void GameScene::Init()
 
 	lockOnImageHandle_ = resMng_.Load(ResourceManager::SRC::TARGET_CURSOR_ORANGE).handleId_;
 
-	LockOnHandles_[0] = resMng_.Load(ResourceManager::SRC::IMG_LOCKON_FONT_UI).handleId_;
+	lockOnHandles_[0] = resMng_.Load(ResourceManager::SRC::IMG_LOCKON_FONT_UI).handleId_;
 }
 
 void GameScene::Update()
@@ -433,6 +433,7 @@ void GameScene::Draw()
 		auto pos = targetPos_;
 		pos.y += 80.0f;
 		DrawBillboard3D(pos, 0.5f, 0.5f, 100.0f, angle, lockOnImageHandle_, true);
+		DrawGraph(30, 100, lockOnHandles_[0], true);
 	}
 
 
@@ -729,7 +730,7 @@ void GameScene::PlayerHpDraw()
 	}
 	else
 	{
-		if (player_->GetHp()<= 3)
+		if (player_->GetHp()<= 6)
 		{
 			//•mŽ€ó‘ÔUI
 			DrawGraph(IMG_HP_X, IMG_HP_Y, playerUiHandles_[static_cast<int>(PLAYRE_HP_STATE::WARNIG)], true);

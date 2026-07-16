@@ -65,7 +65,7 @@ public:
 	void ChangeState(STATE newState);
 
 	bool IsShortCut();
- 
+
 	AnimationController* GetAnimationController() const { return animationController_;}
 	VECTOR GetMovePow() const { return movePow_; }
 	void SetMovePow(const VECTOR& pow) { movePow_ = pow; }
