@@ -12,7 +12,7 @@ void PlayerRollState::Enter(Player* player)
 
 	// アニメーション再生
 	player->GetAnimationController()->Play(
-		static_cast<int>(Player::ANIM_TYPE::ATK_N1), false, true);
+		static_cast<int>(Player::ANIM_TYPE::ROLLING), false, true);
 }
 
 void PlayerRollState::Update(Player* player)

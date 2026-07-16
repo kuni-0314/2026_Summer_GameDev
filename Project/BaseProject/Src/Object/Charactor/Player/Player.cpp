@@ -237,7 +237,7 @@ void Player::InitAnimation()
 	animationController_->Add(static_cast<int>(ANIM_TYPE::MAGIC)
 		, 40.0f, Application::PATH_MODEL + "Player/Spell Cast.mv1");
 	animationController_->Add(static_cast<int>(ANIM_TYPE::ROLLING)
-		, 65.0f, Application::PATH_MODEL + "Player/Rolling.mv1");
+		, 65.0f, Application::PATH_MODEL + "Player/R.mv1");
 	animationController_->Add(static_cast<int>(ANIM_TYPE::FALL_END)
 		, 85.0f, Application::PATH_MODEL + "Player/FallingLanding.mv1");
 

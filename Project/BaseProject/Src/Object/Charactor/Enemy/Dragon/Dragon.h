@@ -10,6 +10,21 @@ class Dragon : public EnemyBase
 
 public:
 
+	// アニメーション種別
+	enum class ANIM_TYPE
+	{
+		IDLE,
+	};
+
+	// 状態
+	enum class STATE
+	{
+		NONE,
+		THINK,
+		IDLE,
+		MOVE,
+	};
+
 	Dragon(const EnemyBase::EnemyData& data, int attackModel, Player* player);
 	// デストラクタ
 	~Dragon() override;
@@ -35,5 +50,10 @@ protected:
 	void UpdateProcessPost() override;
 
 private:
+
+	// 状態
+	STATE state_;
+	// 更新ステップ
+	float step_;// 状態管理(更新ステップ)
 };
 

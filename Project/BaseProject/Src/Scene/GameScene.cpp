@@ -414,7 +414,7 @@ void GameScene::Update()
 	}
 	else if (selectCommand_ == static_cast<int>(COMMAND::ALL))
 	{
-		selectCommand_ = static_cast<int>(usecommand_);
+		selectCommand_ = static_cast<int>(useCommand_);
 	}
 
 }
@@ -757,7 +757,10 @@ void GameScene::CommandUpdate()
 	//サンダー
 	if (player_->GetThunderCoolTime() > 0)
 	{
+		//クールタイムフォント切り替え
 		thunderState_ = COMMAND_STATE::USE;
+		//使用魔法保存
+		useCommand_ = COMMAND::THUNDER;
 	}
 	else
 	{
@@ -768,7 +771,10 @@ void GameScene::CommandUpdate()
 	// ファイア
 	if (player_->GetFireCoolTime() > 0)
 	{
+		//クールタイムフォント切り替え
 		fireState_ = COMMAND_STATE::USE;
+		//使用魔法保存
+		useCommand_ = COMMAND::FIRE;
 	}
 	else
 	{
@@ -778,7 +784,10 @@ void GameScene::CommandUpdate()
 	// 回復
 	if (player_->GetHealCoolTime() > 0)
 	{
+		//クールタイムフォント切り替え
 		healState_ = COMMAND_STATE::USE;
+		//使用魔法保存
+		useCommand_ = COMMAND::HEAL;
 	}
 	else
 	{
