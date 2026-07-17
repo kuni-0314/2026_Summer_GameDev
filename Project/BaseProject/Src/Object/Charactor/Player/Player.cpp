@@ -233,17 +233,17 @@ void Player::InitAnimation()
 
 	// 攻撃アニメーション
 	anim->Add(static_cast<int>(ANIM_TYPE::ATK_N1)
-		, 80.0f, Application::PATH_MODEL + "Player/Attack1.mv1");
+		, 100.0f, Application::PATH_MODEL + "Player/Attack1.mv1");
 	anim->Add(static_cast<int>(ANIM_TYPE::ATK_N2)
-		, 60.0f, Application::PATH_MODEL + "Player/Attack2.mv1");
+		, 65.0f, Application::PATH_MODEL + "Player/Attack2.mv1");
 	anim->Add(static_cast<int>(ANIM_TYPE::ATK_N3)
 		, 90.0f, Application::PATH_MODEL + "Player/Attack3.mv1");
 	anim->Add(static_cast<int>(ANIM_TYPE::ATK_N4)
-		, 50.0f, Application::PATH_MODEL + "Player/Attack1.mv1");
+		, 75.0f, Application::PATH_MODEL + "Player/Attack4.mv1");
 	anim->Add(static_cast<int>(ANIM_TYPE::ATK_N5)
-		, 80.0f, Application::PATH_MODEL + "Player/Attack5.mv1");
+		, 90.0f, Application::PATH_MODEL + "Player/Attack5.mv1");
 	anim->Add(static_cast<int>(ANIM_TYPE::ATK_H)
-		, 40.0f, Application::PATH_MODEL + "Player/Attack1.mv1");
+		, 100.0f, Application::PATH_MODEL + "Player/Heavy.mv1");
 	anim->Add(static_cast<int>(ANIM_TYPE::ATK_D)
 		, 40.0f, Application::PATH_MODEL + "Player/Attack1.mv1");
 	anim->Add(static_cast<int>(ANIM_TYPE::ATK_A1)

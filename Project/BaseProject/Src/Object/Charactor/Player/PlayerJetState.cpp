@@ -23,7 +23,7 @@ void PlayerRollState::Update(Player* player)
 	// ローリング(旧ジェット）
 	// ローリング中はその他の入力を受け付けない
 	int animNum = player->GetAnimationController()->GetAnimFrameNum();
-	if (animNum >= 7 && animNum <= 40)
+	if (animNum >= 10 && animNum <= 35)
 	{
 		player->SetMovePow(VScale(player->GetMoveDir(), Player::POW_ROLL));
 	}

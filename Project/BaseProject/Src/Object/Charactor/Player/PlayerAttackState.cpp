@@ -38,12 +38,15 @@ void PlayerAttackState::Enter(Player* player)
 		ATTACK_POW[static_cast<int>(attackType_)],
 		60); 
 
-	//if (player->IsAir())
-	//{
-	//	VECTOR movePow = player->GetMovePow();
-	//	movePow.y = 200.0f;
-	//	player->SetMovePow(movePow);
-	//}
+	if (player->IsAir())
+	{
+		// ジャンプ量の計算
+		VECTOR jumpPow = player->GetJumpPow();
+		jumpPow = VAdd(jumpPow, VScale(AsoUtility::DIR_U, Player::POW_JUMP_INIT));
+		player->SetJumpPow(jumpPow);
+		player->SetStepJump(0.0f);
+		player->SetJump(true);
+	}
 
 	AudioManager::GetInstance()->LoadSceneSound(LoadScene::GAME);
 
@@ -132,8 +135,22 @@ void PlayerAttackState::Update(Player* player)
 	framePos.y = player->GetPos().y;
 	player->SetPos(framePos);
 
+	// 特定のアニメーションは長くテンポが悪いので省略
+	bool isAnimationSkipped = false;
+	if (attackType_ == ATTACK_TYPE::NORMAL3 &&
+		player->GetAnimationController()->GetAnimFrameNum() > 120)
+	{
+		isAnimationSkipped = true;
+	}
+
+	// HEAVY攻撃
+	if (attackType_ == ATTACK_TYPE::HEAVY)
+	{
+		//Y座標調整必須
+	}
+
 	// アニメーション終了時
-	if (player->GetAnimationController()->IsEnd())
+	if (player->GetAnimationController()->IsEnd() || isAnimationSkipped)
 	{
 		// クールタイムをクリア（攻撃可能に）
 		player->SetAttackCoolTime(0);
@@ -149,6 +166,13 @@ void PlayerAttackState::Update(Player* player)
 			player->SetComboTimer(COMBO_WINDOW_FRAME);
 		}
 		
+		// 特定のアニメーションはルートフレームが移動しているので設定を戻す
+		if (attackType_ == ATTACK_TYPE::NORMAL4 ||
+			attackType_ == ATTACK_TYPE::HEAVY)
+		{
+			player->GetAnimationController()->SetIgnoreRootMove(false);
+		}
+
 		player->ChangeState(Player::STATE::IDLE);
 		player->SetAttacking(false);
 		return;
@@ -201,26 +225,22 @@ PlayerAttackState::ATTACK_TYPE PlayerAttackState::GetNextAttackType(Player* play
 
 	if (isHeavyAttack)
 	{
-	
-		
-
 		if (player->IsAir())
 		{
 			// アニメーション再生
 			player->GetAnimationController()->Play(
 				static_cast<int>(Player::ANIM_TYPE::ATK_H), false, true);
-			return ATTACK_TYPE::FALL;
-			//AudioManager::GetInstance()->SetSeVolume(100);
 			AudioManager::GetInstance()->PlaySE(SoundID::SE_ATTACK_1);
+			return ATTACK_TYPE::FALL;
 		}
 		else
 		{
 			// アニメーション再生
+			player->GetAnimationController()->SetRootFrameParams(true, "mixamorig:Hips", { 0.0f, 97.0f, 0.0f });
 			player->GetAnimationController()->Play(
 				static_cast<int>(Player::ANIM_TYPE::ATK_H), false, true);
-			return ATTACK_TYPE::HEAVY;
-			//AudioManager::GetInstance()->SetSeVolume(100);
 			AudioManager::GetInstance()->PlaySE(SoundID::SE_ATTACK_1);
+			return ATTACK_TYPE::HEAVY;
 		}
 	}
 
@@ -269,6 +289,7 @@ PlayerAttackState::ATTACK_TYPE PlayerAttackState::GetNextAttackType(Player* play
 			// アニメーション再生
 			player->GetAnimationController()->Play(
 				static_cast<int>(Player::ANIM_TYPE::ATK_A1), false, true);
+			AudioManager::GetInstance()->PlaySE(SoundID::SE_ATTACK_1);
 			return ATTACK_TYPE::AIR1;
 		}
 
@@ -277,22 +298,27 @@ PlayerAttackState::ATTACK_TYPE PlayerAttackState::GetNextAttackType(Player* play
 		case ATTACK_TYPE::AIR1:
 			player->GetAnimationController()->Play(
 				static_cast<int>(Player::ANIM_TYPE::ATK_A2), false, true);
+			AudioManager::GetInstance()->PlaySE(SoundID::SE_ATTACK_1);
 			return ATTACK_TYPE::AIR2;
 		case ATTACK_TYPE::AIR2:
 			player->GetAnimationController()->Play(
 				static_cast<int>(Player::ANIM_TYPE::ATK_A3), false, true);
+			AudioManager::GetInstance()->PlaySE(SoundID::SE_ATTACK_1);
 			return ATTACK_TYPE::AIR3;
 		case ATTACK_TYPE::AIR3:
 			player->GetAnimationController()->Play(
 				static_cast<int>(Player::ANIM_TYPE::ATK_A4), false, true);
+			AudioManager::GetInstance()->PlaySE(SoundID::SE_ATTACK_1);
 			return ATTACK_TYPE::AIR4;
 		case ATTACK_TYPE::AIR4:
 			player->GetAnimationController()->Play(
 				static_cast<int>(Player::ANIM_TYPE::ATK_A5), false, true);
+			AudioManager::GetInstance()->PlaySE(SoundID::SE_ATTACK_1);
 			return ATTACK_TYPE::AIR5;
 		default:
 			player->GetAnimationController()->Play(
 				static_cast<int>(Player::ANIM_TYPE::ATK_A1), false, true);
+			AudioManager::GetInstance()->PlaySE(SoundID::SE_ATTACK_1);
 			return ATTACK_TYPE::AIR1;
 		}
 	}
@@ -304,7 +330,6 @@ PlayerAttackState::ATTACK_TYPE PlayerAttackState::GetNextAttackType(Player* play
 			player->GetAnimationController()->Play(
 				static_cast<int>(Player::ANIM_TYPE::ATK_N1), false, true);
 			return ATTACK_TYPE::NORMAL1;
-			//AudioManager::GetInstance()->SetSeVolume(150);
 			AudioManager::GetInstance()->PlaySE(SoundID::SE_ATTACK_1);
 		}
 		switch (attackType_)
@@ -312,24 +337,27 @@ PlayerAttackState::ATTACK_TYPE PlayerAttackState::GetNextAttackType(Player* play
 		case ATTACK_TYPE::NORMAL1: 
 			player->GetAnimationController()->Play(
 				static_cast<int>(Player::ANIM_TYPE::ATK_N2), false, true);
-			//AudioManager::GetInstance()->SetSeVolume(150);
 			AudioManager::GetInstance()->PlaySE(SoundID::SE_ATTACK_1);
 			return ATTACK_TYPE::NORMAL2;
 		case ATTACK_TYPE::NORMAL2: 
 			player->GetAnimationController()->Play(
 				static_cast<int>(Player::ANIM_TYPE::ATK_N3), false, true);
+			AudioManager::GetInstance()->PlaySE(SoundID::SE_ATTACK_1);
 			return ATTACK_TYPE::NORMAL3;
 		case ATTACK_TYPE::NORMAL3: 
 			player->GetAnimationController()->Play(
 				static_cast<int>(Player::ANIM_TYPE::ATK_N4), false, true);
+			AudioManager::GetInstance()->PlaySE(SoundID::SE_ATTACK_1);
 			return ATTACK_TYPE::NORMAL4;
 		case ATTACK_TYPE::NORMAL4: 
 			player->GetAnimationController()->Play(
 				static_cast<int>(Player::ANIM_TYPE::ATK_N5), false, true);
+			AudioManager::GetInstance()->PlaySE(SoundID::SE_ATTACK_1);
 			return ATTACK_TYPE::NORMAL5;
 		default: 
 			player->GetAnimationController()->Play(
 				static_cast<int>(Player::ANIM_TYPE::ATK_N1), false, true);
+			AudioManager::GetInstance()->PlaySE(SoundID::SE_ATTACK_1);
 			return ATTACK_TYPE::NORMAL1;
 		}
 	}
