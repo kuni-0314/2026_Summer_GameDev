@@ -40,14 +40,7 @@ void EnemyLarge::Draw(void)
 		MV1DrawModel(ringModelHandle_);
 	}
 
-	//³–Ê‚ÉPlayer‚ª‚¢‚é‚Ì‚©
-	if (InFront())
-	{
-		if (player_->IsAttacking())
-		{
-			
-		}
-	}
+	
 
 
 
@@ -149,7 +142,6 @@ void EnemyLarge::InitCollider()
 	}
 
 	ownColliders_.emplace(static_cast<int>(COLLIDER_TYPE::MODEL), colModel);
-	//
 }
 
 void EnemyLarge::InitAnimation()

@@ -28,6 +28,7 @@ public:
 		ITEM,
 		ENEMY_RASE_ATTACK,
 		PLAYER_MAGIC,
+		ENEMY_DRAGON_BREATH
 
 	};
 	// コンストラクタ

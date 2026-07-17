@@ -17,7 +17,8 @@ public:
 	{
 		RAT,
 		RASE,
-		LARGE
+		LARGE,
+		DRAGON
 	};
 	// エネミーデータ
 	struct EnemyData

@@ -17,7 +17,6 @@
 #include "../Object/Collider/Sphere/ColliderSphere.h"
 #include "../Effect/EffectManager.h"
 #include "../Effect/LoadEffekseer/EffekseerEffect.h"
-#include "../Sound/AudioManager.h"
 #include "GameScene.h"
 #include <EffekseerForDXLib.h>
 
