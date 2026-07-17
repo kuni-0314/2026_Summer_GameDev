@@ -214,55 +214,57 @@ void Player::InitAnimation()
 	//アニメーションコントローラー
 	animationController_ = new AnimationController(transform_.modelId);
 
+	auto& anim = animationController_;
+
 	// 待機状態アニメーション
-	animationController_->Add(static_cast<int>(ANIM_TYPE::IDLE)
+	anim->Add(static_cast<int>(ANIM_TYPE::IDLE)
 		, 20.0f, Application::PATH_MODEL + "Player/Idle.mv1");
 
 	// 走るアニメーション
-	animationController_->Add(static_cast<int>(ANIM_TYPE::RUN)
+	anim->Add(static_cast<int>(ANIM_TYPE::RUN)
 		, 20.0f, Application::PATH_MODEL + "Player/Walk.mv1");
 
 	// ダッシュアニメーション
-	animationController_->Add(static_cast<int>(ANIM_TYPE::FAST_RUN)
+	anim->Add(static_cast<int>(ANIM_TYPE::FAST_RUN)
 		, 40.0f, Application::PATH_MODEL + "Player/Run.mv1");
 	//ジャンプアニメーション
-	animationController_->Add(static_cast<int>(ANIM_TYPE::JUMP)
+	anim->Add(static_cast<int>(ANIM_TYPE::JUMP)
 		, 60.0f, Application::PATH_MODEL + "Player/Jump.mv1");
 
 	// 攻撃アニメーション
-	animationController_->Add(static_cast<int>(ANIM_TYPE::ATK_N1)
+	anim->Add(static_cast<int>(ANIM_TYPE::ATK_N1)
 		, 80.0f, Application::PATH_MODEL + "Player/Attack1.mv1");
-	animationController_->Add(static_cast<int>(ANIM_TYPE::ATK_N2)
+	anim->Add(static_cast<int>(ANIM_TYPE::ATK_N2)
 		, 60.0f, Application::PATH_MODEL + "Player/Attack2.mv1");
-	animationController_->Add(static_cast<int>(ANIM_TYPE::ATK_N3)
+	anim->Add(static_cast<int>(ANIM_TYPE::ATK_N3)
 		, 90.0f, Application::PATH_MODEL + "Player/Attack3.mv1");
-	animationController_->Add(static_cast<int>(ANIM_TYPE::ATK_N4)
+	anim->Add(static_cast<int>(ANIM_TYPE::ATK_N4)
 		, 50.0f, Application::PATH_MODEL + "Player/Attack1.mv1");
-	animationController_->Add(static_cast<int>(ANIM_TYPE::ATK_N5)
+	anim->Add(static_cast<int>(ANIM_TYPE::ATK_N5)
 		, 80.0f, Application::PATH_MODEL + "Player/Attack5.mv1");
-	animationController_->Add(static_cast<int>(ANIM_TYPE::ATK_H)
+	anim->Add(static_cast<int>(ANIM_TYPE::ATK_H)
 		, 40.0f, Application::PATH_MODEL + "Player/Attack1.mv1");
-	animationController_->Add(static_cast<int>(ANIM_TYPE::ATK_D)
+	anim->Add(static_cast<int>(ANIM_TYPE::ATK_D)
 		, 40.0f, Application::PATH_MODEL + "Player/Attack1.mv1");
-	animationController_->Add(static_cast<int>(ANIM_TYPE::ATK_A1)
+	anim->Add(static_cast<int>(ANIM_TYPE::ATK_A1)
 		, 60.0f, Application::PATH_MODEL + "Player/Attack1.mv1");//tmp
-	animationController_->Add(static_cast<int>(ANIM_TYPE::ATK_A2)
+	anim->Add(static_cast<int>(ANIM_TYPE::ATK_A2)
 		, 70.0f, Application::PATH_MODEL + "Player/Attack1.mv1");//tmp
-	animationController_->Add(static_cast<int>(ANIM_TYPE::ATK_A3)
+	anim->Add(static_cast<int>(ANIM_TYPE::ATK_A3)
 		, 60.0f, Application::PATH_MODEL + "Player/Attack1.mv1");//tmp
-	animationController_->Add(static_cast<int>(ANIM_TYPE::ATK_A4)
+	anim->Add(static_cast<int>(ANIM_TYPE::ATK_A4)
 		, 50.0f, Application::PATH_MODEL + "Player/Attack1.mv1");//tmp
-	animationController_->Add(static_cast<int>(ANIM_TYPE::ATK_A5)
+	anim->Add(static_cast<int>(ANIM_TYPE::ATK_A5)
 		, 60.0f, Application::PATH_MODEL + "Player/Attack1.mv1");//tmp
-	animationController_->Add(static_cast<int>(ANIM_TYPE::ATK_F)
+	anim->Add(static_cast<int>(ANIM_TYPE::ATK_F)
 		, 40.0f, Application::PATH_MODEL + "Player/Attack1.mv1");//tmp
-	animationController_->Add(static_cast<int>(ANIM_TYPE::MAGIC)
+	anim->Add(static_cast<int>(ANIM_TYPE::MAGIC)
 		, 40.0f, Application::PATH_MODEL + "Player/Spell Cast.mv1");
-	animationController_->Add(static_cast<int>(ANIM_TYPE::ROLLING)
+	anim->Add(static_cast<int>(ANIM_TYPE::ROLLING)
 		, 65.0f, Application::PATH_MODEL + "Player/Rolling.mv1");
 
 	//初期アニメーション再生
-	animationController_->Play(static_cast<int>(ANIM_TYPE::IDLE), true);
+	anim->Play(static_cast<int>(ANIM_TYPE::IDLE), true);
 }
 
 void Player::InitPost()

@@ -48,6 +48,32 @@ public:
 	// 再生中のアニメーション情報を取得
 	const Animation& GetPlayAnim() const;
 
+	// ルートフレームの移動値を無効化するかしないか
+	void SetIgnoreRootMove(bool isIgnore) { isIgnoreRootMove_ = isIgnore; }
+
+	// ルートフレームの設定
+	void SetRootFrameNo(int frameNo);
+	void SetRootFrameNo(const std::string& frameName);
+
+	// ルートフレームの移動値の調整
+	void SetRootMoveOffset(const VECTOR& offset) { rootMoveOffset_ = offset; }
+
+	// ルートフレームの設定をまとめて行う
+	void SetRootFrameParams(bool isIgnore, int frameNo, const VECTOR& offset)
+	{
+		SetIgnoreRootMove(isIgnore);
+		SetRootFrameNo(frameNo);
+		SetRootMoveOffset(offset);
+	}
+	void SetRootFrameParams(bool isIgnore, const std::string& frameName, const VECTOR& offset)
+	{
+		SetIgnoreRootMove(isIgnore);
+		SetRootFrameNo(frameName);
+		SetRootMoveOffset(offset);
+	}
+
+	int GetAnimFrameNum();
+
 private:
 
 	// アニメーションするモデルのハンドルID
@@ -66,4 +92,15 @@ private:
 	// アニメーション追加の共通処理
 	void Add(int type, float speed, Animation& animation);
 
+	// アニメーション更新前処理
+	void UpdateBeforeAnimation();
+
+	// ROOTフレームの移動値を無効化するかしないか
+	bool isIgnoreRootMove_ = false;
+
+	// ルートフレーム番号
+	int rootFrameNo_ = -1;
+
+	// 調整用のルートフレームの移動値
+	VECTOR rootMoveOffset_ = { 0.0f, 0.0f, 0.0f };
 };
