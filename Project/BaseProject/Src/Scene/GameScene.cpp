@@ -239,7 +239,7 @@ void GameScene::Update()
 
 					if (distance < sphere->GetRadius())
 					{
-						enemy->Damege(static_cast<int>(data->damage));
+						enemy->Damege(static_cast<int>(data->damege));
 					}
 				}
 			}
@@ -590,7 +590,7 @@ void GameScene::CreateAttackCollider(ColliderBase::TAG tag, VECTOR pos, float ra
 
 	AttackColliderData* data = new AttackColliderData();
 	data->collider = collider;
-	data->damage = damage;
+	data->damege = damage;
 	data->lifeTime = lifeTime;
 
 	attackColliders_.push_back(data);
@@ -607,7 +607,7 @@ void GameScene::RemoveEnemyHitCollider(const ColliderBase* hitCollider)
 
 }
 
-void GameScene::SetDamageFlag(bool flag)
+void GameScene::SetDamegeFlag(bool flag)
 {
 	damegeflag_ = flag;
 }
@@ -796,7 +796,7 @@ void GameScene::CommandDraw()
 	}
 }
 
-void GameScene::PlayerFaceUIDrow()
+void GameScene::PlayerFaceUIDraw()
 {
 	
 }

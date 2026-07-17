@@ -15,7 +15,7 @@
 #include "../../Weapon/Sword/KeyBlade1.h"
 #include "../../Weapon/Sword/KeyBlade2.h"
 #include "../../Weapon/Sword/KeyBlade3.h"
-#include "../../../Effect/LoadEffekseer/EffekseerEffect.h" // パスは環境に合わせて調整してください
+#include "../../../Effect/LoadEffekseer/EffekseerEffect.h"
 #include "../../../Effect/EffectManager.h"
 #include "../../../Sound/AudioManager.h"
 #include "../../../Sound/SoundTable.h"
@@ -714,12 +714,13 @@ void Player::CreateFireMagic()
 	fireInfo_.transform.pos = transform_.pos;
 	fireInfo_.transform.quaRot = transform_.quaRot;
 
-	// ←ここに追加
+	// ファイアエフェクト
 	auto effect = std::make_shared<EffekseerEffect>(
 		L"Data/Effect/Fire/Fire.efkefc",
 		fireInfo_.transform.pos
 	);
 
+	//再生
 	effect->Play(
 		fireInfo_.transform.pos,
 		fireInfo_.transform.quaRot
@@ -784,6 +785,7 @@ void Player::CreateRecoveryMagic()
 		HealHp(5);
 		useRecovery_ = true;
 
+		//ヒールエフェクト
 		auto effect = std::make_shared<EffekseerEffect>(
 			L"Data/Effect/Heal/Heal.efkefc",
 			transform_.pos
@@ -885,6 +887,7 @@ void Player::UpdateMagic()
 
 					VECTOR pos = thunderInfos_[i].transform.pos;
 
+					//雷エフェクト
 					auto effect = std::make_shared<EffekseerEffect>(
 						L"Data/Effect/Thunder/Thunder.efkefc",
 						pos

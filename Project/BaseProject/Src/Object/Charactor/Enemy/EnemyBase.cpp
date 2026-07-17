@@ -56,7 +56,7 @@ void EnemyBase::HitEffect(const VECTOR& pos, const VECTOR& normal, float size)
 {
 	//エフェクトの読み込み
 	auto effect = std::make_shared<EffekseerEffect>(
-		L"Data/Effect/Ster/Ster.efkefc",
+		L"Data/Effect/Star/Star.efkefc",
 		transform_.pos
 	);
 
@@ -72,7 +72,7 @@ void EnemyBase::HitEffect(const VECTOR& pos, const VECTOR& normal, float size)
 void EnemyBase::HitThunderEffect(const VECTOR& pos, const VECTOR& normal, float size)
 {
 	auto effect = std::make_shared<EffekseerEffect>(
-		L"Data/Effect/Thunder/N.efkefc", // 好きなエフェクト
+		L"Data/Effect/Thunder/N.efkefc", // hitエフェクト
 		pos
 	);
 

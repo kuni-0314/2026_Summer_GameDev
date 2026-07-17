@@ -22,7 +22,7 @@ public:
 	struct AttackColliderData
 	{
 		ColliderBase* collider;
-		float damage;
+		float damege;
 		int lifeTime;
 		bool isHit = false;
 	};
@@ -83,7 +83,7 @@ public:
 
 	COMMAND GetSelectedCommand() const { return static_cast<COMMAND>(selectCommand_); }
 
-	void  SetDamageFlag(bool flag);
+	void  SetDamegeFlag(bool flag);
 	bool  GetFlag();
 private:
 
@@ -179,6 +179,6 @@ private:
 	void CommandUpdate();
 	void CommandDraw();
 
-	void PlayerFaceUIDrow();
+	void PlayerFaceUIDraw();
 
 };
