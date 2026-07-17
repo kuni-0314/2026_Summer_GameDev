@@ -5,6 +5,11 @@
 #include <vector>
 #include "../EnemyBase.h"
 
+class Player;
+class ItemManger;
+class ColliderCapsule;
+
+
 class EnemyDragon : public EnemyBase
 {
 
@@ -65,8 +70,10 @@ private:
 	//ブレス調整座標
 	static constexpr VECTOR ADD_BREATH_POS = { 0.0f, 0.0f, 100.0f };
 
-	static constexpr VECTOR DOWN_BREATH_POS = { 0,100,500 };	//ブレス終了位置（カプセルの終わり）
+	static constexpr VECTOR DOWN_BREATH_POS = { 0,100,500 };	       //ブレス終了位置（カプセルの終わり）
 
+	static constexpr VECTOR COLBODY_CAPSULE_TOP_LOCAL_POS = { 0.0f, 500.0f, 0.0f };
+	static constexpr VECTOR COLBODY_CAPSULE_DOWN_LOCAL_POS = { 0.0f, 70.0f, 0.0f };
 
 	// モデルのローカル回転
 	static constexpr VECTOR ROT = { 0.0f, 180.0f * DX_PI_F / 180.0f, 0.0f };

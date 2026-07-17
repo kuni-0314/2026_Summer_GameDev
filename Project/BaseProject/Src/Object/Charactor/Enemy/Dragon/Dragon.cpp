@@ -32,6 +32,8 @@ void EnemyDragon::Draw(void)
 
 	MV1DrawModel(transform_.modelId);
 	DrawSphere3D(breathTopPos_, 10.0f, 10, 0xffffff, 0xffffff, true);
+	DrawSphere3D(breathDownPos_, 10.0f, 10, 0xffffff, 0xffffff, true);
+
 
 	DrawFormatString(300, 400, GetColor(255, 255, 255), "TopPos: %f,%f,%f", breathTopPos_.x, breathTopPos_.y, breathTopPos_.z); 
 	DrawFormatString(300, 500, GetColor(255, 255, 255), "DownPos: %f,%f,%f", breathDownPos_.x, breathDownPos_.y, breathDownPos_.z);
@@ -94,6 +96,19 @@ void EnemyDragon::InitCollider()
 		ColliderBase::TAG::ENEMY, &transform_,
 		COL_LINE_START_LOCAL_POS, COL_LINE_END_LOCAL_POS);
 	ownColliders_.emplace(static_cast<int>(COLLIDER_TYPE::LINE), colLine);
+
+
+	// 主に壁や木などの衝突で使用するカプセルコライダ（前半分）
+	//ColliderCapsule* colCapsule = new ColliderCapsule(
+	//	ColliderBase::TAG::ENEMY, &transform_,
+	//	COLBODY_CAPSULE_TOP_LOCAL_POS, COLBODY_CAPSULE_DOWN_LOCAL_POS,
+	//	100.0f);
+
+	//ownColliders_.emplace(static_cast<int>(COLLIDER_TYPE::CAPSULE), colCapsule);
+
+	//ブレスカプセルコライダ(player用)
+	CreateBreathCollider(breathInfo_);
+
 }
 
 void EnemyDragon::InitAnimation()
@@ -147,11 +162,12 @@ void EnemyDragon::UpdateProcess()
 	breathTopPos_ = VAdd(breathTopPos_, ADD_BREATH_POS);
 
 	VECTOR PbreathTopPos_ = breathTopPos_;
-	VECTOR testPos = { 0,-100,400 };
+	VECTOR testPos = { 0,-100,200 };
 
 	breathDownPos_ = VAdd(PbreathTopPos_, testPos);
 
-	//ブレスカプセルコライダ(player用)
+	breathInfo_.transform.Update();
+
 	CreateBreathCollider(breathInfo_);
 
 }
@@ -233,7 +249,8 @@ void EnemyDragon::CreateBreathCollider(BreathInfo& breathInfo)
 {
 	ColliderCapsule* colCapsule = new ColliderCapsule(
 		ColliderBase::TAG::ENEMY_DRAGON_BREATH, &breathInfo.transform,
-		breathTopPos_, breathDownPos_, 30.0f);
+		breathTopPos_, breathDownPos_, 30.0f); 
+
 
 	ownColliders_.emplace(static_cast<int>(COLLIDER_TYPE::CAPSULE), colCapsule);
 }

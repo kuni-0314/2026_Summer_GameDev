@@ -126,7 +126,5 @@ protected:
 	//‹üƒxƒNƒgƒ‹
 	void LookPlayer();
 
-
-
 };
 

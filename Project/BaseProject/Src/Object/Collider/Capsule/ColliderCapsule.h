@@ -68,7 +68,7 @@ private:
 	float radius_;
 
 	// デバッグ用
-	bool isDebugDraw_ = false;
+	bool isDebugDraw_ = true;
 
 
 };
