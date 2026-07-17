@@ -482,7 +482,7 @@ void EnemyRase::UpdateShot(void)
 
 		if (AsoUtility::IsHitSpheres(shot.shotTransform_.pos, COL_SPHERE_RADIUS, playerPos_, playerRad_))
 		{
-			player_->Damage(1);
+			player_->Damage(1, transform_.GetForward());
 			shot.life = 0;
 		}
 

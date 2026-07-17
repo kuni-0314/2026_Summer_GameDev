@@ -180,7 +180,7 @@ public:
 	static constexpr int ATTACK_HITBOX_END_FRAME = 29;
 
 	// ƒ_ƒ[ƒWˆ—
-	//void Damege(int damege);
+	void Damage(int damage, const VECTOR& hitDir) override;
 
 	// HP‚Ì‰ñ•œˆ—
 	void HealHp(int heal) override;

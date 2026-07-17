@@ -107,17 +107,13 @@ void GameScene::Init()
 
 	hpHandles_.resize(11);
 
-	hpHandles_[10] = resMng_.Load(ResourceManager::SRC::IMG_PLAYER_HP_10).handleId_;
-	hpHandles_[9] = resMng_.Load(ResourceManager::SRC::IMG_PLAYER_HP_9).handleId_;
-	hpHandles_[8] = resMng_.Load(ResourceManager::SRC::IMG_PLAYER_HP_8).handleId_;
-	hpHandles_[7] = resMng_.Load(ResourceManager::SRC::IMG_PLAYER_HP_7).handleId_;
-	hpHandles_[6] = resMng_.Load(ResourceManager::SRC::IMG_PLAYER_HP_6).handleId_;
-	hpHandles_[5] = resMng_.Load(ResourceManager::SRC::IMG_PLAYER_HP_5).handleId_;
-	hpHandles_[4] = resMng_.Load(ResourceManager::SRC::IMG_PLAYER_HP_4).handleId_;
-	hpHandles_[3] = resMng_.Load(ResourceManager::SRC::IMG_PLAYER_HP_3).handleId_;
-	hpHandles_[2] = resMng_.Load(ResourceManager::SRC::IMG_PLAYER_HP_2).handleId_;
-	hpHandles_[1] = resMng_.Load(ResourceManager::SRC::IMG_PLAYER_HP_1).handleId_;
-	hpHandles_[0] = resMng_.Load(ResourceManager::SRC::IMG_PLAYER_HP_0).handleId_;
+	const int MAX_HP = 10;
+	for (int i = 0; i <= MAX_HP; ++i)
+	{
+		using SRC = ResourceManager::SRC;
+		hpHandles_[i] = resMng_.Load(static_cast<SRC>(static_cast<int>(SRC::IMG_PLAYER_HP_0) + i)).handleId_;
+		GraphFilter(hpHandles_[i], DX_GRAPH_FILTER_HSB, 0, (MAX_HP - i) * -12, 0, 0);
+	}
 
 	commandHandles_.resize(4);
 
@@ -140,8 +136,8 @@ void GameScene::Init()
 	playerUiHandles_.resize(static_cast<int>(PLAYRE_HP_STATE::STATE_MAX));
 
 	playerUiHandles_[static_cast<int>(PLAYRE_HP_STATE::DEF)] = resMng_.Load(ResourceManager::SRC::IMG_PLAYER_UI_DEF).handleId_;
-	playerUiHandles_[static_cast<int>(PLAYRE_HP_STATE::DAMEGE)] = resMng_.Load(ResourceManager::SRC::IMG_PLAYER_UI_DAMEGE).handleId_;
-	playerUiHandles_[static_cast<int>(PLAYRE_HP_STATE::WARNIG)] = resMng_.Load(ResourceManager::SRC::IMG_PLAYER_UI_WARNIG).handleId_;
+	playerUiHandles_[static_cast<int>(PLAYRE_HP_STATE::DAMAGE)] = resMng_.Load(ResourceManager::SRC::IMG_PLAYER_UI_DAMEGE).handleId_;
+	playerUiHandles_[static_cast<int>(PLAYRE_HP_STATE::WARNING)] = resMng_.Load(ResourceManager::SRC::IMG_PLAYER_UI_WARNIG).handleId_;
 
 
 	lockOnImageHandle_ = resMng_.Load(ResourceManager::SRC::TARGET_CURSOR_ORANGE).handleId_;
@@ -282,21 +278,21 @@ void GameScene::Update()
 	}
 
 	//プレイヤーダメージUI処理
-	if (damegeflag_)
+	if (damageflag_)
 	{
 		damegeTimeCount_++;
 
 		//表示時間
 		if (damegeTimeCount_ > 60)
 		{
-			damegeflag_ = false;
+			damageflag_ = false;
 			damegeTimeCount_ = 0;
 		}
 	}
 
 	// コマンドUI処
 	CommandUpdate();
-
+	UpdateHpUI();
 
 	// エフェクト時間更新
 	effectTime_ += sceMng_.GetDeltaTime();
@@ -627,13 +623,19 @@ void GameScene::RemoveEnemyHitCollider(const ColliderBase* hitCollider)
 
 void GameScene::SetDamageFlag(bool flag)
 {
-	damegeflag_ = flag;
+	damageflag_ = flag;
 }
 
 bool GameScene::GetFlag()
 {
-	return damegeflag_;
+	return damageflag_;
 
+}
+
+void GameScene::ShakeHpUI()
+{
+	isHpUIShake_ = true;
+	shakePow_ = SHAKE_POW_MAX;
 }
 
 void GameScene::SelectCommand(COMMAND command)
@@ -724,25 +726,26 @@ void GameScene::PlayerHpDraw()
 	if (hpIndex_ < 0) hpIndex_ = 0;
 	if (hpIndex_ >= hpHandles_.size()) hpIndex_ = hpHandles_.size() - 1;
 
-	DrawGraph(IMG_HP_X, IMG_HP_Y, hpHandles_[hpIndex_], true);
+	const int UI_OFFSET_Y = IMG_HP_Y + hpUIOffsetY_;
 
-	if (damegeflag_)
+	DrawGraph(IMG_HP_X, UI_OFFSET_Y, hpHandles_[hpIndex_], true);
+
+	if (damageflag_)
 	{
-
 		//ダメージUI
-		DrawGraph(IMG_HP_X, IMG_HP_Y, playerUiHandles_[static_cast<int>(PLAYRE_HP_STATE::DAMEGE)], true);
+		DrawGraph(IMG_HP_X, UI_OFFSET_Y, playerUiHandles_[static_cast<int>(PLAYRE_HP_STATE::DAMAGE)], true);
 	}
 	else
 	{
 		if (player_->GetHp() <= 6)
 		{
 			//瀕死状態UI
-			DrawGraph(IMG_HP_X, IMG_HP_Y, playerUiHandles_[static_cast<int>(PLAYRE_HP_STATE::WARNIG)], true);
+			DrawGraph(IMG_HP_X, UI_OFFSET_Y, playerUiHandles_[static_cast<int>(PLAYRE_HP_STATE::WARNING)], true);
 		}
 		else
 		{
 			//デフォルトUI
-			DrawGraph(IMG_HP_X, IMG_HP_Y, playerUiHandles_[static_cast<int>(PLAYRE_HP_STATE::DEF)], true);
+			DrawGraph(IMG_HP_X, UI_OFFSET_Y, playerUiHandles_[static_cast<int>(PLAYRE_HP_STATE::DEF)], true);
 		}
 	}
 }
@@ -821,7 +824,25 @@ void GameScene::CommandDraw()
 	}
 }
 
-void GameScene::PlayerFaceUIDrow()
+void GameScene::PlayerFaceUIDraw()
 {
+	// 何のための関数ですか
+}
 
+void GameScene::UpdateHpUI()
+{
+	const float SHAKE_SPEED = 30.0f;
+	if (isHpUIShake_)
+	{
+		float speed = SHAKE_SPEED * sceMng_.GetDeltaTime();
+		static float time = 0.0f;
+		time += speed;
+		hpUIOffsetY_ += sinf(time) * shakePow_;
+		shakePow_ *= SHAKE_DECREASE; // 徐々に減衰させる
+		if (hpUIOffsetY_ < 0.1f && hpUIOffsetY_ > -0.1f)
+		{
+			isHpUIShake_ = false;
+			hpUIOffsetY_ = 0.0f;
+		}
+	}
 }

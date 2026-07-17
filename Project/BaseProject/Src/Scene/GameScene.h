@@ -52,8 +52,8 @@ public:
 	enum PLAYRE_HP_STATE
 	{
 		DEF,
-		DAMEGE,
-		WARNIG,
+		DAMAGE,
+		WARNING,
 		STATE_MAX
 	};
 
@@ -90,6 +90,8 @@ public:
 	CAM_MODE GetCamMode() const { return camMode_; }
 
 	VECTOR GetTargetPos() const { return targetPos_; }
+
+	void ShakeHpUI();
 
 private:
 
@@ -169,15 +171,16 @@ private:
 	int audioHandle_;
 
 	int damegeTimeCount_;
-	bool damegeflag_ = false;
+	bool damageflag_ = false;
 
 	int clearTimer_ = 0;
 	bool isClear_ = false;
 
-
+	//
 	std::vector<int> hpHandles_;			//Hpハンドル
 	std::vector<int> playerUiHandles_;		//プレイヤーUI
 	std::vector<int> commandHandles_;		//コマンドハンドル
+
 	int lockOnFontHandle_;
 
 	int fontCommandHandles_[static_cast<int>(COMMAND::MAX)][2];//セレクトコマンドファント
@@ -186,7 +189,15 @@ private:
 	void CommandUpdate();
 	void CommandDraw();
 
-	void PlayerFaceUIDrow();
+	void PlayerFaceUIDraw();
+
+	void UpdateHpUI();
 
 	int lockOnImageHandle_;
+
+	bool isHpUIShake_ = false;
+	static constexpr float SHAKE_POW_MAX = 8.0f;
+	static constexpr float SHAKE_DECREASE = 0.95f;
+	float shakePow_ = 0.0f;
+	float hpUIOffsetY_;
 };

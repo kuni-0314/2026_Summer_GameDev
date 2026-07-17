@@ -141,6 +141,27 @@ void Player::Update()
 //	}
 //}
 
+void Player::Damage(int damage, const VECTOR& hitDir)
+{
+	if (isInvincible_) return;
+
+	auto dir = VNorm(hitDir);
+	knockbackPow_ = VScale(dir, 4.0f);
+
+	hp_ -= damage;
+	if (hp_ <= 0)
+	{
+		hp_ = 0;
+
+		return;
+	}
+
+	gameScene_->ShakeHpUI();
+
+	// Œ´‘¥‚Æ‚µ‚Ä–³“GƒtƒŒ[ƒ€‚ğİ’è‚·‚é
+	invincibleFrameCount_ = INVINCIBLE_FRAME_COUNT;
+}
+
 void Player::HealHp(int heal)
 {
 	hp_ += heal;
