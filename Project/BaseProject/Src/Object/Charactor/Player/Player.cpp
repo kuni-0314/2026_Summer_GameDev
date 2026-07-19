@@ -391,7 +391,9 @@ void Player::UpdateProcess()
 
 	CheckPlayerRingCollision();
 	//ドラゴンブレス当たり判定
-	CheckDragonAttackCollision();
+	DragonBreathCheckCollision();
+	//ドラゴントルネード当たり判定
+	DragonTornadoCheckCollision();
 
 }
 void Player::UpdateProcessPost()
@@ -934,7 +936,7 @@ void Player::UpdateMagic()
 	else isAliveMagic_ = false;
 }
 
-void Player::CheckDragonAttackCollision()
+void Player::DragonBreathCheckCollision()
 {
 	// 死亡状態なら処理しない
 	if (!isAlive_) return;
@@ -990,4 +992,64 @@ void Player::CheckDragonAttackCollision()
 		}
 	}
 
+}
+
+void Player::DragonTornadoCheckCollision()
+{
+	// 死亡状態なら処理しない
+	if (!isAlive_) return;
+	//すでにダメージを受けていたら処理しない
+	if (wasHitTornadoDamage_) return;
+
+	// 自身のカプセルコライダを取得
+	ColliderCapsule* ownColCapsule = nullptr;
+	for (const auto& ownCol : ownColliders_)
+	{
+		if (ownCol.second->GetTag() == ColliderBase::TAG::PLAYER)
+		{
+			ownColCapsule =
+				dynamic_cast<ColliderCapsule*>(ownCol.second);
+			//if (ownColCapsule == nullptr) return;
+		}
+	}
+
+	// プレイヤーの剣コライダはhitColliders_に登録されているはずなので、全てチェック
+	for (const auto& hitCol : hitColliders_)
+	{
+		if (hitCol->GetTag() == ColliderBase::TAG::ENEMY_DRAGON_TORNADO)
+		{
+			// ブレスはカプセルコライダ
+			// 敵もカプセルコライダ
+			// カプセルコライダ同士で衝突判定
+			const ColliderCapsule* TornadoColCapsule =
+				dynamic_cast<const ColliderCapsule*>(hitCol);
+
+			if (TornadoColCapsule == nullptr)
+			{
+				continue;
+			}
+
+			// 衝突判定
+			if (ownColCapsule->IsHit(TornadoColCapsule))
+			{
+				// ダメージ処理
+				Damege(2);
+
+				//ダメージサウンド
+				AudioManager::GetInstance()->PlaySE(SoundID::SE_ENEMY_HIT);
+
+				// エフェクト再生
+				/*VECTOR hitPos = VAdd(
+					ownColCapsule->GetCenter(),
+					swordColCapsule->GetCenter());
+				hitPos = VScale(hitPos, 0.5f);*/
+				//HitEffect(hitPos, VNorm(VSub(hitPos, transform_.pos)), 1.0f);
+
+				// 一度あったらフラグ
+				wasHitTornadoDamage_ = true;
+
+				InputManager::GetInstance()->VibrateGamepad(1, 500, 100);
+			}
+		}
+	}
 }

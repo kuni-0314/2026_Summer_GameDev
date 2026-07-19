@@ -32,7 +32,7 @@ void EnemyDragon::Draw(void)
 {
 	EnemyBase::Draw();
 
-	MV1DrawModel(transform_.modelId);
+	//MV1DrawModel(transform_.modelId);
 	DrawSphere3D(breathTopPos_, 10.0f, 10, 0xffffff, 0xffffff, true);
 
 
@@ -230,7 +230,7 @@ void EnemyDragon::ChangeStateTornado()
 	movePow_ = AsoUtility::VECTOR_ZERO;
 	// 待機アニメーション再生
 	animationController_->Play(
-		static_cast<int>(ANIM_TYPE::TORNADO), false);
+		static_cast<int>(ANIM_TYPE::TORNADO), true);
 }
 
 void EnemyDragon::UpdateThink()
@@ -299,18 +299,10 @@ void EnemyDragon::UpdateTornado()
 {
 	if (!isAliveTornado_)
 	{
-		//アニメーションコントローラーの取得
-		if (animationController_ == nullptr) return;
-		const auto& anim = animationController_->GetPlayAnim();
-		if (anim.totalTime <= 0.0f) return;
 
-		//アニメーションの指定時間までブレスを生成しない
-		float breathTriggerTime = anim.totalTime * ATTACK_BREATH_TIME;
-		if (anim.step >= breathTriggerTime)
-		{
-			isAliveTornado_ = true;
-			CreateTornado();
-		}
+		isAliveTornado_ = true;
+		CreateTornado();
+	
 	}
 
 	bool allDelete = true;
@@ -321,7 +313,14 @@ void EnemyDragon::UpdateTornado()
 		if (tornadoInfo_[i].isDestory) continue;
 
 
-		tornadoInfo_[i].transform.pos.x += 10;
+		const float speed = 10.0f;
+
+		tornadoInfo_[i].transform.pos =
+			VAdd(
+				tornadoInfo_[i].transform.pos,
+				VScale(tornadoInfo_[i].moveDir, speed)
+			);
+
 		tornadoInfo_[i].transform.Update();
 
 		float dist = VSize(VSub(tornadoInfo_[i].transform.pos, tornadoInfo_[i].startPos)); //移動距離
@@ -335,13 +334,13 @@ void EnemyDragon::UpdateTornado()
 		{
 			allDelete = false;
 		}
+	}
 
-	
-		if (allDelete)
-		{
-			isAliveTornado_ = false;
-			ChangeState(STATE::IDLE);
-		}
+	if (allDelete)
+	{
+		isAliveTornado_ = false;
+		player_->SetWasHitTornadoDamage(false);
+		ChangeState(STATE::IDLE);
 	}
 	
 }
@@ -384,7 +383,7 @@ void EnemyDragon::CreateTornadoCollider(TornadoInfo& tornadoInfo)
 {
 	//コライダー生成
 	ColliderCapsule* colCapsule = new ColliderCapsule(
-		ColliderBase::TAG::ENEMY_DRAGON_BREATH, &tornadoInfo.transform,
+		ColliderBase::TAG::ENEMY_DRAGON_TORNADO, &tornadoInfo.transform,
 		CAPSULE_TOP_TORUNADO_POS, CAPSULE_DOWN_TORUNADO_POS, 100.0f);
 
 	tornadoInfo.collider = colCapsule;
@@ -408,12 +407,27 @@ void EnemyDragon::CreateTornado()
 {
 	for (int i = 0; i < tornadoCount_; i++)
 	{
-		//仮座標生成
-		int rand = GetRand(300);
-		VECTOR test = { rand,200,0 };
+		const float spawnRadius = 1000.0f;
+		// プレイヤー座標
+		VECTOR playerPos = player_->GetPos();
 
-		tornadoInfo_[i].transform.pos = VAdd(transform_.pos, test);
+		// 0～360度
+		float angle = AsoUtility::Deg2RadF(static_cast<float>(GetRand(359)));
+
+		VECTOR offset =
+		{
+			cosf(angle) * spawnRadius,
+			150.0f,
+			sinf(angle) * spawnRadius
+		};
+
+		tornadoInfo_[i].transform.pos = VAdd(playerPos, offset);
 		tornadoInfo_[i].startPos = tornadoInfo_[i].transform.pos;
+
+		VECTOR dir = VSub(playerPos, tornadoInfo_[i].transform.pos);
+		dir.y = 0.0f;
+		tornadoInfo_[i].moveDir = VNorm(dir);
+
 		tornadoInfo_[i].transform.Update();
 		tornadoInfo_[i].isDestory = false;
 

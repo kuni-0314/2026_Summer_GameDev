@@ -135,6 +135,8 @@ private:
 		ColliderCapsule* collider = nullptr;	//コライダー
 		float dist;
 		VECTOR startPos;
+		VECTOR moveDir;
+		float speed;
 		bool isDestory;
 	};
 
