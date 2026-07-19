@@ -390,6 +390,8 @@ void Player::UpdateProcess()
 	UpdateMagic();
 
 	CheckPlayerRingCollision();
+	//ドラゴンブレス当たり判定
+	CheckDragonAttackCollision();
 
 }
 void Player::UpdateProcessPost()
@@ -729,6 +731,7 @@ void Player::CreateFireMagic()
 {
 	if (!isAliveFire_)
 	{
+		// 初期状態にリセット
 		fireInfo_ = FireInfo();
 		fireInfo_.timer = 0;
 		fireInfo_.transform.pos = transform_.pos;
@@ -897,9 +900,11 @@ void Player::UpdateMagic()
 
 	if (isAliveFire_)
 	{
+		//カメラモードを取得
 		GameScene::CAM_MODE mode = gameScene_->GetCamMode();
 		if (fireInfo_.timer < FIRE_LIFETIME)
 		{
+			//ロックオンがONだった場合
 			if (mode == GameScene::CAM_MODE::TARGETING)
 			{
 				VECTOR targetPos = gameScene_->GetTargetPos();
@@ -910,6 +915,7 @@ void Player::UpdateMagic()
 			}
 			else
 			{
+				//ロックオンがOFFの場合
 				VECTOR move = VScale(fireInfo_.dir, FIRE_SPEED);
 				fireInfo_.transform.pos = VAdd(fireInfo_.transform.pos, move);
 			}
@@ -926,4 +932,62 @@ void Player::UpdateMagic()
 
 	if (isAliveThunder_ || isAliveFire_) isAliveMagic_ = true;
 	else isAliveMagic_ = false;
+}
+
+void Player::CheckDragonAttackCollision()
+{
+	// 死亡状態なら処理しない
+	if (!isAlive_) return;
+	//すでにダメージを受けていたら処理しない
+	if (wasHitDamage_) return;
+
+	// 自身のカプセルコライダを取得
+	ColliderCapsule* ownColCapsule = nullptr;
+	for (const auto& ownCol : ownColliders_)
+	{
+		if (ownCol.second->GetTag() == ColliderBase::TAG::PLAYER)
+		{
+			ownColCapsule =
+				dynamic_cast<ColliderCapsule*>(ownCol.second);
+			//if (ownColCapsule == nullptr) return;
+		}
+	}
+
+	// プレイヤーの剣コライダはhitColliders_に登録されているはずなので、全てチェック
+	for (const auto& hitCol : hitColliders_)
+	{
+		if (hitCol->GetTag() == ColliderBase::TAG::ENEMY_DRAGON_BREATH)
+		{
+			// ブレスはカプセルコライダ
+			// 敵もカプセルコライダ
+			// カプセルコライダ同士で衝突判定
+			const ColliderCapsule* breathColCapsule =
+				dynamic_cast<const ColliderCapsule*>(hitCol);
+
+			if (breathColCapsule == nullptr) return;
+
+			// 衝突判定
+			if (ownColCapsule->IsHit(breathColCapsule))
+			{
+				// ダメージ処理
+				Damege(3);
+
+				//ダメージサウンド
+				AudioManager::GetInstance()->PlaySE(SoundID::SE_ENEMY_HIT);
+
+				// エフェクト再生
+				/*VECTOR hitPos = VAdd(
+					ownColCapsule->GetCenter(),
+					swordColCapsule->GetCenter());
+				hitPos = VScale(hitPos, 0.5f);*/
+				//HitEffect(hitPos, VNorm(VSub(hitPos, transform_.pos)), 1.0f);
+
+				// 一度あったらフラグ
+				wasHitDamage_ = true;
+
+				InputManager::GetInstance()->VibrateGamepad(1, 500, 100);
+			}
+		}
+	}
+
 }

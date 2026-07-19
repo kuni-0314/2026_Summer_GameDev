@@ -71,8 +71,15 @@ public:
 	// 攻撃コライダー生成
 	void CreateAttackCollider(ColliderBase::TAG tag, VECTOR pos, float radius, float damage, int lifeTime);
 
+	//エネミーにプレイヤーの衝突情報渡し
 	void AddEnemyHitCollider(const ColliderBase* hitCollider);
+	//プレイヤー衝突情報削除
 	void RemoveEnemyHitCollider(const ColliderBase* hitCollider);
+	
+	//プレイヤーにエネミーの衝突情報渡し
+	void AddPlayerHitCollider(const ColliderBase* hitCollider);
+	//エネミー衝突情報削除
+	void RemovePlayerHitCollider(const ColliderBase* hitCollider);
 
 	ItemManger* GetItemManger() const { return itemManger_; }
 

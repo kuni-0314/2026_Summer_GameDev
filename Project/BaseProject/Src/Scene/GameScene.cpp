@@ -629,6 +629,16 @@ void GameScene::RemoveEnemyHitCollider(const ColliderBase* hitCollider)
 
 }
 
+void GameScene::AddPlayerHitCollider(const ColliderBase* hitCollider)
+{
+	player_->AddHitCollider(hitCollider);
+}
+
+void GameScene::RemovePlayerHitCollider(const ColliderBase* hitCollider)
+{
+	player_->RemoveHitCollider(hitCollider);
+}
+
 void GameScene::SetDamageFlag(bool flag)
 {
 	damegeflag_ = flag;

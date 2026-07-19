@@ -1,5 +1,6 @@
 #include <DxLib.h>
 #include "../../../../Manager/ResourceManager.h"
+#include "../../../../Manager/InputManager.h"
 #include "../../../../Manager/SceneManager.h"
 #include "../../../Collider/Capsule/ColliderCapsule.h"
 #include "../../../Collider/Sphere/ColliderSphere.h"
@@ -7,10 +8,10 @@
 #include "../../../Collider/Model/ColliderModel.h"
 #include "../../../Common/AnimationController.h"
 #include "../../../../Utility/AsoUtility.h"
-#include "../../../../Manager/InputManager.h"
 #include "../../../../Object/Item/HP/HpItem.h"
 #include "../../../../Object/Item/ItemManger.h"
 #include "../../../../Sound/AudioManager.h"
+#include "../../../../Scene/GameScene.h"
 #include "./../../../../Application.h"
 #include "../../Player/Player.h"
 #include "Dragon.h"
@@ -18,7 +19,8 @@
 EnemyDragon::EnemyDragon(const EnemyBase::EnemyData& data, int attackModel, Player* player)
 	:EnemyBase(data, attackModel, player),
 	state_(STATE::NONE),
-	step_(0.0f)
+	step_(0.0f),
+	isAliveBreath_(false)
 {
 }
 
@@ -32,12 +34,12 @@ void EnemyDragon::Draw(void)
 
 	MV1DrawModel(transform_.modelId);
 	DrawSphere3D(breathTopPos_, 10.0f, 10, 0xffffff, 0xffffff, true);
-	DrawSphere3D(breathDownPos_, 10.0f, 10, 0xffffff, 0xffffff, true);
 
 
-	DrawFormatString(300, 400, GetColor(255, 255, 255), "TopPos: %f,%f,%f", breathTopPos_.x, breathTopPos_.y, breathTopPos_.z); 
-	DrawFormatString(300, 500, GetColor(255, 255, 255), "DownPos: %f,%f,%f", breathDownPos_.x, breathDownPos_.y, breathDownPos_.z);
-	//DrawCapsule3D(breathTopPos_, breathDownPos_, 50.0f, 10, 0xffffff, 0xffffff,false);
+
+	//DrawFormatString(300, 400, GetColor(255, 255, 255), "TopPos: %f,%f,%f", breathTopPos_.x, breathTopPos_.y, breathTopPos_.z); 
+	DrawFormatString(300, 500, GetColor(255, 255, 255), "Pos: %f,%f,%f", transform_.pos.x, transform_.pos.y, transform_.pos.z);
+	//DrawFormatString(300, 400, GetColor(255, 255, 255), "%f", tornadoInfos_[0].transform.pos.x);
 }
 
 void EnemyDragon::Release(void)
@@ -55,7 +57,7 @@ void EnemyDragon::InitLoad()
 
 void EnemyDragon::InitTransform()
 {
-	
+	//スケール設定
 	transform_.scl = { SCALE,SCALE ,SCALE };
 
 	transform_.quaRot = Quaternion::Identity();
@@ -65,11 +67,6 @@ void EnemyDragon::InitTransform()
 	//スケール設定
 	MV1SetScale(transform_.modelId,transform_.scl);
 
-	VECTOR testPos = { 0,50,500 };
-
-	//座標設定
-	MV1SetPosition(transform_.modelId, testPos);
-
 
 	//ブレス位置取得
 	// フレーム22のワールドマトリクスを取得
@@ -78,15 +75,14 @@ void EnemyDragon::InitTransform()
 	MATRIX offset = MMult(MGetTranslate(VGet(0.0f, 0.0f, -3.0f)), mat);
 	// 位置を適用
 	breathTopPos_ = VGet(offset.m[3][0], offset.m[3][1], offset.m[3][2]);
+	breathDownPos_ = VGet(offset.m[3][0], offset.m[3][1], offset.m[3][2]);
 	// 回転をQuaternionに変換
 	Quaternion rot = Quaternion::GetRotation(mat);
-
 	//ブレス発射位置
-	breathTopPos_ = VAdd(breathTopPos_, ADD_BREATH_POS);
+	breathTopPos_ = VAdd(breathTopPos_, CAPSULE_ADD_BREATH_POS);
+	//ブレス終了位置
+	breathDownPos_ = VAdd(breathDownPos_, CAPSULE_DOWN_BREATH_POS);
 
-
-	
-	//breathTransform_.get()->pos = breathTopPos_;
 }
 
 void EnemyDragon::InitCollider()
@@ -103,12 +99,7 @@ void EnemyDragon::InitCollider()
 	//	ColliderBase::TAG::ENEMY, &transform_,
 	//	COLBODY_CAPSULE_TOP_LOCAL_POS, COLBODY_CAPSULE_DOWN_LOCAL_POS,
 	//	100.0f);
-
 	//ownColliders_.emplace(static_cast<int>(COLLIDER_TYPE::CAPSULE), colCapsule);
-
-	//ブレスカプセルコライダ(player用)
-	CreateBreathCollider(breathInfo_);
-
 }
 
 void EnemyDragon::InitAnimation()
@@ -126,7 +117,10 @@ void EnemyDragon::InitAnimation()
 	animationController_->Add(static_cast<int>(ANIM_TYPE::BREARH)
 		, 20.0f, Application::PATH_MODEL + "Enemy/Dragon/Flame_Attack.mv1");
 
-	animationController_->Play(static_cast<int>(ANIM_TYPE::BREARH), true);
+	animationController_->Add(static_cast<int>(ANIM_TYPE::TORNADO)
+		, 20.0f, Application::PATH_MODEL + "Enemy/Dragon/Flame_Attack.mv1");
+
+	animationController_->Play(static_cast<int>(ANIM_TYPE::IDLE), true);
 }
 
 void EnemyDragon::InitPost()
@@ -138,16 +132,21 @@ void EnemyDragon::InitPost()
 	stateChanges_.emplace(static_cast<int>(STATE::FLY_IDLE),
 		std::bind(&EnemyDragon::ChangeStateFlayIdle, this));
 
+	stateChanges_.emplace(static_cast<int>(STATE::THINK),
+		std::bind(&EnemyDragon::ChangeStateThink, this));
+
 	stateChanges_.emplace(static_cast<int>(STATE::BREARH),
 		std::bind(&EnemyDragon::ChangeStateBreath, this));
 
+	stateChanges_.emplace(static_cast<int>(STATE::TORNADO),
+		std::bind(&EnemyDragon::ChangeStateTornado, this));
+
 	// 初期状態設定
-	ChangeState(STATE::BREARH);
+	ChangeState(STATE::TORNADO);
 }
 
 void EnemyDragon::UpdateProcess()
 {
-
 	//ブレス位置取得
 	// フレーム22のワールドマトリクスを取得
 	MATRIX mat = MV1GetFrameLocalWorldMatrix(transform_.modelId, 16);
@@ -157,32 +156,25 @@ void EnemyDragon::UpdateProcess()
 	breathTopPos_ = VGet(offset.m[3][0], offset.m[3][1], offset.m[3][2]);
 	// 回転をQuaternionに変換
 	Quaternion rot = Quaternion::GetRotation(mat);
-
 	//ブレス発射位置
-	breathTopPos_ = VAdd(breathTopPos_, ADD_BREATH_POS);
-
-	VECTOR PbreathTopPos_ = breathTopPos_;
-	VECTOR testPos = { 0,-100,200 };
-
-	breathDownPos_ = VAdd(PbreathTopPos_, testPos);
-
-	breathInfo_.transform.Update();
-
-	CreateBreathCollider(breathInfo_);
-
+	breathTopPos_ = VAdd(breathTopPos_, CAPSULE_ADD_BREATH_POS);
 }
 
 void EnemyDragon::UpdateProcessPost()
 {
 	//状態更新
 	stateUpdate_();
-}
 
+}
 
 void EnemyDragon::ChangeState(STATE state)
 {
 	state_ = state;
 	EnemyBase::ChangeState(static_cast<int>(state_));
+}
+
+void EnemyDragon::ChangeStateThink()
+{
 }
 
 void EnemyDragon::ChangeStateIdle()
@@ -204,11 +196,7 @@ void EnemyDragon::ChangeStateFlayIdle()
 {
 	stateUpdate_ = std::bind(&EnemyDragon::UpdateFlayIdle, this);
 
-
-
 	movePow_ = AsoUtility::VECTOR_ZERO;
-
-
 	// 待機アニメーション再生
 	animationController_->Play(
 		static_cast<int>(ANIM_TYPE::FRY_IDLE), true);
@@ -217,7 +205,7 @@ void EnemyDragon::ChangeStateFlayIdle()
 
 void EnemyDragon::ChangeStateBreath()
 {
-	stateUpdate_ = std::bind(&EnemyDragon::UpdateIdle, this);
+	stateUpdate_ = std::bind(&EnemyDragon::UpdateBreath, this);
 
 	look_ = false;
 
@@ -227,11 +215,38 @@ void EnemyDragon::ChangeStateBreath()
 	movePow_ = AsoUtility::VECTOR_ZERO;
 	// 待機アニメーション再生
 	animationController_->Play(
-		static_cast<int>(ANIM_TYPE::BREARH), true);
+		static_cast<int>(ANIM_TYPE::BREARH), false);
+}
+
+void EnemyDragon::ChangeStateTornado()
+{
+	stateUpdate_ = std::bind(&EnemyDragon::UpdateTornado, this);
+
+	look_ = false;
+
+	// ランダムな待機時間
+	step_ = 3.0f + static_cast<float>(GetRand(3));
+	// 移動量ゼロ
+	movePow_ = AsoUtility::VECTOR_ZERO;
+	// 待機アニメーション再生
+	animationController_->Play(
+		static_cast<int>(ANIM_TYPE::TORNADO), false);
+}
+
+void EnemyDragon::UpdateThink()
+{
 }
 
 void EnemyDragon::UpdateIdle()
 {
+	if (idleTime_ > changetime)
+	{
+		idleTime_ = 0;
+		ChangeState(STATE::TORNADO);
+	}
+
+	idleTime_++;
+
 	movePow_ = AsoUtility::VECTOR_ZERO;
 }
 
@@ -242,17 +257,169 @@ void EnemyDragon::UpdateFlayIdle()
 
 void EnemyDragon::UpdateBreath()
 {
-	movePow_ = AsoUtility::VECTOR_ZERO;
+	//ブレスが生成されていない時のみ
+	if (!isAliveBreath_)
+	{
+		//アニメーションコントローラーの取得
+		if (animationController_ == nullptr) return;
+		const auto& anim = animationController_->GetPlayAnim();
+		if (anim.totalTime <= 0.0f) return;
+
+		//アニメーションの指定時間までブレスを生成しない
+		float breathTriggerTime = anim.totalTime * ATTACK_BREATH_TIME;
+		if (anim.step >= breathTriggerTime)
+		{
+			//まだ生成されていない場合
+			if (!isAliveBreath_)
+			{
+				//一度だけ生成
+				CreateBreath();
+				isAliveBreath_ = true;
+			}
+		}
+	}
+	//アニメーションが終了した場合
+	if (animationController_->IsEnd())
+	{
+		//衝突情報削除
+		DestoryBreathCollider(breathInfo_);
+		//ブレス生存状態
+		isAliveBreath_ = false;
+		player_->SetWasHitDamage(false);
+		//ブレス終了後、次の状態へ
+		ChangeState(STATE::IDLE);
+	}
+	//ブレス位置更新
+	breathInfo_.transform.pos = breathTopPos_;
+	//更新
+	breathInfo_.transform.Update();
+}
+
+void EnemyDragon::UpdateTornado()
+{
+	if (!isAliveTornado_)
+	{
+		//アニメーションコントローラーの取得
+		if (animationController_ == nullptr) return;
+		const auto& anim = animationController_->GetPlayAnim();
+		if (anim.totalTime <= 0.0f) return;
+
+		//アニメーションの指定時間までブレスを生成しない
+		float breathTriggerTime = anim.totalTime * ATTACK_BREATH_TIME;
+		if (anim.step >= breathTriggerTime)
+		{
+			isAliveTornado_ = true;
+			CreateTornado();
+		}
+	}
+
+	bool allDelete = true;
+
+	for (int i = 0; i < tornadoCount_; i++)
+	{
+		//コライダーを削除していた場合は次の配列へ
+		if (tornadoInfo_[i].isDestory) continue;
+
+
+		tornadoInfo_[i].transform.pos.x += 10;
+		tornadoInfo_[i].transform.Update();
+
+		float dist = VSize(VSub(tornadoInfo_[i].transform.pos, tornadoInfo_[i].startPos)); //移動距離
+
+		if (dist >= MAX_DIST)
+		{
+			DestoryTornadoCollider(tornadoInfo_[i]);
+			tornadoInfo_[i].isDestory = true;
+		}
+		else
+		{
+			allDelete = false;
+		}
+
+	
+		if (allDelete)
+		{
+			isAliveTornado_ = false;
+			ChangeState(STATE::IDLE);
+		}
+	}
+	
 }
 
 void EnemyDragon::CreateBreathCollider(BreathInfo& breathInfo)
 {
+	//コライダー生成
 	ColliderCapsule* colCapsule = new ColliderCapsule(
 		ColliderBase::TAG::ENEMY_DRAGON_BREATH, &breathInfo.transform,
-		breathTopPos_, breathDownPos_, 30.0f); 
+		CAPSULE_ADD_BREATH_POS,CAPSULE_DOWN_BREATH_POS, 100.0f);
 
+	breathInfo_.collider = colCapsule;
 
 	ownColliders_.emplace(static_cast<int>(COLLIDER_TYPE::CAPSULE), colCapsule);
+
+	//衝突情報追加
+	GameScene* gameScene = dynamic_cast<GameScene*>(SceneManager::GetInstance().GetScene());
+	gameScene->AddPlayerHitCollider(colCapsule);
 }
 
+void EnemyDragon::DestoryBreathCollider(BreathInfo& breathInfo)
+{
+	//衝突情報削除
+	GameScene* gameScene = dynamic_cast<GameScene*>(SceneManager::GetInstance().GetScene());
+	gameScene->RemovePlayerHitCollider(breathInfo.collider);
+}
+
+void EnemyDragon::CreateBreath()
+{
+	//ブレス生成時にブレスの情報を初期化
+	breathInfo_ = BreathInfo();
+	//ブレスの開始位置設定
+	breathInfo_.transform.pos = breathTopPos_;
+
+	CreateBreathCollider(breathInfo_);
+}
+
+
+void EnemyDragon::CreateTornadoCollider(TornadoInfo& tornadoInfo)
+{
+	//コライダー生成
+	ColliderCapsule* colCapsule = new ColliderCapsule(
+		ColliderBase::TAG::ENEMY_DRAGON_BREATH, &tornadoInfo.transform,
+		CAPSULE_TOP_TORUNADO_POS, CAPSULE_DOWN_TORUNADO_POS, 100.0f);
+
+	tornadoInfo.collider = colCapsule;
+	ownColliders_.emplace(static_cast<int>(COLLIDER_TYPE::CAPSULE), colCapsule);
+
+	//衝突情報追加
+	GameScene* gameScene = dynamic_cast<GameScene*>(SceneManager::GetInstance().GetScene());
+	gameScene->AddPlayerHitCollider(colCapsule);
+
+}
+
+
+void EnemyDragon::DestoryTornadoCollider(TornadoInfo& tornadoInfo)
+{
+	//衝突情報削除
+	GameScene* gameScene = dynamic_cast<GameScene*>(SceneManager::GetInstance().GetScene());
+	gameScene->RemovePlayerHitCollider(tornadoInfo.collider);
+}
+
+void EnemyDragon::CreateTornado()
+{
+	for (int i = 0; i < tornadoCount_; i++)
+	{
+		//仮座標生成
+		int rand = GetRand(300);
+		VECTOR test = { rand,200,0 };
+
+		tornadoInfo_[i].transform.pos = VAdd(transform_.pos, test);
+		tornadoInfo_[i].startPos = tornadoInfo_[i].transform.pos;
+		tornadoInfo_[i].transform.Update();
+		tornadoInfo_[i].isDestory = false;
+
+		//コライダー生成
+		CreateTornadoCollider(tornadoInfo_[i]);
+	}
+
+}
 

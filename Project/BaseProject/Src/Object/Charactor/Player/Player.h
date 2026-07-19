@@ -102,6 +102,8 @@ public:
 	void ActivatePowerUp();
 	void PlayBlinkEffect();
 
+	//ダメージ判定セット
+	void SetWasHitDamage(const bool wasHit) { wasHitDamage_ = wasHit; }
 
 	//スケール
 	static constexpr float SCL_PlAYER = 0.75f;
@@ -357,5 +359,11 @@ private:
 	static constexpr int HEAL_AMOUNT = 5;	// 回復量
 
 	bool isShortCut_ = false;
+
+	//ドラゴンブレス当たり判定
+	void CheckDragonAttackCollision();
+	//ダメージを受けたかどうか
+	bool wasHitDamage_;
+
 
 };

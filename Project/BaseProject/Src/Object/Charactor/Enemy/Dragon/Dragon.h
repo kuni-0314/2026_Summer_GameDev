@@ -5,6 +5,7 @@
 #include <vector>
 #include "../EnemyBase.h"
 
+class GameScene;
 class Player;
 class ItemManger;
 class ColliderCapsule;
@@ -21,6 +22,7 @@ public:
 		IDLE,
 		FRY_IDLE,
 		BREARH,
+		TORNADO,
 	};
 	
 	// 状態
@@ -31,6 +33,7 @@ public:
 		IDLE,
 		FLY_IDLE,
 		BREARH,
+		TORNADO,
 		MOVE,
 	};
 
@@ -65,45 +68,98 @@ private:
 	// 衝突判定用線分開始
 	static constexpr VECTOR COL_LINE_START_LOCAL_POS = { 0.0f, 80.0f, 0.0f };
 	// 衝突判定用線分終了
-	static constexpr VECTOR COL_LINE_END_LOCAL_POS = { 0.0f, -10.0f, 0.0f };
+	static constexpr VECTOR COL_LINE_END_LOCAL_POS = { 0.0f, -30.0f, 0.0f };
 
-	//ブレス調整座標
-	static constexpr VECTOR ADD_BREATH_POS = { 0.0f, 0.0f, 100.0f };
+	//ブレス用カプセルコライダーサイズ(カプセルがステージに当たると座標移動する)
+	static constexpr VECTOR CAPSULE_ADD_BREATH_POS = { 0.0f, 0.0f, 50.0f };		//ブレス開始位置調整
+	static constexpr VECTOR CAPSULE_DOWN_BREATH_POS = { 0,-110,700 };	        //ブレス終了位置（カプセルの終わり）
 
-	static constexpr VECTOR DOWN_BREATH_POS = { 0,100,500 };	       //ブレス終了位置（カプセルの終わり）
+	//トルネード用カプセルコライダーサイズ
+	static constexpr VECTOR CAPSULE_TOP_TORUNADO_POS = { 0.0f, 200.0f, 0.0f };
+	static constexpr VECTOR CAPSULE_DOWN_TORUNADO_POS = { 0.0f, -40.0f, 0.0f };
 
-	static constexpr VECTOR COLBODY_CAPSULE_TOP_LOCAL_POS = { 0.0f, 500.0f, 0.0f };
-	static constexpr VECTOR COLBODY_CAPSULE_DOWN_LOCAL_POS = { 0.0f, 70.0f, 0.0f };
+	//トルネード生成位置
+	static constexpr VECTOR TORNADO_CREATE_START_POS = { 0,0,0 };
+	//トルネード最大移動距離（生存切り替え距離)
+	static constexpr float MAX_DIST = 2000.0f;
+
 
 	// モデルのローカル回転
 	static constexpr VECTOR ROT = { 0.0f, 180.0f * DX_PI_F / 180.0f, 0.0f };
 	// モデルの大きさ
 	static constexpr float SCALE = 120.0f;
 
+	//ブレスの判定開始フレーム時間
+	static constexpr float ATTACK_BREATH_TIME = 0.20f;
+
+	//ゲームシーン
+	GameScene* gamescene_;
+
 	// 状態
 	STATE state_;
 	// 更新ステップ
 	float step_;// 状態管理(更新ステップ)
 
+	int idleTime_;
+	int changetime = 60;
 
+	//ブレス情報関連
 	struct BreathInfo
 	{
-		Transform transform = {};
-		ColliderCapsule* collider = nullptr;
+		Transform transform = {};				//座標等の情報
+		ColliderCapsule* collider = nullptr;	//コライダー
 	};
 
+	//ブレス情報関連
 	BreathInfo breathInfo_;
+	//ブレス生存状態
+	bool isAliveBreath_;					
 
 	//ブレス開始位置
 	VECTOR breathTopPos_;
 	//ブレス終了位置
 	VECTOR breathDownPos_;
 
-	//攻撃ブレス
+	//ブレス攻撃
+	//ブレスコライダー生成
+	void CreateBreathCollider(BreathInfo& breathInfo);
+	//ブレス削除
+	void DestoryBreathCollider(BreathInfo& breathInfo);
+	//ブレス生成
+	void CreateBreath();
 	
+	//トルネード情報関連
+	struct TornadoInfo
+	{
+		Transform transform = {};				//座標等の情報
+		ColliderCapsule* collider = nullptr;	//コライダー
+		float dist;
+		VECTOR startPos;
+		bool isDestory;
+	};
+
+	//トルネード生成カウント
+	static constexpr int tornadoCount_ = 2;
+
+	//トルネード情報
+	TornadoInfo tornadoInfo_[tornadoCount_];
+
+	//トルネード生存状態
+	bool isAliveTornado_;
 
 
-	//状態管理
+
+
+	//トルネードコライダー生成
+	void CreateTornadoCollider(TornadoInfo& tornadoInfo);
+	//トルネードコライダー削除
+	void DestoryTornadoCollider(TornadoInfo& tornadoInfo);
+	//トルネード生成
+	void CreateTornado();
+	//トルネード生存処理
+	void TornadoLifeTime();
+
+
 
 	// 状態遷移
 	void ChangeState(STATE state);
@@ -114,14 +170,16 @@ private:
 	void ChangeStateIdle();
 	void ChangeStateFlayIdle();
 	void ChangeStateBreath();
+	void ChangeStateTornado();
 
 	//状態更新
 	void UpdateThink();
 	void UpdateIdle();
 	void UpdateFlayIdle();
 	void UpdateBreath();
+	void UpdateTornado();
 
-	void CreateBreathCollider(BreathInfo& breathInfo);
+	
 	
 };
 

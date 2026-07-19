@@ -8,6 +8,7 @@ class ColliderCapsule : public ColliderBase
 {
 public:
 	// コンストラクタ
+	//posTopとposDownでカプセルコライダーのサイズ設定(定数推奨）
 	ColliderCapsule(
 		TAG tag, const Transform* follow,
 		const VECTOR& localPosTop, const VECTOR& localPosDown, float radius);
