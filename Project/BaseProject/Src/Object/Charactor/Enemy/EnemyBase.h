@@ -46,8 +46,6 @@ public:
 
 	void CheckPlayerMagicCollision();
 
-	void CheckEnemy();
-
 	void Release(void) override;
 
 	//エフェクト

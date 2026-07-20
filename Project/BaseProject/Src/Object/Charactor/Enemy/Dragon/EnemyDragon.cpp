@@ -92,6 +92,16 @@ void EnemyDragon::InitTransform()
 	//ブレス終了位置
 	breathDownPos_ = VAdd(breathDownPos_, CAPSULE_DOWN_BREATH_POS);
 
+	// フレーム22のワールドマトリクスを取得
+	MATRIX mat2 = MV1GetFrameLocalWorldMatrix(transform_.modelId, 4);
+	// 位置補正（プレイヤーの向きに合わせて微調整）
+	MATRIX offset2 = MMult(MGetTranslate(VGet(0.0f, 0.0f, -3.0f)), mat);
+	// 位置を適用
+	bodyPos_ = VGet(offset2.m[3][0], offset2.m[3][1], offset2.m[3][2]);
+	// 回転をQuaternionに変換
+	Quaternion rot2 = Quaternion::GetRotation(mat);
+
+
 }
 
 void EnemyDragon::InitCollider()
@@ -127,7 +137,10 @@ void EnemyDragon::InitAnimation()
 		, 20.0f, Application::PATH_MODEL + "Enemy/Dragon/Flame_Attack.mv1");
 
 	animationController_->Add(static_cast<int>(ANIM_TYPE::TORNADO)
-		, 20.0f, Application::PATH_MODEL + "Enemy/Dragon/Flame_Attack.mv1");
+		, 20.0f, Application::PATH_MODEL + "Enemy/Dragon/FlyAttack.mv1");
+
+	animationController_->Add(static_cast<int>(ANIM_TYPE::LANDING)
+		, 20.0f, Application::PATH_MODEL + "Enemy/Dragon/Landing.mv1");
 
 	animationController_->Play(static_cast<int>(ANIM_TYPE::IDLE), true);
 }
@@ -150,8 +163,11 @@ void EnemyDragon::InitPost()
 	stateChanges_.emplace(static_cast<int>(STATE::TORNADO),
 		std::bind(&EnemyDragon::ChangeStateTornado, this));
 
+	stateChanges_.emplace(static_cast<int>(STATE::LANDING),
+		std::bind(&EnemyDragon::ChangeStateLanding, this));
+
 	// 初期状態設定
-	ChangeState(STATE::TORNADO);
+	ChangeState(STATE::IDLE);
 }
 
 void EnemyDragon::UpdateProcess()
@@ -167,6 +183,15 @@ void EnemyDragon::UpdateProcess()
 	Quaternion rot = Quaternion::GetRotation(mat);
 	//ブレス発射位置
 	breathTopPos_ = VAdd(breathTopPos_, CAPSULE_ADD_BREATH_POS);
+
+	if (tornadoCoolTime_ > 0)
+	{
+		tornadoCoolTime_--;
+	}
+
+	//剣と魔法の当たり判定
+	CheckPlayerSwordCollision();
+	CheckPlayerMagicCollision();
 }
 
 void EnemyDragon::UpdateProcessPost()
@@ -205,7 +230,8 @@ void EnemyDragon::ChangeStateFlayIdle()
 {
 	stateUpdate_ = std::bind(&EnemyDragon::UpdateFlayIdle, this);
 
-	movePow_ = AsoUtility::VECTOR_ZERO;
+	useGrabity_ = false;
+	pow = 1;
 	// 待機アニメーション再生
 	animationController_->Play(
 		static_cast<int>(ANIM_TYPE::FRY_IDLE), true);
@@ -242,6 +268,23 @@ void EnemyDragon::ChangeStateTornado()
 		static_cast<int>(ANIM_TYPE::TORNADO), true);
 }
 
+void EnemyDragon::ChangeStateLanding()
+{
+
+	stateUpdate_ = std::bind(&EnemyDragon::UpdateLanding, this);
+
+	look_ = false;
+
+	// ランダムな待機時間
+	step_ = 3.0f + static_cast<float>(GetRand(3));
+	// 移動量ゼロ
+	movePow_ = AsoUtility::VECTOR_ZERO;
+	// 待機アニメーション再生
+	animationController_->Play(
+		static_cast<int>(ANIM_TYPE::LANDING), false);
+
+}
+
 void EnemyDragon::UpdateThink()
 {
 }
@@ -251,7 +294,15 @@ void EnemyDragon::UpdateIdle()
 	if (idleTime_ > changetime)
 	{
 		idleTime_ = 0;
-		ChangeState(STATE::TORNADO);
+		int rand = GetRand(100);
+		if (rand > 50)
+		{
+			ChangeState(STATE::FLY_IDLE);
+		}
+		else
+		{
+			ChangeState(STATE::BREARH);
+		}
 	}
 
 	idleTime_++;
@@ -261,7 +312,66 @@ void EnemyDragon::UpdateIdle()
 
 void EnemyDragon::UpdateFlayIdle()
 {
-	movePow_ = AsoUtility::VECTOR_ZERO;
+	int max = 500;
+
+
+	//上昇量増加
+	if (pow < max)
+	{
+		pow += 0.5;
+	}
+	if (transform_.pos.y < max)
+	{
+		transform_.pos.y += pow;
+	}
+
+	if(landing_)
+	{
+		transform_.pos.y -= 5;
+
+		if (transform_.pos.y < -40)
+		{
+			landing_ = false;
+			ChangeState(STATE::LANDING);
+		}
+	}
+
+	transform_.Update();
+
+
+	//最高高度に来たらトルネードを放つ
+	if (transform_.pos.y >= max)
+	{
+		transform_.pos.y = max;
+
+		//クールタイム
+		if (tornadoCoolTime_ <= 0)
+		{
+			//地面に降りる場合
+			if (!landing_)
+			{
+				int rand = GetRand(100);
+
+				if (rand > 50)
+				{
+					ChangeState(STATE::FLY_IDLE);
+				}
+				else
+				{
+					rand = GetRand(100);
+				}
+
+				if (rand > 30)
+				{
+					ChangeState(STATE::TORNADO);
+				}
+				else
+				{
+					landing_ = true;
+				}
+			}
+		}
+	}
 }
 
 void EnemyDragon::UpdateBreath()
@@ -348,9 +458,18 @@ void EnemyDragon::UpdateTornado()
 	{
 		isAliveTornado_ = false;
 		player_->SetWasHitTornadoDamage(false);
-		ChangeState(STATE::IDLE);
+		tornadoCoolTime_ = TORNADO_RESET_TIME;
+		ChangeState(STATE::FLY_IDLE);
 	}
 	
+}
+
+void EnemyDragon::UpdateLanding()
+{
+	if (animationController_->IsEnd())
+	{
+		ChangeState(STATE::IDLE);
+	}
 }
 
 void EnemyDragon::CreateBreathCollider(BreathInfo& breathInfo)

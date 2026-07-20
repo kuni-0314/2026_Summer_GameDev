@@ -324,7 +324,4 @@ void EnemyBase::CheckPlayerMagicCollision()
 		}
 	}
 }
-void EnemyBase::CheckEnemy()
-{
-}
 

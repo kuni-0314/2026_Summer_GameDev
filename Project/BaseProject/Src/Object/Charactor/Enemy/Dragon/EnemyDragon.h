@@ -23,6 +23,7 @@ public:
 		FRY_IDLE,
 		BREARH,
 		TORNADO,
+		LANDING
 	};
 	
 	// 状態
@@ -34,6 +35,7 @@ public:
 		FLY_IDLE,
 		BREARH,
 		TORNADO,
+		LANDING,
 		MOVE,
 	};
 
@@ -77,6 +79,8 @@ private:
 	static constexpr VECTOR COLBODY_CAPSULE_DOWN_LOCAL_POS = { 0.0f, 230.0f, -250.0f };
 
 
+
+
 	//ブレス用カプセルコライダーサイズ(カプセルがステージに当たると座標移動する)
 	static constexpr VECTOR CAPSULE_ADD_BREATH_POS = { 0.0f, 0.0f, 50.0f };		//ブレス開始位置調整
 	static constexpr VECTOR CAPSULE_DOWN_BREATH_POS = { 0,-110,700 };	        //ブレス終了位置（カプセルの終わり）
@@ -98,6 +102,7 @@ private:
 
 	//ブレスの判定開始フレーム時間
 	static constexpr float ATTACK_BREATH_TIME = 0.20f;
+	static constexpr int TORNADO_RESET_TIME = 200;
 
 	//ゲームシーン
 	GameScene* gamescene_;
@@ -109,6 +114,12 @@ private:
 
 	int idleTime_;
 	int changetime = 60;
+
+	int tornadoCoolTime_;
+
+
+	//空中上昇量
+	int pow = 5;
 
 	//ブレス情報関連
 	struct BreathInfo
@@ -126,6 +137,8 @@ private:
 	VECTOR breathTopPos_;
 	//ブレス終了位置
 	VECTOR breathDownPos_;
+
+	VECTOR bodyPos_;
 
 	//ブレス攻撃
 	//ブレスコライダー生成
@@ -156,6 +169,7 @@ private:
 
 	//トルネード生存状態
 	bool isAliveTornado_;
+	bool landing_ ;
 
 
 
@@ -179,6 +193,7 @@ private:
 	void ChangeStateFlayIdle();
 	void ChangeStateBreath();
 	void ChangeStateTornado();
+	void ChangeStateLanding();
 
 	//状態更新
 	void UpdateThink();
@@ -186,6 +201,7 @@ private:
 	void UpdateFlayIdle();
 	void UpdateBreath();
 	void UpdateTornado();
+	void UpdateLanding();
 
 	
 	
