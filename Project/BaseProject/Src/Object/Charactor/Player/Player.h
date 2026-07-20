@@ -8,6 +8,7 @@ class PlayerState;
 class SwordBase;
 class EffekseerEffect;
 class ColliderSphere;
+class EnemyDragon;
 
 class Player : public CharactorBase
 {
@@ -367,10 +368,9 @@ private:
 	void DragonTornadoCheckCollision();
 	//É_ÉÅÅ[ÉWÇéÛÇØÇΩÇ©Ç«Ç§Ç©
 	bool wasHitDamage_;
-
 	bool wasHitTornadoDamage_ = false;
 
-
+	int tornadoDamageCoolTime_ = 0;
 
 
 };

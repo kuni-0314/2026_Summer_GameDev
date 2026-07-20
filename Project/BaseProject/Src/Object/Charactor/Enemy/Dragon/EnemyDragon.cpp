@@ -14,7 +14,7 @@
 #include "../../../../Scene/GameScene.h"
 #include "./../../../../Application.h"
 #include "../../Player/Player.h"
-#include "Dragon.h"
+#include "EnemyDragon.h"
 
 EnemyDragon::EnemyDragon(const EnemyBase::EnemyData& data, int attackModel, Player* player)
 	:EnemyBase(data, attackModel, player),
@@ -107,7 +107,7 @@ void EnemyDragon::InitCollider()
 	ColliderCapsule* colCapsule = new ColliderCapsule(
 		ColliderBase::TAG::ENEMY, &transform_,
 		COLBODY_CAPSULE_TOP_LOCAL_POS, COLBODY_CAPSULE_DOWN_LOCAL_POS,
-		200.0f);
+		220.0f);
 	ownColliders_.emplace(static_cast<int>(COLLIDER_TYPE::CAPSULE), colCapsule);
 }
 
@@ -320,20 +320,19 @@ void EnemyDragon::UpdateTornado()
 	{
 		//コライダーを削除していた場合は次の配列へ
 		if (tornadoInfo_[i].isDestory) continue;
-
-
+		//トルネードのスピード設定
 		const float speed = 10.0f;
 
+		//トルネード更新処理
 		tornadoInfo_[i].transform.pos =
-			VAdd(
-				tornadoInfo_[i].transform.pos,
-				VScale(tornadoInfo_[i].moveDir, speed)
-			);
+			VAdd(tornadoInfo_[i].transform.pos,VScale(tornadoInfo_[i].moveDir, speed));
 
 		tornadoInfo_[i].transform.Update();
 
+		//移動距離
 		float dist = VSize(VSub(tornadoInfo_[i].transform.pos, tornadoInfo_[i].startPos)); //移動距離
 
+	
 		if (dist >= MAX_DIST)
 		{
 			DestoryTornadoCollider(tornadoInfo_[i]);
@@ -423,20 +422,21 @@ void EnemyDragon::CreateTornado()
 	for (int i = 0; i < tornadoCount_; i++)
 	{
 		const float spawnRadius = 1000.0f;
+		const float tornadoY = 150.0f;
+
 		// プレイヤー座標
 		VECTOR playerPos = player_->GetPos();
 
 		// 0～360度
 		float angle = AsoUtility::Deg2RadF(static_cast<float>(GetRand(359)));
 
-		VECTOR offset =
+		//トルネードの高さを固定
+		tornadoInfo_[i].transform.pos =
 		{
-			cosf(angle) * spawnRadius,
-			150.0f,
-			sinf(angle) * spawnRadius
+			playerPos.x + cosf(angle) * spawnRadius,
+			tornadoY,
+			playerPos.z + cosf(angle) * spawnRadius
 		};
-
-		tornadoInfo_[i].transform.pos = VAdd(playerPos, offset);
 		tornadoInfo_[i].startPos = tornadoInfo_[i].transform.pos;
 
 		VECTOR dir = VSub(playerPos, tornadoInfo_[i].transform.pos);
@@ -445,10 +445,14 @@ void EnemyDragon::CreateTornado()
 
 		tornadoInfo_[i].transform.Update();
 		tornadoInfo_[i].isDestory = false;
+		tornadoInfo_[i].wasHitPlayer = false;
+
 
 		//コライダー生成
 		CreateTornadoCollider(tornadoInfo_[i]);
 	}
 
 }
+
+
 

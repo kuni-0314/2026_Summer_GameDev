@@ -28,6 +28,7 @@
 #include "PlayerFallState.h"
 #include "PlayerAttackState.h"
 #include "PlayerMagicState.h"
+#include "../../Charactor/Enemy/Dragon/EnemyDragon.h"
 
 
 Player::Player(int padNum)
@@ -61,6 +62,11 @@ void Player::Update()
 	if (comboTimer_ > 0)
 	{
 		comboTimer_--;
+	}
+
+	if (tornadoDamageCoolTime_ > 0)
+	{
+		tornadoDamageCoolTime_--;
 	}
 
 	// 各キャラクターごとの更新処理
@@ -266,7 +272,6 @@ void Player::InitPost()
 	// 武器初期化
 	sword_ = new KeyBlade3(KEY_BLADE_3_LOCAL_POS_START, KEY_BLADE_3_LOCAL_POS_END, KEY_BLADE_3_RADIUS, transform_);
 	sword_->Init();
-
 
 }
 
@@ -999,7 +1004,7 @@ void Player::DragonTornadoCheckCollision()
 	// 死亡状態なら処理しない
 	if (!isAlive_) return;
 	//すでにダメージを受けていたら処理しない
-	if (wasHitTornadoDamage_) return;
+	if (tornadoDamageCoolTime_ > 0) return;
 
 	// 自身のカプセルコライダを取得
 	ColliderCapsule* ownColCapsule = nullptr;
@@ -1021,19 +1026,26 @@ void Player::DragonTornadoCheckCollision()
 			// ブレスはカプセルコライダ
 			// 敵もカプセルコライダ
 			// カプセルコライダ同士で衝突判定
-			const ColliderCapsule* TornadoColCapsule =
+			const ColliderCapsule* tornadoColCapsule =
 				dynamic_cast<const ColliderCapsule*>(hitCol);
 
-			if (TornadoColCapsule == nullptr)
+			if (tornadoColCapsule == nullptr)
 			{
 				continue;
 			}
 
-			// 衝突判定
-			if (ownColCapsule->IsHit(TornadoColCapsule))
+			if (tornadoDamageCoolTime_ > 0)
+			{
+				return;
+			}
+
+			if (ownColCapsule->IsHit(tornadoColCapsule))
 			{
 				// ダメージ処理
 				Damege(2);
+
+				// 0.3秒間ダメージ無効
+				tornadoDamageCoolTime_ = 30;
 
 				//ダメージサウンド
 				AudioManager::GetInstance()->PlaySE(SoundID::SE_ENEMY_HIT);
@@ -1045,8 +1057,6 @@ void Player::DragonTornadoCheckCollision()
 				hitPos = VScale(hitPos, 0.5f);*/
 				//HitEffect(hitPos, VNorm(VSub(hitPos, transform_.pos)), 1.0f);
 
-				// 一度あったらフラグ
-				wasHitTornadoDamage_ = true;
 
 				InputManager::GetInstance()->VibrateGamepad(1, 500, 100);
 			}

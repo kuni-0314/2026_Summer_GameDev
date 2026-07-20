@@ -45,6 +45,8 @@ public:
 	void Release(void) override;
 
 
+
+
 protected:
 
 	// リソースロード
@@ -70,9 +72,9 @@ private:
 	// 衝突判定用線分終了
 	static constexpr VECTOR COL_LINE_END_LOCAL_POS = { 0.0f, -30.0f, 0.0f };
 
-	// 後半分用のカプセルローカル座標（体を前半/後半に分割）
-	static constexpr VECTOR COLBODY_CAPSULE_TOP_LOCAL_POS = { 0.0f, 210.0f, 20.0f };
-	static constexpr VECTOR COLBODY_CAPSULE_DOWN_LOCAL_POS = { 0.0f, 210.0f, -250.0f };
+	//ドラゴン当たり判定用
+	static constexpr VECTOR COLBODY_CAPSULE_TOP_LOCAL_POS = { 0.0f, 230.0f, 30.0f };
+	static constexpr VECTOR COLBODY_CAPSULE_DOWN_LOCAL_POS = { 0.0f, 230.0f, -250.0f };
 
 
 	//ブレス用カプセルコライダーサイズ(カプセルがステージに当たると座標移動する)
@@ -142,7 +144,8 @@ private:
 		VECTOR startPos;
 		VECTOR moveDir;
 		float speed;
-		bool isDestory;
+		bool isDestory = false;
+		bool wasHitPlayer = false;
 	};
 
 	//トルネード生成カウント
@@ -163,8 +166,6 @@ private:
 	void DestoryTornadoCollider(TornadoInfo& tornadoInfo);
 	//トルネード生成
 	void CreateTornado();
-	//トルネード生存処理
-	void TornadoLifeTime();
 
 
 

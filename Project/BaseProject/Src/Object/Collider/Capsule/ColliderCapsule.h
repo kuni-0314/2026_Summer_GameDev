@@ -55,7 +55,17 @@ public:
 		bool isExclude = false, bool isTarget = false) const;
 
 	// デバッグ用描画のON/OFF
-	void SetDebugDraw(bool isDebugDraw) { isDebugDraw_ = isDebugDraw; }
+	void SetDebugDraw(bool isDebugDraw);
+
+	
+
+	//複数コライダ区別用
+	bool wasHit_ = false;
+
+	void  SetWasHit(bool washit);
+	
+	bool GetwasHit() const;
+	
 
 protected:
 	// デバッグ用描画

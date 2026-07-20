@@ -62,6 +62,17 @@ VECTOR ColliderCapsule::GetCenter() const
 
 
 
+void ColliderCapsule::SetWasHit(bool washit)
+{
+	wasHit_ = washit;
+}
+
+
+bool ColliderCapsule::GetwasHit() const
+{
+	return wasHit_;
+}
+
 void ColliderCapsule::DrawDebug(int color)
 {
 #ifdef _DEBUG
@@ -227,4 +238,9 @@ bool ColliderCapsule::IsHit(const ColliderSphere* colliderSphere, bool isExclude
 	return HitCheck_Sphere_Capsule(
 		colliderSphere->GetPos(), colliderSphere->GetRadius(),
 		GetPosTop(), GetPosDown(), GetRadius());
+}
+
+void ColliderCapsule::SetDebugDraw(bool isDebugDraw)
+{
+	isDebugDraw_ = isDebugDraw; 
 }
