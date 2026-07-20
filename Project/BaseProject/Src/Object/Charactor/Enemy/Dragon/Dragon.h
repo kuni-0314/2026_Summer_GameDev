@@ -70,6 +70,11 @@ private:
 	// 衝突判定用線分終了
 	static constexpr VECTOR COL_LINE_END_LOCAL_POS = { 0.0f, -30.0f, 0.0f };
 
+	// 後半分用のカプセルローカル座標（体を前半/後半に分割）
+	static constexpr VECTOR COLBODY_CAPSULE_TOP_LOCAL_POS = { 0.0f, 210.0f, 20.0f };
+	static constexpr VECTOR COLBODY_CAPSULE_DOWN_LOCAL_POS = { 0.0f, 210.0f, -250.0f };
+
+
 	//ブレス用カプセルコライダーサイズ(カプセルがステージに当たると座標移動する)
 	static constexpr VECTOR CAPSULE_ADD_BREATH_POS = { 0.0f, 0.0f, 50.0f };		//ブレス開始位置調整
 	static constexpr VECTOR CAPSULE_DOWN_BREATH_POS = { 0,-110,700 };	        //ブレス終了位置（カプセルの終わり）

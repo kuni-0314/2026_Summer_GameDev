@@ -40,6 +40,15 @@ void EnemyDragon::Draw(void)
 	//DrawFormatString(300, 400, GetColor(255, 255, 255), "TopPos: %f,%f,%f", breathTopPos_.x, breathTopPos_.y, breathTopPos_.z); 
 	DrawFormatString(300, 500, GetColor(255, 255, 255), "Pos: %f,%f,%f", transform_.pos.x, transform_.pos.y, transform_.pos.z);
 	//DrawFormatString(300, 400, GetColor(255, 255, 255), "%f", tornadoInfos_[0].transform.pos.x);
+
+	for (int i = 0; i < tornadoCount_; i++)
+	{
+		if (tornadoInfo_[i].isDestory) continue;
+		VECTOR Pos = tornadoInfo_[i].transform.pos;
+		DrawSphere3D(Pos, 100.0f, 16, 0xff00ff, 0xff00ff, false);
+
+	}
+
 }
 
 void EnemyDragon::Release(void)
@@ -95,11 +104,11 @@ void EnemyDragon::InitCollider()
 
 
 	// 主に壁や木などの衝突で使用するカプセルコライダ（前半分）
-	//ColliderCapsule* colCapsule = new ColliderCapsule(
-	//	ColliderBase::TAG::ENEMY, &transform_,
-	//	COLBODY_CAPSULE_TOP_LOCAL_POS, COLBODY_CAPSULE_DOWN_LOCAL_POS,
-	//	100.0f);
-	//ownColliders_.emplace(static_cast<int>(COLLIDER_TYPE::CAPSULE), colCapsule);
+	ColliderCapsule* colCapsule = new ColliderCapsule(
+		ColliderBase::TAG::ENEMY, &transform_,
+		COLBODY_CAPSULE_TOP_LOCAL_POS, COLBODY_CAPSULE_DOWN_LOCAL_POS,
+		200.0f);
+	ownColliders_.emplace(static_cast<int>(COLLIDER_TYPE::CAPSULE), colCapsule);
 }
 
 void EnemyDragon::InitAnimation()
@@ -366,6 +375,9 @@ void EnemyDragon::DestoryBreathCollider(BreathInfo& breathInfo)
 	//衝突情報削除
 	GameScene* gameScene = dynamic_cast<GameScene*>(SceneManager::GetInstance().GetScene());
 	gameScene->RemovePlayerHitCollider(breathInfo.collider);
+
+	delete breathInfo.collider;
+	breathInfo.collider = nullptr;
 }
 
 void EnemyDragon::CreateBreath()
@@ -401,6 +413,9 @@ void EnemyDragon::DestoryTornadoCollider(TornadoInfo& tornadoInfo)
 	//衝突情報削除
 	GameScene* gameScene = dynamic_cast<GameScene*>(SceneManager::GetInstance().GetScene());
 	gameScene->RemovePlayerHitCollider(tornadoInfo.collider);
+
+	delete tornadoInfo.collider;
+	tornadoInfo.collider = nullptr;
 }
 
 void EnemyDragon::CreateTornado()
