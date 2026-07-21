@@ -28,6 +28,7 @@
 #include "PlayerFallState.h"
 #include "PlayerAttackState.h"
 #include "PlayerMagicState.h"
+#include "../../Charactor/Enemy/Dragon/EnemyDragon.h"
 
 
 Player::Player(int padNum)
@@ -64,10 +65,16 @@ void Player::Update()
 		comboTimer_--;
 	}
 
+<<<<<<< HEAD
 	// ƒq[ƒ‹‚ÌŠÔ‚ğŒ¸Z
 	if (recoveryEffect_)
 	{
 		recoveryEffect_->SetPosition(transform_.pos);
+=======
+	if (tornadoDamageCoolTime_ > 0)
+	{
+		tornadoDamageCoolTime_--;
+>>>>>>> origin/FIXï¼’
 	}
 
 	// ŠeƒLƒƒƒ‰ƒNƒ^[‚²‚Æ‚ÌXVˆ—
@@ -238,11 +245,19 @@ void Player::InitAnimation()
 		, 60.0f, Application::PATH_MODEL + "Player/Jump.mv1");
 
 	// UŒ‚ƒAƒjƒ[ƒVƒ‡ƒ“
+<<<<<<< HEAD
 	anim->Add(static_cast<int>(ANIM_TYPE::ATK_N1)
 		, 100.0f, Application::PATH_MODEL + "Player/Attack1.mv1");
 	anim->Add(static_cast<int>(ANIM_TYPE::ATK_N2)
 		, 65.0f, Application::PATH_MODEL + "Player/Attack2.mv1");
 	anim->Add(static_cast<int>(ANIM_TYPE::ATK_N3)
+=======
+	animationController_->Add(static_cast<int>(ANIM_TYPE::ATK_N1)
+		, 90.0f, Application::PATH_MODEL + "Player/Attack1.mv1");
+	animationController_->Add(static_cast<int>(ANIM_TYPE::ATK_N2)
+		, 90.0f, Application::PATH_MODEL + "Player/Attack2.mv1");
+	animationController_->Add(static_cast<int>(ANIM_TYPE::ATK_N3)
+>>>>>>> origin/FIXï¼’
 		, 90.0f, Application::PATH_MODEL + "Player/Attack3.mv1");
 	anim->Add(static_cast<int>(ANIM_TYPE::ATK_N4)
 		, 75.0f, Application::PATH_MODEL + "Player/Attack4.mv1");
@@ -266,10 +281,17 @@ void Player::InitAnimation()
 		, 40.0f, Application::PATH_MODEL + "Player/Attack1.mv1");//tmp
 	anim->Add(static_cast<int>(ANIM_TYPE::MAGIC)
 		, 40.0f, Application::PATH_MODEL + "Player/Spell Cast.mv1");
+<<<<<<< HEAD
 	anim->Add(static_cast<int>(ANIM_TYPE::ROLLING)
 		, 65.0f, Application::PATH_MODEL + "Player/Rolling.mv1");
 	anim->Add(static_cast<int>(ANIM_TYPE::DAMAGE)
 		, 100.0f, Application::PATH_MODEL + "Player/Damage.mv1");
+=======
+	animationController_->Add(static_cast<int>(ANIM_TYPE::ROLLING)
+		, 65.0f, Application::PATH_MODEL + "Player/R.mv1");
+	animationController_->Add(static_cast<int>(ANIM_TYPE::FALL_END)
+		, 85.0f, Application::PATH_MODEL + "Player/FallingLanding.mv1");
+>>>>>>> origin/FIXï¼’
 
 	//‰ŠúƒAƒjƒ[ƒVƒ‡ƒ“Ä¶
 	anim->Play(static_cast<int>(ANIM_TYPE::IDLE), true);
@@ -296,7 +318,6 @@ void Player::InitPost()
 	// •Ší‰Šú‰»
 	sword_ = new KeyBlade3(KEY_BLADE_3_LOCAL_POS_START, KEY_BLADE_3_LOCAL_POS_END, KEY_BLADE_3_RADIUS, transform_);
 	sword_->Init();
-
 
 }
 
@@ -420,6 +441,10 @@ void Player::UpdateProcess()
 	UpdateMagic();
 
 	CheckPlayerRingCollision();
+	//ƒhƒ‰ƒSƒ“ƒuƒŒƒX“–‚½‚è”»’è
+	DragonBreathCheckCollision();
+	//ƒhƒ‰ƒSƒ“ƒgƒ‹ƒl[ƒh“–‚½‚è”»’è
+	DragonTornadoCheckCollision();
 
 }
 void Player::UpdateProcessPost()
@@ -783,6 +808,7 @@ void Player::CreateFireMagic()
 {
 	if (!isAliveFire_)
 	{
+		// ‰Šúó‘Ô‚ÉƒŠƒZƒbƒg
 		fireInfo_ = FireInfo();
 		fireInfo_.timer = 0;
 		fireInfo_.transform.pos = transform_.pos;
@@ -986,9 +1012,11 @@ void Player::UpdateMagic()
 
 	if (isAliveFire_)
 	{
+		//ƒJƒƒ‰ƒ‚[ƒh‚ğæ“¾
 		GameScene::CAM_MODE mode = gameScene_->GetCamMode();
 		if (fireInfo_.timer < FIRE_LIFETIME)
 		{
+			//ƒƒbƒNƒIƒ“‚ªON‚¾‚Á‚½ê‡
 			if (mode == GameScene::CAM_MODE::TARGETING)
 			{
 				VECTOR targetPos = gameScene_->GetTargetPos();
@@ -999,6 +1027,7 @@ void Player::UpdateMagic()
 			}
 			else
 			{
+				//ƒƒbƒNƒIƒ“‚ªOFF‚Ìê‡
 				VECTOR move = VScale(fireInfo_.dir, FIRE_SPEED);
 				fireInfo_.transform.pos = VAdd(fireInfo_.transform.pos, move);
 			}
@@ -1015,4 +1044,127 @@ void Player::UpdateMagic()
 
 	if (isAliveThunder_ || isAliveFire_) isAliveMagic_ = true;
 	else isAliveMagic_ = false;
+}
+
+void Player::DragonBreathCheckCollision()
+{
+	// €–Só‘Ô‚È‚çˆ—‚µ‚È‚¢
+	if (!isAlive_) return;
+	//‚·‚Å‚Éƒ_ƒ[ƒW‚ğó‚¯‚Ä‚¢‚½‚çˆ—‚µ‚È‚¢
+	if (wasHitDamage_) return;
+
+	// ©g‚ÌƒJƒvƒZƒ‹ƒRƒ‰ƒCƒ_‚ğæ“¾
+	ColliderCapsule* ownColCapsule = nullptr;
+	for (const auto& ownCol : ownColliders_)
+	{
+		if (ownCol.second->GetTag() == ColliderBase::TAG::PLAYER)
+		{
+			ownColCapsule =
+				dynamic_cast<ColliderCapsule*>(ownCol.second);
+			//if (ownColCapsule == nullptr) return;
+		}
+	}
+
+	// ƒvƒŒƒCƒ„[‚ÌŒ•ƒRƒ‰ƒCƒ_‚ÍhitColliders_‚É“o˜^‚³‚ê‚Ä‚¢‚é‚Í‚¸‚È‚Ì‚ÅA‘S‚Äƒ`ƒFƒbƒN
+	for (const auto& hitCol : hitColliders_)
+	{
+		if (hitCol->GetTag() == ColliderBase::TAG::ENEMY_DRAGON_BREATH)
+		{
+			// ƒuƒŒƒX‚ÍƒJƒvƒZƒ‹ƒRƒ‰ƒCƒ_
+			// “G‚àƒJƒvƒZƒ‹ƒRƒ‰ƒCƒ_
+			// ƒJƒvƒZƒ‹ƒRƒ‰ƒCƒ_“¯m‚ÅÕ“Ë”»’è
+			const ColliderCapsule* breathColCapsule =
+				dynamic_cast<const ColliderCapsule*>(hitCol);
+
+			if (breathColCapsule == nullptr) return;
+
+			// Õ“Ë”»’è
+			if (ownColCapsule->IsHit(breathColCapsule))
+			{
+				// ƒ_ƒ[ƒWˆ—
+				Damege(3);
+
+				//ƒ_ƒ[ƒWƒTƒEƒ“ƒh
+				AudioManager::GetInstance()->PlaySE(SoundID::SE_ENEMY_HIT);
+
+				// ƒGƒtƒFƒNƒgÄ¶
+				/*VECTOR hitPos = VAdd(
+					ownColCapsule->GetCenter(),
+					swordColCapsule->GetCenter());
+				hitPos = VScale(hitPos, 0.5f);*/
+				//HitEffect(hitPos, VNorm(VSub(hitPos, transform_.pos)), 1.0f);
+
+				// ˆê“x‚ ‚Á‚½‚çƒtƒ‰ƒO
+				wasHitDamage_ = true;
+
+				InputManager::GetInstance()->VibrateGamepad(1, 500, 100);
+			}
+		}
+	}
+
+}
+
+void Player::DragonTornadoCheckCollision()
+{
+	// €–Só‘Ô‚È‚çˆ—‚µ‚È‚¢
+	if (!isAlive_) return;
+	//‚·‚Å‚Éƒ_ƒ[ƒW‚ğó‚¯‚Ä‚¢‚½‚çˆ—‚µ‚È‚¢
+	if (tornadoDamageCoolTime_ > 0) return;
+
+	// ©g‚ÌƒJƒvƒZƒ‹ƒRƒ‰ƒCƒ_‚ğæ“¾
+	ColliderCapsule* ownColCapsule = nullptr;
+	for (const auto& ownCol : ownColliders_)
+	{
+		if (ownCol.second->GetTag() == ColliderBase::TAG::PLAYER)
+		{
+			ownColCapsule =
+				dynamic_cast<ColliderCapsule*>(ownCol.second);
+			//if (ownColCapsule == nullptr) return;
+		}
+	}
+
+	// ƒvƒŒƒCƒ„[‚ÌŒ•ƒRƒ‰ƒCƒ_‚ÍhitColliders_‚É“o˜^‚³‚ê‚Ä‚¢‚é‚Í‚¸‚È‚Ì‚ÅA‘S‚Äƒ`ƒFƒbƒN
+	for (const auto& hitCol : hitColliders_)
+	{
+		if (hitCol->GetTag() == ColliderBase::TAG::ENEMY_DRAGON_TORNADO)
+		{
+			// ƒuƒŒƒX‚ÍƒJƒvƒZƒ‹ƒRƒ‰ƒCƒ_
+			// “G‚àƒJƒvƒZƒ‹ƒRƒ‰ƒCƒ_
+			// ƒJƒvƒZƒ‹ƒRƒ‰ƒCƒ_“¯m‚ÅÕ“Ë”»’è
+			const ColliderCapsule* tornadoColCapsule =
+				dynamic_cast<const ColliderCapsule*>(hitCol);
+
+			if (tornadoColCapsule == nullptr)
+			{
+				continue;
+			}
+
+			if (tornadoDamageCoolTime_ > 0)
+			{
+				return;
+			}
+
+			if (ownColCapsule->IsHit(tornadoColCapsule))
+			{
+				// ƒ_ƒ[ƒWˆ—
+				Damege(2);
+
+				// 0.3•bŠÔƒ_ƒ[ƒW–³Œø
+				tornadoDamageCoolTime_ = 30;
+
+				//ƒ_ƒ[ƒWƒTƒEƒ“ƒh
+				AudioManager::GetInstance()->PlaySE(SoundID::SE_ENEMY_HIT);
+
+				// ƒGƒtƒFƒNƒgÄ¶
+				/*VECTOR hitPos = VAdd(
+					ownColCapsule->GetCenter(),
+					swordColCapsule->GetCenter());
+				hitPos = VScale(hitPos, 0.5f);*/
+				//HitEffect(hitPos, VNorm(VSub(hitPos, transform_.pos)), 1.0f);
+
+
+				InputManager::GetInstance()->VibrateGamepad(1, 500, 100);
+			}
+		}
+	}
 }

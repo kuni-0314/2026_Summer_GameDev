@@ -17,7 +17,10 @@
 #include "../Object/Collider/Sphere/ColliderSphere.h"
 #include "../Effect/EffectManager.h"
 #include "../Effect/LoadEffekseer/EffekseerEffect.h"
+<<<<<<< HEAD
 #include "../Object/Common/AnimationController.h"
+=======
+>>>>>>> origin/FIXÔºí
 #include "GameScene.h"
 #include <EffekseerForDXLib.h>
 
@@ -343,6 +346,15 @@ void GameScene::Update()
 
 	//#endif
 
+	if (player_->IsShortCut())
+	{
+		selectCommand_ = static_cast<int>(COMMAND::ALL);
+	}
+	else if (selectCommand_ == static_cast<int>(COMMAND::ALL))
+	{
+		selectCommand_ = static_cast<int>(useCommand_);
+	}
+
 }
 
 void GameScene::Draw()
@@ -571,7 +583,21 @@ void GameScene::RemoveEnemyHitCollider(const ColliderBase* hitCollider)
 
 }
 
+<<<<<<< HEAD
 void GameScene::ShakeHpUI()
+=======
+void GameScene::AddPlayerHitCollider(const ColliderBase* hitCollider)
+{
+	player_->AddHitCollider(hitCollider);
+}
+
+void GameScene::RemovePlayerHitCollider(const ColliderBase* hitCollider)
+{
+	player_->RemoveHitCollider(hitCollider);
+}
+
+void GameScene::SetDamageFlag(bool flag)
+>>>>>>> origin/FIXÔºí
 {
 	isHpUIShake_ = true;
 	shakePow_ = SHAKE_POW_MAX;
@@ -699,7 +725,10 @@ void GameScene::CommandUpdate()
 	//ÉTÉìÉ_Å[
 	if (player_->GetThunderCoolTime() > 0)
 	{
+		//ÉNÅ[ÉãÉ^ÉCÉÄÉtÉHÉìÉgêÿÇËë÷Ç¶
 		thunderState_ = COMMAND_STATE::USE;
+		//égópñÇñ@ï€ë∂
+		useCommand_ = COMMAND::THUNDER;
 	}
 	else
 	{
@@ -710,7 +739,10 @@ void GameScene::CommandUpdate()
 	// ÉtÉ@ÉCÉA
 	if (player_->GetFireCoolTime() > 0)
 	{
+		//ÉNÅ[ÉãÉ^ÉCÉÄÉtÉHÉìÉgêÿÇËë÷Ç¶
 		fireState_ = COMMAND_STATE::USE;
+		//égópñÇñ@ï€ë∂
+		useCommand_ = COMMAND::FIRE;
 	}
 	else
 	{
@@ -720,7 +752,10 @@ void GameScene::CommandUpdate()
 	// âÒïú
 	if (player_->GetHealCoolTime() > 0)
 	{
+		//ÉNÅ[ÉãÉ^ÉCÉÄÉtÉHÉìÉgêÿÇËë÷Ç¶
 		healState_ = COMMAND_STATE::USE;
+		//égópñÇñ@ï€ë∂
+		useCommand_ = COMMAND::HEAL;
 	}
 	else
 	{
@@ -731,14 +766,18 @@ void GameScene::CommandUpdate()
 void GameScene::CommandDraw()
 {
 
-	DrawGraph(0, 735, commandHandles_[selectCommand_], true);
+	//ëIëÇµÇƒÇÈÉRÉ}ÉìÉhï`âÊ
+		DrawGraph(0, 735, commandHandles_[selectCommand_], true);
 
 	const int baseX = 45;
 	const int selectOffset = 90;
 
+	//
 	for (int i = 0; i < static_cast<int>(COMMAND::MAX); i++)
 	{
-		bool isSelect = (i == selectCommand_);
+		bool isSelect =
+			(selectCommand_ == static_cast<int>(COMMAND::ALL)) ||
+			(i == selectCommand_);
 
 		COMMAND_STATE state = COMMAND_STATE::NOT_USE;
 
@@ -754,9 +793,6 @@ void GameScene::CommandDraw()
 
 		case COMMAND::HEAL:
 			state = healState_;
-			break;
-
-		default:
 			break;
 		}
 

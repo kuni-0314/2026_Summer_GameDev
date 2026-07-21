@@ -74,8 +74,15 @@ public:
 	void DeleteAttackCollider();
 	void SetActiveAttackCollider(bool isActive);
 
+	//エネミーにプレイヤーの衝突情報渡し
 	void AddEnemyHitCollider(const ColliderBase* hitCollider);
+	//プレイヤー衝突情報削除
 	void RemoveEnemyHitCollider(const ColliderBase* hitCollider);
+	
+	//プレイヤーにエネミーの衝突情報渡し
+	void AddPlayerHitCollider(const ColliderBase* hitCollider);
+	//エネミー衝突情報削除
+	void RemovePlayerHitCollider(const ColliderBase* hitCollider);
 
 	ItemManger* GetItemManger() const { return itemManger_; }
 
@@ -126,6 +133,7 @@ private:
 
 	//コマンド
 	COMMAND command_;
+	COMMAND useCommand_;
 
 	COMMAND_STATE thunderState_;
 	COMMAND_STATE fireState_;

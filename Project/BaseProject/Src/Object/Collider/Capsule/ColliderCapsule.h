@@ -8,6 +8,7 @@ class ColliderCapsule : public ColliderBase
 {
 public:
 	// コンストラクタ
+	//posTopとposDownでカプセルコライダーのサイズ設定(定数推奨）
 	ColliderCapsule(
 		TAG tag, const Transform* follow,
 		const VECTOR& localPosTop, const VECTOR& localPosDown, float radius);
@@ -54,7 +55,17 @@ public:
 		bool isExclude = false, bool isTarget = false) const;
 
 	// デバッグ用描画のON/OFF
-	void SetDebugDraw(bool isDebugDraw) { isDebugDraw_ = isDebugDraw; }
+	void SetDebugDraw(bool isDebugDraw);
+
+	
+
+	//複数コライダ区別用
+	bool wasHit_ = false;
+
+	void  SetWasHit(bool washit);
+	
+	bool GetwasHit() const;
+	
 
 protected:
 	// デバッグ用描画
@@ -68,7 +79,7 @@ private:
 	float radius_;
 
 	// デバッグ用
-	bool isDebugDraw_ = false;
+	bool isDebugDraw_ = true;
 
 
 };

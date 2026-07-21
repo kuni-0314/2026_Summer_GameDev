@@ -8,6 +8,7 @@ class PlayerState;
 class SwordBase;
 class EffekseerEffect;
 class ColliderSphere;
+class EnemyDragon;
 
 class Player : public CharactorBase
 {
@@ -49,7 +50,11 @@ public:
 		ATK_F,
 		MAGIC,
 		ROLLING,
+<<<<<<< HEAD
 		DAMAGE,
+=======
+		FALL_END
+>>>>>>> origin/FIXÔºí
 	};
 
 	//ÉRÉìÉXÉgÉâÉNÉ^
@@ -103,7 +108,14 @@ public:
 
 	void ActivatePowerUp();
 	void PlayBlinkEffect();
+<<<<<<< HEAD
 	void DeleteFireEffect();
+=======
+
+	//É_ÉÅÅ[ÉWîªíËÉZÉbÉg
+	void SetWasHitDamage(const bool wasHit) { wasHitDamage_ = wasHit; }
+	void SetWasHitTornadoDamage(const bool wasHit) { wasHitTornadoDamage_ = wasHit; }
+>>>>>>> origin/FIXÔºí
 
 	//ÉXÉPÅ[Éã
 	static constexpr float SCL_PlAYER = 0.75f;
@@ -368,6 +380,20 @@ private:
 
 	bool isShortCut_ = false;
 
+<<<<<<< HEAD
 
 	VECTOR debugPos_;
+=======
+	//ÉhÉâÉSÉìÉuÉåÉXìñÇΩÇËîªíË
+	void DragonBreathCheckCollision();
+
+	void DragonTornadoCheckCollision();
+	//É_ÉÅÅ[ÉWÇéÛÇØÇΩÇ©Ç«Ç§Ç©
+	bool wasHitDamage_;
+	bool wasHitTornadoDamage_ = false;
+
+	int tornadoDamageCoolTime_ = 0;
+
+
+>>>>>>> origin/FIXÔºí
 };

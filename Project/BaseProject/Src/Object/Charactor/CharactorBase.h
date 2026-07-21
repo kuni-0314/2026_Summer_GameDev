@@ -56,8 +56,11 @@ public:
 
 	virtual void HealHp(int heal) { hp_ += heal; };
 
+<<<<<<< HEAD
 	bool IsInvincible() const { return isInvincible_; }
 	void SetInvincible(bool invincible);
+=======
+>>>>>>> origin/FIXï¼’
 
 protected:
 
@@ -97,6 +100,9 @@ protected:
 
 	//‘Ì—Í
 	int hp_;
+
+	//‹ó’†‚É•‚‚­—p
+	bool useGrabity_ = true;
 
 	// ƒŠƒ\[ƒXƒ[ƒh
 	virtual void InitLoad() override;

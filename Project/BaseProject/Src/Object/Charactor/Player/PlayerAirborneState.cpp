@@ -79,7 +79,7 @@ void PlayerAirborneState::Update(Player* player)
 	// ’…’n‚µ‚Ä‚¢‚éê‡‚ÍA‘Ò‹@ó‘Ô‚É‘JˆÚ
 	if (!player->IsJump())
 	{
-		player->ChangeState(Player::STATE::IDLE);
+		player->ChangeState(Player::STATE::FALL);
 		player->SetAttacking(false);
 		return;
 	}
