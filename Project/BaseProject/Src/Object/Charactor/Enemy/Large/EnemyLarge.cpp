@@ -641,6 +641,22 @@ void EnemyLarge::UpdateAttackDrop()
 		ringTransform_->scl = { RING_SCALE,RING_SCALE ,RING_SCALE };
 		isDrop_ = true;
 		attackTriggerRing_ = true;
+
+		isDrop_ = true;
+		attackTriggerRing_ = true;
+
+		auto effect = std::make_shared<EffekseerEffect>(
+			L"Data/Effect/Circle/ShockWave.efkefc",
+			ringTransform_->pos
+		);
+
+		//YŽ²‚ð‚R‚Oã‚°‚é
+		ringTransform_->pos.y += 30.0f;
+
+		effect->SetScale(30.0f);
+		effect->Play(ringTransform_->pos, Quaternion());
+
+		EffectManager::GetInstance().RegisterEffect(effect);
 	}
 
 	if (animationController_->IsEnd())

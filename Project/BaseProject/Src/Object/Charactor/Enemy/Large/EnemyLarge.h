@@ -4,6 +4,7 @@
 #include <memory>
 #include <vector>
 #include "../EnemyBase.h"
+#include "../../../../Effect/LoadEffekseer/EffekseerEffect.h"
 
 class Player;
 class ItemManger;
@@ -172,6 +173,7 @@ private:
 
 	//衝撃波用トランスフォーム
 	std::unique_ptr<Transform> ringTransform_;
+	std::shared_ptr<EffekseerEffect> shockWaveEffect_;
 
 	// 実体の前後コライダへの直接参照（必要なら使う）
 	ColliderCapsule* colFrontCapsule_ = nullptr;
