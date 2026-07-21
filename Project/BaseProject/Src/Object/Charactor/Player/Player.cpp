@@ -449,11 +449,6 @@ void Player::Draw()
 	int y = 20;
 	int lineHeight = 25;
 
-	// îwåiï`âÊ(îºìßñæÇÃçï)
-	//SetDrawBlendMode(DX_BLENDMODE_ALPHA, 180);
-	//DrawBox(x - 10, y - 10, x + 250, y + lineHeight * 11 + 10, 0x000000, true);
-	//SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
-
 	// É^ÉCÉgÉã
 	//DrawFormatString(x, y, 0xFFFFFF, "=== Player Status ===");
 	y += lineHeight;
