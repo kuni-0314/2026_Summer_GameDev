@@ -32,14 +32,15 @@ void EnemyDragon::Draw(void)
 {
 	EnemyBase::Draw();
 
-	//MV1DrawModel(transform_.modelId);
+	
 	DrawSphere3D(breathTopPos_, 10.0f, 10, 0xffffff, 0xffffff, true);
 
-
-
-	//DrawFormatString(300, 400, GetColor(255, 255, 255), "TopPos: %f,%f,%f", breathTopPos_.x, breathTopPos_.y, breathTopPos_.z); 
+	
 	DrawFormatString(300, 500, GetColor(255, 255, 255), "Pos: %f,%f,%f", transform_.pos.x, transform_.pos.y, transform_.pos.z);
-	//DrawFormatString(300, 400, GetColor(255, 255, 255), "%f", tornadoInfos_[0].transform.pos.x);
+
+	DrawSphere3D(breathInfo_.transform.pos, 100, 5, 0xffffff, 0xffffff, false);
+
+	//DrawCapsule3D(breathInfo_.transform.pos, breathDownPos_, 100, 5, 0xffffff, 0xffffff, false);
 
 	for (int i = 0; i < tornadoCount_; i++)
 	{
@@ -295,7 +296,7 @@ void EnemyDragon::UpdateIdle()
 	{
 		idleTime_ = 0;
 		int rand = GetRand(100);
-		if (rand > 50)
+		if (rand > 70)
 		{
 			ChangeState(STATE::FLY_IDLE);
 		}
