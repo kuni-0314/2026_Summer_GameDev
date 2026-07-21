@@ -150,7 +150,6 @@ void EnemyLarge::InitCollider()
 	}
 
 	ownColliders_.emplace(static_cast<int>(COLLIDER_TYPE::MODEL), colModel);
-	//
 }
 
 void EnemyLarge::InitAnimation()
