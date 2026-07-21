@@ -386,6 +386,4 @@ private:
 	bool wasHitTornadoDamage_ = false;
 
 	int tornadoDamageCoolTime_ = 0;
-
-
 };
