@@ -262,6 +262,8 @@ void Player::InitAnimation()
 		, 40.0f, Application::PATH_MODEL + "Player/Spell Cast.mv1");
 	anim->Add(static_cast<int>(ANIM_TYPE::ROLLING)
 		, 65.0f, Application::PATH_MODEL + "Player/Rolling.mv1");
+	anim->Add(static_cast<int>(ANIM_TYPE::DAMAGE)
+		, 100.0f, Application::PATH_MODEL + "Player/Damage.mv1");
 
 	//初期アニメーション再生
 	anim->Play(static_cast<int>(ANIM_TYPE::IDLE), true);

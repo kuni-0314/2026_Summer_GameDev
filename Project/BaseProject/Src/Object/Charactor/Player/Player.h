@@ -49,6 +49,7 @@ public:
 		ATK_F,
 		MAGIC,
 		ROLLING,
+		DAMAGE,
 	};
 
 	//コンストラクタ
