@@ -838,6 +838,14 @@ int Player::GetHealCoolTime()
 	return healCoolTime_;
 }
 
+void Player::ExecuteRangeAttack()
+{
+	// ­‚µ‘O•û‚ÉˆÚ“®‚µ‚Ä‚©‚çUŒ‚”»’è‚ðs‚¤
+	auto attackPos = VAdd(transform_.pos, VScale(transform_.quaRot.GetForward(), 50.0f));
+	const int DAMAGE = 3;
+	gameScene_->CheckHitEnemy(attackPos, ATTACK_RANGE, DAMAGE);
+}
+
 void Player::UpdateMagic()
 {
 	MagicCoolTime();

@@ -17,6 +17,7 @@
 #include "../Object/Collider/Sphere/ColliderSphere.h"
 #include "../Effect/EffectManager.h"
 #include "../Effect/LoadEffekseer/EffekseerEffect.h"
+#include "../Object/Common/AnimationController.h"
 #include "../Sound/AudioManager.h"
 #include "GameScene.h"
 #include <EffekseerForDXLib.h>
@@ -211,71 +212,57 @@ void GameScene::Update()
 	targetPos_ = enemyManager_->GetEnemyPos(targetEnemyId_);
 	SceneManager::GetInstance().GetCamera()->SetTargetPos(targetPos_);
 
-	// デバッグ用即死攻撃
-	if (ins->IsTrgDown(MOUSE_INPUT_LEFT))
-	{
-		auto enemies = enemyManager_->GetEnemies();
-		for (auto enemy : enemies)
-		{
-			if (!enemy->IsAlive()) continue;
-			VECTOR playerPos = player_->GetTransform().pos;
-			VECTOR enemyPos = enemy->GetTransform().pos;
-			float dist = VSize(VSub(playerPos, enemyPos));
-			if (dist < 300.0f)
-			{
-				enemy->Damage(99999);
-			}
-		}
-	}
+
 
 	// 攻撃コライダーの更新
-	for (int i = 0; i < attackColliders_.size(); i++)
-	{
-		auto data = attackColliders_[i];
-		if (data->collider != nullptr)
-		{
-			data->lifeTime--;
+	//for (int i = 0; i < attackColliders_.size(); i++)
+	//{
+	//	auto data = attackColliders_[i];
+	//	if (data->collider != nullptr)
+	//	{
+	//		if (data->isActive)
+	//		{
+	//			ColliderSphere* sphere = dynamic_cast<ColliderSphere*>(data->collider);
+	//			if (sphere != nullptr)
+	//			{
+	//				Transform* transform = const_cast<Transform*>(data->collider->GetFollow());
+	//				transform->pos = player_->GetTransform().pos;
 
-			ColliderSphere* sphere = dynamic_cast<ColliderSphere*>(data->collider);
-			if (sphere != nullptr)
-			{
-				Transform* transform = const_cast<Transform*>(data->collider->GetFollow());
-				transform->pos = player_->GetTransform().pos;
+	//				auto enemies = enemyManager_->GetEnemies();
+	//				for (auto enemy : enemies)
+	//				{
+	//					if (!enemy->IsAlive()) continue;
 
-				auto enemies = enemyManager_->GetEnemies();
-				for (auto enemy : enemies)
-				{
-					if (!enemy->IsAlive()) continue;
+	//					VECTOR enemyPos = enemy->GetTransform().pos;
+	//					VECTOR spherePos = sphere->GetPos();
+	//					float distance = VSize(VSub(enemyPos, spherePos));
 
-					VECTOR enemyPos = enemy->GetTransform().pos;
-					VECTOR spherePos = sphere->GetPos();
-					float distance = VSize(VSub(enemyPos, spherePos));
+	//					if (distance < sphere->GetRadius())
+	//					{
+	//						enemy->Damage(static_cast<int>(data->damage));
+	//					}
+	//				}
+	//			}
+	//		}
 
-					if (distance < sphere->GetRadius())
-					{
-						enemy->Damage(static_cast<int>(data->damage));
-					}
-				}
-			}
-
-			if (data->lifeTime <= 0)
-			{
-				delete data->collider->GetFollow();
-				delete data->collider;
-				delete data;
-				attackColliders_.erase(attackColliders_.begin() + i);
-				i--;
-			}
-			else
-			{
-				if (data->collider != nullptr)
-				{
-					Transform* transform = const_cast<Transform*>(data->collider->GetFollow());
-					transform->pos = player_->GetTransform().pos;
-				}
-			}
-		}
-	}
+	//		if (!data->isActive && player_->GetAnimationController()->IsEnd())
+	//		{
+	//			delete data->collider->GetFollow();
+	//			delete data->collider;
+	//			delete data;
+	//			attackColliders_.erase(attackColliders_.begin() + i);
+	//			i--;
+	//		}
+	//		else
+	//		{
+	//			if (data->collider != nullptr)
+	//			{
+	//				Transform* transform = const_cast<Transform*>(data->collider->GetFollow());
+	//				transform->pos = player_->GetTransform().pos;
+	//			}
+	//		}
+	//	}
+	//}
 
 	//プレイヤーダメージUI処理
 	if (damageflag_)
@@ -595,7 +582,7 @@ void GameScene::Release()
 	//}
 }
 
-void GameScene::CreateAttackCollider(ColliderBase::TAG tag, VECTOR pos, float radius, float damage, int lifeTime)
+void GameScene::CreateAttackCollider(ColliderBase::TAG tag, VECTOR pos, float radius, float damage)
 {
 	Transform* transform = new Transform();
 	transform->pos = pos;
@@ -605,9 +592,24 @@ void GameScene::CreateAttackCollider(ColliderBase::TAG tag, VECTOR pos, float ra
 	AttackColliderData* data = new AttackColliderData();
 	data->collider = collider;
 	data->damage = damage;
-	data->lifeTime = lifeTime;
+	data->isActive = false;
 
 	attackColliders_.push_back(data);
+}
+
+void GameScene::DeleteAttackCollider()
+{
+	// 本当は良くない方法
+	attackColliders_.clear();
+}
+
+void GameScene::SetActiveAttackCollider(bool isActive)
+{
+	// 面倒だから一括で有効化/無効化
+	for (auto data : attackColliders_)
+	{
+		data->isActive = isActive;
+	}
 }
 
 void GameScene::AddEnemyHitCollider(const ColliderBase* hitCollider)
@@ -636,6 +638,11 @@ void GameScene::ShakeHpUI()
 {
 	isHpUIShake_ = true;
 	shakePow_ = SHAKE_POW_MAX;
+}
+
+void GameScene::CheckHitEnemy(const VECTOR& pos, float radius, int damage)
+{
+	enemyManager_->CheckHit(pos, radius, damage);
 }
 
 void GameScene::SelectCommand(COMMAND command)

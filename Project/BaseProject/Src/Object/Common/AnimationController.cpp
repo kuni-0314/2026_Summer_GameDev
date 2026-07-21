@@ -89,7 +89,10 @@ void AnimationController::Update()
 	float deltaTime = SceneManager::GetInstance().GetDeltaTime();
 
 	// 再生
-	playAnim_.step += (deltaTime * playAnim_.speed);
+	if (!isStopped_)
+	{
+		playAnim_.step += (deltaTime * playAnim_.speed);
+	}
 
 	// アニメーションが終了したら
 	if (playAnim_.step > playAnim_.totalTime)

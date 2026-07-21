@@ -23,7 +23,8 @@ public:
 	{
 		ColliderBase* collider;
 		float damage;
-		int lifeTime;
+		//int lifeTime;
+		bool isActive = true;
 		bool isHit = false;
 	};
 
@@ -69,7 +70,9 @@ public:
 	void Release() override;
 
 	// 攻撃コライダー生成
-	void CreateAttackCollider(ColliderBase::TAG tag, VECTOR pos, float radius, float damage, int lifeTime);
+	void CreateAttackCollider(ColliderBase::TAG tag, VECTOR pos, float radius, float damage);
+	void DeleteAttackCollider();
+	void SetActiveAttackCollider(bool isActive);
 
 	void AddEnemyHitCollider(const ColliderBase* hitCollider);
 	void RemoveEnemyHitCollider(const ColliderBase* hitCollider);
@@ -92,6 +95,8 @@ public:
 	VECTOR GetTargetPos() const { return targetPos_; }
 
 	void ShakeHpUI();
+
+	void CheckHitEnemy(const VECTOR& pos, float radius, int damage);
 
 private:
 

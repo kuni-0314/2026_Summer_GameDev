@@ -39,7 +39,7 @@ bool PlayerState::CheckTransitions(Player* player)
 	{
 		player->ChangeState(Player::STATE::ATTACK);
 		//UŒ‚’†”»’è
-		player->SetAttacking(true);
+		//player->SetAttacking(true);
 		return true;
 	}
 

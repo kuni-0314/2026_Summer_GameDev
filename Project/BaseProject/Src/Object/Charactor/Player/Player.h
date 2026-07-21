@@ -191,6 +191,10 @@ public:
 	int GetFireCoolTime();
 	int GetHealCoolTime();
 
+	// 範囲攻撃
+	void ExecuteRangeAttack();
+	static constexpr float ATTACK_RANGE = 200.0f; // 範囲攻撃の半径 
+
 protected:
 
 	// リソースロード

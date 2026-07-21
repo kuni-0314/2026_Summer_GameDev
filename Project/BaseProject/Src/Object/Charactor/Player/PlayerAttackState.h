@@ -19,31 +19,52 @@ public:
 		NORMAL5,
 		HEAVY,
 		//DASH,
-		AIR1,
-		AIR2,
-		AIR3,
-		AIR4,
-		AIR5,
-		FALL,
+		//AIR1,
+		//AIR2,
+		//AIR3,
+		//AIR4,
+		//AIR5,
+		//FALL,
 		MAX
 	};
 
 	static constexpr float ATTACK_POW[static_cast<int>(ATTACK_TYPE::MAX)] =
 	{
 		0.0f,	// NONE
-		20.0f,	// NORMAL1
-		15.0f,	// NORMAL2
-		25.0f,	// NORMAL3
-		10.0f,	// NORMAL4
-		30.0f,	// NORMAL5
-		50.0f,	// HEAVY
+		1.0f,	// NORMAL1
+		1.0f,	// NORMAL2
+		2.0f,	// NORMAL3
+		1.0f,	// NORMAL4
+		3.0f,	// NORMAL5
+		5.0f,	// HEAVY
 		//25.0f,  // DASH
-		8.0f,   // AIR1
-		10.0f,  // AIR2
-		12.0f,  // AIR3
-		15.0f,  // AIR4
-		20.0f,  // AIR5
-		25.0f   // FALL
+		//8.0f,   // AIR1
+		//10.0f,  // AIR2
+		//12.0f,  // AIR3
+		//15.0f,  // AIR4
+		//20.0f,  // AIR5
+		//25.0f   // FALL
+	};
+
+#define ATK_S_ANIM_INDEX 0
+#define ATK_E_ANIM_INDEX 1
+	static constexpr int ATTACK_FRAME[static_cast<int>(ATTACK_TYPE::MAX)][2] =
+	{
+		// 攻撃判定のフレーム数（開始フレーム, 終了フレーム）
+		{ 0, 0 },	// NONE
+		{ 25, 45 },	// NORMAL1
+		{ 18, 32 },	// NORMAL2
+		{ 45, 72 },	// NORMAL3
+		{ 42, 110 },	// NORMAL4
+		{ 48, 68 },	// NORMAL5
+		{ 88, 89 },	// HEAVY
+		//{ 25, 0 },  // DASH
+		//{ 8, 0 },   // AIR1
+		//{ 10, 0 },  // AIR2
+		//{ 12, 0 },  // AIR3
+		//{ 15, 0 },  // AIR4
+		//{ 20, 0 },  // AIR5
+		//{ 25, 0 }   // FALL
 	};
 
 	// 攻撃のローカル座標オフセット（x:左右, y:高さ, z:前後）
@@ -64,4 +85,9 @@ private:
 
 	// 攻撃位置を計算（プレイヤーの向きを考慮）
 	VECTOR CalculateAttackPosition(Player* player);
+
+	// 攻撃種ごとの処理
+	void UpdateAttack(Player* player);
+
+	bool isAnimationSkipped_ = false; // アニメーションをスキップするかどうか
 };

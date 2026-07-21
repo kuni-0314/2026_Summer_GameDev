@@ -290,6 +290,25 @@ void EnemyManager::DeadEffect(const VECTOR& pos)
 	EffectManager::GetInstance().RegisterEffect(effect);
 }
 
+void EnemyManager::CheckHit(const VECTOR& pos, float radius, int damage)
+{
+	for (auto& enemy : enemies_)
+	{
+		if (!enemy->IsAlive())
+		{
+			continue;
+		}
+		VECTOR enemyPos = enemy->GetTransform().pos;
+		float dist = VSize(VSub(enemyPos, pos));
+		if (dist <= radius)
+		{
+			VECTOR dir = VSub(enemyPos, pos);
+			dir = VNorm(dir);
+			enemy->Damage(damage, dir);
+		}
+	}
+}
+
 void EnemyManager::CreateHpItem()
 {
 	for (auto& enemy : enemies_)

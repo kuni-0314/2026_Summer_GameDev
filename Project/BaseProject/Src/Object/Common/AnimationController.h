@@ -75,7 +75,12 @@ public:
 		SetRootMoveOffset(offset);
 	}
 
+	// 再生中のアニメーションのフレーム数を取得
 	int GetAnimFrameNum();
+
+	// アニメーションの停止状態を設定
+	bool IsStopped() const { return isStopped_; }
+	void SetStopped(bool isStopped) { isStopped_ = isStopped; }
 
 private:
 
@@ -109,4 +114,7 @@ private:
 
 	// 動的オフセットを有効にするかどうか
 	bool isDynamicOffset_;
+
+	// アニメーションの停止状態
+	bool isStopped_ = false;
 };

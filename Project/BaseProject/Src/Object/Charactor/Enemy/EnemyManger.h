@@ -62,6 +62,7 @@ public:
 
 	void DeadEffect(const VECTOR& pos);
 
+	void CheckHit(const VECTOR& pos, float radius, int damage);
 
 private:
 	//ƒvƒŒƒCƒ„[
