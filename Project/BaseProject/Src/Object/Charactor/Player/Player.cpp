@@ -328,7 +328,7 @@ void Player::UpdateProcess()
 	}
 
 	auto ins = InputManager::GetInstance();
-	if (ins->IsTrgDown(KEY_INPUT_R))
+	if (ins->IsTrgDown(KEY_INPUT_O))
 	{
 		transform_.pos = POS_PLAYER;
 	}
