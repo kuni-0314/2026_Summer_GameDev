@@ -490,17 +490,8 @@ void Player::Draw()
 	DrawSphere3D(lineZ, 5.0f, 16, 0x0000FF, 0x0000FF, true);
 	DrawSphere3D(rot, 5.0f, 16, 0xFFFF00, 0xFFFF00, true);
 
-	//for (int i = 0; i < THUNDER_COUNT; i++)
-	//{
-	//	if (!thunderInfos_[i].isActive) continue;
-	//	VECTOR spherePos = thunderInfos_[i].transform.pos;
-	//	DrawSphere3D(spherePos, 100.0f, 16, 0xff00ff, 0xff00ff, false);
-	//}
-	//if (isAliveFire_)
-	//{
-	//	DrawSphere3D(fireInfo_.transform.pos, FIRE_RADIUS, 16, 0xff0000, 0xff0000, false);
-	//}
-
+	//debugPos_の球体描画(大きさは落下攻撃の判定用の半径と同じ)
+	DrawSphere3D(debugPos_, ATTACK_RANGE, 16, 0x00FFFF, 0x00FFFF, false);
 
 	VECTOR test = transform_.quaRot.PosAxis(VGet(0, 0, -100));
 	//DrawFormatString(0, 500, 0xffffff, "<Player> HP : %d", hp_);
@@ -910,6 +901,7 @@ void Player::ExecuteRangeAttack()
 	// 少し前方に移動してから攻撃判定を行う
 	auto attackPos = VAdd(transform_.pos, VScale(transform_.quaRot.GetForward(), 50.0f));
 	const int DAMAGE = 3;
+	debugPos_ = attackPos;
 	gameScene_->CheckHitEnemy(attackPos, ATTACK_RANGE, DAMAGE);
 }
 
@@ -958,7 +950,6 @@ void Player::UpdateMagic()
 
 					VECTOR pos = thunderInfos_[i].transform.pos;
 
-					//雷エフェクト
 					auto effect = std::make_shared<EffekseerEffect>(
 						L"Data/Effect/Thunder/Thunder.efkefc",
 						pos
@@ -1018,5 +1009,10 @@ void Player::UpdateMagic()
 			DestroyFireCollider(fireInfo_);
 			isAliveFire_ = false;
 		}
+
+		fireInfo_.transform.Update();
 	}
+
+	if (isAliveThunder_ || isAliveFire_) isAliveMagic_ = true;
+	else isAliveMagic_ = false;
 }

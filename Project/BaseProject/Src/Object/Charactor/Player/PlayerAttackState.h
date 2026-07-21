@@ -71,7 +71,7 @@ public:
 	static constexpr VECTOR ATTACK_LOCAL_POS = { 10.0f, 100.0f, 70.0f };
 	
 	// 攻撃の
-	static constexpr float ATTACK_RADIUS = 80.0f;
+	static constexpr float ATTACK_RADIUS = 100.0f;
 
 	// アニメーション終了後のコンボ受付時間（フレーム数）
 	static constexpr int COMBO_WINDOW_FRAME = 60;
@@ -98,4 +98,5 @@ private:
 	int noMovementFrameCount_;								// 座標の変化が無かったフレーム数
 	static constexpr int NO_MOVEMENT_FRAME_THRESHOLD = 30;	// 座標の変化が無かったフレーム数の閾値
 	static constexpr float NO_MOVEMENT_THRESHOLD = 0.1f;	// 座標の変化が無かったとみなす閾値
+	bool forceResumed_ = false;  // 強制再開フラグ
 };

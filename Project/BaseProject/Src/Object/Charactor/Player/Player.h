@@ -91,8 +91,8 @@ public:
 	void SetComboTimer(const int time) { comboTimer_ = time; }
 	GameScene* GetGameScene() const { return gameScene_; }
 	void SetGameScene(GameScene* gameScene) { gameScene_ = gameScene; }
-	bool GetApplyRootMotion() const { return applyRootMotion_; }
-	void SetApplyRootMotion(const bool apply) { applyRootMotion_ = apply; }
+	//bool GetApplyRootMotion() const { return applyRootMotion_; }
+	//void SetApplyRootMotion(const bool apply) { applyRootMotion_ = apply; }
 	VECTOR GetAnimStartModelPos() const { return animStartModelPos_; }
 	void SetAnimStartModelPos(const VECTOR& pos) { animStartModelPos_ = pos; }
 	bool IsAttacking() const { return isAttacking_; }
@@ -305,9 +305,9 @@ private:
 	VECTOR animStartModelPos_;
 
 	// ルートモーションを適用するかどうか
-	bool applyRootMotion_;
-	VECTOR debugPos_;
-	VECTOR debugPosPrev_;
+	//bool applyRootMotion_;
+	////VECTOR debugPos_;
+	//VECTOR debugPosPrev_;
 
 	// 差分
 	VECTOR animDiffPos_;
@@ -368,4 +368,6 @@ private:
 
 	bool isShortCut_ = false;
 
+
+	VECTOR debugPos_;
 };

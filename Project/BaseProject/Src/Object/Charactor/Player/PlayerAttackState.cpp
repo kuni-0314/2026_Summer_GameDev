@@ -10,14 +10,17 @@
 
 void PlayerAttackState::Enter(Player* player)
 {
-	//player->SetAttacking(true);
-	// アニメーションごとにタイミングは変えます
-
 	// 攻撃タイプを決定
 	attackType_ = GetNextAttackType(player);
 
+	// スタック防止用の変数を初期化
+	stopTimer_ = 0;
+	noMovementFrameCount_ = 0;
+	isAnimationSkipped_ = false;
+	forceResumed_ = false;
+
 	// ルートモーション有効化
-	player->SetApplyRootMotion(true);
+	//player->SetApplyRootMotion(true);
 	
 	// アニメーション開始時のモデルのローカル座標を記録
 	MATRIX modelMatrix = MV1GetFrameLocalWorldMatrix(player->GetTransform().modelId, 2);
@@ -137,7 +140,7 @@ void PlayerAttackState::Update(Player* player)
 	// アニメーション終了時
 	if (player->GetAnimationController()->IsEnd() || isAnimationSkipped_)
 	{
-		// クールタイムをクリア（攻撃可能に）
+		// クoolタイムをクリア（攻撃可能に）
 		player->SetAttackCoolTime(0);
 
 		// コンボタイマーを設定
@@ -200,6 +203,7 @@ void PlayerAttackState::UpdateAttack(Player* player)
 	int currentFrame = animController->GetAnimFrameNum();
 	const int ATK_START_FRAME = ATTACK_FRAME[static_cast<int>(attackType_)][ATK_S_ANIM_INDEX];
 	const int ATK_END_FRAME = ATTACK_FRAME[static_cast<int>(attackType_)][ATK_E_ANIM_INDEX];
+	
 	if (currentFrame >= ATK_END_FRAME)
 	{
 		if (player->IsAttacking()) 
@@ -222,56 +226,76 @@ void PlayerAttackState::UpdateAttack(Player* player)
 	case PlayerAttackState::ATTACK_TYPE::NORMAL3:
 		if (currentFrame > 120)
 		{
-			isAnimationSkipped_ = true;
+		 isAnimationSkipped_ = true;
 		}
 		break;
 	case PlayerAttackState::ATTACK_TYPE::NORMAL4:
 		if (currentFrame > 140)
 		{
-			isAnimationSkipped_ = true;
+		 isAnimationSkipped_ = true;
 		}
 		break;
 	case PlayerAttackState::ATTACK_TYPE::NORMAL5:
 		break;
 	case PlayerAttackState::ATTACK_TYPE::HEAVY:
+	{
+		// 範囲攻撃の実行
 		if (currentFrame >= 88 && player->IsAttacking())
 		{
 			player->ExecuteRangeAttack();
 		}
-		if (currentFrame >= 82)
+		
+		// フレーム82以降で空中落下攻撃の制御（強制再開済みの場合はスキップ）
+		if (currentFrame >= 82 && !forceResumed_)
 		{
-			// 空中にいる場合はアニメーションを停止させる
 			if (player->IsAir())
 			{
-				stopTimer_++;
-				float dist = VSize(VSub(player->GetPos(), player->GetPrevPos()));
-				if (dist < NO_MOVEMENT_THRESHOLD)
+				// 空中にいる場合はアニメーションを停止
+				if (animController->IsStopped())
 				{
-					noMovementFrameCount_++;
+					stopTimer_++;
 				}
 				else
 				{
-					noMovementFrameCount_ = 0;
+					animController->SetStopped(true);
+					stopTimer_ = 0;
 				}
-
-				// スタック防止のため、一定時間停止している場合はアニメーションを再開する
-				if (stopTimer_ > STOP_TIMER_MAX && noMovementFrameCount_ > NO_MOVEMENT_FRAME_THRESHOLD)
+			}
+			else
+			{
+				// 着地した場合はアニメーションを再開
+				if (animController->IsStopped())
 				{
 					animController->SetStopped(false);
-				}
-				else if (!animController->IsStopped())
-				{
-					animController->SetStopped(true);
 					stopTimer_ = 0;
 					noMovementFrameCount_ = 0;
 				}
-
-			}
-			else if (animController->IsStopped())
-			{
-				animController->SetStopped(false);
 			}
 		}
+
+		// スタック防止：空中でアニメーションが停止している場合のみ判定
+		if (player->IsAir() && animController->IsStopped() && !forceResumed_)
+		{
+			float movePowMagnitude = VSize(player->GetMovePow());
+			if (movePowMagnitude < NO_MOVEMENT_THRESHOLD)
+			{
+				noMovementFrameCount_++;
+			}
+			else
+			{
+				noMovementFrameCount_ = 0;
+			}
+
+			// 一定時間停止かつ移動していない場合はアニメーションを強制再開
+			if (stopTimer_ > STOP_TIMER_MAX && noMovementFrameCount_ > NO_MOVEMENT_FRAME_THRESHOLD)
+			{
+				animController->SetStopped(false);
+				stopTimer_ = 0;
+				noMovementFrameCount_ = 0;
+				forceResumed_ = true;  // 強制再開フラグを立てる
+			}
+		}
+	}
 		break;
 	case PlayerAttackState::ATTACK_TYPE::MAX:
 		break;
@@ -299,8 +323,7 @@ PlayerAttackState::ATTACK_TYPE PlayerAttackState::GetNextAttackType(Player* play
 		isHeavyAttack = ins->GetMouseLastHoldTime(MOUSE_INPUT_LEFT) > 30;
 	}
 
-	if ((isHeavyAttack && !player->IsAir()) ||
-		player->IsAir())
+	if (isHeavyAttack || (player->IsAir() && isHeavyAttack))
 	{
 		// アニメーション再生
 		player->GetAnimationController()->SetDynamicOffset(true);

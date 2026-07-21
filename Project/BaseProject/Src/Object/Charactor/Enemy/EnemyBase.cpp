@@ -335,7 +335,7 @@ void EnemyBase::CheckPlayerMagicCollision()
 				VECTOR hitPos = VAdd(ownColCapsule->GetCenter(), magicColSphere->GetPos());
 				hitPos = VScale(hitPos, 0.5f);
 
-				HitThunderEffect(hitPos, VNorm(VSub(hitPos, transform_.pos)), 1.0f);
+				HitEffect(hitPos, VNorm(VSub(hitPos, transform_.pos)), 1.5f);
 
 				// ˆê“x‚ ‚Á‚½‚çƒtƒ‰ƒO
 				wasHitMagic_ = true;

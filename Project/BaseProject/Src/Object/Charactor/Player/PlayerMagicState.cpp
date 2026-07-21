@@ -12,7 +12,7 @@ void PlayerMagicState::Enter(Player* player)
 		static_cast<int>(Player::ANIM_TYPE::MAGIC), false, true);
 
 	// ルートモーションを有効化
-	player->SetApplyRootMotion(false);
+	//player->SetApplyRootMotion(false);
 
 	// アニメーション開始時のモデルの座標を記録
 	MATRIX modelMatrix = MV1GetFrameLocalWorldMatrix(player->GetTransform().modelId, 2);
@@ -59,5 +59,5 @@ void PlayerMagicState::Draw(Player* player)
 void PlayerMagicState::Exit(Player* player)
 {
 	// ルートモーションを無効化
-	player->SetApplyRootMotion(false);
+	//player->SetApplyRootMotion(false);
 }
