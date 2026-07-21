@@ -8,6 +8,7 @@ class PlayerState;
 class SwordBase;
 class EffekseerEffect;
 class ColliderSphere;
+class EnemyDragon;
 
 class Player : public CharactorBase
 {
@@ -50,6 +51,7 @@ public:
 		MAGIC,
 		ROLLING,
 		DAMAGE,
+		FALL_END
 	};
 
 	//コンストラクタ
@@ -104,6 +106,10 @@ public:
 	void ActivatePowerUp();
 	void PlayBlinkEffect();
 	void DeleteFireEffect();
+
+	//ダメージ判定セット
+	void SetWasHitDamage(const bool wasHit) { wasHitDamage_ = wasHit; }
+	void SetWasHitTornadoDamage(const bool wasHit) { wasHitTornadoDamage_ = wasHit; }
 
 	//スケール
 	static constexpr float SCL_PlAYER = 0.75f;
@@ -368,6 +374,18 @@ private:
 
 	bool isShortCut_ = false;
 
-
 	VECTOR debugPos_;
+
+	//ドラゴンブレス当たり判定
+	void DragonBreathCheckCollision();
+
+	void DragonTornadoCheckCollision();
+
+	//ダメージを受けたかどうか
+	bool wasHitDamage_;
+	bool wasHitTornadoDamage_ = false;
+
+	int tornadoDamageCoolTime_ = 0;
+
+
 };

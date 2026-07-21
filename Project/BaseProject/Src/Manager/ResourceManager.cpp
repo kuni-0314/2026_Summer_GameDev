@@ -134,47 +134,6 @@ void ResourceManager::Init()
 	res = new RES(RES_T::IMG, PATH_IMG + "UI/LockOn.png");
 	resourcesMap_.emplace(SRC::IMG_LOCKON_FONT_UI, res);	//mapに登録
 
-	//モデル登録 
-	//メインの惑星モデル
-	res = new RES(RES_T::MODEL, PATH_MDL +"Stage/PitfallPlanet/PitfallPlanet.mv1");
-	resourcesMap_.emplace(SRC::PIT_FALL_PLANET, res);	//mapに登録
-	//サブの惑星モデル
-	res = new RES(RES_T::MODEL, PATH_MDL + "Stage/SpherePlanet/SpherePlanet.mv1");
-	resourcesMap_.emplace(SRC::SPHERE_PLANET, res);	//mapに登録
-
-	//プレイヤーモデル
-	res = new RES(RES_T::MODEL, PATH_MDL + "Player/Idle.mv1");
-	resourcesMap_.emplace(SRC::PLAYER, res);	//mapに登録
-
-	// キーブレード１モデル
-	res = new RES(RES_T::MODEL, PATH_MDL + "Weapon/KeyBlade1.mv1");
-	resourcesMap_.emplace(SRC::KEY_BLADE_1, res);	//mapに登録
-	// キーブレード２モデル
-	res = new RES(RES_T::MODEL, PATH_MDL + "Weapon/KeyBlade2.mv1");
-	resourcesMap_.emplace(SRC::KEY_BLADE_2, res);	//mapに登録	
-	// キーブレード３モデル
-	res = new RES(RES_T::MODEL, PATH_MDL + "Weapon/KeyBlade3.mv1");
-	resourcesMap_.emplace(SRC::KEY_BLADE_3, res);	//mapに登録
-
-	//スカイドームモデル
-	res = new RES(RES_T::MODEL, PATH_MDL + "SkyDome/SkyDome.mv1");
-	resourcesMap_.emplace(SRC::SKY_DOME, res);	//mapに登録
-	//エネミーラット
-	res = new RES(RES_T::MODEL, PATH_MDL + "Enemy/Rat/Rat.mv1");
-	resourcesMap_.emplace(SRC::ENEMY_RAT, res);	//mapに登録
-
-	// プレイヤー影
-	res = new RES(RES_T::IMG, PATH_IMG + "Shadow.png");
-	resourcesMap_.emplace(SRC::PLAYER_SHADOW, res);
-
-	//エネミーラット
-	res = new RES(RES_T::MODEL, PATH_MDL + "Enemy/Rase/Rase.mv1");
-	resourcesMap_.emplace(SRC::ENEMY_RASE, res);	//mapに登録
-
-	//敵の視野
-	res = new RES(RES_T::MODEL, PATH_MDL + "Enemy/Robot/Cone.mv1");
-	resourcesMap_.emplace(SRC::VIEW_RANGE, res);	//mapに登録
-
 	// 赤色セル
 	res = new RES(RES_T::IMG, PATH_IMG + "Blocks/RedBlock.png");
 	resourcesMap_.emplace(SRC::CELL_RED, res);
@@ -223,6 +182,61 @@ void ResourceManager::Init()
 	// チェックボックスOFF
 	res = new RES(RES_T::IMG, PATH_IMG + "UI/CheckOFF.png");
 	resourcesMap_.emplace(SRC::CHECKBOX_OFF, res);	//mapに登録
+
+	//モデル登録 
+
+	//プレイヤーモデル
+	res = new RES(RES_T::MODEL, PATH_MDL + "Player/Idle.mv1");
+	resourcesMap_.emplace(SRC::PLAYER, res);	//mapに登録
+
+	// キーブレード１モデル
+	res = new RES(RES_T::MODEL, PATH_MDL + "Weapon/KeyBlade1.mv1");
+	resourcesMap_.emplace(SRC::KEY_BLADE_1, res);	//mapに登録
+	// キーブレード２モデル
+	res = new RES(RES_T::MODEL, PATH_MDL + "Weapon/KeyBlade2.mv1");
+	resourcesMap_.emplace(SRC::KEY_BLADE_2, res);	//mapに登録	
+	// キーブレード３モデル
+	res = new RES(RES_T::MODEL, PATH_MDL + "Weapon/KeyBlade3.mv1");
+	resourcesMap_.emplace(SRC::KEY_BLADE_3, res);	//mapに登録
+
+	//スカイドームモデル
+	res = new RES(RES_T::MODEL, PATH_MDL + "SkyDome/SkyDome.mv1");
+	resourcesMap_.emplace(SRC::SKY_DOME, res);	//mapに登録
+	// プレイヤー影
+	res = new RES(RES_T::IMG, PATH_IMG + "Shadow.png");
+	resourcesMap_.emplace(SRC::PLAYER_SHADOW, res);
+
+	//エネミーラット
+	res = new RES(RES_T::MODEL, PATH_MDL + "Enemy/Rat/Rat.mv1");
+	resourcesMap_.emplace(SRC::ENEMY_RAT, res);	//mapに登録
+	//エネミーレイズ
+	res = new RES(RES_T::MODEL, PATH_MDL + "Enemy/Rase/Rase.mv1");
+	resourcesMap_.emplace(SRC::ENEMY_RASE, res);	//mapに登録
+	//ラージエネミー
+	res = new RES(RES_T::MODEL, PATH_MDL + "Enemy/Large/Idle.mv1");
+	resourcesMap_.emplace(SRC::ENEMY_LARGE, res);	//mapに登録
+	//ラージ用衝撃波
+	res = new RES(RES_T::MODEL, PATH_MDL + "Enemy/Large/Ring.mv1");
+	resourcesMap_.emplace(SRC::ENEMY_LARGE_RING, res);	//mapに登録
+	//エネミードラゴン
+	res = new RES(RES_T::MODEL, PATH_MDL + "Enemy/Dragon/Idle_1.mv1");
+	resourcesMap_.emplace(SRC::ENEMY_DRAGON, res);	//mapに登録
+	
+
+	//ゲームステージ
+	res = new RES(RES_T::MODEL, PATH_MDL + "Stage/MainStage/GameStage/GameStage.mv1");
+	resourcesMap_.emplace(SRC::BATTLE_STAGE, res);	//mapに登録
+	//アイテムHP
+	res = new RES(RES_T::MODEL, PATH_MDL + "Item/HpItem.mv1");
+	resourcesMap_.emplace(SRC::ITEM_HP, res);	//mapに登録
+	//アイテムスキル
+	res = new RES(RES_T::MODEL, PATH_MDL + "Enemy/Rase/Fireball.mv1");
+	resourcesMap_.emplace(SRC::ENEMY_RASE_BALL, res);	//mapに登録
+	//プレイヤーゲームオーバー用
+	res = new RES(RES_T::MODEL, PATH_MDL + "Player/Player_GameOver.mv1");
+	resourcesMap_.emplace(SRC::PLAYER_GAMEOVER, res);	//mapに登録
+
+	
 
 	//いったんエフェクトを置いときますわ
 	//パワーアップエフェクト

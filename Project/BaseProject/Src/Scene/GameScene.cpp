@@ -343,6 +343,15 @@ void GameScene::Update()
 
 	//#endif
 
+	if (player_->IsShortCut())
+	{
+		selectCommand_ = static_cast<int>(COMMAND::ALL);
+	}
+	else if (selectCommand_ == static_cast<int>(COMMAND::ALL))
+	{
+		selectCommand_ = static_cast<int>(useCommand_);
+	}
+
 }
 
 void GameScene::Draw()
@@ -571,6 +580,21 @@ void GameScene::RemoveEnemyHitCollider(const ColliderBase* hitCollider)
 
 }
 
+void GameScene::AddPlayerHitCollider(const ColliderBase* hitCollider)
+{
+	player_->AddHitCollider(hitCollider);
+}
+
+void GameScene::RemovePlayerHitCollider(const ColliderBase* hitCollider)
+{
+	player_->RemoveHitCollider(hitCollider);
+}
+
+//void GameScene::SetDamageFlag(bool flag)
+//{
+//	isDamageFlag_ = flag;
+//}
+
 void GameScene::ShakeHpUI()
 {
 	isHpUIShake_ = true;
@@ -699,7 +723,10 @@ void GameScene::CommandUpdate()
 	//サンダー
 	if (player_->GetThunderCoolTime() > 0)
 	{
+		//クールタイムフォント切り替え
 		thunderState_ = COMMAND_STATE::USE;
+		//使用魔法保存
+		useCommand_ = COMMAND::THUNDER;
 	}
 	else
 	{
@@ -710,7 +737,10 @@ void GameScene::CommandUpdate()
 	// ファイア
 	if (player_->GetFireCoolTime() > 0)
 	{
+		//クールタイムフォント切り替え
 		fireState_ = COMMAND_STATE::USE;
+		//使用魔法保存
+		useCommand_ = COMMAND::FIRE;
 	}
 	else
 	{
@@ -720,7 +750,10 @@ void GameScene::CommandUpdate()
 	// 回復
 	if (player_->GetHealCoolTime() > 0)
 	{
+		//クールタイムフォント切り替え
 		healState_ = COMMAND_STATE::USE;
+		//使用魔法保存
+		useCommand_ = COMMAND::HEAL;
 	}
 	else
 	{
@@ -731,14 +764,18 @@ void GameScene::CommandUpdate()
 void GameScene::CommandDraw()
 {
 
-	DrawGraph(0, 735, commandHandles_[selectCommand_], true);
+	//選択してるコマンド描画
+		DrawGraph(0, 735, commandHandles_[selectCommand_], true);
 
 	const int baseX = 45;
 	const int selectOffset = 90;
 
+	//
 	for (int i = 0; i < static_cast<int>(COMMAND::MAX); i++)
 	{
-		bool isSelect = (i == selectCommand_);
+		bool isSelect =
+			(selectCommand_ == static_cast<int>(COMMAND::ALL)) ||
+			(i == selectCommand_);
 
 		COMMAND_STATE state = COMMAND_STATE::NOT_USE;
 
@@ -754,9 +791,6 @@ void GameScene::CommandDraw()
 
 		case COMMAND::HEAL:
 			state = healState_;
-			break;
-
-		default:
 			break;
 		}
 

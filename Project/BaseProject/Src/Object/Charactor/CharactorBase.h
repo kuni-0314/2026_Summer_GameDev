@@ -98,6 +98,9 @@ protected:
 	//体力
 	int hp_;
 
+	//空中に浮く用
+	bool useGrabity_ = true;
+
 	// リソースロード
 	virtual void InitLoad() override;
 

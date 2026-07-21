@@ -28,6 +28,7 @@
 #include "PlayerFallState.h"
 #include "PlayerAttackState.h"
 #include "PlayerMagicState.h"
+#include "../../Charactor/Enemy/Dragon/EnemyDragon.h"
 
 
 Player::Player(int padNum)
@@ -63,11 +64,16 @@ void Player::Update()
 	{
 		comboTimer_--;
 	}
-
+	
 	// ヒールの時間を減算
 	if (recoveryEffect_)
 	{
 		recoveryEffect_->SetPosition(transform_.pos);
+	}
+
+	if (tornadoDamageCoolTime_ > 0)
+	{
+		tornadoDamageCoolTime_--;
 	}
 
 	// 各キャラクターごとの更新処理
@@ -270,6 +276,8 @@ void Player::InitAnimation()
 		, 65.0f, Application::PATH_MODEL + "Player/Rolling.mv1");
 	anim->Add(static_cast<int>(ANIM_TYPE::DAMAGE)
 		, 100.0f, Application::PATH_MODEL + "Player/Damage.mv1");
+	animationController_->Add(static_cast<int>(ANIM_TYPE::FALL_END)
+		, 85.0f, Application::PATH_MODEL + "Player/FallingLanding.mv1");
 
 	//初期アニメーション再生
 	anim->Play(static_cast<int>(ANIM_TYPE::IDLE), true);
@@ -296,7 +304,6 @@ void Player::InitPost()
 	// 武器初期化
 	sword_ = new KeyBlade3(KEY_BLADE_3_LOCAL_POS_START, KEY_BLADE_3_LOCAL_POS_END, KEY_BLADE_3_RADIUS, transform_);
 	sword_->Init();
-
 
 }
 
@@ -420,6 +427,10 @@ void Player::UpdateProcess()
 	UpdateMagic();
 
 	CheckPlayerRingCollision();
+	//ドラゴンブレス当たり判定
+	DragonBreathCheckCollision();
+	//ドラゴントルネード当たり判定
+	DragonTornadoCheckCollision();
 
 }
 void Player::UpdateProcessPost()
@@ -783,6 +794,7 @@ void Player::CreateFireMagic()
 {
 	if (!isAliveFire_)
 	{
+		// 初期状態にリセット
 		fireInfo_ = FireInfo();
 		fireInfo_.timer = 0;
 		fireInfo_.transform.pos = transform_.pos;
@@ -986,9 +998,11 @@ void Player::UpdateMagic()
 
 	if (isAliveFire_)
 	{
+		//カメラモードを取得
 		GameScene::CAM_MODE mode = gameScene_->GetCamMode();
 		if (fireInfo_.timer < FIRE_LIFETIME)
 		{
+			//ロックオンがONだった場合
 			if (mode == GameScene::CAM_MODE::TARGETING)
 			{
 				VECTOR targetPos = gameScene_->GetTargetPos();
@@ -999,6 +1013,7 @@ void Player::UpdateMagic()
 			}
 			else
 			{
+				//ロックオンがOFFの場合
 				VECTOR move = VScale(fireInfo_.dir, FIRE_SPEED);
 				fireInfo_.transform.pos = VAdd(fireInfo_.transform.pos, move);
 			}
@@ -1015,4 +1030,127 @@ void Player::UpdateMagic()
 
 	if (isAliveThunder_ || isAliveFire_) isAliveMagic_ = true;
 	else isAliveMagic_ = false;
+}
+
+void Player::DragonBreathCheckCollision()
+{
+	// 死亡状態なら処理しない
+	if (!isAlive_) return;
+	//すでにダメージを受けていたら処理しない
+	if (wasHitDamage_) return;
+
+	// 自身のカプセルコライダを取得
+	ColliderCapsule* ownColCapsule = nullptr;
+	for (const auto& ownCol : ownColliders_)
+	{
+		if (ownCol.second->GetTag() == ColliderBase::TAG::PLAYER)
+		{
+			ownColCapsule =
+				dynamic_cast<ColliderCapsule*>(ownCol.second);
+			//if (ownColCapsule == nullptr) return;
+		}
+	}
+
+	// プレイヤーの剣コライダはhitColliders_に登録されているはずなので、全てチェック
+	for (const auto& hitCol : hitColliders_)
+	{
+		if (hitCol->GetTag() == ColliderBase::TAG::ENEMY_DRAGON_BREATH)
+		{
+			// ブレスはカプセルコライダ
+			// 敵もカプセルコライダ
+			// カプセルコライダ同士で衝突判定
+			const ColliderCapsule* breathColCapsule =
+				dynamic_cast<const ColliderCapsule*>(hitCol);
+
+			if (breathColCapsule == nullptr) return;
+
+			// 衝突判定
+			if (ownColCapsule->IsHit(breathColCapsule))
+			{
+				// ダメージ処理
+				Damage(3, transform_.GetForward());
+
+				//ダメージサウンド
+				AudioManager::GetInstance()->PlaySE(SoundID::SE_ENEMY_HIT);
+
+				// エフェクト再生
+				/*VECTOR hitPos = VAdd(
+					ownColCapsule->GetCenter(),
+					swordColCapsule->GetCenter());
+				hitPos = VScale(hitPos, 0.5f);*/
+				//HitEffect(hitPos, VNorm(VSub(hitPos, transform_.pos)), 1.0f);
+
+				// 一度あったらフラグ
+				wasHitDamage_ = true;
+
+				InputManager::GetInstance()->VibrateGamepad(1, 500, 100);
+			}
+		}
+	}
+
+}
+
+void Player::DragonTornadoCheckCollision()
+{
+	// 死亡状態なら処理しない
+	if (!isAlive_) return;
+	//すでにダメージを受けていたら処理しない
+	if (tornadoDamageCoolTime_ > 0) return;
+
+	// 自身のカプセルコライダを取得
+	ColliderCapsule* ownColCapsule = nullptr;
+	for (const auto& ownCol : ownColliders_)
+	{
+		if (ownCol.second->GetTag() == ColliderBase::TAG::PLAYER)
+		{
+			ownColCapsule =
+				dynamic_cast<ColliderCapsule*>(ownCol.second);
+			//if (ownColCapsule == nullptr) return;
+		}
+	}
+
+	// プレイヤーの剣コライダはhitColliders_に登録されているはずなので、全てチェック
+	for (const auto& hitCol : hitColliders_)
+	{
+		if (hitCol->GetTag() == ColliderBase::TAG::ENEMY_DRAGON_TORNADO)
+		{
+			// ブレスはカプセルコライダ
+			// 敵もカプセルコライダ
+			// カプセルコライダ同士で衝突判定
+			const ColliderCapsule* tornadoColCapsule =
+				dynamic_cast<const ColliderCapsule*>(hitCol);
+
+			if (tornadoColCapsule == nullptr)
+			{
+				continue;
+			}
+
+			if (tornadoDamageCoolTime_ > 0)
+			{
+				return;
+			}
+
+			if (ownColCapsule->IsHit(tornadoColCapsule))
+			{
+				// ダメージ処理
+				Damage(2, transform_.GetForward());
+
+				// 0.3秒間ダメージ無効
+				tornadoDamageCoolTime_ = 30;
+
+				//ダメージサウンド
+				AudioManager::GetInstance()->PlaySE(SoundID::SE_ENEMY_HIT);
+
+				// エフェクト再生
+				/*VECTOR hitPos = VAdd(
+					ownColCapsule->GetCenter(),
+					swordColCapsule->GetCenter());
+				hitPos = VScale(hitPos, 0.5f);*/
+				//HitEffect(hitPos, VNorm(VSub(hitPos, transform_.pos)), 1.0f);
+
+
+				InputManager::GetInstance()->VibrateGamepad(1, 500, 100);
+			}
+		}
+	}
 }

@@ -17,7 +17,8 @@ public:
 	{
 		RAT,
 		RASE,
-		LARGE
+		LARGE,
+		DRAGON
 	};
 	// エネミーデータ
 	struct EnemyData
@@ -44,8 +45,6 @@ public:
 	void CheckPlayerSwordCollision();
 
 	void CheckPlayerMagicCollision();
-
-	void CheckEnemy();
 
 	void Release(void) override;
 
@@ -126,8 +125,6 @@ protected:
 
 	//視線ベクトル
 	void LookPlayer();
-
-
 
 };
 

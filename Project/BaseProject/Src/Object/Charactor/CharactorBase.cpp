@@ -184,6 +184,12 @@ void CharactorBase::DelayRotate()
 
 void CharactorBase::CalcGravityPow()
 {
+	if (!useGrabity_)
+	{
+		jumpPow_ = AsoUtility::VECTOR_ZERO;
+		return;
+	}
+
 	// 重力方向
 	VECTOR dirGravity = AsoUtility::DIR_D;
 	// 重力の強さ
@@ -206,10 +212,13 @@ void CharactorBase::Collision()
 	// 衝突(カプセル)
 	CollisionCapsule();
 	
-	// ジャンプ量を加算
-	transform_.pos = VAdd(transform_.pos, jumpPow_);
-	// 衝突(重力)
-	CollisionGravity();
+	if (useGrabity_)
+	{
+		// ジャンプ量を加算
+		transform_.pos = VAdd(transform_.pos, jumpPow_);
+		// 衝突(重力)
+		CollisionGravity();
+	}
 }
 
 void CharactorBase::CollisionGravity()

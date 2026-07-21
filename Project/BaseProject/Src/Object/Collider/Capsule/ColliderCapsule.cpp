@@ -62,60 +62,73 @@ VECTOR ColliderCapsule::GetCenter() const
 
 
 
+void ColliderCapsule::SetWasHit(bool washit)
+{
+	wasHit_ = washit;
+}
+
+
+bool ColliderCapsule::GetwasHit() const
+{
+	return wasHit_;
+}
+
 void ColliderCapsule::DrawDebug(int color)
 {
 #ifdef _DEBUG
 
 
 	//// ”ñí‚ÉˆÓ–¡‚ª–³‚¢
-	//auto a = follow_->pos;
-	//auto b = follow_->quaRot;
+	auto a = follow_->pos;
+	auto b = follow_->quaRot;
 
-	//// ã‚Ì‹…‘Ì
-	//VECTOR pos1 = GetPosTop();
-	//DrawSphere3D(pos1, radius_, 5, color, color, false);
-	//DrawSphere3D(pos1, radius_ * 0.125f, 5, color, color, true);
-	//// ‰º‚Ì‹…‘Ì
-	//VECTOR pos2 = GetPosDown();
-	//DrawSphere3D(pos2, radius_, 5, color, color, false);
-	//DrawSphere3D(pos2, radius_ * 0.125f, 5, color, color, true);
-	//VECTOR dir;
-	//VECTOR s;
-	//VECTOR e;
-	//// ‹…‘Ì‚ðŒq‚®ü(X+)
-	//dir = follow_->GetRight();
-	//s = VAdd(pos1, VScale(dir, radius_));
-	//e = VAdd(pos2, VScale(dir, radius_));
-	//DrawLine3D(s, e, color);
-	//// ‹…‘Ì‚ðŒq‚®ü(X-)
-	//dir = follow_->GetLeft();
-	//s = VAdd(pos1, VScale(dir, radius_));
-	//e = VAdd(pos2, VScale(dir, radius_));
-	//DrawLine3D(s, e, color);
-	//// ‹…‘Ì‚ðŒq‚®ü(Z+)
-	//dir = follow_->GetForward();
-	//s = VAdd(pos1, VScale(dir, radius_));
-	//e = VAdd(pos2, VScale(dir, radius_));
-	//DrawLine3D(s, e, color);
-	//// ‹…‘Ì‚ðŒq‚®ü(Z-)
-	//dir = follow_->GetBack();
-	//s = VAdd(pos1, VScale(dir, radius_));
-	//e = VAdd(pos2, VScale(dir, radius_));
-	//DrawLine3D(s, e, color);
+	// ã‚Ì‹…‘Ì
+	VECTOR pos1 = GetPosTop();
+	DrawSphere3D(pos1, radius_, 5, color, color, false);
+	DrawSphere3D(pos1, radius_ * 0.125f, 5, color, color, true);
+	// ‰º‚Ì‹…‘Ì
+	VECTOR pos2 = GetPosDown();
+	DrawSphere3D(pos2, radius_, 5, color, color, false);
+	DrawSphere3D(pos2, radius_ * 0.125f, 5, color, color, true);
+	VECTOR dir;
+	VECTOR s;
+	VECTOR e;
+	// ‹…‘Ì‚ðŒq‚®ü(X+)
+	dir = follow_->GetRight();
+	s = VAdd(pos1, VScale(dir, radius_));
+	e = VAdd(pos2, VScale(dir, radius_));
+	DrawLine3D(s, e, color);
+	// ‹…‘Ì‚ðŒq‚®ü(X-)
+	dir = follow_->GetLeft();
+	s = VAdd(pos1, VScale(dir, radius_));
+	e = VAdd(pos2, VScale(dir, radius_));
+	DrawLine3D(s, e, color);
+	// ‹…‘Ì‚ðŒq‚®ü(Z+)
+	dir = follow_->GetForward();
+	s = VAdd(pos1, VScale(dir, radius_));
+	e = VAdd(pos2, VScale(dir, radius_));
+	DrawLine3D(s, e, color);
+	// ‹…‘Ì‚ðŒq‚®ü(Z-)
+	dir = follow_->GetBack();
+	s = VAdd(pos1, VScale(dir, radius_));
+	e = VAdd(pos2, VScale(dir, radius_));
+	DrawLine3D(s, e, color);
 	// ƒJƒvƒZƒ‹‚Ì’†S
-	//DrawSphere3D(GetCenter(), 5.0f, 10, color, color, true);
+	DrawSphere3D(GetCenter(), 5.0f, 10, color, color, true);
 
 	// À•W‚ð•\Ž¦i‚P—v‘f‚¸‚Â‰üsj
-	//if (!isDebugDraw_)
-	//{
-	//	return;
-	//}
-	//DrawFormatString(0, 200, color, "Capsule Pos Top X : %.2f", pos1.x);
-	//DrawFormatString(0, 220, color, "Capsule Pos Top Y : %.2f", pos1.y);
-	//DrawFormatString(0, 240, color, "Capsule Pos Top Z : %.2f", pos1.z);
-	//DrawFormatString(0, 260, color, "Capsule Pos Down X : %.2f", pos2.x);
-	//DrawFormatString(0, 280, color, "Capsule Pos Down Y : %.2f", pos2.y);
-	//DrawFormatString(0, 300, color, "Capsule Pos Down Z : %.2f", pos2.z);
+	if (!isDebugDraw_)
+	{
+		return;
+	}
+	DrawFormatString(0, 200, color, "Capsule Pos Top X : %.2f", pos1.x);
+	DrawFormatString(0, 220, color, "Capsule Pos Top Y : %.2f", pos1.y);
+	DrawFormatString(0, 240, color, "Capsule Pos Top Z : %.2f", pos1.z);
+	DrawFormatString(0, 260, color, "Capsule Pos Down X : %.2f", pos2.x);
+	DrawFormatString(0, 280, color, "Capsule Pos Down Y : %.2f", pos2.y);
+	DrawFormatString(0, 300, color, "Capsule Pos Down Z : %.2f", pos2.z);
+
+
 #endif // DEBUG
 }
 
@@ -227,4 +240,9 @@ bool ColliderCapsule::IsHit(const ColliderSphere* colliderSphere, bool isExclude
 	return HitCheck_Sphere_Capsule(
 		colliderSphere->GetPos(), colliderSphere->GetRadius(),
 		GetPosTop(), GetPosDown(), GetRadius());
+}
+
+void ColliderCapsule::SetDebugDraw(bool isDebugDraw)
+{
+	isDebugDraw_ = isDebugDraw; 
 }
