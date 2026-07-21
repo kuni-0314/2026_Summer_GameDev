@@ -795,7 +795,6 @@ void Player::DestroyFireCollider(const FireInfo& fireInfo)
 
 void Player::CreateFireMagic()
 {
-<<<<<<< HEAD
 	if (!isAliveFire_)
 	{
 		fireInfo_ = FireInfo();
@@ -805,37 +804,18 @@ void Player::CreateFireMagic()
 		CreateFireCollider(fireInfo_);
 		isAliveFire_ = true;
 		fireCoolTime_ = FIRE_COOL_TIME;
+		// ƒtƒ@ƒCƒAƒGƒtƒFƒNƒg
+		auto effect = std::make_shared<EffekseerEffect>(
+			L"Data/Effect/Fire/Fire.efkefc",
+			fireInfo_.transform.pos
+		);
+		EffectManager::GetInstance().RegisterEffect(effect);
+		//Ä¶
+		effect->Play(
+			fireInfo_.transform.pos,
+			fireInfo_.transform.quaRot
+		);
 	}
-=======
-
-	AudioManager::GetInstance()->PlaySE(SoundID::SE_NOT_MAGIC);
-	// ƒTƒ“ƒ_[‚Æˆá‚Á‚ÄAƒRƒ‰ƒCƒ_‚Í‚·‚®‚Éì¬‚·‚é
-	fireInfo_ = FireInfo();
-
-	fireInfo_.transform.pos = transform_.pos;
-	fireInfo_.transform.quaRot = transform_.quaRot;
-
-	// ƒtƒ@ƒCƒAƒGƒtƒFƒNƒg
-	auto effect = std::make_shared<EffekseerEffect>(
-		L"Data/Effect/Fire/Fire.efkefc",
-		fireInfo_.transform.pos
-	);
-
-	//Ä¶
-	effect->Play(
-		fireInfo_.transform.pos,
-		fireInfo_.transform.quaRot
-	);
-
-	EffectManager::GetInstance().RegisterEffect(effect);
-
-	fireInfo_.effect = effect;
-
-	isAliveFire_ = true;
-
-	CreateFireCollider(fireInfo_);
-
->>>>>>> origin/ã«ã‚“
 }
 
 void Player::CreateThunderMagic()
@@ -877,37 +857,24 @@ void Player::CreateThunderMagic()
 
 void Player::CreateHealMagic()
 {
-<<<<<<< HEAD
 	AudioManager::GetInstance()->PlaySE(SoundID::SE_MAGIC_HEAL);
 	HealHp(HEAL_AMOUNT);
 	healCoolTime_ = HEAL_COOL_TIME;
-=======
-	if (!useRecovery_)
-	{
-		AudioManager::GetInstance()->PlaySE(SoundID::SE_MAGIC_HEAL);
-		HealHp(5);
-		useRecovery_ = true;
 
-		//ƒq[ƒ‹ƒGƒtƒFƒNƒg
-		auto effect = std::make_shared<EffekseerEffect>(
-			L"Data/Effect/Heal/Heal.efkefc",
-			transform_.pos
-		);
+	//ƒq[ƒ‹ƒGƒtƒFƒNƒg
+	auto effect = std::make_shared<EffekseerEffect>(
+		L"Data/Effect/Heal/Heal.efkefc",
+		transform_.pos
+	);
 
-		effect->SetLifeTime(60);
+	effect->SetLifeTime(60);
 
-		effect->Play(
-			transform_.pos,
-			transform_.quaRot
-		);
+	effect->Play(
+		transform_.pos,
+		transform_.quaRot
+	);
 
-		EffectManager::GetInstance().RegisterEffect(effect);
-	}
-	else
-	{
-		AudioManager::GetInstance()->PlaySE(SoundID::SE_NOT_MAGIC);
-	}
->>>>>>> origin/ã«ã‚“
+	EffectManager::GetInstance().RegisterEffect(effect);
 }
 
 void Player::MagicCoolTime()
@@ -1033,7 +1000,6 @@ void Player::UpdateMagic()
 
 	if (isAliveFire_)
 	{
-<<<<<<< HEAD
 		GameScene::CAM_MODE mode = gameScene_->GetCamMode();
 		if (fireInfo_.timer < FIRE_LIFETIME)
 		{
@@ -1057,52 +1023,5 @@ void Player::UpdateMagic()
 			DestroyFireCollider(fireInfo_);
 			isAliveFire_ = false;
 		}
-=======
-		// “G‚ÉŒü‚©‚Á‚ÄˆÚ“®‚·‚éˆ—
-		// ƒpƒ‰ƒ[ƒ^‚Í”CˆÓ
-		//----------
-		const float SPEED = 100.0f;// ƒwƒbƒ_[‚ÉˆÚ“®
-
-		// ƒqƒ“ƒg
-		// ƒ^[ƒQƒeƒBƒ“ƒO’†‚È‚ç‚»‚Ì“G‚ÌÀ•W‚ğæ“¾‚·‚é
-		// ƒ^[ƒQƒeƒBƒ“ƒO’†‚Ì“G‚ª‚¢‚È‚¢ê‡‚ÍAƒvƒŒƒCƒ„[‚Ì‘O•û‚É
-		// ƒQ[ƒ€ƒV[ƒ“‚Ìæ“¾•û–@
-		// GameScene* gameScene = dynamic_cast<GameScene*>(scnMng_.GetScene());
-
-		//----------
->>>>>>> origin/ã«ã‚“
-
-		 // ‘O‚ÖˆÚ“®
-		if (isAliveFire_)
-		{
-			fireInfo_.transform.pos =
-				VAdd(
-					fireInfo_.transform.pos,
-					VScale(fireInfo_.moveDir, SPEED)
-				);
-
-			fireInfo_.transform.Update();
-
-			if (fireInfo_.effect)
-			{
-				fireInfo_.effect->SetPosition(fireInfo_.transform.pos);
-			}
-		}
-
-		// ¶‘¶ŠÔ
-		fireInfo_.timer++;
-
-		if (fireInfo_.timer >= 120)
-		{
-			if (fireInfo_.effect != nullptr)
-			{
-				fireInfo_.effect->Stop();
-			}
-
-			isAliveFire_ = false;
-		}
 	}
-
-	if (isAliveThunder_ || isAliveFire_) isAliveMagic_ = true;
-	else isAliveMagic_ = false;
 }

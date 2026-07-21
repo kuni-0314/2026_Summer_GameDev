@@ -87,8 +87,8 @@ public:
 
 	COMMAND GetSelectedCommand() const { return static_cast<COMMAND>(selectCommand_); }
 
-	void  SetDamageFlag(bool flag);
-	bool  GetFlag();
+	/*void  SetDamageFlag(bool flag);
+	bool  GetFlag();*/
 
 	CAM_MODE GetCamMode() const { return camMode_; }
 

@@ -17,11 +17,7 @@
 #include "../Object/Collider/Sphere/ColliderSphere.h"
 #include "../Effect/EffectManager.h"
 #include "../Effect/LoadEffekseer/EffekseerEffect.h"
-<<<<<<< HEAD
 #include "../Object/Common/AnimationController.h"
-#include "../Sound/AudioManager.h"
-=======
->>>>>>> origin/„Å´„Çì
 #include "GameScene.h"
 #include <EffekseerForDXLib.h>
 
@@ -215,86 +211,6 @@ void GameScene::Update()
 
 	targetPos_ = enemyManager_->GetEnemyPos(targetEnemyId_);
 	SceneManager::GetInstance().GetCamera()->SetTargetPos(targetPos_);
-
-
-
-	// çUåÇÉRÉâÉCÉ_Å[ÇÃçXêV
-	//for (int i = 0; i < attackColliders_.size(); i++)
-	//{
-	//	auto data = attackColliders_[i];
-	//	if (data->collider != nullptr)
-	//	{
-	//		if (data->isActive)
-	//		{
-	//			ColliderSphere* sphere = dynamic_cast<ColliderSphere*>(data->collider);
-	//			if (sphere != nullptr)
-	//			{
-	//				Transform* transform = const_cast<Transform*>(data->collider->GetFollow());
-	//				transform->pos = player_->GetTransform().pos;
-
-	//				auto enemies = enemyManager_->GetEnemies();
-	//				for (auto enemy : enemies)
-	//				{
-	//					if (!enemy->IsAlive()) continue;
-
-	//					VECTOR enemyPos = enemy->GetTransform().pos;
-	//					VECTOR spherePos = sphere->GetPos();
-	//					float distance = VSize(VSub(enemyPos, spherePos));
-
-	//					if (distance < sphere->GetRadius())
-	//					{
-	//						enemy->Damage(static_cast<int>(data->damage));
-	//					}
-	//				}
-	//			}
-	//		}
-
-<<<<<<< HEAD
-	//		if (!data->isActive && player_->GetAnimationController()->IsEnd())
-	//		{
-	//			delete data->collider->GetFollow();
-	//			delete data->collider;
-	//			delete data;
-	//			attackColliders_.erase(attackColliders_.begin() + i);
-	//			i--;
-	//		}
-	//		else
-	//		{
-	//			if (data->collider != nullptr)
-	//			{
-	//				Transform* transform = const_cast<Transform*>(data->collider->GetFollow());
-	//				transform->pos = player_->GetTransform().pos;
-	//			}
-	//		}
-	//	}
-	//}
-=======
-					if (distance < sphere->GetRadius())
-					{
-						enemy->Damege(static_cast<int>(data->damege));
-					}
-				}
-			}
-
-			if (data->lifeTime <= 0)
-			{
-				delete data->collider->GetFollow();
-				delete data->collider;
-				delete data;
-				attackColliders_.erase(attackColliders_.begin() + i);
-				i--;
-			}
-			else
-			{
-				if (data->collider != nullptr) 
-				{
-					Transform* transform = const_cast<Transform*>(data->collider->GetFollow());
-					transform->pos = player_->GetTransform().pos;
-				}
-			}
-		}
-	}
->>>>>>> origin/„Å´„Çì
 
 	//ÉvÉåÉCÉÑÅ[É_ÉÅÅ[ÉWUIèàóù
 	if (damageflag_)
@@ -623,13 +539,8 @@ void GameScene::CreateAttackCollider(ColliderBase::TAG tag, VECTOR pos, float ra
 
 	AttackColliderData* data = new AttackColliderData();
 	data->collider = collider;
-<<<<<<< HEAD
 	data->damage = damage;
 	data->isActive = false;
-=======
-	data->damege = damage;
-	data->lifeTime = lifeTime;
->>>>>>> origin/„Å´„Çì
 
 	attackColliders_.push_back(data);
 }
@@ -657,17 +568,6 @@ void GameScene::AddEnemyHitCollider(const ColliderBase* hitCollider)
 void GameScene::RemoveEnemyHitCollider(const ColliderBase* hitCollider)
 {
 	enemyManager_->RemoveHitCollider(hitCollider);
-
-}
-
-void GameScene::SetDamegeFlag(bool flag)
-{
-	damageflag_ = flag;
-}
-
-bool GameScene::GetFlag()
-{
-	return damageflag_;
 
 }
 

@@ -90,4 +90,12 @@ private:
 	void UpdateAttack(Player* player);
 
 	bool isAnimationSkipped_ = false; // アニメーションをスキップするかどうか
+	
+	// スタック防止用
+	// 座標の変化が無い場合アニメーションを再開するためのタイマー
+	int stopTimer_;											// 攻撃停止タイマー
+	static constexpr int STOP_TIMER_MAX = 60;				// 停止タイマーの最大値
+	int noMovementFrameCount_;								// 座標の変化が無かったフレーム数
+	static constexpr int NO_MOVEMENT_FRAME_THRESHOLD = 30;	// 座標の変化が無かったフレーム数の閾値
+	static constexpr float NO_MOVEMENT_THRESHOLD = 0.1f;	// 座標の変化が無かったとみなす閾値
 };

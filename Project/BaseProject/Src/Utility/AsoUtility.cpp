@@ -584,6 +584,15 @@ std::vector<std::string> AsoUtility::Split(std::string& line, char delimiter)
     return result;
 }
 
+float AsoUtility::CalcErrorVECTOR(const VECTOR& v1, const VECTOR& v2)
+{
+    float error = 0.0f;
+    error += fabsf(v1.x - v2.x);
+    error += fabsf(v1.y - v2.y);
+    error += fabsf(v1.z - v2.z);
+	return error;
+}
+
 
 
 

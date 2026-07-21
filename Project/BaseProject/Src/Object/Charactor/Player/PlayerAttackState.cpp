@@ -162,6 +162,9 @@ void PlayerAttackState::Update(Player* player)
 		player->SetAttacking(false);
 		return;
 	}
+
+	// 
+	int a = 0;
 }
 
 void PlayerAttackState::Draw(Player* player)
@@ -240,10 +243,29 @@ void PlayerAttackState::UpdateAttack(Player* player)
 			// 空中にいる場合はアニメーションを停止させる
 			if (player->IsAir())
 			{
-				if (!animController->IsStopped())
+				stopTimer_++;
+				float dist = VSize(VSub(player->GetPos(), player->GetPrevPos()));
+				if (dist < NO_MOVEMENT_THRESHOLD)
+				{
+					noMovementFrameCount_++;
+				}
+				else
+				{
+					noMovementFrameCount_ = 0;
+				}
+
+				// スタック防止のため、一定時間停止している場合はアニメーションを再開する
+				if (stopTimer_ > STOP_TIMER_MAX && noMovementFrameCount_ > NO_MOVEMENT_FRAME_THRESHOLD)
+				{
+					animController->SetStopped(false);
+				}
+				else if (!animController->IsStopped())
 				{
 					animController->SetStopped(true);
+					stopTimer_ = 0;
+					noMovementFrameCount_ = 0;
 				}
+
 			}
 			else if (animController->IsStopped())
 			{
@@ -255,20 +277,6 @@ void PlayerAttackState::UpdateAttack(Player* player)
 		break;
 	default:
 		break;
-	}
-
-
-
-
-
-
-
-	// 特定のアニメーションは長くテンポが悪いので省略
-
-
-	// HEAVY攻撃
-	if (attackType_ == ATTACK_TYPE::HEAVY)
-	{
 	}
 }
 

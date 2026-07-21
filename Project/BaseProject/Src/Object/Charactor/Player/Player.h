@@ -99,6 +99,7 @@ public:
 	void SetAttacking(const bool attacking) { isAttacking_ = attacking; }
 	bool IsAliveMagic() const { return isAliveMagic_; }
 	void SetAliveMagic(const bool alive) { isAliveMagic_ = alive; }
+	VECTOR GetPrevPos() const { return prevPos_; }
 
 	void ActivatePowerUp();
 	void PlayBlinkEffect();
@@ -245,17 +246,10 @@ private:
 	{
 		Transform transform = {};
 		ColliderSphere* collider = nullptr;
-<<<<<<< HEAD
 		int timer = 0;
 		VECTOR dir = {};
-=======
-
-		VECTOR moveDir;
-
-		int timer = 0;
 
 		std::shared_ptr<EffekseerEffect> effect;
->>>>>>> origin/にん
 	};
 	void CreateFireCollider(FireInfo& fireInfo);
 
