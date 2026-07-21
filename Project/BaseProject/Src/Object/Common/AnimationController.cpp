@@ -127,8 +127,18 @@ void AnimationController::UpdateBeforeAnimation()
 		mix = MMult(mix, MGetScale(scl)); // 大きさ
 		mix = MMult(mix, rot); // 回転
 		// ここでローカル座標を行列に、そのまま戻さず、
-		// 調整したローカル座標を設定する
-		mix = MMult(mix, MGetTranslate(rootMoveOffset_));
+			// 調整したローカル座標を設定する
+		if (isDynamicOffset_)
+		{
+			// 動的に設定
+			VECTOR offset = { 0.0f, pos.y, 0.0f };
+			mix = MMult(mix, MGetTranslate(offset));
+		}
+		else
+		{
+			// 固定値で設定
+			mix = MMult(mix, MGetTranslate(rootMoveOffset_));
+		}
 		// 合成した行列を対象フレームにセットし直して、
 		// アニメーションの移動値を無効化
 		MV1SetFrameUserLocalMatrix(modelId_, rootFrameNo_, mix);

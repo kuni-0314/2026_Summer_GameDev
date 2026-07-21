@@ -128,9 +128,6 @@ void PlayerAttackState::Update(Player* player)
 		}
 	}
 
-	// 移動量の減衰を無効化(ルートモーションで制御)
-	// ダッシュ攻撃などの場合はルートモーションで移動を表現
-
 	VECTOR framePos = MV1GetFramePosition(player->GetTransform().modelId, 2);
 	framePos.y = player->GetPos().y;
 	player->SetPos(framePos);
@@ -170,6 +167,7 @@ void PlayerAttackState::Update(Player* player)
 		if (attackType_ == ATTACK_TYPE::NORMAL4 ||
 			attackType_ == ATTACK_TYPE::HEAVY)
 		{
+			player->GetAnimationController()->SetDynamicOffset(false);
 			player->GetAnimationController()->SetIgnoreRootMove(false);
 		}
 
@@ -236,7 +234,9 @@ PlayerAttackState::ATTACK_TYPE PlayerAttackState::GetNextAttackType(Player* play
 		else
 		{
 			// アニメーション再生
+			player->GetAnimationController()->SetDynamicOffset(true);
 			player->GetAnimationController()->SetRootFrameParams(true, "mixamorig:Hips", { 0.0f, 97.0f, 0.0f });
+			player->GetAnimationController()->SetDynamicOffset(true);
 			player->GetAnimationController()->Play(
 				static_cast<int>(Player::ANIM_TYPE::ATK_H), false, true);
 			AudioManager::GetInstance()->PlaySE(SoundID::SE_ATTACK_1);

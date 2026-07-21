@@ -58,6 +58,9 @@ public:
 	// ルートフレームの移動値の調整
 	void SetRootMoveOffset(const VECTOR& offset) { rootMoveOffset_ = offset; }
 
+	// 動的オフセットを有効にするかどうか
+	void SetDynamicOffset(bool isDynamicOffset) { isDynamicOffset_ = isDynamicOffset; }
+
 	// ルートフレームの設定をまとめて行う
 	void SetRootFrameParams(bool isIgnore, int frameNo, const VECTOR& offset)
 	{
@@ -103,4 +106,7 @@ private:
 
 	// 調整用のルートフレームの移動値
 	VECTOR rootMoveOffset_ = { 0.0f, 0.0f, 0.0f };
+
+	// 動的オフセットを有効にするかどうか
+	bool isDynamicOffset_;
 };
