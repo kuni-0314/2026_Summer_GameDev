@@ -543,7 +543,7 @@ void EnemyDragon::CreateTornado()
 	for (int i = 0; i < tornadoCount_; i++)
 	{
 		const float spawnRadius = 1000.0f;
-		const float tornadoY = 150.0f;
+		const float tornadoY = 90.0f;
 
 		// プレイヤー座標
 		VECTOR playerPos = player_->GetPos();
