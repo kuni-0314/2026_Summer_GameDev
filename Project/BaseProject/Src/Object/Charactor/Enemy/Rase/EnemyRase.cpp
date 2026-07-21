@@ -58,7 +58,17 @@ void EnemyRase::Draw()
 
 void EnemyRase::Release(void)
 {
-	
+	// 基底クラスの解放処理
+	CharactorBase::Release();
+	// 弾の解放
+	for (auto& shot : shots_)
+	{
+		if (shot.effect)
+		{
+			shot.effect->Stop();
+			shot.effect.reset();
+		}
+	}
 }
 
 //void EnemyRase::Damage(int damage)
@@ -437,57 +447,62 @@ void EnemyRase::UpdateCharge(void)
 	movePow_ = AsoUtility::VECTOR_ZERO;
 }
 
-void EnemyRase::AttackShot(void)
+void EnemyRase::AttackShot()
 {
 	SHOT shot;
 
-	//弾生存フラグ
 	shot.isShotAlive_ = true;
 
-
-	//弾の大きさ、座標等の初期化
-	shot.shotTransform_.scl = { SHOT_SCALE ,SHOT_SCALE ,SHOT_SCALE };
+	shot.shotTransform_.scl = { SHOT_SCALE, SHOT_SCALE, SHOT_SCALE };
 	shot.shotTransform_.quaRot = Quaternion::Identity();
 	shot.shotTransform_.quaRotLocal = Quaternion::Euler(ROT);
 
+	shot.shotTransform_.modelId = shotmodel_;
+	shot.shotTransform_.SetModel(MV1DuplicateModel(shotmodel_));
+
+	shot.shotTransform_.pos = transform_.pos;
+	shot.dir_ = VNorm(toPlayer_);
+
 	shot.shotTransform_.Update();
 
-	shot.shotTransform_.modelId = shotmodel_;
-
-	//モデルのセット
-	shot.shotTransform_.SetModel(MV1DuplicateModel(shot.shotTransform_.modelId));
-
-	//らせの座標位置を取得
-	shot.shotTransform_.pos = transform_.pos;
-
-	// エフェクト再生
 	shot.effect = std::make_shared<EffekseerEffect>(
-		L"Data/Effect/FireBall/FireBall.efkefc",
+		L"Data/Effect/Fire/Fire.efkefc",
 		shot.shotTransform_.pos
+	);
+
+	shot.effect->Play(
+		shot.shotTransform_.pos,
+		Quaternion::LookRotation(shot.dir_)
 	);
 
 	EffectManager::GetInstance().RegisterEffect(shot.effect);
 
-	//弾向き
-	shot.dir_ = VNorm(toPlayer_);
+	shots_.emplace_back(std::move(shot));
 
-	shots_.push_back(shot);
 }
 
-void EnemyRase::UpdateShot(void)
+void EnemyRase::UpdateShot()
 {
+	bool shotDeleted = false;
+
 	for (auto& shot : shots_)
 	{
 		if (!shot.isShotAlive_) continue;
 
-		if (AsoUtility::IsHitSpheres(shot.shotTransform_.pos, COL_SPHERE_RADIUS, playerPos_, playerRad_))
+		// プレイヤーとの衝突
+		if (AsoUtility::IsHitSpheres(
+			shot.shotTransform_.pos,
+			COL_SPHERE_RADIUS,
+			playerPos_,
+			playerRad_))
 		{
 			player_->Damage(1, transform_.GetForward());
 			shot.life = 0;
 		}
 
-		shot.speed += 0.05;
+		shot.speed += 0.05f;
 
+		// ホーミング
 		if (shot.life > 60)
 		{
 			VECTOR targetDir =
@@ -495,55 +510,97 @@ void EnemyRase::UpdateShot(void)
 					shot.shotTransform_.pos));
 
 			shot.dir_ =
-				VNorm(VAdd(VScale(shot.dir_, 1.0f - shot.homingPower),
-					VScale(targetDir, shot.homingPower)));
+				VNorm(
+					VAdd(
+						VScale(shot.dir_, 1.0f - shot.homingPower),
+						VScale(targetDir, shot.homingPower)
+					)
+				);
 		}
 
+		// 移動
 		shot.shotTransform_.pos =
-			VAdd(shot.shotTransform_.pos,
-				VScale(shot.dir_, shot.speed));
+			VAdd(
+				shot.shotTransform_.pos,
+				VScale(shot.dir_, shot.speed)
+			);
 
-		//エフェクトを弾に追従させる
+
+		// エフェクト追従
 		if (shot.effect)
 		{
 			shot.effect->SetPosition(shot.shotTransform_.pos);
+			shot.effect->SetRotation(
+				Quaternion::LookRotation(shot.dir_));
 		}
 
-		if (shot.shotTransform_.pos.y <= 0)
+		if (shot.shotTransform_.pos.y < 0.0f)
 		{
-			shot.shotTransform_.pos.y = 0;
+			shot.shotTransform_.pos.y = 0.0f;
 		}
 
 		shot.life--;
+		shot.shotTransform_.Update();
 
 		if (shot.life <= 0)
 		{
 			if (shot.effect)
 			{
 				shot.effect->Stop();
+				shot.effect.reset();
 			}
+
+			MV1DeleteModel(shot.shotTransform_.modelId);
+
+			auto burst =
+				std::make_shared<EffekseerEffect>(
+					L"Data/Effect/Fire/Burst.efkefc",
+					shot.shotTransform_.pos);
+
+			burst->Play(
+				shot.shotTransform_.pos,
+				shot.shotTransform_.quaRot);
+
+			burst->SetLifeTime(85);
+
+			EffectManager::GetInstance().RegisterEffect(burst);
+
 			shot.isShotAlive_ = false;
 			shot.speed = 3.0f;
-			ChangeState(STATE::THINK);
+
+			shotDeleted = true;
 		}
+	}
+
+	// ループ終了後に削除
+	shots_.erase(
+		std::remove_if(
+			shots_.begin(),
+			shots_.end(),
+			[](const SHOT& shot)
+			{
+				return !shot.isShotAlive_;
+			}),
+		shots_.end());
+
+	if (shotDeleted)
+	{
+		ChangeState(STATE::THINK);
 	}
 }
 
-void EnemyRase::DrawShot(void)
+void EnemyRase::DrawShot()
 {
 	for (auto& shot : shots_)
 	{
-		if (!shot.isShotAlive_)continue;
+		if (!shot.isShotAlive_) continue;
 
-		shot.shotTransform_.Update();
+		MV1SetPosition(
+			shot.shotTransform_.modelId,
+			shot.shotTransform_.pos);
 
-		//描画
-		MV1SetPosition(shotmodel_, shot.shotTransform_.pos);
-		MV1DrawModel(shot.shotTransform_.modelId);
+		MV1DrawModel(
+			shot.shotTransform_.modelId);
 	}
 }
-
-
-
-
 

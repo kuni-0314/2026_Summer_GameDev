@@ -149,7 +149,6 @@ void EnemyLarge::InitCollider()
 	}
 
 	ownColliders_.emplace(static_cast<int>(COLLIDER_TYPE::MODEL), colModel);
-	//
 }
 
 void EnemyLarge::InitAnimation()
@@ -239,8 +238,8 @@ void EnemyLarge::UpdateProcess()
 	CheckPlayerMagicCollision();
 
 	//³–Ê‚ÉPlayer‚ª‚¢‚é‚Ì‚©
-	bool isATField_;
-	isATField_ = false;
+	/*bool isATField_;
+	isATField_ = false;*/
 
 	if (!isATField_ && InFront() && player_->IsAttacking())
 	{
@@ -304,23 +303,19 @@ void EnemyLarge::UpdateProcessPost()
 
 void EnemyLarge::ATfield(const VECTOR& pos)
 {
-	VECTOR effectPos = VAdd(pos, VScale(moveDir_, 150.0f));
+	VECTOR front = VNorm(moveDir_);
+
+	VECTOR effectPos = VAdd(pos, VScale(front, 120.0f));
 	effectPos.y += 100.0f;
 
 	auto effect = std::make_shared<EffekseerEffect>(
 		L"Data/Effect/Hit/Hit.efkefc",
-		effectPos
-	);
+		effectPos);
 
 	effect->SetScale(80.0f);
-
-	effect->Play(
-		effectPos,
-		Quaternion()
-	);
+	effect->Play(effectPos, Quaternion());
 
 	EffectManager::GetInstance().RegisterEffect(effect);
-
 }
 
 void EnemyLarge::ChangeState(STATE state)
@@ -647,6 +642,22 @@ void EnemyLarge::UpdateAttackDrop()
 		ringTransform_->scl = { RING_SCALE,RING_SCALE ,RING_SCALE };
 		isDrop_ = true;
 		attackTriggerRing_ = true;
+
+		isDrop_ = true;
+		attackTriggerRing_ = true;
+
+		auto effect = std::make_shared<EffekseerEffect>(
+			L"Data/Effect/Circle/ShockWave.efkefc",
+			ringTransform_->pos
+		);
+
+		//YŽ²‚ð‚R‚Oã‚°‚é
+		ringTransform_->pos.y += 30.0f;
+
+		effect->SetScale(30.0f);
+		effect->Play(ringTransform_->pos, Quaternion());
+
+		EffectManager::GetInstance().RegisterEffect(effect);
 	}
 
 	if (animationController_->IsEnd())

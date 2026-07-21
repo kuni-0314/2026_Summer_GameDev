@@ -4,6 +4,7 @@
 #include <memory>
 #include <vector>
 #include "../EnemyBase.h"
+#include "../../../../Effect/LoadEffekseer/EffekseerEffect.h"
 
 class Player;
 class ItemManger;
@@ -157,7 +158,7 @@ private:
 	bool jumpApplied_ = false;	//ジャンプ処理実行判定
 	bool isDrop_ = false;		//衝撃破生存判定
 	bool attackTriggerRing_ = false;	//衝撃波生成判定
-	bool ATfieldTrigger_ = false;	//ATフィールド生成判定
+	bool isATField_ = false;
 
 	VECTOR worldPos;
 	//プレイヤー方向
@@ -172,6 +173,7 @@ private:
 
 	//衝撃波用トランスフォーム
 	std::unique_ptr<Transform> ringTransform_;
+	std::shared_ptr<EffekseerEffect> shockWaveEffect_;
 
 	// 実体の前後コライダへの直接参照（必要なら使う）
 	ColliderCapsule* colFrontCapsule_ = nullptr;

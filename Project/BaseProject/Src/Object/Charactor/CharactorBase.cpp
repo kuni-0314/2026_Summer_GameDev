@@ -197,8 +197,6 @@ void CharactorBase::CalcGravityPow()
 	{
 		jumpPow_.y = MAX_FALL_SPEED;
 	}
-
-
 }
 
 

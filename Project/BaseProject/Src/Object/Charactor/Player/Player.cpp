@@ -15,7 +15,7 @@
 #include "../../Weapon/Sword/KeyBlade1.h"
 #include "../../Weapon/Sword/KeyBlade2.h"
 #include "../../Weapon/Sword/KeyBlade3.h"
-#include "../../../Effect/LoadEffekseer/EffekseerEffect.h" // ƒpƒX‚ÍŠÂ‹«‚É‡‚í‚¹‚Ä’²®‚µ‚Ä‚­‚¾‚³‚¢
+#include "../../../Effect/LoadEffekseer/EffekseerEffect.h"
 #include "../../../Effect/EffectManager.h"
 #include "../../../Sound/AudioManager.h"
 #include "../../../Sound/SoundTable.h"
@@ -62,6 +62,12 @@ void Player::Update()
 	if (comboTimer_ > 0)
 	{
 		comboTimer_--;
+	}
+
+	// ƒq[ƒ‹‚ÌŠÔ‚ğŒ¸Z
+	if (recoveryEffect_)
+	{
+		recoveryEffect_->SetPosition(transform_.pos);
 	}
 
 	// ŠeƒLƒƒƒ‰ƒNƒ^[‚²‚Æ‚ÌXVˆ—
@@ -570,6 +576,44 @@ void Player::PlayBlinkEffect()
 	EffectManager::GetInstance().RegisterEffect(effect);
 }
 
+void Player::DeleteFireEffect()
+{
+	if (!isAliveFire_) return;
+
+	VECTOR pos = fireInfo_.transform.pos;
+
+	//------------------------------------
+	// FireƒGƒtƒFƒNƒg’â~
+	//------------------------------------
+	if (fireInfo_.effect)
+	{
+		fireInfo_.effect->Stop();
+		fireInfo_.effect.reset();
+	}
+
+	//------------------------------------
+	// Burst¶¬
+	//------------------------------------
+	auto burst = std::make_shared<EffekseerEffect>(
+		L"Data/Effect/Fire/Burst.efkefc",
+		pos
+	);
+
+	burst->Play(
+		pos,
+		Quaternion()
+	);
+
+	burst->SetLifeTime(60);
+
+	EffectManager::GetInstance().RegisterEffect(burst);
+
+	//------------------------------------
+	// ’eíœ
+	//------------------------------------
+	isAliveFire_ = false;
+}
+
 void Player::CheckPlayerRingCollision()
 {
 	//// ƒvƒŒƒCƒ„[‚ÌƒJƒvƒZƒ‹ƒRƒ‰ƒCƒ_‚ğæ“¾
@@ -751,6 +795,7 @@ void Player::DestroyFireCollider(const FireInfo& fireInfo)
 
 void Player::CreateFireMagic()
 {
+<<<<<<< HEAD
 	if (!isAliveFire_)
 	{
 		fireInfo_ = FireInfo();
@@ -761,6 +806,36 @@ void Player::CreateFireMagic()
 		isAliveFire_ = true;
 		fireCoolTime_ = FIRE_COOL_TIME;
 	}
+=======
+
+	AudioManager::GetInstance()->PlaySE(SoundID::SE_NOT_MAGIC);
+	// ƒTƒ“ƒ_[‚Æˆá‚Á‚ÄAƒRƒ‰ƒCƒ_‚Í‚·‚®‚Éì¬‚·‚é
+	fireInfo_ = FireInfo();
+
+	fireInfo_.transform.pos = transform_.pos;
+	fireInfo_.transform.quaRot = transform_.quaRot;
+
+	// ƒtƒ@ƒCƒAƒGƒtƒFƒNƒg
+	auto effect = std::make_shared<EffekseerEffect>(
+		L"Data/Effect/Fire/Fire.efkefc",
+		fireInfo_.transform.pos
+	);
+
+	//Ä¶
+	effect->Play(
+		fireInfo_.transform.pos,
+		fireInfo_.transform.quaRot
+	);
+
+	EffectManager::GetInstance().RegisterEffect(effect);
+
+	fireInfo_.effect = effect;
+
+	isAliveFire_ = true;
+
+	CreateFireCollider(fireInfo_);
+
+>>>>>>> origin/ã«ã‚“
 }
 
 void Player::CreateThunderMagic()
@@ -802,9 +877,37 @@ void Player::CreateThunderMagic()
 
 void Player::CreateHealMagic()
 {
+<<<<<<< HEAD
 	AudioManager::GetInstance()->PlaySE(SoundID::SE_MAGIC_HEAL);
 	HealHp(HEAL_AMOUNT);
 	healCoolTime_ = HEAL_COOL_TIME;
+=======
+	if (!useRecovery_)
+	{
+		AudioManager::GetInstance()->PlaySE(SoundID::SE_MAGIC_HEAL);
+		HealHp(5);
+		useRecovery_ = true;
+
+		//ƒq[ƒ‹ƒGƒtƒFƒNƒg
+		auto effect = std::make_shared<EffekseerEffect>(
+			L"Data/Effect/Heal/Heal.efkefc",
+			transform_.pos
+		);
+
+		effect->SetLifeTime(60);
+
+		effect->Play(
+			transform_.pos,
+			transform_.quaRot
+		);
+
+		EffectManager::GetInstance().RegisterEffect(effect);
+	}
+	else
+	{
+		AudioManager::GetInstance()->PlaySE(SoundID::SE_NOT_MAGIC);
+	}
+>>>>>>> origin/ã«ã‚“
 }
 
 void Player::MagicCoolTime()
@@ -893,6 +996,7 @@ void Player::UpdateMagic()
 
 					VECTOR pos = thunderInfos_[i].transform.pos;
 
+					//—‹ƒGƒtƒFƒNƒg
 					auto effect = std::make_shared<EffekseerEffect>(
 						L"Data/Effect/Thunder/Thunder.efkefc",
 						pos
@@ -929,6 +1033,7 @@ void Player::UpdateMagic()
 
 	if (isAliveFire_)
 	{
+<<<<<<< HEAD
 		GameScene::CAM_MODE mode = gameScene_->GetCamMode();
 		if (fireInfo_.timer < FIRE_LIFETIME)
 		{
@@ -952,8 +1057,50 @@ void Player::UpdateMagic()
 			DestroyFireCollider(fireInfo_);
 			isAliveFire_ = false;
 		}
+=======
+		// “G‚ÉŒü‚©‚Á‚ÄˆÚ“®‚·‚éˆ—
+		// ƒpƒ‰ƒ[ƒ^‚Í”CˆÓ
+		//----------
+		const float SPEED = 100.0f;// ƒwƒbƒ_[‚ÉˆÚ“®
 
-		fireInfo_.transform.Update();
+		// ƒqƒ“ƒg
+		// ƒ^[ƒQƒeƒBƒ“ƒO’†‚È‚ç‚»‚Ì“G‚ÌÀ•W‚ğæ“¾‚·‚é
+		// ƒ^[ƒQƒeƒBƒ“ƒO’†‚Ì“G‚ª‚¢‚È‚¢ê‡‚ÍAƒvƒŒƒCƒ„[‚Ì‘O•û‚É
+		// ƒQ[ƒ€ƒV[ƒ“‚Ìæ“¾•û–@
+		// GameScene* gameScene = dynamic_cast<GameScene*>(scnMng_.GetScene());
+
+		//----------
+>>>>>>> origin/ã«ã‚“
+
+		 // ‘O‚ÖˆÚ“®
+		if (isAliveFire_)
+		{
+			fireInfo_.transform.pos =
+				VAdd(
+					fireInfo_.transform.pos,
+					VScale(fireInfo_.moveDir, SPEED)
+				);
+
+			fireInfo_.transform.Update();
+
+			if (fireInfo_.effect)
+			{
+				fireInfo_.effect->SetPosition(fireInfo_.transform.pos);
+			}
+		}
+
+		// ¶‘¶ŠÔ
+		fireInfo_.timer++;
+
+		if (fireInfo_.timer >= 120)
+		{
+			if (fireInfo_.effect != nullptr)
+			{
+				fireInfo_.effect->Stop();
+			}
+
+			isAliveFire_ = false;
+		}
 	}
 
 	if (isAliveThunder_ || isAliveFire_) isAliveMagic_ = true;

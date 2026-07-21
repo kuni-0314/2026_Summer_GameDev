@@ -65,7 +65,7 @@ void EnemyBase::HitEffect(const VECTOR& pos, const VECTOR& normal, float size)
 {
 	//エフェクトの読み込み
 	auto effect = std::make_shared<EffekseerEffect>(
-		L"Data/Effect/Ster/Ster.efkefc",
+		L"Data/Effect/Star/Star.efkefc",
 		transform_.pos
 	);
 
@@ -75,6 +75,24 @@ void EnemyBase::HitEffect(const VECTOR& pos, const VECTOR& normal, float size)
 	);
 
 	//エフェクトの再生
+	EffectManager::GetInstance().RegisterEffect(effect);
+}
+
+void EnemyBase::HitThunderEffect(const VECTOR& pos, const VECTOR& normal, float size)
+{
+	auto effect = std::make_shared<EffekseerEffect>(
+		L"Data/Effect/Thunder/N.efkefc", // hitエフェクト
+		pos
+	);
+
+	effect->Play(
+		pos,
+		Quaternion::LookRotation(normal)
+	);
+
+	effect->SetScale(size * 30.0f);   // 必要なら
+	effect->SetLifeTime(30);
+
 	EffectManager::GetInstance().RegisterEffect(effect);
 }
 
@@ -317,7 +335,7 @@ void EnemyBase::CheckPlayerMagicCollision()
 				VECTOR hitPos = VAdd(ownColCapsule->GetCenter(), magicColSphere->GetPos());
 				hitPos = VScale(hitPos, 0.5f);
 
-				HitEffect(hitPos, VNorm(VSub(hitPos, transform_.pos)), 1.5f);
+				HitThunderEffect(hitPos, VNorm(VSub(hitPos, transform_.pos)), 1.0f);
 
 				// 一度あったらフラグ
 				wasHitMagic_ = true;

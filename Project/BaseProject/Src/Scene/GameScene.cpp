@@ -17,8 +17,11 @@
 #include "../Object/Collider/Sphere/ColliderSphere.h"
 #include "../Effect/EffectManager.h"
 #include "../Effect/LoadEffekseer/EffekseerEffect.h"
+<<<<<<< HEAD
 #include "../Object/Common/AnimationController.h"
 #include "../Sound/AudioManager.h"
+=======
+>>>>>>> origin/„Å´„Çì
 #include "GameScene.h"
 #include <EffekseerForDXLib.h>
 
@@ -151,6 +154,7 @@ void GameScene::Update()
 	auto const ins = InputManager::GetInstance();
 
 	UpdateEffekseer3D();
+	EffectManager::GetInstance().Update();
 
 	// äeÉIÉuÉWÉFÉNÉgÇÃçXêV
 	stage_->Update();
@@ -245,6 +249,7 @@ void GameScene::Update()
 	//			}
 	//		}
 
+<<<<<<< HEAD
 	//		if (!data->isActive && player_->GetAnimationController()->IsEnd())
 	//		{
 	//			delete data->collider->GetFollow();
@@ -263,6 +268,33 @@ void GameScene::Update()
 	//		}
 	//	}
 	//}
+=======
+					if (distance < sphere->GetRadius())
+					{
+						enemy->Damege(static_cast<int>(data->damege));
+					}
+				}
+			}
+
+			if (data->lifeTime <= 0)
+			{
+				delete data->collider->GetFollow();
+				delete data->collider;
+				delete data;
+				attackColliders_.erase(attackColliders_.begin() + i);
+				i--;
+			}
+			else
+			{
+				if (data->collider != nullptr) 
+				{
+					Transform* transform = const_cast<Transform*>(data->collider->GetFollow());
+					transform->pos = player_->GetTransform().pos;
+				}
+			}
+		}
+	}
+>>>>>>> origin/„Å´„Çì
 
 	//ÉvÉåÉCÉÑÅ[É_ÉÅÅ[ÉWUIèàóù
 	if (damageflag_)
@@ -591,8 +623,13 @@ void GameScene::CreateAttackCollider(ColliderBase::TAG tag, VECTOR pos, float ra
 
 	AttackColliderData* data = new AttackColliderData();
 	data->collider = collider;
+<<<<<<< HEAD
 	data->damage = damage;
 	data->isActive = false;
+=======
+	data->damege = damage;
+	data->lifeTime = lifeTime;
+>>>>>>> origin/„Å´„Çì
 
 	attackColliders_.push_back(data);
 }
@@ -623,7 +660,7 @@ void GameScene::RemoveEnemyHitCollider(const ColliderBase* hitCollider)
 
 }
 
-void GameScene::SetDamageFlag(bool flag)
+void GameScene::SetDamegeFlag(bool flag)
 {
 	damageflag_ = flag;
 }

@@ -102,7 +102,7 @@ public:
 
 	void ActivatePowerUp();
 	void PlayBlinkEffect();
-
+	void DeleteFireEffect();
 
 	//ƒXƒP[ƒ‹
 	static constexpr float SCL_PlAYER = 0.75f;
@@ -245,8 +245,17 @@ private:
 	{
 		Transform transform = {};
 		ColliderSphere* collider = nullptr;
+<<<<<<< HEAD
 		int timer = 0;
 		VECTOR dir = {};
+=======
+
+		VECTOR moveDir;
+
+		int timer = 0;
+
+		std::shared_ptr<EffekseerEffect> effect;
+>>>>>>> origin/ã«ã‚“
 	};
 	void CreateFireCollider(FireInfo& fireInfo);
 
@@ -288,6 +297,8 @@ private:
 	std::shared_ptr<EffekseerEffect> m_powerUpEffect;
 
 	std::shared_ptr<EffekseerEffect> blinkEffect_;
+
+	std::shared_ptr<EffekseerEffect> recoveryEffect_;
 
 	// UŒ‚‚ÌƒN[ƒ‹ƒ^ƒCƒ€
 	int attackCoolTime_;
