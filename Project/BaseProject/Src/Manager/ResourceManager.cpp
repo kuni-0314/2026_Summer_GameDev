@@ -137,6 +137,10 @@ void ResourceManager::Init()
 	// ê‘êFÉZÉã
 	res = new RES(RES_T::IMG, PATH_IMG + "Blocks/RedBlock.png");
 	resourcesMap_.emplace(SRC::CELL_RED, res);
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+>>>>>>> 5f503d1053713b141298797423397fa6eca8cdcb
 
 	//ÉQÅ[ÉÄÉXÉeÅ[ÉW
 	res = new RES(RES_T::MODEL, PATH_MDL + "Stage/MainStage/GameStage/Stage2.mv1");
@@ -164,6 +168,11 @@ void ResourceManager::Init()
 	res = new RES(RES_T::MODEL, PATH_MDL + "Player/Player_GameOver.mv1");
 	resourcesMap_.emplace(SRC::PLAYER_GAMEOVER, res);	//mapÇ…ìoò^
 
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> origin/FIXÔºí
+>>>>>>> 5f503d1053713b141298797423397fa6eca8cdcb
 	// ÉIÉvÉVÉáÉìîwåi
 	res = new RES(RES_T::IMG, PATH_IMG + "Title.png");
 	resourcesMap_.emplace(SRC::OPTION_BACKGROUND, res);	//mapÇ…ìoò^

@@ -64,16 +64,29 @@ void Player::Update()
 	{
 		comboTimer_--;
 	}
+<<<<<<< HEAD
 	
+=======
+
+<<<<<<< HEAD
+>>>>>>> 5f503d1053713b141298797423397fa6eca8cdcb
 	// ƒq[ƒ‹‚ÌŠÔ‚ğŒ¸Z
 	if (recoveryEffect_)
 	{
 		recoveryEffect_->SetPosition(transform_.pos);
+<<<<<<< HEAD
 	}
 
 	if (tornadoDamageCoolTime_ > 0)
 	{
 		tornadoDamageCoolTime_--;
+=======
+=======
+	if (tornadoDamageCoolTime_ > 0)
+	{
+		tornadoDamageCoolTime_--;
+>>>>>>> origin/FIXï¼’
+>>>>>>> 5f503d1053713b141298797423397fa6eca8cdcb
 	}
 
 	// ŠeƒLƒƒƒ‰ƒNƒ^[‚²‚Æ‚ÌXVˆ—
@@ -244,11 +257,25 @@ void Player::InitAnimation()
 		, 60.0f, Application::PATH_MODEL + "Player/Jump.mv1");
 
 	// UŒ‚ƒAƒjƒ[ƒVƒ‡ƒ“
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+>>>>>>> 5f503d1053713b141298797423397fa6eca8cdcb
 	anim->Add(static_cast<int>(ANIM_TYPE::ATK_N1)
 		, 100.0f, Application::PATH_MODEL + "Player/Attack1.mv1");
 	anim->Add(static_cast<int>(ANIM_TYPE::ATK_N2)
 		, 65.0f, Application::PATH_MODEL + "Player/Attack2.mv1");
 	anim->Add(static_cast<int>(ANIM_TYPE::ATK_N3)
+<<<<<<< HEAD
+=======
+=======
+	animationController_->Add(static_cast<int>(ANIM_TYPE::ATK_N1)
+		, 90.0f, Application::PATH_MODEL + "Player/Attack1.mv1");
+	animationController_->Add(static_cast<int>(ANIM_TYPE::ATK_N2)
+		, 90.0f, Application::PATH_MODEL + "Player/Attack2.mv1");
+	animationController_->Add(static_cast<int>(ANIM_TYPE::ATK_N3)
+>>>>>>> origin/FIXï¼’
+>>>>>>> 5f503d1053713b141298797423397fa6eca8cdcb
 		, 90.0f, Application::PATH_MODEL + "Player/Attack3.mv1");
 	anim->Add(static_cast<int>(ANIM_TYPE::ATK_N4)
 		, 75.0f, Application::PATH_MODEL + "Player/Attack4.mv1");
@@ -272,12 +299,25 @@ void Player::InitAnimation()
 		, 40.0f, Application::PATH_MODEL + "Player/Attack1.mv1");//tmp
 	anim->Add(static_cast<int>(ANIM_TYPE::MAGIC)
 		, 40.0f, Application::PATH_MODEL + "Player/Spell Cast.mv1");
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+>>>>>>> 5f503d1053713b141298797423397fa6eca8cdcb
 	anim->Add(static_cast<int>(ANIM_TYPE::ROLLING)
 		, 65.0f, Application::PATH_MODEL + "Player/Rolling.mv1");
 	anim->Add(static_cast<int>(ANIM_TYPE::DAMAGE)
 		, 100.0f, Application::PATH_MODEL + "Player/Damage.mv1");
+<<<<<<< HEAD
 	animationController_->Add(static_cast<int>(ANIM_TYPE::FALL_END)
 		, 85.0f, Application::PATH_MODEL + "Player/FallingLanding.mv1");
+=======
+=======
+	animationController_->Add(static_cast<int>(ANIM_TYPE::ROLLING)
+		, 65.0f, Application::PATH_MODEL + "Player/R.mv1");
+	animationController_->Add(static_cast<int>(ANIM_TYPE::FALL_END)
+		, 85.0f, Application::PATH_MODEL + "Player/FallingLanding.mv1");
+>>>>>>> origin/FIXï¼’
+>>>>>>> 5f503d1053713b141298797423397fa6eca8cdcb
 
 	//‰ŠúƒAƒjƒ[ƒVƒ‡ƒ“Ä¶
 	anim->Play(static_cast<int>(ANIM_TYPE::IDLE), true);

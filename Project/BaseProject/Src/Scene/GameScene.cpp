@@ -17,7 +17,14 @@
 #include "../Object/Collider/Sphere/ColliderSphere.h"
 #include "../Effect/EffectManager.h"
 #include "../Effect/LoadEffekseer/EffekseerEffect.h"
+<<<<<<< HEAD
 #include "../Object/Common/AnimationController.h"
+=======
+<<<<<<< HEAD
+#include "../Object/Common/AnimationController.h"
+=======
+>>>>>>> origin/FIX２
+>>>>>>> 5f503d1053713b141298797423397fa6eca8cdcb
 #include "GameScene.h"
 #include <EffekseerForDXLib.h>
 
@@ -580,6 +587,12 @@ void GameScene::RemoveEnemyHitCollider(const ColliderBase* hitCollider)
 
 }
 
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+void GameScene::ShakeHpUI()
+=======
+>>>>>>> 5f503d1053713b141298797423397fa6eca8cdcb
 void GameScene::AddPlayerHitCollider(const ColliderBase* hitCollider)
 {
 	player_->AddHitCollider(hitCollider);
@@ -590,12 +603,17 @@ void GameScene::RemovePlayerHitCollider(const ColliderBase* hitCollider)
 	player_->RemoveHitCollider(hitCollider);
 }
 
+<<<<<<< HEAD
 //void GameScene::SetDamageFlag(bool flag)
 //{
 //	isDamageFlag_ = flag;
 //}
 
 void GameScene::ShakeHpUI()
+=======
+void GameScene::SetDamageFlag(bool flag)
+>>>>>>> origin/FIX２
+>>>>>>> 5f503d1053713b141298797423397fa6eca8cdcb
 {
 	isHpUIShake_ = true;
 	shakePow_ = SHAKE_POW_MAX;

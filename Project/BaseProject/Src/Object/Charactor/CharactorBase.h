@@ -56,8 +56,16 @@ public:
 
 	virtual void HealHp(int heal) { hp_ += heal; };
 
+<<<<<<< HEAD
 	bool IsInvincible() const { return isInvincible_; }
 	void SetInvincible(bool invincible);
+=======
+<<<<<<< HEAD
+	bool IsInvincible() const { return isInvincible_; }
+	void SetInvincible(bool invincible);
+=======
+>>>>>>> origin/FIX２
+>>>>>>> 5f503d1053713b141298797423397fa6eca8cdcb
 
 protected:
 

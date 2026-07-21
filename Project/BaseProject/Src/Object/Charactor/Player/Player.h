@@ -50,8 +50,16 @@ public:
 		ATK_F,
 		MAGIC,
 		ROLLING,
+<<<<<<< HEAD
 		DAMAGE,
 		FALL_END
+=======
+<<<<<<< HEAD
+		DAMAGE,
+=======
+		FALL_END
+>>>>>>> origin/FIXï¼’
+>>>>>>> 5f503d1053713b141298797423397fa6eca8cdcb
 	};
 
 	//ƒRƒ“ƒXƒgƒ‰ƒNƒ^
@@ -105,11 +113,21 @@ public:
 
 	void ActivatePowerUp();
 	void PlayBlinkEffect();
+<<<<<<< HEAD
 	void DeleteFireEffect();
+=======
+<<<<<<< HEAD
+	void DeleteFireEffect();
+=======
+>>>>>>> 5f503d1053713b141298797423397fa6eca8cdcb
 
 	//ƒ_ƒ[ƒW”»’èƒZƒbƒg
 	void SetWasHitDamage(const bool wasHit) { wasHitDamage_ = wasHit; }
 	void SetWasHitTornadoDamage(const bool wasHit) { wasHitTornadoDamage_ = wasHit; }
+<<<<<<< HEAD
+=======
+>>>>>>> origin/FIXï¼’
+>>>>>>> 5f503d1053713b141298797423397fa6eca8cdcb
 
 	//ƒXƒP[ƒ‹
 	static constexpr float SCL_PlAYER = 0.75f;
@@ -374,8 +392,15 @@ private:
 
 	bool isShortCut_ = false;
 
+<<<<<<< HEAD
 	VECTOR debugPos_;
 
+=======
+<<<<<<< HEAD
+
+	VECTOR debugPos_;
+=======
+>>>>>>> 5f503d1053713b141298797423397fa6eca8cdcb
 	//ƒhƒ‰ƒSƒ“ƒuƒŒƒX“–‚½‚è”»’è
 	void DragonBreathCheckCollision();
 
@@ -388,4 +413,8 @@ private:
 	int tornadoDamageCoolTime_ = 0;
 
 
+<<<<<<< HEAD
+=======
+>>>>>>> origin/FIXï¼’
+>>>>>>> 5f503d1053713b141298797423397fa6eca8cdcb
 };
