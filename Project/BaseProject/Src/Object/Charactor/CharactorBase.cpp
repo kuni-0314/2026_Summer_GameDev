@@ -8,6 +8,7 @@
 #include "../../Object/Collider/Model/ColliderModel.h"
 #include "../../Object/Collider/Capsule/ColliderCapsule.h"
 #include "../../Manager/ResourceManager.h"
+#include "../../Effect/EffectManager.h"
 
 CharactorBase::CharactorBase()
 	:
@@ -96,6 +97,10 @@ void CharactorBase::Release()
 		animationController_->Release();
 		delete animationController_;
 	}
+	//エフェクトの解放
+	EffectManager::GetInstance().Clear();
+	EffectManager::GetInstance().Release();
+
 	//基底クラスの開放
 	ActorBase::Release();
 }

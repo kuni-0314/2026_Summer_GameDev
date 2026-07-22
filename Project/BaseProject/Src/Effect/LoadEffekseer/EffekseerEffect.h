@@ -22,6 +22,8 @@ public:
     virtual void Update() override;
     virtual void Draw() const override;
 
+	void Release();
+
     void Play(VECTOR pos, Quaternion rot);
 
     void SetPosition(const VECTOR& pos);

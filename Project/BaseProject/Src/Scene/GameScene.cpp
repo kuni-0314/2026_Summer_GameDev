@@ -469,6 +469,7 @@ void GameScene::Release()
 
 	// エフェクトマネージャー解放
 	EffectManager::GetInstance().Clear();
+	EffectManager::GetInstance().Release();
 
 	// 攻撃コライダー解放
 	for (auto data : attackColliders_)

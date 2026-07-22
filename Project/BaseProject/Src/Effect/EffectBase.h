@@ -17,6 +17,8 @@ public:
     // •`‰æˆ—
     virtual void Draw() const = 0;
 
+	void Release() { m_isDead = true; }  // ŠO•”‚©‚çÁ–Å‚³‚¹‚éê‡
+
     // Á–Å‚µ‚Ä‚¢‚é‚©‚Ç‚¤‚©‚ÌŠm”F
     bool IsDead() const { return m_isDead; }
 };
