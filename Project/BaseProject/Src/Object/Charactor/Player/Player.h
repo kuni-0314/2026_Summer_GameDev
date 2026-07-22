@@ -203,6 +203,11 @@ public:
 	void ExecuteRangeAttack();
 	static constexpr float ATTACK_RANGE = 200.0f; // 範囲攻撃の半径 
 
+	STATE GetState() const;
+
+	bool IsRolling() const { return isRolling_; }
+	void SetRolling(bool rolling) { isRolling_ = rolling; }
+
 protected:
 
 	// リソースロード
@@ -386,4 +391,6 @@ private:
 	bool wasHitTornadoDamage_ = false;
 
 	int tornadoDamageCoolTime_ = 0;
+
+	bool isRolling_;
 };

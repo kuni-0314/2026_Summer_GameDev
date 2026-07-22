@@ -381,6 +381,10 @@ void PostEffectManager::SetEffectParameters(EFFECT_TYPE type, EffectParams& para
 		buf.x = -0.1f;
 		params.params.push_back(buf);
 		break;
+	case EFFECT_TYPE::RADIAL_BLUR:
+		buf.x = -0.1f;
+		params.params.push_back(buf);
+		break;
 	case EFFECT_TYPE::FH_GAME_START:	// ÉJÉXÉ^ÉÄêÑèß
 		buf.x = -0.1f;
 		buf.y = 1.0f;

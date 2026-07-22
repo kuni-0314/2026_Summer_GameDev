@@ -528,6 +528,7 @@ void Player::Draw()
 
 void Player::ChangeState(STATE newState)
 {
+	state_ = newState;
 	currentState_->Exit(this);
 	currentState_ = states_[newState];
 	currentState_->Enter(this);
@@ -932,6 +933,11 @@ void Player::ExecuteRangeAttack()
 	const int DAMAGE = 3;
 	debugPos_ = attackPos;
 	gameScene_->CheckHitEnemy(attackPos, ATTACK_RANGE, DAMAGE);
+}
+
+Player::STATE Player::GetState() const
+{
+	return state_;
 }
 
 void Player::UpdateMagic()

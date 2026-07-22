@@ -58,6 +58,7 @@ void PlayerAttackState::Enter(Player* player)
 void PlayerAttackState::Update(Player* player)
 {
 	// 攻撃アニメーション中は他の状態への遷移をチェックしない
+	// はずだったけど回避だけ可能にしますわ
 
 	// 移動量の減衰
 	if (!AsoUtility::EqualsVZero(player->GetMovePow()))
@@ -76,6 +77,33 @@ void PlayerAttackState::Update(Player* player)
 	auto ins = InputManager::GetInstance();
 	bool enableKAM = ins->IsEnableKeyAndMouse();
 	bool isGamepadConnected = (GetJoypadNum() > 0);
+
+	if (isGamepadConnected)
+	{
+		if (enableKAM)
+		{
+			if (ins->IsGamepadTrgDown(InputManager::PadInput::X, player->GetPadNum()) ||
+				ins->IsMouseTrgDown(MOUSE_INPUT_RIGHT))
+			{	
+				player->ChangeState(Player::STATE::JET);
+			}
+		}
+		else
+		{
+			if (ins->IsGamepadTrgDown(InputManager::PadInput::X, player->GetPadNum()))
+			{
+				player->ChangeState(Player::STATE::JET);
+			}
+		}
+	}
+	else
+	{
+		if (ins->IsMouseTrgDown(MOUSE_INPUT_RIGHT))
+		{
+			player->ChangeState(Player::STATE::JET);
+		}
+	}
+
 	// ジャンプキーが入力されているか
 	bool isJumpKeyPressed = false;
 	if (player->IsJump())
@@ -140,7 +168,7 @@ void PlayerAttackState::Update(Player* player)
 	// アニメーション終了時
 	if (player->GetAnimationController()->IsEnd() || isAnimationSkipped_)
 	{
-		// クoolタイムをクリア（攻撃可能に）
+		// クールタイムをクリア（攻撃可能に）
 		player->SetAttackCoolTime(0);
 
 		// コンボタイマーを設定
@@ -177,9 +205,27 @@ void PlayerAttackState::Draw(Player* player)
 
 void PlayerAttackState::Exit(Player* player)
 {
-	// 攻撃終了時の処理
-	//player->SetAttacking(false);
+	// クールタイムをクリア（攻撃可能に）
+	player->SetAttackCoolTime(0);
 
+	// コンボタイマーを設定
+	if (attackType_ == ATTACK_TYPE::HEAVY)
+	{
+		player->SetComboTimer(0);
+	}
+	else
+	{
+		player->SetComboTimer(COMBO_WINDOW_FRAME);
+	}
+
+	// 特定のアニメーションはルートフレームが移動しているので設定を戻す
+	if (attackType_ == ATTACK_TYPE::NORMAL4 ||
+		attackType_ == ATTACK_TYPE::HEAVY)
+	{
+		player->GetAnimationController()->SetDynamicOffset(false);
+		player->GetAnimationController()->SetIgnoreRootMove(false);
+	}
+	player->SetAttacking(false);
 	player->GetGameScene()->DeleteAttackCollider();
 }
 

@@ -2,6 +2,7 @@
 #include "../../../Manager/InputManager.h"
 #include "../../../Manager/SceneManager.h"
 #include "../../../Object/Common/AnimationController.h"
+#include "../../../Manager/PostEffectManager.h"
 #include "Player.h"
 #include "PlayerJetState.h"
 
@@ -26,11 +27,13 @@ void PlayerRollState::Update(Player* player)
 	if (animNum >= 10 && animNum <= 35)
 	{
 		player->SetMovePow(VScale(player->GetMoveDir(), Player::POW_ROLL));
+		player->SetRolling(true);
 	}
 	else
 	{
 		// Šµ«‚Ì–@‘¥‚ÅŒ¸‘¬‚·‚é
 		player->SetMovePow(VScale(player->GetMovePow(), 0.95f));
+		player->SetRolling(false);
 	}
 
 	if (player->GetAnimationController()->IsEnd())
