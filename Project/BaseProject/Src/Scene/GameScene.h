@@ -105,6 +105,8 @@ public:
 
 	void CheckHitEnemy(const VECTOR& pos, float radius, int damage);
 
+	void SetLowHpEffect();
+
 private:
 
 	// ステージ

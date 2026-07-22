@@ -50,6 +50,21 @@ Player::~Player()
 
 void Player::Update()
 {
+	// 無敵フレームのカウントダウン
+	if (invincibleFrameCount_ > 0)
+	{
+		invincibleFrameCount_--;
+	}
+
+	if (invincibleFrameCount_ <= 0)
+	{
+		isInvincible_ = false;
+	}
+	else
+	{
+		isInvincible_ = true;
+	}
+
 	// 移動前座標を更新
 	prevPos_ = transform_.pos;
 
@@ -97,6 +112,24 @@ void Player::Update()
 	UpdateProcessPost();
 
 
+	const float LOW_HP_THRESHOLD = 0.2f;
+	static bool isLowHpEffectActive = false;
+	if (hp_ <= MAX_HP * LOW_HP_THRESHOLD)
+	{
+		if (!isLowHpEffectActive)
+		{
+			gameScene_->SetLowHpEffect();
+			isLowHpEffectActive = true;
+		}
+	}
+	if (hp_ > MAX_HP * LOW_HP_THRESHOLD)
+	{
+		if (isLowHpEffectActive)
+		{
+			gameScene_->SetLowHpEffect();
+			isLowHpEffectActive = false;
+		}
+	}
 	// hpのindexは4、luckのindexは9
 	//if (InputManager::GetInstance()->IsTrgDown(KEY_INPUT_UP))
 	//{
@@ -155,8 +188,10 @@ void Player::Update()
 
 void Player::Damage(int damage, const VECTOR& hitDir)
 {
-	if (isInvincible_) return;
-
+	if (isInvincible_)
+	{
+		return;
+	}
 	auto dir = VNorm(hitDir);
 	knockbackPow_ = VScale(dir, 4.0f);
 
@@ -167,6 +202,7 @@ void Player::Damage(int damage, const VECTOR& hitDir)
 
 		return;
 	}
+
 
 	gameScene_->ShakeHpUI();
 
@@ -328,7 +364,7 @@ void Player::UpdateProcess()
 	}
 
 	auto ins = InputManager::GetInstance();
-	if (ins->IsTrgDown(KEY_INPUT_R))
+	if (ins->IsTrgDown(KEY_INPUT_O))
 	{
 		transform_.pos = POS_PLAYER;
 	}
@@ -511,6 +547,7 @@ void Player::Draw()
 
 void Player::ChangeState(STATE newState)
 {
+	state_ = newState;
 	currentState_->Exit(this);
 	currentState_ = states_[newState];
 	currentState_->Enter(this);
@@ -915,6 +952,11 @@ void Player::ExecuteRangeAttack()
 	const int DAMAGE = 3;
 	debugPos_ = attackPos;
 	gameScene_->CheckHitEnemy(attackPos, ATTACK_RANGE, DAMAGE);
+}
+
+Player::STATE Player::GetState() const
+{
+	return state_;
 }
 
 void Player::UpdateMagic()

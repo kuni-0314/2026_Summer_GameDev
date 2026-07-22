@@ -916,7 +916,7 @@ const std::vector<std::string>& OptionScene::GetDropdownOptions(int itemIndex)
 	{
 	case IDX_OUTPUT_DEVICE:
 		{
-			static std::vector<std::string> devices = {"デバイス1", "デバイス2", "デバイス3"};
+			static std::vector<std::string> devices = {"PC", "Bluetooth", "-"};
 			return devices;
 		}
 	case IDX_FPS_LIMIT:

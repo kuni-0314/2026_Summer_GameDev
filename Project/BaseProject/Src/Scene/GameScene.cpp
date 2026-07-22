@@ -232,6 +232,58 @@ void GameScene::Update()
 	// エフェクト時間更新
 	effectTime_ += sceMng_.GetDeltaTime();
 
+	auto& pstEfcMngIns = PostEffectManager::GetInstance();
+	static float radialBlurParam = 0.0f;
+	const float MAX_RADIAL_BLUR_PARAM = 0.05f;
+	const float RADIAL_BLUR_STEP = 0.0025f;
+	if (player_->IsRolling())
+	{
+		if (radialBlurParam == 0.0f)
+		{
+			ToggleEffect(PostEffectManager::EFFECT_TYPE::RADIAL_BLUR);
+		}
+
+		if (radialBlurParam < MAX_RADIAL_BLUR_PARAM)
+		{
+			radialBlurParam += RADIAL_BLUR_STEP;
+		}
+		else
+		{
+			radialBlurParam = MAX_RADIAL_BLUR_PARAM;
+		}
+	}
+	else
+	{
+		if (radialBlurParam == MAX_RADIAL_BLUR_PARAM)
+		{
+			ToggleEffect(PostEffectManager::EFFECT_TYPE::RADIAL_BLUR);
+		}
+
+		if (radialBlurParam > 0.0f)
+		{
+			radialBlurParam -= RADIAL_BLUR_STEP;
+		}
+		else
+		{
+			radialBlurParam = 0.0f;
+		}
+	}
+
+	PostEffectManager::EffectParams params = { radialBlurParam, 0.0f, 0.0f, 0.0f };
+	pstEfcMngIns.SetCustomParams(PostEffectManager::EFFECT_TYPE::RADIAL_BLUR, params);
+
+	// x: 強度（減光の急峻さ）, y: 範囲（減光が始まる距離）
+	const float STANDARD_VIGNETTE_INTENSITY = 0.5f;
+	const float STANDARD_VIGNETTE_RANGE = 0.85f;
+	// 0から1までの値をsinで変化させる
+	static float time = 0.0f;
+	time += SceneManager::GetInstance().GetDeltaTime();
+	float sinWaveValue = sin(time * 2.0f * DX_PI_F) * 0.5f + 0.5f;
+	float vignetteIntensity = STANDARD_VIGNETTE_INTENSITY + 1.0f * sinWaveValue;
+	float vignetteRange = STANDARD_VIGNETTE_RANGE + 1.0f * sinWaveValue;
+	params = { vignetteIntensity, vignetteRange, 0.0f, 0.0f };
+	pstEfcMngIns.SetCustomParams(PostEffectManager::EFFECT_TYPE::FH_LOW_HP, params);
+
 	// モード切り替え (テンキー5)
 	if (ins->IsTrgDown(KEY_INPUT_NUMPAD5))
 	{
@@ -239,53 +291,53 @@ void GameScene::Update()
 	}
 
 	// 単一エフェクトモード
-	if (!multiEffectMode_)
-	{
+	//if (!multiEffectMode_)
+	//{
 		// エフェクト切り替え (テンキー4/6)
-		if (ins->IsTrgDown(KEY_INPUT_NUMPAD4))
-		{
-			int current = static_cast<int>(currentEffect_);
-			current = (current - 1 + static_cast<int>(PostEffectManager::EFFECT_TYPE::MAX)) %
-				static_cast<int>(PostEffectManager::EFFECT_TYPE::MAX);
-			currentEffect_ = static_cast<PostEffectManager::EFFECT_TYPE>(current);
-		}
-		if (ins->IsTrgDown(KEY_INPUT_NUMPAD6))
-		{
-			int current = static_cast<int>(currentEffect_);
-			current = (current + 1) % static_cast<int>(PostEffectManager::EFFECT_TYPE::MAX);
-			currentEffect_ = static_cast<PostEffectManager::EFFECT_TYPE>(current);
-		}
-	}
-	// 複数エフェクトモード
-	else
+	if (ins->IsTrgDown(KEY_INPUT_NUMPAD4))
 	{
-		// Enterキーで現在のエフェクトをトグル
-		if (ins->IsTrgDown(KEY_INPUT_RETURN))
-		{
-			ToggleEffect(currentEffect_);
-		}
-
-		// エフェクト選択 (テンキー4/6)
-		if (ins->IsTrgDown(KEY_INPUT_NUMPAD4))
-		{
-			int current = static_cast<int>(currentEffect_);
-			current = (current - 1 + static_cast<int>(PostEffectManager::EFFECT_TYPE::MAX)) %
-				static_cast<int>(PostEffectManager::EFFECT_TYPE::MAX);
-			currentEffect_ = static_cast<PostEffectManager::EFFECT_TYPE>(current);
-		}
-		if (ins->IsTrgDown(KEY_INPUT_NUMPAD6))
-		{
-			int current = static_cast<int>(currentEffect_);
-			current = (current + 1) % static_cast<int>(PostEffectManager::EFFECT_TYPE::MAX);
-			currentEffect_ = static_cast<PostEffectManager::EFFECT_TYPE>(current);
-		}
-
-		// 全クリア (テンキー0)
-		if (ins->IsTrgDown(KEY_INPUT_NUMPAD0))
-		{
-			activeEffects_.clear();
-		}
+		int current = static_cast<int>(currentEffect_);
+		current = (current - 1 + static_cast<int>(PostEffectManager::EFFECT_TYPE::MAX)) %
+			static_cast<int>(PostEffectManager::EFFECT_TYPE::MAX);
+		currentEffect_ = static_cast<PostEffectManager::EFFECT_TYPE>(current);
 	}
+	if (ins->IsTrgDown(KEY_INPUT_NUMPAD6))
+	{
+		int current = static_cast<int>(currentEffect_);
+		current = (current + 1) % static_cast<int>(PostEffectManager::EFFECT_TYPE::MAX);
+		currentEffect_ = static_cast<PostEffectManager::EFFECT_TYPE>(current);
+	}
+	//}
+	// 複数エフェクトモード
+	//else
+	//{
+	//	// Enterキーで現在のエフェクトをトグル
+	//	if (ins->IsTrgDown(KEY_INPUT_RETURN))
+	//	{
+	//		ToggleEffect(currentEffect_);
+	//	}
+
+	//	// エフェクト選択 (テンキー4/6)
+	//	if (ins->IsTrgDown(KEY_INPUT_NUMPAD4))
+	//	{
+	//		int current = static_cast<int>(currentEffect_);
+	//		current = (current - 1 + static_cast<int>(PostEffectManager::EFFECT_TYPE::MAX)) %
+	//			static_cast<int>(PostEffectManager::EFFECT_TYPE::MAX);
+	//		currentEffect_ = static_cast<PostEffectManager::EFFECT_TYPE>(current);
+	//	}
+	//	if (ins->IsTrgDown(KEY_INPUT_NUMPAD6))
+	//	{
+	//		int current = static_cast<int>(currentEffect_);
+	//		current = (current + 1) % static_cast<int>(PostEffectManager::EFFECT_TYPE::MAX);
+	//		currentEffect_ = static_cast<PostEffectManager::EFFECT_TYPE>(current);
+	//	}
+
+	//	 全クリア (テンキー0)
+	//	if (ins->IsTrgDown(KEY_INPUT_NUMPAD0))
+	//	{
+	//		activeEffects_.clear();
+	//	}
+	//}
 
 
 	// ゲームオーバー判定
@@ -367,8 +419,6 @@ void GameScene::Draw()
 	enemyManager_->Draw();
 
 
-	PlayerHpDraw();
-	CommandDraw();
 
 	if (camMode_ == TARGETING)
 	{
@@ -394,18 +444,18 @@ void GameScene::Draw()
 	DrawGraph(0, 0, mainScreen, false);
 
 	// エフェクト適用
-	if (!multiEffectMode_)
-	{
+	//if (!multiEffectMode_)
+	//{
 		// 単一エフェクトモード
-		PostEffectManager::GetInstance().ApplyEffect(
-			currentEffect_,
-			tempScreen,
-			postEffectScreen_,
-			effectTime_
-		);
-	}
-	else
-	{
+		//PostEffectManager::GetInstance().ApplyEffect(
+		//	currentEffect_,
+		//	tempScreen,
+		//	postEffectScreen_,
+		//	effectTime_
+		//);
+	//}
+	//else
+	//{
 		// 複数エフェクトモード
 		PostEffectManager::GetInstance().ApplyEffects(
 			activeEffects_,
@@ -413,8 +463,10 @@ void GameScene::Draw()
 			postEffectScreen_,
 			effectTime_
 		);
-	}
+	//}
 
+	PlayerHpDraw();
+	CommandDraw();
 
 	//DrawFormatString(500, 0, 0xffffff, "HP:%d", player_->GetHp());
 
@@ -423,36 +475,36 @@ void GameScene::Draw()
 	DrawGraph(0, 0, postEffectScreen_, false);
 
 	// デバッグ表示
-	int y = 10;
-	DrawFormatString(10, y, 0xFFFF00, "Mode: %s (NumPad5 to toggle)",
-		multiEffectMode_ ? "Multi" : "Single");
-	y += 20;
-	// トリガー値を表示
-	const auto& ins = InputManager::GetInstance();
-	int leftTrigger = ins->GetGamepadTriggerValue(true, 0);
-	int rightTrigger = ins->GetGamepadTriggerValue(false, 0);
-	DrawFormatString(10, y, 0xFFFF00, "Left Trigger: %d, Right Trigger: %d", leftTrigger, rightTrigger);
-	y += 20;
-	if (!multiEffectMode_)
-	{
-		DrawFormatString(10, y, 0xFFFF00, "Current Effect: %s (NumPad4/6)",
-			GetEffectName(currentEffect_));
-	}
-	else
-	{
-		DrawFormatString(10, y, 0xFFFF00, "Select: %s (Enter to toggle)",
-			GetEffectName(currentEffect_));
-		y += 20;
-		DrawFormatString(10, y, 0xFFFF00, "Active Effects: %d (NumPad0 to clear)",
-			static_cast<int>(activeEffects_.size()));
-		y += 20;
+	//int y = 10;
+	//DrawFormatString(10, y, 0xFFFF00, "Mode: %s (NumPad5 to toggle)",
+	//	multiEffectMode_ ? "Multi" : "Single");
+	//y += 20;
+	//// トリガー値を表示
+	//const auto& ins = InputManager::GetInstance();
+	//int leftTrigger = ins->GetGamepadTriggerValue(true, 0);
+	//int rightTrigger = ins->GetGamepadTriggerValue(false, 0);
+	//DrawFormatString(10, y, 0xFFFF00, "Left Trigger: %d, Right Trigger: %d", leftTrigger, rightTrigger);
+	//y += 20;
+	//if (!multiEffectMode_)
+	//{
+	//	DrawFormatString(10, y, 0xFFFF00, "Current Effect: %s (NumPad4/6)",
+	//		GetEffectName(currentEffect_));
+	//}
+	//else
+	//{
+	//	DrawFormatString(10, y, 0xFFFF00, "Select: %s (Enter to toggle)",
+	//		GetEffectName(currentEffect_));
+	//	y += 20;
+	//	DrawFormatString(10, y, 0xFFFF00, "Active Effects: %d (NumPad0 to clear)",
+	//		static_cast<int>(activeEffects_.size()));
+	//	y += 20;
 
-		for (const auto& effect : activeEffects_)
-		{
-			DrawFormatString(10, y, 0x00FF00, "  - %s", GetEffectName(effect));
-			y += 18;
-		}
-	}
+	//	for (const auto& effect : activeEffects_)
+	//	{
+	//		DrawFormatString(10, y, 0x00FF00, "  - %s", GetEffectName(effect));
+	//		y += 18;
+	//	}
+	//}
 
 	// 一時スクリーン削除
 	DeleteGraph(tempScreen);
@@ -599,6 +651,11 @@ void GameScene::CheckHitEnemy(const VECTOR& pos, float radius, int damage)
 	enemyManager_->CheckHit(pos, radius, damage);
 }
 
+void GameScene::SetLowHpEffect()
+{
+	ToggleEffect(PostEffectManager::EFFECT_TYPE::FH_LOW_HP);
+}
+
 void GameScene::SelectCommand(COMMAND command)
 {
 	selectCommand_ = command;
@@ -675,6 +732,10 @@ const char* GameScene::GetEffectName(PostEffectManager::EFFECT_TYPE effectType)
 	case PostEffectManager::EFFECT_TYPE::SNOW_STORM: return "SnowStorm";
 	case PostEffectManager::EFFECT_TYPE::SCREEN_SHAKE: return "ScreenShake";
 	case PostEffectManager::EFFECT_TYPE::CRT: return "CRT";
+	case PostEffectManager::EFFECT_TYPE::FADE_WHITE: return "CRT";
+	case PostEffectManager::EFFECT_TYPE::ZOOM_IN_RADIAL_BLUR: return "ZoomInRadialBlur";
+	case PostEffectManager::EFFECT_TYPE::FH_GAME_START: return "FH_GameStart";
+	case PostEffectManager::EFFECT_TYPE::FH_LOW_HP: return "FH_Low_HP";
 	default: return "Unknown";
 	}
 }
@@ -803,17 +864,25 @@ void GameScene::PlayerFaceUIDraw()
 void GameScene::UpdateHpUI()
 {
 	const float SHAKE_SPEED = 30.0f;
+	static float time = 0.0f;
+
 	if (isHpUIShake_)
 	{
-		float speed = SHAKE_SPEED * sceMng_.GetDeltaTime();
-		static float time = 0.0f;
-		time += speed;
-		hpUIOffsetY_ += sinf(time) * shakePow_;
-		shakePow_ *= SHAKE_DECREASE; // 徐々に減衰させる
-		if (hpUIOffsetY_ < 0.1f && hpUIOffsetY_ > -0.1f)
+		time += SHAKE_SPEED * sceMng_.GetDeltaTime();
+
+		hpUIOffsetY_ = sinf(time) * shakePow_;
+
+		shakePow_ *= SHAKE_DECREASE;
+
+		if (shakePow_ < 0.1f)
 		{
 			isHpUIShake_ = false;
 			hpUIOffsetY_ = 0.0f;
+			time = 0.0f;
 		}
+	}
+	else
+	{
+		hpUIOffsetY_ = 0.0f;
 	}
 }

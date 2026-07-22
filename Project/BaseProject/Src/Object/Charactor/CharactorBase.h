@@ -59,6 +59,9 @@ public:
 	bool IsInvincible() const { return isInvincible_; }
 	void SetInvincible(bool invincible);
 
+
+	void HitEffect(const VECTOR& pos, const VECTOR& normal, float size);
+
 protected:
 
 
@@ -141,7 +144,7 @@ protected:
 	};
 	WEIGHT weight_;
 	// ñ≥ìGÉtÉåÅ[ÉÄêî
-	static constexpr int INVINCIBLE_FRAME_COUNT = 10;
+	static constexpr int INVINCIBLE_FRAME_COUNT = 30;
 	int invincibleFrameCount_ = 0;
 	bool isInvincible_;
 private:

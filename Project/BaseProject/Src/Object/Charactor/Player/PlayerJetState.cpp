@@ -2,6 +2,7 @@
 #include "../../../Manager/InputManager.h"
 #include "../../../Manager/SceneManager.h"
 #include "../../../Object/Common/AnimationController.h"
+#include "../../../Manager/PostEffectManager.h"
 #include "Player.h"
 #include "PlayerJetState.h"
 
@@ -13,7 +14,8 @@ void PlayerRollState::Enter(Player* player)
 	player->SetInvincible(true);
 
 	// アニメーション再生
-	player->GetAnimationController()->SetRootFrameParams(true, "mixamorig:Hips", { 0.0f, 97.0f, 0.0f });
+	player->GetAnimationController()->SetRootFrameParams(true, "mixamorig:Hips", VECTOR());
+	player->GetAnimationController()->SetDynamicOffset(true);
 	player->GetAnimationController()->Play(
 		static_cast<int>(Player::ANIM_TYPE::ROLLING), false, true);
 }
@@ -26,11 +28,13 @@ void PlayerRollState::Update(Player* player)
 	if (animNum >= 10 && animNum <= 35)
 	{
 		player->SetMovePow(VScale(player->GetMoveDir(), Player::POW_ROLL));
+		player->SetRolling(true);
 	}
 	else
 	{
 		// 慣性の法則で減速する
 		player->SetMovePow(VScale(player->GetMovePow(), 0.95f));
+		player->SetRolling(false);
 	}
 
 	if (player->GetAnimationController()->IsEnd())
@@ -63,4 +67,6 @@ void PlayerRollState::Exit(Player* player)
 	player->SetInvincible(false);
 
 	player->GetAnimationController()->SetIgnoreRootMove(false);
+	player->GetAnimationController()->SetDynamicOffset(false);
+
 }
