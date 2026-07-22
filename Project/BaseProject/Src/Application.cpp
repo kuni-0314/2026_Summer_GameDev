@@ -227,10 +227,6 @@ void Application::Destroy()
 
 	CoUninitialize();
 
-	// インスタンスのメモリ解放
-	delete instance_;
-	instance_ = nullptr;
-
 	#ifdef _DEBUG
 	// プログラム終了直前にメモリリークレポートを出力
 	_CrtDumpMemoryLeaks();
