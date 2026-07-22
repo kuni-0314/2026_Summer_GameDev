@@ -254,11 +254,6 @@ void GameScene::Update()
 	}
 	else
 	{
-		if (radialBlurParam == MAX_RADIAL_BLUR_PARAM)
-		{
-			ToggleEffect(PostEffectManager::EFFECT_TYPE::RADIAL_BLUR);
-		}
-
 		if (radialBlurParam > 0.0f)
 		{
 			radialBlurParam -= RADIAL_BLUR_STEP;
@@ -266,6 +261,7 @@ void GameScene::Update()
 		else
 		{
 			radialBlurParam = 0.0f;
+			ToggleEffect(PostEffectManager::EFFECT_TYPE::RADIAL_BLUR);
 		}
 	}
 

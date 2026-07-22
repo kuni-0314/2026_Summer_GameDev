@@ -68,12 +68,14 @@ public:
 		SetRootFrameNo(frameNo);
 		SetRootMoveOffset(offset);
 	}
-	void SetRootFrameParams(bool isIgnore, const std::string& frameName, const VECTOR& offset)
+	void SetRootFrameParams(bool isIgnore, const std::string& frameName, const VECTOR& offset = VECTOR())
 	{
 		SetIgnoreRootMove(isIgnore);
 		SetRootFrameNo(frameName);
 		SetRootMoveOffset(offset);
 	}
+
+	void SetupRootMotionControl(bool isEnabled, const std::string& frameName = "");
 
 	// 再生中のアニメーションのフレーム数を取得
 	int GetAnimFrameNum();
