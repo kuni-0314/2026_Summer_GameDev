@@ -823,4 +823,8 @@ void GameScene::UpdateHpUI()
 			hpUIOffsetY_ = 0.0f;
 		}
 	}
+	else
+	{
+		hpUIOffsetY_ = 0.0f;
+	}
 }

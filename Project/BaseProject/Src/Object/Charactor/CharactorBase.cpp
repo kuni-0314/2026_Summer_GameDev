@@ -8,6 +8,8 @@
 #include "../../Object/Collider/Model/ColliderModel.h"
 #include "../../Object/Collider/Capsule/ColliderCapsule.h"
 #include "../../Manager/ResourceManager.h"
+#include "../../Effect/LoadEffekseer/EffekseerEffect.h"
+#include "../../Effect/EffectManager.h"
 
 CharactorBase::CharactorBase()
 	:
@@ -158,6 +160,8 @@ void CharactorBase::Damage(int damage, const VECTOR& hitDir)
 		return;
 	}
 
+	HitEffect(transform_.pos, hitDir, 1.0f);
+
 	// 原則として無敵フレームを設定する
 	invincibleFrameCount_ = INVINCIBLE_FRAME_COUNT;
 }
@@ -171,6 +175,23 @@ void CharactorBase::SetInvincible(bool invincible)
 {
 	if (!invincible) invincibleFrameCount_ = 0;	// 強制的に無敵解除
 	isInvincible_ = invincible;
+}
+
+void CharactorBase::HitEffect(const VECTOR& pos, const VECTOR& normal, float size)
+{
+	//エフェクトの読み込み
+	auto effect = std::make_shared<EffekseerEffect>(
+		L"Data/Effect/Star/Star.efkefc",
+		transform_.pos
+	);
+
+	effect->Play(
+		pos,
+		Quaternion::LookRotation(normal)
+	);
+
+	//エフェクトの再生
+	EffectManager::GetInstance().RegisterEffect(effect);
 }
 
 void CharactorBase::DelayRotate()

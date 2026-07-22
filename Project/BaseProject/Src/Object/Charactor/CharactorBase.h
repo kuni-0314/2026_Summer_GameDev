@@ -59,6 +59,9 @@ public:
 	bool IsInvincible() const { return isInvincible_; }
 	void SetInvincible(bool invincible);
 
+
+	void HitEffect(const VECTOR& pos, const VECTOR& normal, float size);
+
 protected:
 
 

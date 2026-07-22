@@ -61,23 +61,6 @@ void EnemyBase::Release(void)
 	CharactorBase::Release();
 }
 
-void EnemyBase::HitEffect(const VECTOR& pos, const VECTOR& normal, float size)
-{
-	//エフェクトの読み込み
-	auto effect = std::make_shared<EffekseerEffect>(
-		L"Data/Effect/Star/Star.efkefc",
-		transform_.pos
-	);
-
-	effect->Play(
-		pos,
-		Quaternion::LookRotation(normal)
-	);
-
-	//エフェクトの再生
-	EffectManager::GetInstance().RegisterEffect(effect);
-}
-
 void EnemyBase::HitThunderEffect(const VECTOR& pos, const VECTOR& normal, float size)
 {
 	auto effect = std::make_shared<EffekseerEffect>(
