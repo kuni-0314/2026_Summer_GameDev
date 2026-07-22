@@ -530,13 +530,6 @@ void GameScene::Release()
 		player_ = nullptr;
 	}
 
-	// •Ší‰ð•ú
-	//if (weapon_ != nullptr)
-	//{
-	//	weapon_->Release();
-	//	delete weapon_;
-	//	weapon_ = nullptr;
-	//}
 }
 
 void GameScene::CreateAttackCollider(ColliderBase::TAG tag, VECTOR pos, float radius, float damage)

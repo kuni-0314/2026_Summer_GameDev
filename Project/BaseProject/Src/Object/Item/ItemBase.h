@@ -15,7 +15,6 @@ public:
 	enum class TYPE
 	{
 		HP,
-		SKILL,
 	};
 
 
@@ -94,8 +93,6 @@ protected:
 	// 丸影描画
 	void DrawShadow();
 
-	// 回復エフェクト再生
-	//void PlayHealEffect();
 
 private:
 
