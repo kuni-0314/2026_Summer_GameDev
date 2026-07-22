@@ -36,7 +36,10 @@ EnemyManager::~EnemyManager()
 }
 void EnemyManager::Init()
 {
-	//開始ウェーブ
+	// CSVはゲーム開始時に1回だけ読み込む
+	LoadCsvData();
+
+	// WAVE1の敵を生成
 	LoadWaveData(WAVE::WAVE1);
 
 }
@@ -116,56 +119,69 @@ void EnemyManager::RemoveHitCollider(const ColliderBase* hitCollider)
 void EnemyManager::LoadCsvData()
 {
 	// ファイルの読込
-	std::ifstream ifs = std::ifstream(Application::PATH_CSV + "EnemyData.csv");
+	std::ifstream ifs =
+		std::ifstream(Application::PATH_CSV + "EnemyData.csv");
+
 	if (!ifs)
 	{
 		// エラーが発生
 		return;
 	}
-	// ファイルを１行ずつ読み込む
-	std::string line;// 1行の文字情報
-	std::vector<std::string> strSplit; // 1行を1文字の動的配列に分割
+
+	// 1行ずつ読み込む
+	std::string line;
+
+	// 1行をカンマ区切りで分割
+	std::vector<std::string> strSplit;
+
 	bool isHeader = true;
+
 	while (getline(ifs, line))
 	{
+		// ヘッダーをスキップ
 		if (isHeader)
 		{
 			isHeader = false;
 			continue;
 		}
-		// １行をカンマ区切りで分割
-		strSplit = AsoUtility::Split(line, ',');
-		EnemyBase* enemy = nullptr;
 
-		// 構造体に合わせて読込データを格納
-		EnemyBase::EnemyData data = EnemyBase::EnemyData();
+		// カンマ区切りで分割
+		strSplit = AsoUtility::Split(line, ',');
+
+		EnemyBase::EnemyData data{};
+
 		int idx = 0;
+
 		// ID
 		data.id = stoi(strSplit[idx++]);
+
 		// 種別
-		data.type = static_cast<EnemyBase::TYPE>(stoi(strSplit[idx++]));
+		data.type =
+			static_cast<EnemyBase::TYPE>(
+				stoi(strSplit[idx++])
+				);
+
 		// HP
 		data.hp = stoi(strSplit[idx++]);
+
 		// 初期座標
 		data.defaultPos =
 		{
-		stof(strSplit[idx++]),
-		stof(strSplit[idx++]),
-		stof(strSplit[idx++])
+			stof(strSplit[idx++]),
+			stof(strSplit[idx++]),
+			stof(strSplit[idx++])
 		};
 
-		//移動範囲
+		// 移動範囲
 		data.movableRange = stoi(strSplit[idx++]);
 
-		//生成ウェーブ
+		// 生成ウェーブ
 		data.wave = stoi(strSplit[idx++]);
 
-		if (data.wave == static_cast<int>(wave_))
-		{
-			EnemyBase* newEnemy = Create(data, player_);
-
-		}
+		// 敵を生成せず、データだけ保存
+		enemyData_.emplace_back(data);
 	}
+
 	ifs.close();
 }
 
@@ -206,7 +222,12 @@ EnemyBase* EnemyManager::Create(const EnemyBase::EnemyData& data, const Player* 
 
 		enemies_.emplace_back(enemy);
 
-		SpawnEffect(enemy->GetTransform().pos);
+		//一旦原因がわかるまではスポーンエフェクトをボスWAVEのみにする
+		if (wave_ == WAVE::BOSS)
+		{
+			SpawnEffect(enemy->GetTransform().pos);
+		}
+		
 	}
 
 	return enemy;
@@ -420,12 +441,21 @@ void EnemyManager::ChangeWave(WAVE wave)
 
 void EnemyManager::LoadWaveData(WAVE wave)
 {
+	// 現在のWAVEを更新
 	wave_ = wave;
 
-	//WAVE切り替え
+	// WAVE切り替え
 	ChangeWave(wave_);
-	//敵生成
-	LoadCsvData();
+
+	// 現在のWAVEに該当する敵だけ生成
+	for (const auto& data : enemyData_)
+	{
+		if (data.wave ==
+			static_cast<int>(wave_))
+		{
+			Create(data, player_);
+		}
+	}
 }
 
 

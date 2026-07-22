@@ -234,6 +234,10 @@ void EnemyDragon::ChangeStateFlayIdle()
 
 	useGrabity_ = false;
 	pow = 1;
+
+	animationController_->SetIgnoreRootMove(true);
+	animationController_->SetDynamicOffset(true);
+
 	// 待機アニメーション再生
 	animationController_->Play(
 		static_cast<int>(ANIM_TYPE::FRY_IDLE), true);
