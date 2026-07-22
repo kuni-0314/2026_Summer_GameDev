@@ -130,8 +130,8 @@ void AnimationController::UpdateBeforeAnimation()
 		mix = MMult(mix, MGetScale(scl)); // 大きさ
 		mix = MMult(mix, rot); // 回転
 		// ここでローカル座標を行列に、そのまま戻さず、
-			// 調整したローカル座標を設定する
-		if (isDynamicOffset_)
+		// 調整したローカル座標を設定する
+		if (isDynamicOffsetY_)
 		{
 			// 動的に設定
 			VECTOR offset = { 0.0f, pos.y, 0.0f };

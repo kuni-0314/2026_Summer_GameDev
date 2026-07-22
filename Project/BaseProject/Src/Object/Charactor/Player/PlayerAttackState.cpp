@@ -374,7 +374,6 @@ PlayerAttackState::ATTACK_TYPE PlayerAttackState::GetNextAttackType(Player* play
 		// アニメーション再生
 		player->GetAnimationController()->SetDynamicOffset(true);
 		player->GetAnimationController()->SetRootFrameParams(true, "mixamorig:Hips", { 0.0f, 97.0f, 0.0f });
-		player->GetAnimationController()->SetDynamicOffset(true);
 		player->GetAnimationController()->Play(
 			static_cast<int>(Player::ANIM_TYPE::ATK_H), false, true);
 		AudioManager::GetInstance()->PlaySE(SoundID::SE_ATTACK_1);

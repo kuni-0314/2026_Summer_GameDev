@@ -59,7 +59,7 @@ public:
 	void SetRootMoveOffset(const VECTOR& offset) { rootMoveOffset_ = offset; }
 
 	// 動的オフセットを有効にするかどうか
-	void SetDynamicOffset(bool isDynamicOffset) { isDynamicOffset_ = isDynamicOffset; }
+	void SetDynamicOffset(bool isDynamicOffset) { isDynamicOffsetY_ = isDynamicOffset; }
 
 	// ルートフレームの設定をまとめて行う
 	void SetRootFrameParams(bool isIgnore, int frameNo, const VECTOR& offset)
@@ -113,7 +113,7 @@ private:
 	VECTOR rootMoveOffset_ = { 0.0f, 0.0f, 0.0f };
 
 	// 動的オフセットを有効にするかどうか
-	bool isDynamicOffset_;
+	bool isDynamicOffsetY_;
 
 	// アニメーションの停止状態
 	bool isStopped_ = false;
