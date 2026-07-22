@@ -112,6 +112,24 @@ void Player::Update()
 	UpdateProcessPost();
 
 
+	const float LOW_HP_THRESHOLD = 0.2f;
+	static bool isLowHpEffectActive = false;
+	if (hp_ <= MAX_HP * LOW_HP_THRESHOLD)
+	{
+		if (!isLowHpEffectActive)
+		{
+			gameScene_->SetLowHpEffect();
+			isLowHpEffectActive = true;
+		}
+	}
+	if (hp_ > MAX_HP * LOW_HP_THRESHOLD)
+	{
+		if (isLowHpEffectActive)
+		{
+			gameScene_->SetLowHpEffect();
+			isLowHpEffectActive = false;
+		}
+	}
 	// hp‚Ìindex‚Í4Aluck‚Ìindex‚Í9
 	//if (InputManager::GetInstance()->IsTrgDown(KEY_INPUT_UP))
 	//{
@@ -184,6 +202,7 @@ void Player::Damage(int damage, const VECTOR& hitDir)
 
 		return;
 	}
+
 
 	gameScene_->ShakeHpUI();
 

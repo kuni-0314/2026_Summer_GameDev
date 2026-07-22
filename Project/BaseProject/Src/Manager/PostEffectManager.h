@@ -48,6 +48,7 @@ public:
 		FADE_WHITE,
 		ZOOM_IN_RADIAL_BLUR,
 		FH_GAME_START,
+		FH_LOW_HP,
 		MAX
 	};
 

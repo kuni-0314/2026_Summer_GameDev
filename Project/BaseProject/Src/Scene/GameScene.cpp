@@ -232,18 +232,57 @@ void GameScene::Update()
 	// エフェクト時間更新
 	effectTime_ += sceMng_.GetDeltaTime();
 
+	auto& pstEfcMngIns = PostEffectManager::GetInstance();
+	static float radialBlurParam = 0.0f;
+	const float MAX_RADIAL_BLUR_PARAM = 0.05f;
+	const float RADIAL_BLUR_STEP = 0.0025f;
 	if (player_->IsRolling())
 	{
-		currentEffect_ = PostEffectManager::EFFECT_TYPE::RADIAL_BLUR;
+		if (radialBlurParam == 0.0f)
+		{
+			ToggleEffect(PostEffectManager::EFFECT_TYPE::RADIAL_BLUR);
+		}
+
+		if (radialBlurParam < MAX_RADIAL_BLUR_PARAM)
+		{
+			radialBlurParam += RADIAL_BLUR_STEP;
+		}
+		else
+		{
+			radialBlurParam = MAX_RADIAL_BLUR_PARAM;
+		}
 	}
 	else
 	{
-		currentEffect_ = PostEffectManager::EFFECT_TYPE::NORMAL;
+		if (radialBlurParam == MAX_RADIAL_BLUR_PARAM)
+		{
+			ToggleEffect(PostEffectManager::EFFECT_TYPE::RADIAL_BLUR);
+		}
+
+		if (radialBlurParam > 0.0f)
+		{
+			radialBlurParam -= RADIAL_BLUR_STEP;
+		}
+		else
+		{
+			radialBlurParam = 0.0f;
+		}
 	}
 
-	PostEffectManager::EffectParams params = { -0.05f, 0.0f, 0.0f, 0.0f };
-	auto& pstEfcMngIns = PostEffectManager::GetInstance();
+	PostEffectManager::EffectParams params = { radialBlurParam, 0.0f, 0.0f, 0.0f };
 	pstEfcMngIns.SetCustomParams(PostEffectManager::EFFECT_TYPE::RADIAL_BLUR, params);
+
+	// x: 強度（減光の急峻さ）, y: 範囲（減光が始まる距離）
+	const float STANDARD_VIGNETTE_INTENSITY = 0.5f;
+	const float STANDARD_VIGNETTE_RANGE = 0.85f;
+	// 0から1までの値をsinで変化させる
+	static float time = 0.0f;
+	time += SceneManager::GetInstance().GetDeltaTime();
+	float sinWaveValue = sin(time * 2.0f * DX_PI_F) * 0.5f + 0.5f;
+	float vignetteIntensity = STANDARD_VIGNETTE_INTENSITY + 1.0f * sinWaveValue;
+	float vignetteRange = STANDARD_VIGNETTE_RANGE + 1.0f * sinWaveValue;
+	params = { vignetteIntensity, vignetteRange, 0.0f, 0.0f };
+	pstEfcMngIns.SetCustomParams(PostEffectManager::EFFECT_TYPE::FH_LOW_HP, params);
 
 	// モード切り替え (テンキー5)
 	if (ins->IsTrgDown(KEY_INPUT_NUMPAD5))
@@ -255,19 +294,19 @@ void GameScene::Update()
 	//if (!multiEffectMode_)
 	//{
 		// エフェクト切り替え (テンキー4/6)
-		if (ins->IsTrgDown(KEY_INPUT_NUMPAD4))
-		{
-			int current = static_cast<int>(currentEffect_);
-			current = (current - 1 + static_cast<int>(PostEffectManager::EFFECT_TYPE::MAX)) %
-				static_cast<int>(PostEffectManager::EFFECT_TYPE::MAX);
-			currentEffect_ = static_cast<PostEffectManager::EFFECT_TYPE>(current);
-		}
-		if (ins->IsTrgDown(KEY_INPUT_NUMPAD6))
-		{
-			int current = static_cast<int>(currentEffect_);
-			current = (current + 1) % static_cast<int>(PostEffectManager::EFFECT_TYPE::MAX);
-			currentEffect_ = static_cast<PostEffectManager::EFFECT_TYPE>(current);
-		}
+	if (ins->IsTrgDown(KEY_INPUT_NUMPAD4))
+	{
+		int current = static_cast<int>(currentEffect_);
+		current = (current - 1 + static_cast<int>(PostEffectManager::EFFECT_TYPE::MAX)) %
+			static_cast<int>(PostEffectManager::EFFECT_TYPE::MAX);
+		currentEffect_ = static_cast<PostEffectManager::EFFECT_TYPE>(current);
+	}
+	if (ins->IsTrgDown(KEY_INPUT_NUMPAD6))
+	{
+		int current = static_cast<int>(currentEffect_);
+		current = (current + 1) % static_cast<int>(PostEffectManager::EFFECT_TYPE::MAX);
+		currentEffect_ = static_cast<PostEffectManager::EFFECT_TYPE>(current);
+	}
 	//}
 	// 複数エフェクトモード
 	//else
@@ -408,22 +447,22 @@ void GameScene::Draw()
 	//if (!multiEffectMode_)
 	//{
 		// 単一エフェクトモード
-		PostEffectManager::GetInstance().ApplyEffect(
-			currentEffect_,
+		//PostEffectManager::GetInstance().ApplyEffect(
+		//	currentEffect_,
+		//	tempScreen,
+		//	postEffectScreen_,
+		//	effectTime_
+		//);
+	//}
+	//else
+	//{
+		// 複数エフェクトモード
+		PostEffectManager::GetInstance().ApplyEffects(
+			activeEffects_,
 			tempScreen,
 			postEffectScreen_,
 			effectTime_
 		);
-	//}
-	//else
-	//{
-	//	// 複数エフェクトモード
-	//	PostEffectManager::GetInstance().ApplyEffects(
-	//		activeEffects_,
-	//		tempScreen,
-	//		postEffectScreen_,
-	//		effectTime_
-	//	);
 	//}
 
 	PlayerHpDraw();
@@ -619,6 +658,11 @@ void GameScene::CheckHitEnemy(const VECTOR& pos, float radius, int damage)
 	enemyManager_->CheckHit(pos, radius, damage);
 }
 
+void GameScene::SetLowHpEffect()
+{
+	ToggleEffect(PostEffectManager::EFFECT_TYPE::FH_LOW_HP);
+}
+
 void GameScene::SelectCommand(COMMAND command)
 {
 	selectCommand_ = command;
@@ -695,6 +739,10 @@ const char* GameScene::GetEffectName(PostEffectManager::EFFECT_TYPE effectType)
 	case PostEffectManager::EFFECT_TYPE::SNOW_STORM: return "SnowStorm";
 	case PostEffectManager::EFFECT_TYPE::SCREEN_SHAKE: return "ScreenShake";
 	case PostEffectManager::EFFECT_TYPE::CRT: return "CRT";
+	case PostEffectManager::EFFECT_TYPE::FADE_WHITE: return "CRT";
+	case PostEffectManager::EFFECT_TYPE::ZOOM_IN_RADIAL_BLUR: return "ZoomInRadialBlur";
+	case PostEffectManager::EFFECT_TYPE::FH_GAME_START: return "FH_GameStart";
+	case PostEffectManager::EFFECT_TYPE::FH_LOW_HP: return "FH_Low_HP";
 	default: return "Unknown";
 	}
 }
@@ -823,17 +871,21 @@ void GameScene::PlayerFaceUIDraw()
 void GameScene::UpdateHpUI()
 {
 	const float SHAKE_SPEED = 30.0f;
+	static float time = 0.0f;
+
 	if (isHpUIShake_)
 	{
-		float speed = SHAKE_SPEED * sceMng_.GetDeltaTime();
-		static float time = 0.0f;
-		time += speed;
-		hpUIOffsetY_ += sinf(time) * shakePow_;
-		shakePow_ *= SHAKE_DECREASE; // 徐々に減衰させる
-		if (hpUIOffsetY_ < 0.1f && hpUIOffsetY_ > -0.1f)
+		time += SHAKE_SPEED * sceMng_.GetDeltaTime();
+
+		hpUIOffsetY_ = sinf(time) * shakePow_;
+
+		shakePow_ *= SHAKE_DECREASE;
+
+		if (shakePow_ < 0.1f)
 		{
 			isHpUIShake_ = false;
 			hpUIOffsetY_ = 0.0f;
+			time = 0.0f;
 		}
 	}
 	else
