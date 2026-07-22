@@ -320,6 +320,9 @@ void EnemyBase::CheckPlayerMagicCollision()
 
 				HitEffect(hitPos, VNorm(VSub(hitPos, transform_.pos)), 1.5f);
 
+				// Fire‚ðÁ‚·
+				player_->DeleteFireEffect();
+
 				// ˆê“x‚ ‚Á‚½‚çƒtƒ‰ƒO
 				wasHitMagic_ = true;
 				RemoveHitCollider(hitCol);

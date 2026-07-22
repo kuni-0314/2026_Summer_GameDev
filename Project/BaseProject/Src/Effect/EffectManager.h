@@ -29,6 +29,8 @@ public:
     // エフェクトの描画（全エフェクトの描画）
     void Draw() const;
 
+	void Release();
+
     // 全エフェクトの強制削除（ステージ切り替え時などに使用）
     void Clear();
 

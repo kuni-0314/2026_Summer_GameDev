@@ -32,8 +32,7 @@ void EnemyDragon::Draw(void)
 {
 	EnemyBase::Draw();
 
-#ifdef _DEBUG
-
+	
 	DrawSphere3D(breathTopPos_, 10.0f, 10, 0xffffff, 0xffffff, true);
 
 	
@@ -51,12 +50,11 @@ void EnemyDragon::Draw(void)
 
 	}
 
-#endif
-
 }
 
 void EnemyDragon::Release(void)
 {
+	EffectManager::GetInstance().Release();
 }
 
 void EnemyDragon::InitLoad()
@@ -206,6 +204,17 @@ void EnemyDragon::UpdateProcessPost()
 
 }
 
+void EnemyDragon::LandingEffect(const VECTOR& pos, const VECTOR& normal, float size)
+{
+	auto effect = std::make_shared<EffekseerEffect>(
+		L"Data/Effect/Smoke/Smoke2.efkefc",
+		transform_.pos);
+
+	effect->Play(transform_.pos, transform_.quaRot);
+
+	EffectManager::GetInstance().RegisterEffect(effect);
+}
+
 void EnemyDragon::ChangeState(STATE state)
 {
 	state_ = state;
@@ -236,14 +245,13 @@ void EnemyDragon::ChangeStateFlayIdle()
 	stateUpdate_ = std::bind(&EnemyDragon::UpdateFlayIdle, this);
 
 	useGrabity_ = false;
-	pow = 1;
+	pow = 1;  // 離陸エフェクト未再生
 
-	animationController_->SetupRootMotionControl(false, "Root");
+	isTakeOffEffect_ = false;
 
 	// 待機アニメーション再生
 	animationController_->Play(
 		static_cast<int>(ANIM_TYPE::FRY_IDLE), true);
-
 }
 
 void EnemyDragon::ChangeStateBreath()
@@ -259,6 +267,7 @@ void EnemyDragon::ChangeStateBreath()
 	// 待機アニメーション再生
 	animationController_->Play(
 		static_cast<int>(ANIM_TYPE::BREARH), false);
+
 }
 
 void EnemyDragon::ChangeStateTornado()
@@ -333,6 +342,16 @@ void EnemyDragon::UpdateFlayIdle()
 		transform_.pos.y += pow;
 	}
 
+	// 地上から飛び立つ時だけ
+	if (!isTakeOffEffect_ && transform_.pos.y <= 0.0f)
+	{
+		isTakeOffEffect_ = true;
+
+		// 離陸エフェクトを再生
+		LandingEffect(transform_.pos, AsoUtility::VECTOR_ZERO, 1.0f);
+	}
+
+
 	if(landing_)
 	{
 		transform_.pos.y -= 5;
@@ -340,6 +359,9 @@ void EnemyDragon::UpdateFlayIdle()
 		if (transform_.pos.y < -40)
 		{
 			landing_ = false;
+
+			LandingEffect(transform_.pos, AsoUtility::VECTOR_ZERO, 1.0f);
+		
 			ChangeState(STATE::LANDING);
 		}
 	}
@@ -375,6 +397,7 @@ void EnemyDragon::UpdateFlayIdle()
 				}
 				else
 				{
+					//地面に降りる
 					landing_ = true;
 				}
 			}
@@ -415,11 +438,29 @@ void EnemyDragon::UpdateBreath()
 		player_->SetWasHitDamage(false);
 		//ブレス終了後、次の状態へ
 		ChangeState(STATE::IDLE);
+		if (breathInfo_.effect)
+		{
+			breathInfo_.effect->Stop();
+			breathInfo_.effect.reset();
+		}
 	}
 	//ブレス位置更新
 	breathInfo_.transform.pos = breathTopPos_;
-	//更新
+
+	//// ドラゴンの正面方向
+	//VECTOR dir = transform_.quaRot.GetForward();
+
+	//// 回転を作成
+	//Quaternion breathRot = Quaternion::LookRotation(dir);
+
+	//breathInfo_.transform.quaRot = breathRot;
 	breathInfo_.transform.Update();
+
+	if (breathInfo_.effect)
+	{
+		breathInfo_.effect->SetPosition(breathTopPos_);
+		//breathInfo_.effect->SetRotation(breathRot);
+	}
 }
 
 void EnemyDragon::UpdateTornado()
@@ -446,6 +487,15 @@ void EnemyDragon::UpdateTornado()
 			VAdd(tornadoInfo_[i].transform.pos,VScale(tornadoInfo_[i].moveDir, speed));
 
 		tornadoInfo_[i].transform.Update();
+		if (tornadoInfo_[i].effect)
+		{
+			tornadoInfo_[i].effect->SetPosition(
+				tornadoInfo_[i].transform.pos);
+
+			tornadoInfo_[i].effect->SetRotation(
+				Quaternion::LookRotation(
+					tornadoInfo_[i].moveDir));
+		}
 
 		//移動距離
 		float dist = VSize(VSub(tornadoInfo_[i].transform.pos, tornadoInfo_[i].startPos)); //移動距離
@@ -453,6 +503,11 @@ void EnemyDragon::UpdateTornado()
 	
 		if (dist >= MAX_DIST)
 		{
+			if (tornadoInfo_[i].effect)
+			{
+				tornadoInfo_[i].effect->Stop();
+				tornadoInfo_[i].effect.reset();
+			}
 			DestoryTornadoCollider(tornadoInfo_[i]);
 			tornadoInfo_[i].isDestory = true;
 		}
@@ -476,6 +531,7 @@ void EnemyDragon::UpdateLanding()
 {
 	if (animationController_->IsEnd())
 	{
+		isTakeOffEffect_ = false;
 		ChangeState(STATE::IDLE);
 	}
 }
@@ -514,6 +570,28 @@ void EnemyDragon::CreateBreath()
 	breathInfo_.transform.pos = breathTopPos_;
 
 	CreateBreathCollider(breathInfo_);
+	//ドラゴンが生きてる間
+	if (isAlive_ == true)
+	{
+		// ブレスエフェクト生成
+		breathInfo_.effect =
+			std::make_shared<EffekseerEffect>(
+				L"Data/Effect/Breath/Breath2.efkefc",
+				breathTopPos_);
+
+		breathInfo_.effect->Play(breathTopPos_, transform_.quaRot);
+
+		EffectManager::GetInstance().RegisterEffect(breathInfo_.effect);
+	}
+	else
+	{
+		// エフェクト停止
+		if (breathInfo_.effect)
+		{
+			breathInfo_.effect->Stop();
+			breathInfo_.effect.reset();
+		}
+	}
 }
 
 
@@ -549,7 +627,7 @@ void EnemyDragon::CreateTornado()
 	for (int i = 0; i < tornadoCount_; i++)
 	{
 		const float spawnRadius = 1000.0f;
-		const float tornadoY = 90.0f;
+		const float tornadoY = 150.0f;
 
 		// プレイヤー座標
 		VECTOR playerPos = player_->GetPos();
@@ -577,6 +655,32 @@ void EnemyDragon::CreateTornado()
 
 		//コライダー生成
 		CreateTornadoCollider(tornadoInfo_[i]);
+		
+		//ドラゴンが生きている間
+		if (isAlive_ == true)
+		{
+			// エフェクト生成
+			tornadoInfo_[i].effect =
+				std::make_shared<EffekseerEffect>(
+					L"Data/Effect/Breath/Breath3.efkefc",
+					tornadoInfo_[i].transform.pos);
+
+			tornadoInfo_[i].effect->Play(
+				tornadoInfo_[i].transform.pos,
+				Quaternion::LookRotation(tornadoInfo_[i].moveDir));
+
+			EffectManager::GetInstance().RegisterEffect(
+				tornadoInfo_[i].effect);
+		}
+		else
+		{
+			// エフェクト停止
+			if (tornadoInfo_[i].effect)
+			{
+				tornadoInfo_[i].effect->Stop();
+				tornadoInfo_[i].effect.reset();
+			}
+		}
 	}
 
 }

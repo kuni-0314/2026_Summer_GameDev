@@ -1,6 +1,7 @@
 #include "../../Manager/ResourceManager.h"
 #include "../../Manager/SceneManager.h"
 #include "../../Object/Collider/ColliderBase.h"
+#include "../../Effect/EffectManager.h"
 #include "ActorBase.h"
 
 ActorBase::ActorBase()
@@ -54,6 +55,10 @@ void ActorBase::Draw()
 void ActorBase::Release()
 {
 	transform_.Release();
+
+	//エフェクト解放
+	EffectManager::GetInstance().Clear();
+	EffectManager::GetInstance().Release();
 
 	// 自身のコライダ解放
 	for (auto& own : ownColliders_)
