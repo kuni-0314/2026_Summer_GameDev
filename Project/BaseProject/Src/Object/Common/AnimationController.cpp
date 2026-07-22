@@ -213,6 +213,19 @@ void AnimationController::SetRootFrameNo(const std::string& frameName)
 	rootFrameNo_ = MV1SearchFrame(modelId_, frameName.c_str());
 }
 
+
+void AnimationController::SetupRootMotionControl(bool isEnabled, const std::string& frameName)
+{
+	SetIgnoreRootMove(isEnabled);
+	// ルート無視するなら動的とか固定値とか設定したところで意味がない。
+	if (isEnabled)
+	{
+		SetDynamicOffset(isEnabled);
+		SetRootFrameNo(frameName);
+		//SetRootMoveOffset(VECTOR{ 0.0f, 0.0f, 0.0f });	// なくても変わらない
+	}
+}
+
 int AnimationController::GetAnimFrameNum()
 {
 	return MV1GetAttachAnimTime(modelId_, playAnim_.attachNo);

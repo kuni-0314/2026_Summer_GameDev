@@ -14,8 +14,9 @@ void PlayerRollState::Enter(Player* player)
 	player->SetInvincible(true);
 
 	// アニメーション再生
-	player->GetAnimationController()->SetRootFrameParams(true, "mixamorig:Hips", VECTOR());
-	player->GetAnimationController()->SetDynamicOffset(true);
+	//player->GetAnimationController()->SetRootFrameParams(true, "mixamorig:Hips");
+	//player->GetAnimationController()->SetDynamicOffset(true);
+	player->GetAnimationController()->SetupRootMotionControl(true, "mixamorig:Hips");
 	player->GetAnimationController()->Play(
 		static_cast<int>(Player::ANIM_TYPE::ROLLING), false, true);
 }
@@ -66,7 +67,8 @@ void PlayerRollState::Exit(Player* player)
 
 	player->SetInvincible(false);
 
-	player->GetAnimationController()->SetIgnoreRootMove(false);
-	player->GetAnimationController()->SetDynamicOffset(false);
+	//player->GetAnimationController()->SetIgnoreRootMove(false);
+	//player->GetAnimationController()->SetDynamicOffset(false);
 
+	player->GetAnimationController()->SetupRootMotionControl(false);
 }
