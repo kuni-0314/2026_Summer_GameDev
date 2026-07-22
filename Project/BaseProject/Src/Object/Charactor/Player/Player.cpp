@@ -50,6 +50,21 @@ Player::~Player()
 
 void Player::Update()
 {
+	// 無敵フレームのカウントダウン
+	if (invincibleFrameCount_ > 0)
+	{
+		invincibleFrameCount_--;
+	}
+
+	if (invincibleFrameCount_ <= 0)
+	{
+		isInvincible_ = false;
+	}
+	else
+	{
+		isInvincible_ = true;
+	}
+
 	// 移動前座標を更新
 	prevPos_ = transform_.pos;
 
@@ -155,8 +170,10 @@ void Player::Update()
 
 void Player::Damage(int damage, const VECTOR& hitDir)
 {
-	if (isInvincible_) return;
-
+	if (isInvincible_)
+	{
+		return;
+	}
 	auto dir = VNorm(hitDir);
 	knockbackPow_ = VScale(dir, 4.0f);
 

@@ -48,7 +48,7 @@ void CharactorBase::Update()
 		invincibleFrameCount_--;
 	}
 
-	if (isInvincible_ <= 0)
+	if (invincibleFrameCount_ <= 0)
 	{
 		isInvincible_ = false;
 	}

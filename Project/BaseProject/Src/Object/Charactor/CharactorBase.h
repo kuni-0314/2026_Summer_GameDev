@@ -141,7 +141,7 @@ protected:
 	};
 	WEIGHT weight_;
 	// –³“GƒtƒŒ[ƒ€”
-	static constexpr int INVINCIBLE_FRAME_COUNT = 10;
+	static constexpr int INVINCIBLE_FRAME_COUNT = 30;
 	int invincibleFrameCount_ = 0;
 	bool isInvincible_;
 private:
