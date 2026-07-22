@@ -40,7 +40,7 @@ void EnemyLarge::Draw(void)
 		MV1DrawModel(ringModelHandle_);
 	}
 
-#ifdef _DEBUGa
+#ifdef _DEBUG
 	DrawSphere3D(attackWorldPos_, COL_SPHERE_RADIUS, 16, GetColor(255, 0, 0), GetColor(255, 0, 0), false);
 
 	STATE next = state_;

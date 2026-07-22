@@ -32,7 +32,8 @@ void EnemyDragon::Draw(void)
 {
 	EnemyBase::Draw();
 
-	
+#ifdef _DEBUG
+
 	DrawSphere3D(breathTopPos_, 10.0f, 10, 0xffffff, 0xffffff, true);
 
 	
@@ -49,6 +50,8 @@ void EnemyDragon::Draw(void)
 		DrawSphere3D(Pos, 100.0f, 16, 0xff00ff, 0xff00ff, false);
 
 	}
+
+#endif
 
 }
 
@@ -235,8 +238,7 @@ void EnemyDragon::ChangeStateFlayIdle()
 	useGrabity_ = false;
 	pow = 1;
 
-	animationController_->SetIgnoreRootMove(true);
-	animationController_->SetDynamicOffset(true);
+	animationController_->SetupRootMotionControl(false, "Root");
 
 	// 待機アニメーション再生
 	animationController_->Play(
