@@ -137,7 +137,40 @@ void ResourceManager::Init()
 	// 赤色セル
 	res = new RES(RES_T::IMG, PATH_IMG + "Blocks/RedBlock.png");
 	resourcesMap_.emplace(SRC::CELL_RED, res);
+	// オプション枠
+	res = new RES(RES_T::IMG, PATH_IMG + "UI/Option_Frame.png");
+	resourcesMap_.emplace(SRC::OPTION_FRAME, res);	//mapに登録
 
+	// チュートリアル画像
+	res = new RES(RES_T::IMG, PATH_IMG + "Tutorial/Tutorial_Mouse.png");
+	resourcesMap_.emplace(SRC::IMG_TUTORIAL_KEYBOARD, res);	//mapに登録
+
+	res = new RES(RES_T::IMG, PATH_IMG + "Tutorial/Tutorial_PAD.png");
+	resourcesMap_.emplace(SRC::IMG_TUTORIAL_GAMEPAD, res);	//mapに登録
+
+	// オプション背景
+	res = new RES(RES_T::IMG, PATH_IMG + "Title.png");
+	resourcesMap_.emplace(SRC::OPTION_BACKGROUND, res);	//mapに登録
+
+	// スライダー枠
+	res = new RES(RES_T::IMG, PATH_IMG + "UI/SliderFrame.png");
+	resourcesMap_.emplace(SRC::SLIDER_FRAME, res);	//mapに登録
+
+	// スライダーノブ
+	res = new RES(RES_T::IMG, PATH_IMG + "UI/SliderKnob.png");
+	resourcesMap_.emplace(SRC::SLIDER_KNOB, res);	//mapに登録
+
+	// チェックボックスON
+	res = new RES(RES_T::IMG, PATH_IMG + "UI/CheckON.png");
+	resourcesMap_.emplace(SRC::CHECKBOX_ON, res);	//mapに登録
+	// チェックボックスOFF
+	res = new RES(RES_T::IMG, PATH_IMG + "UI/CheckOFF.png");
+	resourcesMap_.emplace(SRC::CHECKBOX_OFF, res);	//mapに登録
+	//ゲームクリア画像
+	res = new RES(RES_T::IMG, PATH_IMG + "Clear/GameClear.png");
+	resourcesMap_.emplace(SRC::IMG_GAMECLEAR, res);	//mapに登録
+
+	//3Dモデル
 	//ゲームステージ
 	res = new RES(RES_T::MODEL, PATH_MDL + "Stage/MainStage/GameStage/Stage2.mv1");
 	resourcesMap_.emplace(SRC::BATTLE_STAGE, res);	//mapに登録
@@ -164,27 +197,7 @@ void ResourceManager::Init()
 	res = new RES(RES_T::MODEL, PATH_MDL + "Player/Player_GameOver.mv1");
 	resourcesMap_.emplace(SRC::PLAYER_GAMEOVER, res);	//mapに登録
 
-	// オプション背景
-	res = new RES(RES_T::IMG, PATH_IMG + "Title.png");
-	resourcesMap_.emplace(SRC::OPTION_BACKGROUND, res);	//mapに登録
-
-	// スライダー枠
-	res = new RES(RES_T::IMG, PATH_IMG + "UI/SliderFrame.png");
-	resourcesMap_.emplace(SRC::SLIDER_FRAME, res);	//mapに登録
-
-	// スライダーノブ
-	res = new RES(RES_T::IMG, PATH_IMG + "UI/SliderKnob.png");
-	resourcesMap_.emplace(SRC::SLIDER_KNOB, res);	//mapに登録
-
-	// チェックボックスON
-	res = new RES(RES_T::IMG, PATH_IMG + "UI/CheckON.png");
-	resourcesMap_.emplace(SRC::CHECKBOX_ON, res);	//mapに登録
-	// チェックボックスOFF
-	res = new RES(RES_T::IMG, PATH_IMG + "UI/CheckOFF.png");
-	resourcesMap_.emplace(SRC::CHECKBOX_OFF, res);	//mapに登録
-
 	//モデル登録 
-
 	//プレイヤーモデル
 	res = new RES(RES_T::MODEL, PATH_MDL + "Player/Idle.mv1");
 	resourcesMap_.emplace(SRC::PLAYER, res);	//mapに登録
@@ -255,16 +268,6 @@ void ResourceManager::Init()
 	res = new RES(RES_T::EFFEKSEER, PATH_EFF + "Death/Death.efkefc");
 	resourcesMap_.emplace(SRC::EFFECT_DEATH, res);	//mapに登録
 
-	// オプション枠
-	res = new RES(RES_T::IMG, PATH_IMG + "UI/Option_Frame.png");
-	resourcesMap_.emplace(SRC::OPTION_FRAME, res);	//mapに登録
-
-	// チュートリアル画像
-	res = new RES(RES_T::IMG, PATH_IMG + "Tutorial/Tutorial_Mouse.png");
-	resourcesMap_.emplace(SRC::IMG_TUTORIAL_KEYBOARD, res);	//mapに登録
-
-	res = new RES(RES_T::IMG, PATH_IMG + "Tutorial/Tutorial_PAD.png");
-	resourcesMap_.emplace(SRC::IMG_TUTORIAL_GAMEPAD, res);	//mapに登録
 
 }
 

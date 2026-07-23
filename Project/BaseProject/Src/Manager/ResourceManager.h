@@ -78,18 +78,19 @@ public:
 		IMG_SELECT_RECOVERY,
 		IMG_SELECT_FIRE,
 		IMG_SELECT_ALL,
-		IMG_NOTUSE_SANDER,
-		IMG_USE_SANDER,
-		IMG_NOTUSE_FIRE,
-		IMG_USE_FIRE,
-		IMG_NOTUSE_RECOVERY,
-		IMG_USE_RECOVERY,
+		IMG_NOTUSE_SANDER,			//使用可能雷魔法
+		IMG_USE_SANDER,				//クールタイム中雷魔法
+		IMG_NOTUSE_FIRE,			//使用可能炎魔法
+		IMG_USE_FIRE,				//クールタイム中炎魔法
+		IMG_NOTUSE_RECOVERY,		//使用可能回復コマンド
+		IMG_USE_RECOVERY,			//クールタイム中回復魔法コマンド
 		OPTION_FRAME,
 		EFFECT_DEATH,				//死亡エフェクト
 		IMG_LOCKON_FONT_UI,			//ロックオン時用UI（フォント）
 		//ENEMY_DRAGON,
 		IMG_TUTORIAL_KEYBOARD,		//チュートリアル画像
 		IMG_TUTORIAL_GAMEPAD,		//チュートリアル画像
+		IMG_GAMECLEAR,				//ゲームクリア画像
 		MAX
 	};
 
