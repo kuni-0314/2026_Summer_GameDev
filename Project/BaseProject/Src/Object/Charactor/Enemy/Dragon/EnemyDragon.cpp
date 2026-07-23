@@ -350,6 +350,8 @@ void EnemyDragon::UpdateFlayIdle()
 	{
 		isTakeOffEffect_ = true;
 
+		AudioManager::GetInstance()->PlaySE(SoundID::SE_DRAGON_LANDING);
+
 		// 離陸エフェクトを再生
 		LandingEffect(transform_.pos, AsoUtility::VECTOR_ZERO, 1.0f);
 	}
@@ -362,6 +364,8 @@ void EnemyDragon::UpdateFlayIdle()
 		if (transform_.pos.y < -40)
 		{
 			landing_ = false;
+
+			AudioManager::GetInstance()->PlaySE(SoundID::SE_DRAGON_LANDING);
 
 			LandingEffect(transform_.pos, AsoUtility::VECTOR_ZERO, 1.0f);
 		
@@ -572,6 +576,9 @@ void EnemyDragon::CreateBreath()
 	//ブレスの開始位置設定
 	breathInfo_.transform.pos = breathTopPos_;
 
+	AudioManager::GetInstance()->PlaySE(SoundID::SE_DRAGON_SHOUT);
+	AudioManager::GetInstance()->PlaySE(SoundID::SE_DRAGON_BREATH);
+
 	CreateBreathCollider(breathInfo_);
 	//ドラゴンが生きてる間
 	if (isAlive_ == true)
@@ -627,6 +634,8 @@ void EnemyDragon::DestoryTornadoCollider(TornadoInfo& tornadoInfo)
 
 void EnemyDragon::CreateTornado()
 {
+	AudioManager::GetInstance()->PlaySE(SoundID::SE_DRAGON_TORNADO);
+
 	for (int i = 0; i < tornadoCount_; i++)
 	{
 		const float spawnRadius = 1000.0f;

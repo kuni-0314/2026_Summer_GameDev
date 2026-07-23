@@ -259,6 +259,13 @@ void ResourceManager::Init()
 	res = new RES(RES_T::IMG, PATH_IMG + "UI/Option_Frame.png");
 	resourcesMap_.emplace(SRC::OPTION_FRAME, res);	//map‚É“o˜^
 
+	// ƒ`ƒ…[ƒgƒŠƒAƒ‹‰æ‘œ
+	res = new RES(RES_T::IMG, PATH_IMG + "Tutorial/Tutorial_Mouse.png");
+	resourcesMap_.emplace(SRC::IMG_TUTORIAL_KEYBOARD, res);	//map‚É“o˜^
+
+	res = new RES(RES_T::IMG, PATH_IMG + "Tutorial/Tutorial_PAD.png");
+	resourcesMap_.emplace(SRC::IMG_TUTORIAL_GAMEPAD, res);	//map‚É“o˜^
+
 }
 
 void ResourceManager::Release()
