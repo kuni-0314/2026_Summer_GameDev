@@ -25,7 +25,8 @@ public:
 		FRY_IDLE,
 		BREARH,
 		TORNADO,
-		LANDING
+		LANDING,
+		DIE,
 	};
 	
 	// èÛë‘

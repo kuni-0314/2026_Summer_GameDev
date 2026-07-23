@@ -249,6 +249,9 @@ void EnemyDragon::ChangeStateFlayIdle()
 
 	isTakeOffEffect_ = false;
 
+	animationController_->SetupRootMotionControl(true, "Root");
+
+	
 	// 待機アニメーション再生
 	animationController_->Play(
 		static_cast<int>(ANIM_TYPE::FRY_IDLE), true);
@@ -627,7 +630,7 @@ void EnemyDragon::CreateTornado()
 	for (int i = 0; i < tornadoCount_; i++)
 	{
 		const float spawnRadius = 1000.0f;
-		const float tornadoY = 150.0f;
+		const float tornadoY = 50.0f;
 
 		// プレイヤー座標
 		VECTOR playerPos = player_->GetPos();

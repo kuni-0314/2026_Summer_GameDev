@@ -391,11 +391,11 @@ void Player::UpdateProcess()
 
 	// –‚–@ŠJŽn
 	int activeMagicCount = 0;
-	if (isShortCut_ && ins->IsGamepadTrgDown(InputManager::PadInput::Y, padNum_))
+	if (isShortCut_ && ins->IsGamepadTrgDown(InputManager::PadInput::X, padNum_))
 	{
 		activeMagicCount = 1;
 	}
-	if (isShortCut_ && ins->IsGamepadTrgDown(InputManager::PadInput::X, padNum_))
+	if (isShortCut_ && ins->IsGamepadTrgDown(InputManager::PadInput::Y, padNum_))
 	{
 		activeMagicCount = 2;
 	}
