@@ -406,6 +406,11 @@ void GameScene::Draw()
 {
 	int mainScreen = SceneManager::GetInstance().GetMainScreen();
 
+	// エフェクトを一番手前に描画
+	EffectManager::GetInstance().Draw();
+
+	DrawEffekseer3D();
+
 	// 3D描画
 	skyDome_->Draw();
 	stage_->Draw();
@@ -427,10 +432,7 @@ void GameScene::Draw()
 	}
 
 
-	// エフェクトを一番手前に描画
-	EffectManager::GetInstance().Draw();
 
-	DrawEffekseer3D();
 
 
 	// 一時スクリーンにメイン画面をコピー
