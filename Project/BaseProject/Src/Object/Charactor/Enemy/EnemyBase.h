@@ -49,7 +49,7 @@ public:
 	void Release(void) override;
 
 	//エフェクト
-
+	void HitEffect(const VECTOR& pos, const VECTOR& normal, float size);
 	void HitThunderEffect(const VECTOR& pos, const VECTOR& normal, float size);
 
 	// 球同士の押し出し（Aだけを押し出す）

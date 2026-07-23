@@ -60,7 +60,7 @@ public:
 	void SetInvincible(bool invincible);
 
 
-	void HitEffect(const VECTOR& pos, const VECTOR& normal, float size);
+	//void HitEffect(const VECTOR& pos, const VECTOR& normal, float size);
 
 protected:
 
