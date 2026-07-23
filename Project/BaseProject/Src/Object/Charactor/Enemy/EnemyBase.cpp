@@ -250,7 +250,7 @@ void EnemyBase::CheckPlayerSwordCollision()
 			{
 				// ダメージ処理
 				Damage(1, player_->GetTransform().GetForward());
-
+				AudioManager::GetInstance()->SetSeVolume(200);
 				AudioManager::GetInstance()->PlaySE(SoundID::SE_ENEMY_HIT);
 
 				// エフェクト再生
@@ -328,7 +328,7 @@ void EnemyBase::CheckPlayerMagicCollision()
 				//Damage(1);
 				Damage(1, player_->GetTransform().GetForward());
 
-
+				AudioManager::GetInstance()->SetSeVolume(200);
 				AudioManager::GetInstance()->PlaySE(SoundID::SE_ENEMY_HIT);
 
 				// エフェクト再生

@@ -100,8 +100,8 @@ void GameScene::Init()
 
 	audioHandle_ = LoadSoundMem("Data/Sound/BGM/GameBGM.wav");
 	wargnigHandle_ = LoadSoundMem("Data/Sound/BGM/WarnigBgm.wav");
-	//ChangeVolumeSoundMem(120, audioHandle_);
-	//PlaySoundMem(audioHandle_, DX_PLAYTYPE_LOOP);
+	ChangeVolumeSoundMem(100, wargnigHandle_);
+
 	AudioManager::GetInstance()->PlayBGM(SoundID::BGM_GAME);
 	AudioManager::GetInstance()->SetBgmVolume(100);
 	// ‰¹—Ê
@@ -170,6 +170,27 @@ void GameScene::Update()
 		//selectCommand_ = static_cast<int>(usecommand_);
 	}
 
+
+	if (player_->GetHp() <= 6)
+	{
+		if (!isWarning_)
+		{
+			isWarning_ = true;
+
+	
+			PlaySoundMem(wargnigHandle_, DX_PLAYTYPE_LOOP);
+		}
+	}
+	else
+	{
+		if (isWarning_)
+		{
+			isWarning_ = false;
+
+			StopSoundMem(wargnigHandle_);
+		}
+	}
+
 	if (!enemyManager_->GetEnemyDead())
 	{
 		if (ins->IsGamepadTrgDown(InputManager::PadInput::RB, 0) || InputManager::GetInstance()->IsTrgDown(KEY_INPUT_R))
@@ -182,12 +203,14 @@ void GameScene::Update()
 				VECTOR dir = VNorm(VSub(ePos, pPos));
 				player_->SetMoveDir(dir);
 				sceMng_.GetCamera()->ChangeMode(Camera::MODE::TARGETING);
+				AudioManager::GetInstance()->SetSeVolume(150);
 				AudioManager::GetInstance()->PlaySE(SoundID::SE_LOCKON);
 			}
 			else
 			{
 				camMode_ = CAM_MODE::MANUAL;
 				sceMng_.GetCamera()->ChangeMode(Camera::MODE::MANUAL);
+				AudioManager::GetInstance()->SetSeVolume(150);
 				AudioManager::GetInstance()->PlaySE(SoundID::SE_LOCKON_CHANGE);
 			}
 		}
@@ -371,6 +394,7 @@ void GameScene::Update()
 
 	if (ins->IsTrgDown(KEY_INPUT_UP) /*|| ins->IsTrgDown(KEY_INPUT_E)*/ || ins->IsGamepadTrgDown(InputManager::PadInput::Up, 0))
 	{
+		AudioManager::GetInstance()->SetSeVolume(200);
 		AudioManager::GetInstance()->PlaySE(SoundID::SE_COMMAND_SELECT);
 
 		selectCommand_--;
@@ -382,6 +406,7 @@ void GameScene::Update()
 
 	if (ins->IsTrgDown(KEY_INPUT_DOWN) || ins->IsTrgDown(KEY_INPUT_Q) || ins->IsGamepadTrgDown(InputManager::PadInput::Down, 0))
 	{
+		AudioManager::GetInstance()->SetSeVolume(200);
 		AudioManager::GetInstance()->PlaySE(SoundID::SE_COMMAND_SELECT);
 
 		selectCommand_++;
@@ -468,7 +493,8 @@ void GameScene::Draw()
 	PlayerHpDraw();
 	CommandDraw();
 
-	//DrawFormatString(500, 0, 0xffffff, "HP:%d", player_->GetHp());
+	//
+	// (500, 0, 0xffffff, "HP:%d", player_->GetHp());
 
 	// ÅIŒ‹‰Ê‚ðƒƒCƒ“‰æ–Ê‚É•`‰æ
 	SetDrawScreen(mainScreen);
@@ -659,18 +685,7 @@ void GameScene::SetLowHpEffect()
 
 void GameScene::PlayerDamegeVoice()
 {
-	switch(GetRand(2))
-	{
-	case 0:
-		AudioManager::GetInstance()->PlaySE(SoundID::VOICE_PLAYER_DAMEGE_1);
-		break;
-	case 1:
-		AudioManager::GetInstance()->PlaySE(SoundID::VOICE_PLAYER_DAMEGE_2);
-		break;
-	case 2:
-		AudioManager::GetInstance()->PlaySE(SoundID::VOICE_PLAYER_DAMEGE_3);
-		break;
-	}
+	
 }
 
 void GameScene::SelectCommand(COMMAND command)

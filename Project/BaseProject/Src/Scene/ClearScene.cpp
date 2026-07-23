@@ -50,7 +50,9 @@ void ClearScene::Update()
 	{
 		AudioManager::GetInstance()->StopBGM();
 		AudioManager::GetInstance()->SetSeVolume(150);
-		AudioManager::GetInstance()->PlaySE(SoundID::SE_TITLE_DECISION);
+		
+		
+		(SoundID::SE_TITLE_DECISION);
 		sceMng_.ChangeScene(SceneManager::SCENE_ID::TITLE);
 	}
 

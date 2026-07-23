@@ -399,7 +399,8 @@ void TitleScene::SelectUpdate()
 	if (ins->IsMouseTrgDown(MOUSE_INPUT_LEFT))
 	{
 		//AudioManager::GetInstance()->SetSeVolume(80);
-		AudioManager::GetInstance()->PlaySE(SoundID::SE_TITLE_DECISION);
+		
+		(SoundID::SE_TITLE_DECISION);
 		SelectChange((SELECT)selectCount_);
 	}
 

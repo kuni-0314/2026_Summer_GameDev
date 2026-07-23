@@ -211,6 +211,7 @@ private:
 	void UpdateHpUI();
 
 	int lockOnImageHandle_;
+	bool isWarning_ = false;//åxçêSE
 
 	bool isHpUIShake_ = false;
 	static constexpr float SHAKE_POW_MAX = 8.0f;

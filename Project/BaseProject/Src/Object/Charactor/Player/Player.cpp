@@ -197,6 +197,24 @@ void Player::Damage(int damage, const VECTOR& hitDir)
 	knockbackPow_ = VScale(dir, 4.0f);
 
 	hp_ -= damage;
+
+	//被ダメージSE
+	switch (GetRand(2))
+	{
+	case 0:
+		AudioManager::GetInstance()->SetSeVolume(220);
+		AudioManager::GetInstance()->PlaySE(SoundID::VOICE_PLAYER_DAMEGE_1);
+		break;
+	case 1:
+		AudioManager::GetInstance()->SetSeVolume(220);
+		AudioManager::GetInstance()->PlaySE(SoundID::VOICE_PLAYER_DAMEGE_2);
+		break;
+	case 2:
+		AudioManager::GetInstance()->SetSeVolume(220);
+		AudioManager::GetInstance()->PlaySE(SoundID::VOICE_PLAYER_DAMEGE_3);
+		break;
+	}
+
 	if (hp_ <= 0)
 	{
 		hp_ = 0;
@@ -434,6 +452,7 @@ void Player::UpdateProcess()
 		}
 		else
 		{
+			AudioManager::GetInstance()->SetSeVolume(200);
 			AudioManager::GetInstance()->PlaySE(SoundID::SE_NOT_MAGIC);
 		}
 		break;
@@ -444,6 +463,7 @@ void Player::UpdateProcess()
 		}
 		else
 		{
+			AudioManager::GetInstance()->SetSeVolume(200);
 			AudioManager::GetInstance()->PlaySE(SoundID::SE_NOT_MAGIC);
 		}
 		break;
@@ -454,6 +474,7 @@ void Player::UpdateProcess()
 		}
 		else
 		{
+			AudioManager::GetInstance()->SetSeVolume(200);
 			AudioManager::GetInstance()->PlaySE(SoundID::SE_NOT_MAGIC);
 		}
 		break;
@@ -832,6 +853,7 @@ void Player::DestroyFireCollider(const FireInfo& fireInfo)
 
 void Player::CreateFireMagic()
 {
+	AudioManager::GetInstance()->SetSeVolume(220);
 	AudioManager::GetInstance()->PlaySE(SoundID::VOICE_PLAYER_ATTACK_3);
 	if (!isAliveFire_)
 	{
@@ -865,6 +887,7 @@ void Player::CreateFireMagic()
 
 void Player::CreateThunderMagic()
 {
+	AudioManager::GetInstance()->SetSeVolume(220);
 	AudioManager::GetInstance()->PlaySE(SoundID::VOICE_PLAYER_ATTACK_3);
 	if (!isAliveThunder_)
 	{
@@ -903,6 +926,7 @@ void Player::CreateThunderMagic()
 
 void Player::CreateHealMagic()
 {
+	AudioManager::GetInstance()->SetSeVolume(150);
 	AudioManager::GetInstance()->PlaySE(SoundID::SE_MAGIC_HEAL);
 	HealHp(HEAL_AMOUNT);
 	healCoolTime_ = HEAL_COOL_TIME;
@@ -1008,6 +1032,7 @@ void Player::UpdateMagic()
 
 					CreateThunderCollider(thunderInfos_[i]);
 
+					AudioManager::GetInstance()->SetSeVolume(150);
 					AudioManager::GetInstance()
 						->PlaySE(SoundID::SE_THUNDER);
 
@@ -1136,6 +1161,7 @@ void Player::DragonBreathCheckCollision()
 				Damage(3, transform_.GetForward());
 
 				//ダメージサウンド
+				AudioManager::GetInstance()->SetSeVolume(200);
 				AudioManager::GetInstance()->PlaySE(SoundID::SE_ENEMY_HIT);
 
 				// エフェクト再生
@@ -1204,6 +1230,7 @@ void Player::DragonTornadoCheckCollision()
 				tornadoDamageCoolTime_ = 30;
 
 				//ダメージサウンド
+				AudioManager::GetInstance()->SetSeVolume(200);
 				AudioManager::GetInstance()->PlaySE(SoundID::SE_ENEMY_HIT);
 
 				// エフェクト再生

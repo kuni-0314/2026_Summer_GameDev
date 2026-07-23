@@ -55,7 +55,8 @@ void EnemyLarge::Draw(void)
 	DrawFormatString(0, 200, GetColor(255, 255, 255), "STATE: %s", name);
 	DrawFormatString(0, 250, GetColor(255, 255, 255), "距離: %.2f", distance_);
 
-	DrawFormatString(0, 50, GetColor(255, 255, 255), "Pos: %.2f,2f,2f", transform_.pos.x,transform_.pos.y,transform_.pos.z);
+	//DrawFormatString(0, 50, GetColor(255, 255, 255), "Pos: %d,%d,%d", transform_.pos.x,transform_.pos.y,transform_.pos.z);
+	DrawFormatString(20, 100, 0x000000, "座標(%.2f, %.2f, %.2f)", transform_.pos.x, transform_.pos.y, transform_.pos.z);
 
 	DrawFormatString(500, 250, GetColor(255, 255, 255), "isAttack_", isAttack_);
 
@@ -552,32 +553,38 @@ void EnemyLarge::UpdateAttackPunch()
 void EnemyLarge::UpdateAttackRun()
 {
 
-	////進行方向を決める
-	//if(look_)
-	//{
-	//	//突進開始位置
-	//	startPos = transform_.pos;
-	//	moveDir_ = toPlayer_;
-	//	look_ = false;
-	//}
+	//進行方向を決める
+	if(look_)
+	{
+		//突進開始位置
+		startPos = transform_.pos;
+		look_ = false;
+	}
 
 	//進行方向を決めた後移動
-	
-	float dist =VSize(VSub(transform_.pos, startPos)); //移動距離
+	//float dist =VSize(VSub(transform_.pos, startPos)); //移動距離
 
-	if (distance_ <= SWICH_DISTANCE)
-	{
-		ChangeState(STATE::CHARGE);
-	}
+	//if (distance_ <= SWICH_DISTANCE)
+	//{
+	//	ChangeState(STATE::CHARGE);
+	//}
 
 	//if (dist > ATTACK_RUN_END_POINT)
 	//{
 	//	ChangeState(STATE::CHARGE);
 	//}
 
+	int rand = GetRand(100);
+	if (rand >30)
+	{
+		ChangeState(STATE::ATTACK_DROP);
+	}
+	else
+	{
+		ChangeState(STATE::CHARGE);
+	}
+
 	movePow_ = VScale(moveDir_, moveSpeed_);
-	transform_.Update();
-	
 }
 
 void EnemyLarge::UpdateAttackDrop()
@@ -603,6 +610,8 @@ void EnemyLarge::UpdateAttackDrop()
 
 	if (!attackTriggerRing_ && anim.step >= attackTriggerTime)
 	{
+		AudioManager::GetInstance()->SetSeVolume(300);
+		AudioManager::GetInstance()->PlaySE(SoundID::SE_ENEMY_LARGE_ATTACK_DROP);
 		// 発生の瞬間に一度だけ座標をセット
 		ringTransform_->pos = transform_.pos;
 		ringTransform_->pos.y += 20;

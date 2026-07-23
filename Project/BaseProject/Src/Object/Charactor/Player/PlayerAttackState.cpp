@@ -396,6 +396,7 @@ PlayerAttackState::ATTACK_TYPE PlayerAttackState::GetNextAttackType(Player* play
 		player->GetAnimationController()->SetRootFrameParams(true, "mixamorig:Hips", { 0.0f, 97.0f, 0.0f });
 		player->GetAnimationController()->Play(
 			static_cast<int>(Player::ANIM_TYPE::ATK_H), false, true);
+		AudioManager::GetInstance()->SetSeVolume(200);
 		AudioManager::GetInstance()->PlaySE(SoundID::SE_ATTACK_1);
 		return ATTACK_TYPE::HEAVY;
 	}
@@ -442,9 +443,11 @@ PlayerAttackState::ATTACK_TYPE PlayerAttackState::GetNextAttackType(Player* play
 	{
 		player->GetAnimationController()->Play(
 			static_cast<int>(Player::ANIM_TYPE::ATK_N1), false, true);
+		AudioManager::GetInstance()->SetSeVolume(300);
 		AudioManager::GetInstance()->PlaySE(SoundID::VOICE_PLAYER_ATTACK_1);
 
 		return ATTACK_TYPE::NORMAL1;
+		AudioManager::GetInstance()->SetSeVolume(200);
 		AudioManager::GetInstance()->PlaySE(SoundID::SE_ATTACK_1);
 	}
 	switch (attackType_)
@@ -452,32 +455,42 @@ PlayerAttackState::ATTACK_TYPE PlayerAttackState::GetNextAttackType(Player* play
 	case ATTACK_TYPE::NORMAL1:
 		player->GetAnimationController()->Play(
 			static_cast<int>(Player::ANIM_TYPE::ATK_N2), false, true);
-		AudioManager::GetInstance()->PlaySE(SoundID::VOICE_PLAYER_ATTACK_1);
+		AudioManager::GetInstance()->SetSeVolume(200);
 		AudioManager::GetInstance()->PlaySE(SoundID::SE_ATTACK_1);
+		AudioManager::GetInstance()->SetSeVolume(300);
+		AudioManager::GetInstance()->PlaySE(SoundID::VOICE_PLAYER_ATTACK_1);
 		return ATTACK_TYPE::NORMAL2;
 	case ATTACK_TYPE::NORMAL2:
 		player->GetAnimationController()->Play(
 			static_cast<int>(Player::ANIM_TYPE::ATK_N3), false, true);
-		AudioManager::GetInstance()->PlaySE(SoundID::VOICE_PLAYER_ATTACK_1);
+		AudioManager::GetInstance()->SetSeVolume(200);
 		AudioManager::GetInstance()->PlaySE(SoundID::SE_ATTACK_1);
+		AudioManager::GetInstance()->SetSeVolume(300);
+		AudioManager::GetInstance()->PlaySE(SoundID::VOICE_PLAYER_ATTACK_1);
 		return ATTACK_TYPE::NORMAL3;
 	case ATTACK_TYPE::NORMAL3:
 		player->GetAnimationController()->Play(
 			static_cast<int>(Player::ANIM_TYPE::ATK_N4), false, true);
-		AudioManager::GetInstance()->PlaySE(SoundID::VOICE_PLAYER_ATTACK_2);
+		AudioManager::GetInstance()->SetSeVolume(200);
 		AudioManager::GetInstance()->PlaySE(SoundID::SE_ATTACK_1);
+		AudioManager::GetInstance()->SetSeVolume(300);
+		AudioManager::GetInstance()->PlaySE(SoundID::VOICE_PLAYER_ATTACK_2);
 		return ATTACK_TYPE::NORMAL4;
 	case ATTACK_TYPE::NORMAL4:
 		player->GetAnimationController()->Play(
 			static_cast<int>(Player::ANIM_TYPE::ATK_N5), false, true);
-		AudioManager::GetInstance()->PlaySE(SoundID::VOICE_PLAYER_ATTACK_2);
+		AudioManager::GetInstance()->SetSeVolume(200);
 		AudioManager::GetInstance()->PlaySE(SoundID::SE_ATTACK_1);
+		AudioManager::GetInstance()->SetSeVolume(300);
+		AudioManager::GetInstance()->PlaySE(SoundID::VOICE_PLAYER_ATTACK_3);
 		return ATTACK_TYPE::NORMAL5;
 	default:
 		player->GetAnimationController()->Play(
 			static_cast<int>(Player::ANIM_TYPE::ATK_N1), false, true);
-		AudioManager::GetInstance()->PlaySE(SoundID::VOICE_PLAYER_ATTACK_3);
+		AudioManager::GetInstance()->SetSeVolume(200);
 		AudioManager::GetInstance()->PlaySE(SoundID::SE_ATTACK_1);
+		AudioManager::GetInstance()->SetSeVolume(300);
+		AudioManager::GetInstance()->PlaySE(SoundID::VOICE_PLAYER_ATTACK_3);
 		return ATTACK_TYPE::NORMAL1;
 	}
 }

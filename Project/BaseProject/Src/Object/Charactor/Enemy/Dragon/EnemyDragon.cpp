@@ -357,6 +357,7 @@ void EnemyDragon::UpdateFlayIdle()
 	{
 		isTakeOffEffect_ = true;
 
+		AudioManager::GetInstance()->SetSeVolume(255);
 		AudioManager::GetInstance()->PlaySE(SoundID::SE_DRAGON_LANDING);
 
 		// 離陸エフェクトを再生
@@ -372,6 +373,7 @@ void EnemyDragon::UpdateFlayIdle()
 		{
 			landing_ = false;
 
+			AudioManager::GetInstance()->SetSeVolume(200);
 			AudioManager::GetInstance()->PlaySE(SoundID::SE_DRAGON_LANDING);
 
 			LandingEffect(transform_.pos, AsoUtility::VECTOR_ZERO, 1.0f);
@@ -583,6 +585,7 @@ void EnemyDragon::CreateBreath()
 	//ブレスの開始位置設定
 	breathInfo_.transform.pos = breathTopPos_;
 
+	AudioManager::GetInstance()->SetSeVolume(200);
 	AudioManager::GetInstance()->PlaySE(SoundID::SE_DRAGON_SHOUT);
 	AudioManager::GetInstance()->PlaySE(SoundID::SE_DRAGON_BREATH);
 
@@ -641,6 +644,7 @@ void EnemyDragon::DestoryTornadoCollider(TornadoInfo& tornadoInfo)
 
 void EnemyDragon::CreateTornado()
 {
+	AudioManager::GetInstance()->SetSeVolume(200);
 	AudioManager::GetInstance()->PlaySE(SoundID::SE_DRAGON_TORNADO);
 
 	for (int i = 0; i < tornadoCount_; i++)
