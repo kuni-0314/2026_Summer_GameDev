@@ -442,6 +442,8 @@ PlayerAttackState::ATTACK_TYPE PlayerAttackState::GetNextAttackType(Player* play
 	{
 		player->GetAnimationController()->Play(
 			static_cast<int>(Player::ANIM_TYPE::ATK_N1), false, true);
+		AudioManager::GetInstance()->PlaySE(SoundID::VOICE_PLAYER_ATTACK_1);
+
 		return ATTACK_TYPE::NORMAL1;
 		AudioManager::GetInstance()->PlaySE(SoundID::SE_ATTACK_1);
 	}
@@ -450,27 +452,48 @@ PlayerAttackState::ATTACK_TYPE PlayerAttackState::GetNextAttackType(Player* play
 	case ATTACK_TYPE::NORMAL1:
 		player->GetAnimationController()->Play(
 			static_cast<int>(Player::ANIM_TYPE::ATK_N2), false, true);
+		AudioManager::GetInstance()->PlaySE(SoundID::VOICE_PLAYER_ATTACK_1);
 		AudioManager::GetInstance()->PlaySE(SoundID::SE_ATTACK_1);
 		return ATTACK_TYPE::NORMAL2;
 	case ATTACK_TYPE::NORMAL2:
 		player->GetAnimationController()->Play(
 			static_cast<int>(Player::ANIM_TYPE::ATK_N3), false, true);
+		AudioManager::GetInstance()->PlaySE(SoundID::VOICE_PLAYER_ATTACK_1);
 		AudioManager::GetInstance()->PlaySE(SoundID::SE_ATTACK_1);
 		return ATTACK_TYPE::NORMAL3;
 	case ATTACK_TYPE::NORMAL3:
 		player->GetAnimationController()->Play(
 			static_cast<int>(Player::ANIM_TYPE::ATK_N4), false, true);
+		AudioManager::GetInstance()->PlaySE(SoundID::VOICE_PLAYER_ATTACK_2);
 		AudioManager::GetInstance()->PlaySE(SoundID::SE_ATTACK_1);
 		return ATTACK_TYPE::NORMAL4;
 	case ATTACK_TYPE::NORMAL4:
 		player->GetAnimationController()->Play(
 			static_cast<int>(Player::ANIM_TYPE::ATK_N5), false, true);
+		AudioManager::GetInstance()->PlaySE(SoundID::VOICE_PLAYER_ATTACK_2);
 		AudioManager::GetInstance()->PlaySE(SoundID::SE_ATTACK_1);
 		return ATTACK_TYPE::NORMAL5;
 	default:
 		player->GetAnimationController()->Play(
 			static_cast<int>(Player::ANIM_TYPE::ATK_N1), false, true);
+		AudioManager::GetInstance()->PlaySE(SoundID::VOICE_PLAYER_ATTACK_3);
 		AudioManager::GetInstance()->PlaySE(SoundID::SE_ATTACK_1);
 		return ATTACK_TYPE::NORMAL1;
 	}
 }
+
+//void PlayerAttackState::PlayerAttackVoice()
+//{
+//	switch (GetRand(2))
+//	{
+//	case 0:
+//		AudioManager::GetInstance()->PlaySE(SoundID::VOICE_PLAYER_ATTACK_1);
+//		break;
+//	case 1:
+//		AudioManager::GetInstance()->PlaySE(SoundID::VOICE_PLAYER_ATTACK_2);
+//		break;
+//	case 2:
+//		AudioManager::GetInstance()->PlaySE(SoundID::VOICE_PLAYER_ATTACK_3);
+//		break;
+//	}
+//}

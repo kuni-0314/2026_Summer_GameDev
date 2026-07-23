@@ -832,6 +832,7 @@ void Player::DestroyFireCollider(const FireInfo& fireInfo)
 
 void Player::CreateFireMagic()
 {
+	AudioManager::GetInstance()->PlaySE(SoundID::VOICE_PLAYER_ATTACK_3);
 	if (!isAliveFire_)
 	{
 		// ‰Šúó‘Ô‚ÉƒŠƒZƒbƒg
@@ -864,6 +865,7 @@ void Player::CreateFireMagic()
 
 void Player::CreateThunderMagic()
 {
+	AudioManager::GetInstance()->PlaySE(SoundID::VOICE_PLAYER_ATTACK_3);
 	if (!isAliveThunder_)
 	{
 		thunderTimer_ = 0;

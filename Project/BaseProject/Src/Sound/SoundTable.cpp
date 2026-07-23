@@ -50,6 +50,12 @@ namespace SoundTable_Game
 		{ SoundID::SE_COMMAND_SELECT, {"Data/Sound/SE/Battle_Command.wav", 255} },
 		{ SoundID::SE_ENEMY_LARGE_ATTACK_DROP, {"Data/Sound/SE/enemy_Drop.wav", 255} },
 		{ SoundID::VOICE_PLAYER_DAMEGE_0, {"Data/Sound/SE/Player_Damege_0.wav", 255} },
+		{ SoundID::VOICE_PLAYER_DAMEGE_1, {"Data/Sound/SE/PlayerDamegeVoice/Hit1.wav", 255} },
+		{ SoundID::VOICE_PLAYER_DAMEGE_2, {"Data/Sound/SE/PlayerDamegeVoice/Hit2.wav", 255} },
+		{ SoundID::VOICE_PLAYER_DAMEGE_3, {"Data/Sound/SE/PlayerDamegeVoice/Hit3.wav", 255} },
+		{ SoundID::VOICE_PLAYER_ATTACK_1, {"Data/Sound/SE/PlayerAttackVoice/Attack1.wav", 255} },
+		{ SoundID::VOICE_PLAYER_ATTACK_2, {"Data/Sound/SE/PlayerAttackVoice/Attack2.wav", 255} },
+		{ SoundID::VOICE_PLAYER_ATTACK_3, {"Data/Sound/SE/PlayerAttackVoice/Attack3.wav", 255} },
 		{ SoundID::SE_MAGIC_HEAL, {"Data/Sound/SE/Magic_Heal.wav", 255} },
 		{ SoundID::SE_NOT_MAGIC, {"Data/Sound/SE/Magic_Notuse.wav", 255} },
 		{ SoundID::SE_LOCKON_CHANGE, {"Data/Sound/SE/LockOn_Change.wav", 255} },
@@ -57,7 +63,8 @@ namespace SoundTable_Game
 		{ SoundID::SE_DRAGON_BREATH, {"Data/Sound/SE/Dragon_Breath.wav", 255} },
 		{ SoundID::SE_DRAGON_TORNADO, {"Data/Sound/SE/Dragon_Tornado.wav", 255} },
 		{ SoundID::SE_DRAGON_LANDING, {"Data/Sound/SE/Dragon_Landing.wav", 255} },
-		{ SoundID::SE_DRAGON_SHOUT, {"Data/Sound/SE/Dragon_Shout.wav", 255} }
+		{ SoundID::SE_DRAGON_SHOUT, {"Data/Sound/SE/Dragon_Shout.wav", 255} },
+		{ SoundID::BGM_CLEAR, {"Data/Sound/BGM/ClearBGM.wav", 255}}
 	};
 }
 

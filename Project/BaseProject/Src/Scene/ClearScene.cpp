@@ -30,8 +30,8 @@ void ClearScene::Init()
 
 
 	AudioManager::GetInstance()->LoadSceneSound(LoadScene::TITLE);
-	AudioManager::GetInstance()->PlayBGM(SoundID::BGM_OVER);
-	AudioManager::GetInstance()->SetBgmVolume(120);
+	AudioManager::GetInstance()->PlayBGM(SoundID::BGM_CLEAR);
+	AudioManager::GetInstance()->SetBgmVolume(200);
 
 	VECTOR playerPos_;
 	playerPos_ = { 0,150,0 };
