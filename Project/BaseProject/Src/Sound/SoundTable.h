@@ -11,6 +11,7 @@ enum class SoundID
 	BGM_GAME,
 	BGM_WARNIG,		//警告音（ループするからBGM）
 	BGM_OVER,
+	BGM_CLEAR,		//クリア
 	SE_TITLE_SELECT,//タイトル選択
 	SE_TITLE_DECISION,//タイトル決定
 	SE_ATTACK_1,//攻撃１

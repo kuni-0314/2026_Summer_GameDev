@@ -63,7 +63,8 @@ namespace SoundTable_Game
 		{ SoundID::SE_DRAGON_BREATH, {"Data/Sound/SE/Dragon_Breath.wav", 255} },
 		{ SoundID::SE_DRAGON_TORNADO, {"Data/Sound/SE/Dragon_Tornado.wav", 255} },
 		{ SoundID::SE_DRAGON_LANDING, {"Data/Sound/SE/Dragon_Landing.wav", 255} },
-		{ SoundID::SE_DRAGON_SHOUT, {"Data/Sound/SE/Dragon_Shout.wav", 255} }
+		{ SoundID::SE_DRAGON_SHOUT, {"Data/Sound/SE/Dragon_Shout.wav", 255} },
+		{ SoundID::BGM_CLEAR, {"Data/Sound/BGM/ClearBGM.wav", 255}}
 	};
 }
 
