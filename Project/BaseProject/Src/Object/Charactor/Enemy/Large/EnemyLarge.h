@@ -187,7 +187,6 @@ private:
 	void ChangeStateAttackPunch();
 	void ChangeStateAttackRun();
 	void ChangeStateAttackDrop();
-	void ChangeStateMove();
 	void ChangeStateWait();
 	void ChangeStateHit();
 	void ChangeStateEnd();
@@ -200,7 +199,6 @@ private:
 	void UpdateAttackPunch();
 	void UpdateAttackRun();
 	void UpdateAttackDrop();
-	void UpdateMove();
 	void UpdateWait();
 	void UpdateHit();
 	void UpdateDie();

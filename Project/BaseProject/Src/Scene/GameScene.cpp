@@ -103,6 +103,7 @@ void GameScene::Init()
 	//ChangeVolumeSoundMem(120, audioHandle_);
 	//PlaySoundMem(audioHandle_, DX_PLAYTYPE_LOOP);
 	AudioManager::GetInstance()->PlayBGM(SoundID::BGM_GAME);
+	AudioManager::GetInstance()->SetBgmVolume(100);
 	// ‰¹—Ê
 
 	hpHandles_.resize(11);

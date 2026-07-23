@@ -89,7 +89,7 @@ void ClearScene::Draw()
 	int imgWidth_, imgHeight_;
 	GetGraphSize(imgOnTitleHandle_, &imgWidth_, &imgHeight_);
 	const int IMG_POS_X = Application::SCREEN_SIZE_X / 2 - imgWidth_ / 2;
-	const int IMG_POS_Y = (Application::SCREEN_SIZE_Y / 2 + 400)- imgHeight_ / 2 ;
+	const int IMG_POS_Y = (Application::SCREEN_SIZE_Y / 2 + 400) - imgHeight_ / 2;
 
 	DrawGraph(250, 200, imgGameClear_, true);
 
@@ -102,7 +102,6 @@ void ClearScene::Draw()
 		DrawGraph(IMG_POS_X, IMG_POS_Y, imgOffTitleHandle_, true);
 	}
 
-	DrawString(100, 100, "CLEAR", 0xffffff);
 }
 
 void ClearScene::Release()

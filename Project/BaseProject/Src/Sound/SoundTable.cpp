@@ -53,7 +53,7 @@ namespace SoundTable_Game
 		{ SoundID::VOICE_PLAYER_DAMEGE_1, {"Data/Sound/SE/PlayerDamegeVoice/Hit1.wav", 255} },
 		{ SoundID::VOICE_PLAYER_DAMEGE_2, {"Data/Sound/SE/PlayerDamegeVoice/Hit2.wav", 255} },
 		{ SoundID::VOICE_PLAYER_DAMEGE_3, {"Data/Sound/SE/PlayerDamegeVoice/Hit3.wav", 255} },
-		{ SoundID::VOICE_PLAYER_ATTACK_1, {"Data/Sound/SE/PlayerAttackVoice/Attack1.wav", 255} },
+		{ SoundID::VOICE_PLAYER_ATTACK_1, {"Data/Sound/SE/PlayerAttackVoice/Attack1.wav",255} },
 		{ SoundID::VOICE_PLAYER_ATTACK_2, {"Data/Sound/SE/PlayerAttackVoice/Attack2.wav", 255} },
 		{ SoundID::VOICE_PLAYER_ATTACK_3, {"Data/Sound/SE/PlayerAttackVoice/Attack3.wav", 255} },
 		{ SoundID::SE_MAGIC_HEAL, {"Data/Sound/SE/Magic_Heal.wav", 255} },

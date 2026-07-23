@@ -380,10 +380,6 @@ void EnemyLarge::ChangeStateAttackRun()
 {
 	stateUpdate_ = std::bind(&EnemyLarge::UpdateAttackRun, this);
 
-	VECTOR toPlayer = VSub(player_->GetPos(), transform_.pos);
-	toPlayer.y = 0.0f;
-	moveDir_ = VNorm(toPlayer);
-
 	look_ = true;
 	
 	if (hp_ > hp_ / 2)
@@ -426,21 +422,6 @@ void EnemyLarge::ChangeStateHit()
 	// 待機アニメーション再生
 	animationController_->Play(static_cast<int>(ANIM_TYPE::HIT), false);
 }
-
-void EnemyLarge::ChangeStateMove()
-{
-	stateUpdate_ = std::bind(&EnemyLarge::UpdateMove, this);
-
-	look_ = true;
-
-	// 移動スピード
-	moveSpeed_ = 3.0f;
-
-	// 待機アニメーション再生
-	animationController_->Play(
-		static_cast<int>(ANIM_TYPE::MOVE), true);
-}
-
 
 
 void EnemyLarge::UpdateIdle()
@@ -571,13 +552,14 @@ void EnemyLarge::UpdateAttackPunch()
 void EnemyLarge::UpdateAttackRun()
 {
 
-	//進行方向を決める
-	if(look_)
-	{
-		//突進開始位置
-		startPos = transform_.pos;
-		look_ = false;
-	}
+	////進行方向を決める
+	//if(look_)
+	//{
+	//	//突進開始位置
+	//	startPos = transform_.pos;
+	//	moveDir_ = toPlayer_;
+	//	look_ = false;
+	//}
 
 	//進行方向を決めた後移動
 	
@@ -585,15 +567,16 @@ void EnemyLarge::UpdateAttackRun()
 
 	if (distance_ <= SWICH_DISTANCE)
 	{
-		ChangeState(STATE::THINK);
-	}
-
-	if (dist > ATTACK_RUN_END_POINT)
-	{
 		ChangeState(STATE::CHARGE);
 	}
 
+	//if (dist > ATTACK_RUN_END_POINT)
+	//{
+	//	ChangeState(STATE::CHARGE);
+	//}
+
 	movePow_ = VScale(moveDir_, moveSpeed_);
+	transform_.Update();
 	
 }
 
@@ -682,14 +665,3 @@ void EnemyLarge::UpdateHit()
 	}
 }
 
-void EnemyLarge::UpdateMove()
-{
-	//攻撃範囲に入るまで移動
-	if (distance_ < SWICH_DISTANCE)
-	{
-		ChangeState(STATE::ATTACK_RUN);
-	}
-
-	// 移動する ← 追加
-	movePow_ = VScale(moveDir_, moveSpeed_);
-}
