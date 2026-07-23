@@ -215,6 +215,7 @@ void GameScene::Update()
 	//プレイヤーダメージUI処理
 	if (damageflag_)
 	{
+		PlayerDamegeVoice();
 		damegeTimeCount_++;
 
 		//表示時間
@@ -354,7 +355,7 @@ void GameScene::Update()
 	{
 		clearTimer_++;
 
-		if (clearTimer_ > 60)   // Deathエフェクト終了後
+		if (clearTimer_ > 100)   // Deathエフェクト終了後
 		{
 			StopMusic();
 			StopSoundMem(audioHandle_);
@@ -653,6 +654,22 @@ void GameScene::CheckHitEnemy(const VECTOR& pos, float radius, int damage)
 void GameScene::SetLowHpEffect()
 {
 	ToggleEffect(PostEffectManager::EFFECT_TYPE::FH_LOW_HP);
+}
+
+void GameScene::PlayerDamegeVoice()
+{
+	switch(GetRand(2))
+	{
+	case 0:
+		AudioManager::GetInstance()->PlaySE(SoundID::VOICE_PLAYER_DAMEGE_1);
+		break;
+	case 1:
+		AudioManager::GetInstance()->PlaySE(SoundID::VOICE_PLAYER_DAMEGE_2);
+		break;
+	case 2:
+		AudioManager::GetInstance()->PlaySE(SoundID::VOICE_PLAYER_DAMEGE_3);
+		break;
+	}
 }
 
 void GameScene::SelectCommand(COMMAND command)

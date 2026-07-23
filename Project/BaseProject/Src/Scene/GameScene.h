@@ -107,6 +107,8 @@ public:
 
 	void SetLowHpEffect();
 
+	void PlayerDamegeVoice();
+
 private:
 
 	// ステージ

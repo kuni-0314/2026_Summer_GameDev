@@ -79,6 +79,8 @@ public:
 	// 次の攻撃タイプを取得（外部から呼ばれる）
 	ATTACK_TYPE GetNextAttackType(Player* player);
 
+	//void PlayerAttackVoice();
+
 private:
 	// 攻撃の種類
 	ATTACK_TYPE attackType_;
