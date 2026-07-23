@@ -357,7 +357,7 @@ void EnemyDragon::UpdateFlayIdle()
 	{
 		isTakeOffEffect_ = true;
 
-		AudioManager::GetInstance()->SetSeVolume(255);
+		AudioManager::GetInstance()->SetSeVolume(200);
 		AudioManager::GetInstance()->PlaySE(SoundID::SE_DRAGON_LANDING);
 
 		// 離陸エフェクトを再生
@@ -585,7 +585,7 @@ void EnemyDragon::CreateBreath()
 	//ブレスの開始位置設定
 	breathInfo_.transform.pos = breathTopPos_;
 
-	AudioManager::GetInstance()->SetSeVolume(200);
+	AudioManager::GetInstance()->SetSeVolume(150);
 	AudioManager::GetInstance()->PlaySE(SoundID::SE_DRAGON_SHOUT);
 	AudioManager::GetInstance()->PlaySE(SoundID::SE_DRAGON_BREATH);
 
@@ -644,43 +644,51 @@ void EnemyDragon::DestoryTornadoCollider(TornadoInfo& tornadoInfo)
 
 void EnemyDragon::CreateTornado()
 {
-	AudioManager::GetInstance()->SetSeVolume(200);
+	AudioManager::GetInstance()->SetSeVolume(150);
 	AudioManager::GetInstance()->PlaySE(SoundID::SE_DRAGON_TORNADO);
+
+	const float spawnRadius = 1500.0f;
+	const float tornadoY = 30.0f;
+
+	// プレイヤー座標
+	VECTOR playerPos = player_->GetPos();
 
 	for (int i = 0; i < tornadoCount_; i++)
 	{
-		const float spawnRadius = 1000.0f;
-		const float tornadoY = 30.0f;
+		// 円周上に均等配置
+		float angle =
+			2.0f * DX_PI_F * static_cast<float>(i)
+			/ static_cast<float>(tornadoCount_);
 
-		// プレイヤー座標
-		VECTOR playerPos = player_->GetPos();
-
-		// 0～360度
-		float angle = AsoUtility::Deg2RadF(static_cast<float>(GetRand(359)));
-
-		//トルネードの高さを固定
+		// トルネードの生成位置
 		tornadoInfo_[i].transform.pos =
 		{
 			playerPos.x + cosf(angle) * spawnRadius,
 			tornadoY,
-			playerPos.z + cosf(angle) * spawnRadius
+			playerPos.z + sinf(angle) * spawnRadius
 		};
-		tornadoInfo_[i].startPos = tornadoInfo_[i].transform.pos;
 
-		VECTOR dir = VSub(playerPos, tornadoInfo_[i].transform.pos);
+		tornadoInfo_[i].startPos =
+			tornadoInfo_[i].transform.pos;
+
+		// プレイヤー方向を計算
+		VECTOR dir =
+			VSub(playerPos, tornadoInfo_[i].transform.pos);
+
 		dir.y = 0.0f;
+
 		tornadoInfo_[i].moveDir = VNorm(dir);
 
 		tornadoInfo_[i].transform.Update();
+
 		tornadoInfo_[i].isDestory = false;
 		tornadoInfo_[i].wasHitPlayer = false;
 
-
-		//コライダー生成
+		// コライダー生成
 		CreateTornadoCollider(tornadoInfo_[i]);
-		
-		//ドラゴンが生きている間
-		if (isAlive_ == true)
+
+		// ドラゴンが生きている間
+		if (isAlive_)
 		{
 			// エフェクト生成
 			tornadoInfo_[i].effect =
@@ -690,7 +698,8 @@ void EnemyDragon::CreateTornado()
 
 			tornadoInfo_[i].effect->Play(
 				tornadoInfo_[i].transform.pos,
-				Quaternion::LookRotation(tornadoInfo_[i].moveDir));
+				Quaternion::LookRotation(
+					tornadoInfo_[i].moveDir));
 
 			EffectManager::GetInstance().RegisterEffect(
 				tornadoInfo_[i].effect);
@@ -702,6 +711,7 @@ void EnemyDragon::CreateTornado()
 			{
 				tornadoInfo_[i].effect->Stop();
 				tornadoInfo_[i].effect.reset();
+				tornadoInfo_[i].effect->IsDead();
 			}
 		}
 	}

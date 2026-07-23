@@ -199,7 +199,9 @@ void Player::Damage(int damage, const VECTOR& hitDir)
 	hp_ -= damage;
 
 	//被ダメージSE
-	switch (GetRand(2))
+	int rand = GetRand(2);
+
+	switch(rand)
 	{
 	case 0:
 		AudioManager::GetInstance()->SetSeVolume(220);
@@ -1161,7 +1163,7 @@ void Player::DragonBreathCheckCollision()
 				Damage(3, transform_.GetForward());
 
 				//ダメージサウンド
-				AudioManager::GetInstance()->SetSeVolume(200);
+				AudioManager::GetInstance()->SetSeVolume(100);
 				AudioManager::GetInstance()->PlaySE(SoundID::SE_ENEMY_HIT);
 
 				// エフェクト再生
@@ -1230,7 +1232,7 @@ void Player::DragonTornadoCheckCollision()
 				tornadoDamageCoolTime_ = 30;
 
 				//ダメージサウンド
-				AudioManager::GetInstance()->SetSeVolume(200);
+				AudioManager::GetInstance()->SetSeVolume(100);
 				AudioManager::GetInstance()->PlaySE(SoundID::SE_ENEMY_HIT);
 
 				// エフェクト再生
