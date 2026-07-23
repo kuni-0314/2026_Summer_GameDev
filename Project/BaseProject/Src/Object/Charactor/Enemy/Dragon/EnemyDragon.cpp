@@ -230,7 +230,7 @@ void EnemyDragon::ChangeStateIdle()
 	stateUpdate_ = std::bind(&EnemyDragon::UpdateIdle, this);
 
 	look_ = false;
-
+	useGrabity_ = true;
 	// ランダムな待機時間
 	step_ = 3.0f + static_cast<float>(GetRand(3));
 	// 移動量ゼロ
@@ -248,9 +248,6 @@ void EnemyDragon::ChangeStateFlayIdle()
 	pow = 1;  // 離陸エフェクト未再生
 
 	isTakeOffEffect_ = false;
-
-	animationController_->SetupRootMotionControl(true, "Root");
-
 	
 	// 待機アニメーション再生
 	animationController_->Play(
@@ -639,7 +636,7 @@ void EnemyDragon::CreateTornado()
 	for (int i = 0; i < tornadoCount_; i++)
 	{
 		const float spawnRadius = 1000.0f;
-		const float tornadoY = 50.0f;
+		const float tornadoY = 30.0f;
 
 		// プレイヤー座標
 		VECTOR playerPos = player_->GetPos();
