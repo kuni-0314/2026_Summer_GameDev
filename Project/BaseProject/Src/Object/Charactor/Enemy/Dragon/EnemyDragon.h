@@ -75,7 +75,7 @@ private:
 	static constexpr VECTOR COL_LINE_END_LOCAL_POS = { 0.0f, -30.0f, 0.0f };
 
 	//ƒhƒ‰ƒSƒ““–‚½‚è”»’è—p
-	static constexpr VECTOR COLBODY_CAPSULE_TOP_LOCAL_POS = { 0.0f, 230.0f, 30.0f };
+	static constexpr VECTOR COLBODY_CAPSULE_TOP_LOCAL_POS = { 0.0f, 300.0f, 250.0f };
 	static constexpr VECTOR COLBODY_CAPSULE_DOWN_LOCAL_POS = { 0.0f, 230.0f, -250.0f };
 
 
@@ -203,7 +203,7 @@ private:
 	void UpdateTornado();
 	void UpdateLanding();
 
-	
+	//VECTOR tmpCol_;
 	
 };
 

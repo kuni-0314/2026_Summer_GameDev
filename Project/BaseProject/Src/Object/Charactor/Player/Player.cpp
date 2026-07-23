@@ -28,6 +28,7 @@
 #include "PlayerFallState.h"
 #include "PlayerAttackState.h"
 #include "PlayerMagicState.h"
+#include "PlayerDamageState.h"
 #include "../../Charactor/Enemy/Dragon/EnemyDragon.h"
 
 
@@ -188,7 +189,7 @@ void Player::Update()
 
 void Player::Damage(int damage, const VECTOR& hitDir)
 {
-	if (isInvincible_)
+	if (isInvincible_ || state_ == STATE::JET)
 	{
 		return;
 	}
@@ -203,6 +204,7 @@ void Player::Damage(int damage, const VECTOR& hitDir)
 		return;
 	}
 
+	ChangeState(Player::STATE::DAMAGE);
 
 	gameScene_->ShakeHpUI();
 
@@ -791,7 +793,8 @@ void Player::InitState()
 	states_[STATE::JET] = new PlayerRollState();
 	states_[STATE::FALL] = new PlayerFallState();
 	states_[STATE::ATTACK] = new PlayerAttackState();
-	states_[STATE::MAGIC] = new PlayerMagicState();  // ’Ç‰Á
+	states_[STATE::MAGIC] = new PlayerMagicState();
+	states_[STATE::DAMAGE] = new PlayerDamageState();
 	currentState_ = states_[STATE::IDLE];
 }
 

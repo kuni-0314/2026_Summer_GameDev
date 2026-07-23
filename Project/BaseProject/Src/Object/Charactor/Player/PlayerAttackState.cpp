@@ -74,6 +74,20 @@ void PlayerAttackState::Update(Player* player)
 		player->SetMovePow(movePow);
 	}
 
+	// 空中攻撃中のジャンプ量の減衰
+	if (player->IsAir())
+	{
+		if (attackType_ == ATTACK_TYPE::HEAVY && player->GetAnimationController()->GetAnimFrameNum() > 82)
+		{
+			auto movePow = player->GetMovePow();
+			if (movePow.y < 0.0f)
+			{
+				movePow.y *= 1.05f;
+				player->SetMovePow(movePow);
+			}
+		}
+	}
+
 	auto ins = InputManager::GetInstance();
 	bool enableKAM = ins->IsEnableKeyAndMouse();
 	bool isGamepadConnected = (GetJoypadNum() > 0);
@@ -319,10 +333,16 @@ void PlayerAttackState::UpdateAttack(Player* player)
 			}
 		}
 
+		static VECTOR pP = {};
+		static VECTOR nP = player->GetPos();
+		pP = nP;
+		nP = player->GetPos();
 		// スタック防止：空中でアニメーションが停止している場合のみ判定
 		if (player->IsAir() && animController->IsStopped() && !forceResumed_)
 		{
-			float movePowMagnitude = VSize(player->GetMovePow());
+			auto vec = VSub(pP, nP);
+			auto size = VSize(vec);
+   			float movePowMagnitude = size;
 			if (movePowMagnitude < NO_MOVEMENT_THRESHOLD)
 			{
 				noMovementFrameCount_++;

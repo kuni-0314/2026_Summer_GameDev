@@ -24,7 +24,8 @@ public:
 		JET,
 		FALL,
 		ATTACK,
-		MAGIC,  // ’Ç‰Á
+		MAGIC,
+		DAMAGE,
 		MAX
 	};
 

@@ -74,10 +74,10 @@ void CharactorBase::Update()
 	Collision();
 	// モデル制御更新
 	transform_.Update();
-	// アニメーション再生
-	animationController_->Update();
 	// 各キャラクターごとの更新後処理
 	UpdateProcessPost();
+	// アニメーション再生
+	animationController_->Update();
 
 }
 

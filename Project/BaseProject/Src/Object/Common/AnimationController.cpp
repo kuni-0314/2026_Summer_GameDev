@@ -122,7 +122,8 @@ void AnimationController::UpdateBeforeAnimation()
 		MV1ResetFrameUserLocalMatrix(modelId_, rootFrameNo_);
 		// 対象フレームのローカル行列(大きさ、回転、位置)を取得する
 		auto mat = MV1GetFrameLocalMatrix(modelId_, rootFrameNo_);
-		auto scl = MGetSize(mat); // 行列から大きさを取り出す
+		//auto scl = MGetSize(mat); // 行列から大きさを取り出す
+		VECTOR scl = { 1.0f,1.0f,1.0f };//tmp
 		auto rot = MGetRotElem(mat); // 行列から回転を取り出す
 		auto pos = MGetTranslateElem(mat); // 行列から移動値を取り出す
 		// 大きさ、回転、位置をローカル行列に戻す
@@ -217,7 +218,7 @@ void AnimationController::SetRootFrameNo(const std::string& frameName)
 void AnimationController::SetupRootMotionControl(bool isEnabled, const std::string& frameName)
 {
 	SetIgnoreRootMove(isEnabled);
-	// ルート無視するなら動的とか固定値とか設定したところで意味がない。
+	// ルート無視しないなら動的とか固定値とか設定したところで意味がない。
 	if (isEnabled)
 	{
 		SetDynamicOffset(isEnabled);

@@ -75,7 +75,7 @@ void EnemyDragon::InitTransform()
 	transform_.Update();
 
 	//スケール設定
-	MV1SetScale(transform_.modelId,transform_.scl);
+	//MV1SetScale(transform_.modelId,transform_.scl);
 
 
 	//ブレス位置取得
@@ -144,6 +144,11 @@ void EnemyDragon::InitAnimation()
 		, 20.0f, Application::PATH_MODEL + "Enemy/Dragon/Landing.mv1");
 
 	animationController_->Play(static_cast<int>(ANIM_TYPE::IDLE), true);
+
+
+	//animationController_->SetupRootMotionControl(true, "Root");
+	animationController_->SetRootFrameParams(true, "Root", { 0.0f, 2.458f, 0.0f });
+	animationController_->SetDynamicOffset(false);
 }
 
 void EnemyDragon::InitPost()
@@ -174,6 +179,10 @@ void EnemyDragon::InitPost()
 
 void EnemyDragon::UpdateProcess()
 {
+	//スケール設定
+	transform_.scl = { SCALE,SCALE ,SCALE };
+	transform_.Update();
+
 	//ブレス位置取得
 	// フレーム22のワールドマトリクスを取得
 	MATRIX mat = MV1GetFrameLocalWorldMatrix(transform_.modelId, 16);
@@ -308,6 +317,7 @@ void EnemyDragon::UpdateIdle()
 	}
 
 	idleTime_++;
+
 
 	movePow_ = AsoUtility::VECTOR_ZERO;
 }
