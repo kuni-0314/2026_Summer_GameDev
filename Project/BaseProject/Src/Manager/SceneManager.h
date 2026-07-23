@@ -32,6 +32,7 @@ public:
 		OVER,
 		DEBUG,
 		OPTION,
+		TUTORIAL,
 	};
 	
 	// インスタンスの生成

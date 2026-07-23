@@ -9,6 +9,7 @@
 #include "../Scene/ClearScene.h"
 #include "../Scene/OverScene.h"
 #include "../Scene/OptionScene.h"
+#include "../Scene/TutorialScene.h"
 #include "../Effect/EffectManager.h"
 #include "Camera.h"
 #include "ResourceManager.h"
@@ -262,6 +263,9 @@ void SceneManager::DoChangeScene(SCENE_ID sceneId)
 		break;
 	case SCENE_ID::OPTION:
 		scene_ = new OptionScene();
+		break;
+	case SCENE_ID::TUTORIAL:
+		scene_ = new TutorialScene();
 		break;
 	}
 
