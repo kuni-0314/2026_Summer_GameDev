@@ -1,6 +1,7 @@
 #pragma once
 #include <chrono>
 #include <DxLib.h>
+#include "PostEffectManager.h"
 class SceneBase;
 class Fader;
 class Camera;
@@ -73,6 +74,9 @@ public:
 
 	SceneBase* GetScene() const { return scene_; }
 
+	void SetColorVisionMode(PostEffectManager::ColorVisionMode mode);
+	PostEffectManager::ColorVisionMode GetColorVisionMode() const;
+
 private:
 
 	// 静的インスタンス
@@ -120,4 +124,6 @@ private:
 	// フェード
 	void Fade();
 
+	int postEffectScreen_ = -1;
+	bool useColorVision_ = false;
 };

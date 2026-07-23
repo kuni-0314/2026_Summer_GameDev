@@ -112,6 +112,24 @@ public:
 		SIZE_T Gigabytes() const { return GB(); }	// ギガバイト数
 	};
 
+	enum ColorVisionMode
+	{
+		Normal,			// 正常色覚
+		Protanomaly,    // 1型3色覚
+		Deuteranomaly,  // 2型3色覚
+		Tritanomaly,    // 3型3色覚
+		Protanopia,     // 1型2色覚
+		Deuteranopia,   // 2型2色覚
+		Tritanopia,     // 3型2色覚
+		Monochromacy    // 1色覚
+	};
+
+	class float3x3
+	{
+	public:
+	};
+
+
 private:
 
 	// 静的インスタンス

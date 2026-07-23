@@ -280,7 +280,7 @@ private:
 		
 		// その他カテゴリ
 		"【その他】",
-		"色覚（未実装）",
+		"色覚",
 		
 		// デバッグカテゴリ
 		"【デバッグ】",
@@ -433,6 +433,8 @@ private:
 
 	// ドロップダウンの選択肢を取得
 	const std::vector<std::string>& GetDropdownOptions(int itemIndex);
+
+	PostEffectManager::ColorVisionMode ConvertColorVisionMode(int index);
 
 	CheckboxState checkboxState_;	// チェックボックスの状態
 	SliderState sliderState_;		// スライダーの状態

@@ -49,6 +49,7 @@ public:
 		ZOOM_IN_RADIAL_BLUR,
 		FH_GAME_START,
 		FH_LOW_HP,
+		COLOR_VISION,
 		MAX
 	};
 
@@ -76,6 +77,19 @@ public:
 		size_t Size() const { return params.size(); }
 	};
 
+	// 色覚モードの定義
+	enum class ColorVisionMode
+	{
+		NORMAL,
+		PROTANOMALY,    // 1型3色覚
+		DEUTERANOMALY,  // 2型3色覚
+		TRITANOMALY,    // 3型3色覚
+		PROTANOPIA,     // 1型2色覚
+		DEUTERANOPIA,   // 2型2色覚
+		TRITANOPIA,     // 3型2色覚
+		MONOCHROMACY   // 1色覚
+	};
+
 	// シングルトン取得
 	static PostEffectManager& GetInstance();
 
@@ -101,6 +115,11 @@ public:
 	int CreatePostEffectScreen();
 	void DeletePostEffectScreen(int screen);
 
+	// 色覚モード設定
+	void SetColorVisionMode(ColorVisionMode mode);
+	ColorVisionMode GetColorVisionMode() const;
+
+
 private:
 	// 初期化補助
 	void InitializeEffect(EFFECT_TYPE type, const char* shaderName, int paramCount = 1);
@@ -121,6 +140,8 @@ private:
 	static constexpr int CONSTANT_BUF_SLOT_BEGIN_PS = 4;
 
 	bool isInitialized_ = false;
+
+	ColorVisionMode colorVisionMode_ = ColorVisionMode::NORMAL;
 
 	// コンストラクタ・デストラクタは非公開
 public:

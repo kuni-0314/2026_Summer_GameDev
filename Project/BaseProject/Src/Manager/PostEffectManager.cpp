@@ -52,6 +52,9 @@ void PostEffectManager::Init()
 	InitializeEffect(EFFECT_TYPE::ZOOM_IN_RADIAL_BLUR, "ZoomInRadialBlur.cso", 1);
 	InitializeEffect(EFFECT_TYPE::FH_GAME_START, "FH_GameStart.cso", 1);
 	InitializeEffect(EFFECT_TYPE::FH_LOW_HP, "LowHP.cso", 1);
+	InitializeEffect(EFFECT_TYPE::COLOR_VISION, "ColorVision.cso", 1);
+
+	colorVisionMode_ = ColorVisionMode::NORMAL;
 
 	isInitialized_ = true;
 }
@@ -190,6 +193,16 @@ void PostEffectManager::DeletePostEffectScreen(int screen)
 	{
 		DeleteGraph(screen);
 	}
+}
+
+void PostEffectManager::SetColorVisionMode(ColorVisionMode mode)
+{
+	colorVisionMode_ = mode;
+}
+
+PostEffectManager::ColorVisionMode PostEffectManager::GetColorVisionMode() const
+{
+	return colorVisionMode_;
 }
 
 void PostEffectManager::EnsureTempScreens(int count)
@@ -395,6 +408,11 @@ void PostEffectManager::SetEffectParameters(EFFECT_TYPE type, EffectParams& para
 	case EFFECT_TYPE::FH_LOW_HP:
 		buf.x = 0.6f;
 		buf.y = 0.7f;
+		params.params.push_back(buf);
+		break;
+	case EFFECT_TYPE::COLOR_VISION:
+		buf.x = static_cast<float>(colorVisionMode_);
+		//buf.x = 1.0f;
 		params.params.push_back(buf);
 		break;
 	}

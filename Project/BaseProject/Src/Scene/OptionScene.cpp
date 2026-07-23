@@ -463,6 +463,56 @@ void OptionScene::Draw()
 	// 適用・終了ボタンを描画
 	DrawButtons();
 
+	const int startX = 100;
+	const int startY = 100;
+	const int width = 300;
+	const int height = 50;
+
+	// 赤 → 緑 グラデーション
+	for (int x = 0; x < width; x++)
+	{
+		float t = static_cast<float>(x) / width;
+
+		int r = static_cast<int>(255 * (1.0f - t));
+		int g = static_cast<int>(255 * t);
+		int b = 0;
+
+		DrawBox(
+			startX + x,
+			startY,
+			startX + x + 1,
+			startY + height,
+			GetColor(r, g, b),
+			TRUE
+		);
+	}
+
+
+	// 緑 → 青
+	for (int x = 0; x < width; x++)
+	{
+		float t = static_cast<float>(x) / width;
+
+		int r = 0;
+		int g = static_cast<int>(255 * (1.0f - t));
+		int b = static_cast<int>(255 * t);
+
+		DrawBox(
+			startX + x,
+			startY + height,
+			startX + x + 1,
+			startY + height * 2,
+			GetColor(r, g, b),
+			TRUE
+		);
+	}
+
+
+	// 原色確認用
+	DrawBox(100, 250, 150, 300, GetColor(255, 0, 0), TRUE);
+	DrawBox(160, 250, 210, 300, GetColor(0, 255, 0), TRUE);
+	DrawBox(220, 250, 270, 300, GetColor(0, 0, 255), TRUE);
+
 	// 最終結果をメイン画面に描画
 	int mainScreen = SceneManager::GetInstance().GetMainScreen();
 	SetDrawScreen(mainScreen);
@@ -703,7 +753,23 @@ void OptionScene::LoadOptionValues()
 	//rightStickDeadZone_ = inputIns->GetRightStickDeadZone();
 	enableVibration_ = inputIns->IsVibrationEnabled();
 	//vibrationStrength_ = inputIns->GetVibrationStrength();
-	//currentColorAccessibilityNum_ = inputIns->GetColorAccessibilityNum();
+	auto& postEffect = PostEffectManager::GetInstance();
+
+	switch (postEffect.GetColorVisionMode())
+	{
+	case PostEffectManager::ColorVisionMode::NORMAL:         currentColorAccessibilityNum_ = 0; break;
+	case PostEffectManager::ColorVisionMode::PROTANOPIA:    currentColorAccessibilityNum_ = 1; break;
+	case PostEffectManager::ColorVisionMode::PROTANOMALY:   currentColorAccessibilityNum_ = 2; break;
+	case PostEffectManager::ColorVisionMode::DEUTERANOPIA:  currentColorAccessibilityNum_ = 3; break;
+	case PostEffectManager::ColorVisionMode::DEUTERANOMALY: currentColorAccessibilityNum_ = 4; break;
+	case PostEffectManager::ColorVisionMode::TRITANOPIA:    currentColorAccessibilityNum_ = 5; break;
+	case PostEffectManager::ColorVisionMode::TRITANOMALY:   currentColorAccessibilityNum_ = 6; break;
+	case PostEffectManager::ColorVisionMode::MONOCHROMACY:  currentColorAccessibilityNum_ = 7; break;
+	}
+	currentColorAccessibilityNum_ =
+		static_cast<int>(
+			SceneManager::GetInstance().GetColorVisionMode()
+			);
 
 	Application::ShowInfos& showInfos = appIns.GetShowInfos();
 	isShowFPS_ = showInfos.fps;
@@ -754,7 +820,19 @@ void OptionScene::SaveOptionValues()
 	//inputIns->SetRightStickDeadZone(rightStickDeadZone_);
 	inputIns->SetVibrationEnabled(enableVibration_);
 	//inputIns->SetVibrationStrength(vibrationStrength_);
-	//inputIns->SetColorAccessibilityNum(currentColorAccessibilityNum_);
+	auto& postEffect = PostEffectManager::GetInstance();
+
+	switch (currentColorAccessibilityNum_)
+	{
+	case 0: postEffect.SetColorVisionMode(PostEffectManager::ColorVisionMode::NORMAL); break;
+	case 1: postEffect.SetColorVisionMode(PostEffectManager::ColorVisionMode::PROTANOPIA); break;
+	case 2: postEffect.SetColorVisionMode(PostEffectManager::ColorVisionMode::PROTANOMALY); break;
+	case 3: postEffect.SetColorVisionMode(PostEffectManager::ColorVisionMode::DEUTERANOPIA); break;
+	case 4: postEffect.SetColorVisionMode(PostEffectManager::ColorVisionMode::DEUTERANOMALY); break;
+	case 5: postEffect.SetColorVisionMode(PostEffectManager::ColorVisionMode::TRITANOPIA); break;
+	case 6: postEffect.SetColorVisionMode(PostEffectManager::ColorVisionMode::TRITANOMALY); break;
+	case 7: postEffect.SetColorVisionMode(PostEffectManager::ColorVisionMode::MONOCHROMACY); break;
+	}
 
 	Application::ShowInfos& showInfos = appIns.GetShowInfos();
 	showInfos.fps = isShowFPS_;
@@ -932,5 +1010,38 @@ const std::vector<std::string>& OptionScene::GetDropdownOptions(int itemIndex)
 	default:
 		OutputDebugString("GetDropdownOptions: 未定義の項目インデックスが指定されました\n");
 		return dummyOptions;
+	}
+}
+
+PostEffectManager::ColorVisionMode OptionScene::ConvertColorVisionMode(int index)
+{
+	switch (index)
+	{
+	case 0:
+		return PostEffectManager::ColorVisionMode::NORMAL;
+
+	case 1:
+		return PostEffectManager::ColorVisionMode::PROTANOPIA;
+
+	case 2:
+		return PostEffectManager::ColorVisionMode::PROTANOMALY;
+
+	case 3:
+		return PostEffectManager::ColorVisionMode::DEUTERANOPIA;
+
+	case 4:
+		return PostEffectManager::ColorVisionMode::DEUTERANOMALY;
+
+	case 5:
+		return PostEffectManager::ColorVisionMode::TRITANOPIA;
+
+	case 6:
+		return PostEffectManager::ColorVisionMode::TRITANOMALY;
+
+	case 7:
+		return PostEffectManager::ColorVisionMode::MONOCHROMACY;
+
+	default:
+		return PostEffectManager::ColorVisionMode::NORMAL;
 	}
 }

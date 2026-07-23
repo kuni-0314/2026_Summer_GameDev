@@ -34,6 +34,7 @@ SceneManager& SceneManager::GetInstance()
 void SceneManager::Init()
 {
 
+
 	sceneId_ = SCENE_ID::TITLE;
 	waitSceneId_ = SCENE_ID::NONE;
 
@@ -53,12 +54,15 @@ void SceneManager::Init()
 
 	// メインスクリーンの取得
 	mainScreen_ = MakeScreen(Application::SCREEN_SIZE_X, Application::SCREEN_SIZE_Y, true);
+	postEffectScreen_ = MakeScreen(Application::SCREEN_SIZE_X, Application::SCREEN_SIZE_Y, true);
 
 	// 3D用の設定
 	Init3D();
 
 	// 初期シーンの設定
 	DoChangeScene(SCENE_ID::TITLE);
+
+
 
 }
 
@@ -139,6 +143,20 @@ void SceneManager::Draw()
 	DrawEffekseer3D();
 	fader_->Draw();
 
+
+	// 一時スクリーンへコピー
+	SetDrawScreen(postEffectScreen_);
+	ClearDrawScreen();
+	DrawGraph(0, 0, mainScreen_, false);
+
+	// 色覚シェーダーを最後に適用
+	PostEffectManager::GetInstance().ApplyEffect(
+		PostEffectManager::EFFECT_TYPE::COLOR_VISION,
+		postEffectScreen_,
+		mainScreen_
+	);
+
+	// 最終描画
 	SetDrawScreen(DX_SCREEN_BACK);
 	DrawGraph(0, 0, mainScreen_, true);
 }
@@ -152,6 +170,17 @@ void SceneManager::Destroy()
 		scene_->Release();
 		delete scene_;
 		scene_ = nullptr;
+	}
+
+	if (postEffectScreen_ != -1)
+	{
+		DeleteGraph(postEffectScreen_);
+		postEffectScreen_ = -1;
+	}
+	if (mainScreen_ != -1)
+	{
+		DeleteGraph(mainScreen_);
+		mainScreen_ = -1;
 	}
 
 	// エフェクト
@@ -205,6 +234,18 @@ int SceneManager::GetMainScreen() const
 	return mainScreen_;
 }
 
+void SceneManager::SetColorVisionMode(PostEffectManager::ColorVisionMode mode)
+{
+	PostEffectManager::GetInstance().SetColorVisionMode(mode);
+
+	useColorVision_ = mode != PostEffectManager::ColorVisionMode::NORMAL;
+}
+
+PostEffectManager::ColorVisionMode SceneManager::GetColorVisionMode() const
+{
+	return PostEffectManager::GetInstance().GetColorVisionMode();
+}
+
 SceneManager::SceneManager()
 {
 
@@ -215,11 +256,13 @@ SceneManager::SceneManager()
 	fader_ = nullptr;
 
 	isSceneChanging_ = false;
+	useColorVision_ = false;
 
-	// デルタタイム
 	deltaTime_ = 1.0f / 60.0f;
 
 	camera_ = nullptr;
+	mainScreen_ = -1;
+	postEffectScreen_ = -1;
 
 }
 
