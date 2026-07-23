@@ -75,6 +75,7 @@ public:
 		MANUAL,
 		TARGETING,
 		OPENING,
+		NONTARGETING,
 	};
 
 	// コンストラクタ
@@ -202,6 +203,7 @@ private:
 	void SetBeforeDrawManual();
 	void SetBeforeDrawTargeting();
 	void SetBeforeDrawOpening();
+	void SetBeforeDrawNonTargeting();
 
 	// 衝突判定
 	void Collision();
@@ -214,4 +216,8 @@ private:
 	static constexpr float OPENING_START_DISTANCE = 10.0f;
 	static constexpr float OPENING_END_DISTANCE = 250.0f;
 	static constexpr float OPENING_HEIGHT = 10.0f;       // 顔から少し上を見る
+
+	bool isManualInit_;
+
+	VECTOR aaa_;
 };

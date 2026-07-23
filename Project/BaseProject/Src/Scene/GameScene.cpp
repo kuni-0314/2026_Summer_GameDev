@@ -186,7 +186,7 @@ void GameScene::Update()
 			else
 			{
 				camMode_ = CAM_MODE::MANUAL;
-				sceMng_.GetCamera()->ChangeMode(Camera::MODE::MANUAL);
+				sceMng_.GetCamera()->ChangeMode(Camera::MODE::NONTARGETING);
 				AudioManager::GetInstance()->PlaySE(SoundID::SE_LOCKON_CHANGE);
 			}
 		}
