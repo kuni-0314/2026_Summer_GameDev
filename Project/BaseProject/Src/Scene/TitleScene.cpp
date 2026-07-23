@@ -79,9 +79,9 @@ void TitleScene::Update()
 		case SceneManager::SCENE_ID::GAME:
 			sceMng_.ChangeScene(SceneManager::SCENE_ID::GAME);
 			break;
-		//case SceneManager::SCENE_ID::TUTORIAL:
-		//	sceMng_.ChangeScene(SceneManager::SCENE_ID::TUTORIAL);
-		//	break;
+		case SceneManager::SCENE_ID::TUTORIAL:
+			sceMng_.ChangeScene(SceneManager::SCENE_ID::TUTORIAL);
+			break;
 		case SceneManager::SCENE_ID::OPTION:
 			sceMng_.ChangeScene(SceneManager::SCENE_ID::OPTION);
 			break;
@@ -273,8 +273,8 @@ void TitleScene::SelectChange(SELECT next)
 		nextScene_ = SceneManager::SCENE_ID::GAME;
 		break;
 	case SELECT::TUTORIAL:
-		//AudioManager::GetInstance()->StopBGM();
-		//nextScene_ = SceneManager::SCENE_ID::TUTORIAL;
+		AudioManager::GetInstance()->StopBGM();
+		nextScene_ = SceneManager::SCENE_ID::TUTORIAL;
 		break;
 	case SELECT::OPTION:
 		//AudioManager::GetInstance()->StopBGM();

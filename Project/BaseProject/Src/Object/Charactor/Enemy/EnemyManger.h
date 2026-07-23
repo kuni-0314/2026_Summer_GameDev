@@ -74,7 +74,7 @@ private:
 
 	// エネミー
 	std::vector<EnemyBase*> enemies_;
-
+	std::vector<EnemyBase::EnemyData> enemyData_;
 
 	const ColliderBase* hitCollider_;
 

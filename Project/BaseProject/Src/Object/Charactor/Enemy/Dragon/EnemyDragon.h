@@ -4,6 +4,8 @@
 #include <memory>
 #include <vector>
 #include "../EnemyBase.h"
+#include "../../../../Effect/LoadEffekseer/EffekseerEffect.h"
+
 
 class GameScene;
 class Player;
@@ -23,7 +25,8 @@ public:
 		FRY_IDLE,
 		BREARH,
 		TORNADO,
-		LANDING
+		LANDING,
+		DIE,
 	};
 	
 	// 状態
@@ -64,6 +67,8 @@ protected:
 	// 更新系
 	void UpdateProcess() override;
 	void UpdateProcessPost() override;
+
+	void LandingEffect(const VECTOR& pos, const VECTOR& normal, float size);
 
 private:
 
@@ -117,6 +122,7 @@ private:
 
 	int tornadoCoolTime_;
 
+	Quaternion headRot_;
 
 	//空中上昇量
 	int pow = 5;
@@ -126,6 +132,9 @@ private:
 	{
 		Transform transform = {};				//座標等の情報
 		ColliderCapsule* collider = nullptr;	//コライダー
+		std::shared_ptr<EffekseerEffect> effect;
+
+		bool wasHitPlayer = false;
 	};
 
 	//ブレス情報関連
@@ -154,6 +163,7 @@ private:
 		Transform transform = {};				//座標等の情報
 		ColliderCapsule* collider = nullptr;	//コライダー
 		float dist;
+		std::shared_ptr<EffekseerEffect> effect;
 		VECTOR startPos;
 		VECTOR moveDir;
 		float speed;
@@ -171,7 +181,7 @@ private:
 	bool isAliveTornado_;
 	bool landing_ ;
 
-
+	bool isTakeOffEffect_ = false;
 
 
 	//トルネードコライダー生成

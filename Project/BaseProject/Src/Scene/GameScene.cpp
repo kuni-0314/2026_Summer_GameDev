@@ -406,6 +406,11 @@ void GameScene::Draw()
 {
 	int mainScreen = SceneManager::GetInstance().GetMainScreen();
 
+	// エフェクトを一番手前に描画
+	EffectManager::GetInstance().Draw();
+
+	DrawEffekseer3D();
+
 	// 3D描画
 	skyDome_->Draw();
 	stage_->Draw();
@@ -427,10 +432,7 @@ void GameScene::Draw()
 	}
 
 
-	// エフェクトを一番手前に描画
-	EffectManager::GetInstance().Draw();
 
-	DrawEffekseer3D();
 
 
 	// 一時スクリーンにメイン画面をコピー
@@ -517,6 +519,7 @@ void GameScene::Release()
 
 	// エフェクトマネージャー解放
 	EffectManager::GetInstance().Clear();
+	EffectManager::GetInstance().Release();
 
 	// 攻撃コライダー解放
 	for (auto data : attackColliders_)
@@ -578,13 +581,6 @@ void GameScene::Release()
 		player_ = nullptr;
 	}
 
-	// 武器解放
-	//if (weapon_ != nullptr)
-	//{
-	//	weapon_->Release();
-	//	delete weapon_;
-	//	weapon_ = nullptr;
-	//}
 }
 
 void GameScene::CreateAttackCollider(ColliderBase::TAG tag, VECTOR pos, float radius, float damage)

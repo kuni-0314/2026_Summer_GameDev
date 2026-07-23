@@ -18,10 +18,10 @@ public:
 	enum class ANIM_TYPE
 	{
 		IDLE,
-		MOVE,
 		ATTACK_PUNCH,
 		ATTACK_DROP,
 		CHARGE,
+		MOVE,
 		END,
 		DIE,
 		HIT
@@ -33,7 +33,6 @@ public:
 		NONE,
 		THINK,
 		IDLE,
-		MOVE,
 		ATTACK_PUNCH,
 		ATTACK_RUN,
 		ATTACK_DROP,

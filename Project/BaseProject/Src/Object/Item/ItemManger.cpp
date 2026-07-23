@@ -47,7 +47,6 @@ void ItemManger::Draw()
 	{
 		item->Draw();
 
-
 	}
 }
 void ItemManger::Release()
@@ -73,13 +72,6 @@ ItemBase* ItemManger::Create(const ItemBase::TYPE& type, VECTOR pos, const Colli
 	case ItemBase::TYPE::HP:
 
 		item = new HpItem(const_cast<Player*>(player));
-		item->Init();
-		item->SetPos(pos);
-		item->AddHitCollider(hitCollider);
-		playerCollide = player->GetOwnCollider(key);
-		break;
-	case ItemBase::TYPE::SKILL:
-		item = new SkillItem(const_cast<Player*>(player));
 		item->Init();
 		item->SetPos(pos);
 		item->AddHitCollider(hitCollider);

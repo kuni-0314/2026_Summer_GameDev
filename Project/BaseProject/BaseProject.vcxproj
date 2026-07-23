@@ -90,6 +90,7 @@
     <ClCompile Include="Src\Object\Actor\UI\UIBase.cpp" />
     <ClCompile Include="Src\Object\Actor\Stage\StageWall.cpp" />
     <ClCompile Include="Src\Object\Weapon\Sword\SwordBase.cpp" />
+    <ClCompile Include="Src\Scene\TutorialScene.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Src\Object\Charactor\Player\PlayerDamageState.h" />
@@ -163,6 +164,7 @@
     <ClInclude Include="Src\Object\Actor\UI\UIBase.h" />
     <ClInclude Include="Src\Object\Actor\Stage\StageWall.h" />
     <ClInclude Include="Src\Object\Weapon\Sword\SwordBase.h" />
+    <ClInclude Include="Src\Scene\TutorialScene.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Src\Shader\PostEffect\FH_GameStart.hlsl">

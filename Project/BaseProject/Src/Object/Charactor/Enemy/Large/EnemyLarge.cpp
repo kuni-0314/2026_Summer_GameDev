@@ -40,7 +40,7 @@ void EnemyLarge::Draw(void)
 		MV1DrawModel(ringModelHandle_);
 	}
 
-#ifdef _DEBUGa
+#ifdef _DEBUG
 	DrawSphere3D(attackWorldPos_, COL_SPHERE_RADIUS, 16, GetColor(255, 0, 0), GetColor(255, 0, 0), false);
 
 	STATE next = state_;
@@ -55,7 +55,9 @@ void EnemyLarge::Draw(void)
 	DrawFormatString(0, 200, GetColor(255, 255, 255), "STATE: %s", name);
 	DrawFormatString(0, 250, GetColor(255, 255, 255), "ãóó£: %.2f", distance_);
 
-	DrawFormatString(500, 250, GetColor(255, 255, 255), "ãóó£: %d", isAttack_);
+	DrawFormatString(0, 50, GetColor(255, 255, 255), "Pos: %.2f,2f,2f", transform_.pos.x,transform_.pos.y,transform_.pos.z);
+
+	DrawFormatString(500, 250, GetColor(255, 255, 255), "isAttack_", isAttack_);
 
 	// AÇÃãÖÅiê‘Åj
 	DrawSphere3D(transform_.pos, pushOutRadius_, 16, GetColor(255, 0, 0), GetColor(255, 0, 0), FALSE);
@@ -171,9 +173,6 @@ void EnemyLarge::InitPost()
 	stateChanges_.emplace(static_cast<int>(STATE::THINK),
 		std::bind(&EnemyLarge::ChangeStateThink, this));
 
-	stateChanges_.emplace(static_cast<int>(STATE::MOVE),
-		std::bind(&EnemyLarge::ChangeStateMove, this));
-
 	stateChanges_.emplace(static_cast<int>(STATE::ATTACK_RUN),
 		std::bind(&EnemyLarge::ChangeStateAttackRun, this));
 
@@ -239,11 +238,6 @@ void EnemyLarge::UpdateProcess()
 	if (!player_->IsAttacking())
 	{
 		isATField_ = false;
-	}
-
-	if (hp_ < preHp_)
-	{
-		//ChangeState(STATE::HIT);
 	}
 
 	if (hp_ <= 0)
@@ -386,8 +380,11 @@ void EnemyLarge::ChangeStateAttackRun()
 {
 	stateUpdate_ = std::bind(&EnemyLarge::UpdateAttackRun, this);
 
-	look_ = true;
+	VECTOR toPlayer = VSub(player_->GetPos(), transform_.pos);
+	toPlayer.y = 0.0f;
+	moveDir_ = VNorm(toPlayer);
 
+	look_ = true;
 	
 	if (hp_ > hp_ / 2)
 	{
@@ -490,9 +487,7 @@ void EnemyLarge::UpdateThink()
 	else
 	{
 		ChangeState(STATE::ATTACK_DROP);
-	}
-
-	
+	}  
 }
 
 void EnemyLarge::UpdateCharge()

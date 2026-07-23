@@ -31,6 +31,15 @@ void EffectManager::Draw() const
     }
 }
 
+void EffectManager::Release() 
+{
+    for (auto& effect : m_effects) 
+    {
+        effect->Release();
+    }
+    m_effects.clear(); // shared_ptr ‚È‚Ì‚ÅA‚±‚ê‚¾‚¯‚Åƒƒ‚ƒŠ‚à©“®‰ğ•ú‚³‚ê‚Ü‚·
+}
+
 // ‘Síœ
 void EffectManager::Clear() 
 {

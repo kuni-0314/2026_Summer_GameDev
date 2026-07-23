@@ -393,11 +393,11 @@ void Player::UpdateProcess()
 
 	// 魔法開始
 	int activeMagicCount = 0;
-	if (isShortCut_ && ins->IsGamepadTrgDown(InputManager::PadInput::Y, padNum_))
+	if (isShortCut_ && ins->IsGamepadTrgDown(InputManager::PadInput::X, padNum_))
 	{
 		activeMagicCount = 1;
 	}
-	if (isShortCut_ && ins->IsGamepadTrgDown(InputManager::PadInput::X, padNum_))
+	if (isShortCut_ && ins->IsGamepadTrgDown(InputManager::PadInput::Y, padNum_))
 	{
 		activeMagicCount = 2;
 	}
@@ -640,7 +640,7 @@ void Player::DeleteFireEffect()
 		Quaternion()
 	);
 
-	burst->SetLifeTime(60);
+	burst->SetLifeTime(100);
 
 	EffectManager::GetInstance().RegisterEffect(burst);
 
@@ -840,19 +840,25 @@ void Player::CreateFireMagic()
 		fireInfo_.transform.pos = transform_.pos;
 		fireInfo_.dir = transform_.quaRot.GetForward();
 		CreateFireCollider(fireInfo_);
+		//-----------------------
+		// Fireエフェクト生成
+		//-----------------------
+		fireInfo_.effect =
+			std::make_shared<EffekseerEffect>(
+				L"Data/Effect/Fire/Fire.efkefc",
+				fireInfo_.transform.pos);
+
+		fireInfo_.effect->Play(
+			fireInfo_.transform.pos,
+			transform_.quaRot);
+
+		EffectManager::GetInstance().RegisterEffect(
+			fireInfo_.effect);
+
+		//-----------------------
+
 		isAliveFire_ = true;
 		fireCoolTime_ = FIRE_COOL_TIME;
-		// ファイアエフェクト
-		auto effect = std::make_shared<EffekseerEffect>(
-			L"Data/Effect/Fire/Fire.efkefc",
-			fireInfo_.transform.pos
-		);
-		EffectManager::GetInstance().RegisterEffect(effect);
-		//再生
-		effect->Play(
-			fireInfo_.transform.pos,
-			fireInfo_.transform.quaRot
-		);
 	}
 }
 
@@ -1055,12 +1061,24 @@ void Player::UpdateMagic()
 				VECTOR dir = VNorm(vec);
 				VECTOR move = VScale(dir, FIRE_SPEED);
 				fireInfo_.transform.pos = VAdd(fireInfo_.transform.pos, move);
+				//effectの位置を更新
+				if (fireInfo_.effect)
+				{
+					fireInfo_.effect->SetPosition(fireInfo_.transform.pos);
+					fireInfo_.effect->SetRotation(fireInfo_.transform.quaRot);
+				}
 			}
 			else
 			{
 				//ロックオンがOFFの場合
 				VECTOR move = VScale(fireInfo_.dir, FIRE_SPEED);
 				fireInfo_.transform.pos = VAdd(fireInfo_.transform.pos, move);
+				//effectの位置を更新
+				if (fireInfo_.effect)
+				{
+					fireInfo_.effect->SetPosition(fireInfo_.transform.pos);
+					fireInfo_.effect->SetRotation(fireInfo_.transform.quaRot);
+				}
 			}
 			fireInfo_.timer++;
 		}

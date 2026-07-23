@@ -77,6 +77,20 @@ void EffekseerEffect::Draw() const
     // Effekseer©‘Ì‚Ì•`‰æ‚Í GameScene ‘¤‚ÅˆêŠ‡‚µ‚Ä DrawEffekseer3D() ‚ğŒÄ‚Ô‚½‚ßA‚±‚±‚Í‹ó‚ÅOK
 }
 
+void EffekseerEffect::Release()
+{
+    if (m_playingHandle != -1)
+    {
+        StopEffekseer3DEffect(m_playingHandle);
+    }
+    if (m_effectHandle != -1)
+    {
+        DeleteEffekseerEffect(m_effectHandle);
+        m_effectHandle = -1;
+    }
+    m_isDead = true;
+}
+
 void EffekseerEffect::Play(VECTOR pos, Quaternion rot)
 {
     m_playingHandle =

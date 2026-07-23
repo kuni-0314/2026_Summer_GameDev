@@ -42,8 +42,6 @@ void ItemBase::Update()
 	UpdateProcess();
 	// 移動方向に応じた遅延回転
 	DelayRotate();
-	// 重力による移動量
-	//CalcGravityPow();
 	// 衝突判定前準備
 	CollisionReserve();
 	// 衝突判定
@@ -52,7 +50,6 @@ void ItemBase::Update()
 	transform_.Update();
 	// 各キャラクターごとの更新後処理
 	UpdateProcessPost();
-
 
 }
 
@@ -140,20 +137,16 @@ void ItemBase::CalcGravityPow()
 	{
 		jumpPow_.y = MAX_FALL_SPEED;
 	}
-
-
 }
 
 void ItemBase::Collision()
 {
 	// 衝突(カプセル)
 	CollisionCapsule();
-
 	// ジャンプ量を加算
 	transform_.pos = VAdd(transform_.pos, jumpPow_);
 	// 衝突(重力)
 	CollisionGravity();
-
 
 }
 
@@ -183,7 +176,6 @@ void ItemBase::CollisionGravity()
 		bool isHit_ = colliderLine_->PushBackUp(colliderModel, transform_, 2.0f,
 			true, false);
 	}
-
 }
 
 void ItemBase::CollisionCapsule()
@@ -268,9 +260,6 @@ void ItemBase::CollisionCapsule()
 
 void ItemBase::DrawShadow()
 {
-
-
-
 	int i, j;
 
 
@@ -344,25 +333,7 @@ void ItemBase::DrawShadow()
 	SetUseZBuffer3D(false);
 }
 
-//void ItemBase::PlayHealEffect()
-//{
-//	auto effect = std::make_shared<EffekseerEffect>(
-//		L"Data/Effect/Heal/Heal.efkefc",
-//		transform_.pos
-//	);
-//
-//
-//	effect->SetLifeTime(60); // 1秒
-//
-//
-//	effect->Play(
-//		transform_.pos,
-//		Quaternion()
-//	);
-//
-//
-//	EffectManager::GetInstance().RegisterEffect(effect);
-//}
+
 
 
 
