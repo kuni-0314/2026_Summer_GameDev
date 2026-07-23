@@ -53,8 +53,11 @@ namespace SoundTable_Game
 		{ SoundID::SE_MAGIC_HEAL, {"Data/Sound/SE/Magic_Heal.wav", 255} },
 		{ SoundID::SE_NOT_MAGIC, {"Data/Sound/SE/Magic_Notuse.wav", 255} },
 		{ SoundID::SE_LOCKON_CHANGE, {"Data/Sound/SE/LockOn_Change.wav", 255} },
-		{ SoundID::SE_LOCKON, {"Data/Sound/SE/LockOn.wav", 255} }
-
+		{ SoundID::SE_LOCKON, {"Data/Sound/SE/LockOn.wav", 255} },
+		{ SoundID::SE_DRAGON_BREATH, {"Data/Sound/SE/Dragon_Breath.wav", 255} },
+		{ SoundID::SE_DRAGON_TORNADO, {"Data/Sound/SE/Dragon_Tornado.wav", 255} },
+		{ SoundID::SE_DRAGON_LANDING, {"Data/Sound/SE/Dragon_Landing.wav", 255} },
+		{ SoundID::SE_DRAGON_SHOUT, {"Data/Sound/SE/Dragon_Shout.wav", 255} }
 	};
 }
 
