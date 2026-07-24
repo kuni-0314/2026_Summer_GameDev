@@ -160,7 +160,11 @@ void EnemyRat::UpdateProcess()
 	if (distance_ < SEARCH_DISTANCE){look_ = true;}
 	if (look_){LookPlayer();}
 	
-
+	int rand = GetRand(100);
+	if (5 < rand)
+	{
+		LookPlayer();
+	}
 	
 	//デバッグ用攻撃範囲描画
 	VECTOR local = ATTACK_SPHERE_LOCAL_POS;

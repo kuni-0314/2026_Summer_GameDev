@@ -111,6 +111,7 @@ public:
 	//ダメージ判定セット
 	void SetWasHitDamage(const bool wasHit) { wasHitDamage_ = wasHit; }
 	void SetWasHitTornadoDamage(const bool wasHit) { wasHitTornadoDamage_ = wasHit; }
+	void SetWasHitClow(const bool wasHit) { wasHitColw_ = wasHit; }
 
 	//スケール
 	static constexpr float SCL_PlAYER = 0.75f;
@@ -384,12 +385,15 @@ private:
 
 	//ドラゴンブレス当たり判定
 	void DragonBreathCheckCollision();
-
+	//トルネード当たり判定
 	void DragonTornadoCheckCollision();
+	//クロー当たり判定
+	void DragonClowCheckCollision();
 
 	//ダメージを受けたかどうか
 	bool wasHitDamage_;
 	bool wasHitTornadoDamage_ = false;
+	bool wasHitColw_ = false;
 
 	int tornadoDamageCoolTime_ = 0;
 

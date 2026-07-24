@@ -20,7 +20,11 @@ EnemyDragon::EnemyDragon(const EnemyBase::EnemyData& data, int attackModel, Play
 	:EnemyBase(data, attackModel, player),
 	state_(STATE::NONE),
 	step_(0.0f),
-	isAliveBreath_(false)
+	isAliveBreath_(false),
+	isAliveTornado_(false),
+	isAliveClow_(false),
+	landing_(false),
+	tornadoCoolTime_(0)
 {
 }
 
@@ -32,10 +36,9 @@ void EnemyDragon::Draw(void)
 {
 	EnemyBase::Draw();
 
-	
+#ifdef _DEBUG
 	DrawSphere3D(breathTopPos_, 10.0f, 10, 0xffffff, 0xffffff, true);
 
-	
 	DrawFormatString(300, 500, GetColor(255, 255, 255), "Pos: %f,%f,%f", transform_.pos.x, transform_.pos.y, transform_.pos.z);
 
 	DrawSphere3D(breathInfo_.transform.pos, 100, 5, 0xffffff, 0xffffff, false);
@@ -49,6 +52,11 @@ void EnemyDragon::Draw(void)
 		DrawSphere3D(Pos, 100.0f, 16, 0xff00ff, 0xff00ff, false);
 
 	}
+
+	//クロー攻撃
+	DrawSphere3D(clowInfo_.transform.pos, 200.0f, 10, 0xffffff, 0xffffff, false);
+
+#endif
 
 }
 
@@ -73,6 +81,7 @@ void EnemyDragon::InitTransform()
 
 	transform_.quaRot = Quaternion::Identity();
 	transform_.quaRotLocal = Quaternion::Euler(ROT);
+
 	transform_.Update();
 
 	//スケール設定
@@ -97,11 +106,11 @@ void EnemyDragon::InitTransform()
 	// フレーム22のワールドマトリクスを取得
 	MATRIX mat2 = MV1GetFrameLocalWorldMatrix(transform_.modelId, 4);
 	// 位置補正（プレイヤーの向きに合わせて微調整）
-	MATRIX offset2 = MMult(MGetTranslate(VGet(0.0f, 0.0f, -3.0f)), mat);
+	MATRIX offset2 = MMult(MGetTranslate(VGet(0.0f, 0.0f, -3.0f)), mat2);
 	// 位置を適用
 	bodyPos_ = VGet(offset2.m[3][0], offset2.m[3][1], offset2.m[3][2]);
 	// 回転をQuaternionに変換
-	Quaternion rot2 = Quaternion::GetRotation(mat);
+	Quaternion rot2 = Quaternion::GetRotation(mat2);
 
 
 }
@@ -144,6 +153,10 @@ void EnemyDragon::InitAnimation()
 	animationController_->Add(static_cast<int>(ANIM_TYPE::LANDING)
 		, 20.0f, Application::PATH_MODEL + "Enemy/Dragon/Landing.mv1");
 
+	animationController_->Add(static_cast<int>(ANIM_TYPE::CLOW)
+		, 20.0f, Application::PATH_MODEL + "Enemy/Dragon/AttackWingClaw.mv1");
+
+
 	animationController_->Play(static_cast<int>(ANIM_TYPE::IDLE), true);
 
 
@@ -174,6 +187,9 @@ void EnemyDragon::InitPost()
 	stateChanges_.emplace(static_cast<int>(STATE::LANDING),
 		std::bind(&EnemyDragon::ChangeStateLanding, this));
 
+	stateChanges_.emplace(static_cast<int>(STATE::CLOW),
+		std::bind(&EnemyDragon::ChangeStateClow, this));
+
 	// 初期状態設定
 	ChangeState(STATE::IDLE);
 }
@@ -196,6 +212,37 @@ void EnemyDragon::UpdateProcess()
 	//ブレス発射位置
 	breathTopPos_ = VAdd(breathTopPos_, CAPSULE_ADD_BREATH_POS);
 
+
+	//プレイヤー視認状態
+	if (look_)
+	{
+		LookPlayer();
+	}
+
+	//==============================
+	// クロー位置更新
+	//==============================
+	MATRIX matclow =
+		MV1GetFrameLocalWorldMatrix(
+			transform_.modelId, 10);
+
+	MATRIX offsetclow = MMult(
+		MGetTranslate(VGet(0.0f, 0.0f, -3.0f)),
+		matclow);
+
+	clowInfo_.transform.pos =
+		VGet(offsetclow.m[3][0],
+			offsetclow.m[3][1],
+			offsetclow.m[3][2]);
+
+	VECTOR test = { 0,80,450 };
+
+	clowInfo_.transform.pos = VAdd(clowInfo_.transform.pos, test);
+
+	// Transform更新
+	clowInfo_.transform.Update();
+
+	//
 	if (tornadoCoolTime_ > 0)
 	{
 		tornadoCoolTime_--;
@@ -204,6 +251,11 @@ void EnemyDragon::UpdateProcess()
 	//剣と魔法の当たり判定
 	CheckPlayerSwordCollision();
 	CheckPlayerMagicCollision();
+
+	if (hp_ <= 0)
+	{
+		MV1DeleteModel(transform_.modelId);
+	}
 }
 
 void EnemyDragon::UpdateProcessPost()
@@ -222,6 +274,43 @@ void EnemyDragon::LandingEffect(const VECTOR& pos, const VECTOR& normal, float s
 	effect->Play(transform_.pos, transform_.quaRot);
 
 	EffectManager::GetInstance().RegisterEffect(effect);
+}
+
+void EnemyDragon::CreateClowCollider(ClowInfo& clowInfo)
+{
+	ColliderSphere* colSphere = new ColliderSphere(
+		ColliderBase::TAG::ENEMY_DRAGON_CLOW,
+		&clowInfo.transform,
+		AsoUtility::VECTOR_ZERO,
+	200.0f);
+
+	clowInfo.collider = colSphere;
+
+	ownColliders_.emplace(
+		static_cast<int>(COLLIDER_TYPE::SPHERE),
+		colSphere);
+
+	//衝突情報追加
+	GameScene* gameScene = dynamic_cast<GameScene*>(SceneManager::GetInstance().GetScene());
+	gameScene->AddPlayerHitCollider(colSphere);
+}
+
+void EnemyDragon::DestroyClowColier(ClowInfo& clowInfo)
+{
+	//衝突情報削除
+	GameScene* gameScene = dynamic_cast<GameScene*>(SceneManager::GetInstance().GetScene());
+	gameScene->RemovePlayerHitCollider(clowInfo.collider);
+
+	delete clowInfo.collider;
+	clowInfo.collider = nullptr;
+}
+
+void EnemyDragon::CreateClow()
+{
+	//ブレス生成時にブレスの情報を初期化
+	clowInfo_ = ClowInfo();
+
+	CreateClowCollider(clowInfo_);
 }
 
 void EnemyDragon::ChangeState(STATE state)
@@ -267,7 +356,7 @@ void EnemyDragon::ChangeStateBreath()
 {
 	stateUpdate_ = std::bind(&EnemyDragon::UpdateBreath, this);
 
-	look_ = false;
+	look_ = true;
 
 	// ランダムな待機時間
 	step_ = 3.0f + static_cast<float>(GetRand(3));
@@ -309,6 +398,21 @@ void EnemyDragon::ChangeStateLanding()
 	animationController_->Play(
 		static_cast<int>(ANIM_TYPE::LANDING), false);
 
+}
+
+void EnemyDragon::ChangeStateClow()
+{
+
+	stateUpdate_ = std::bind(&EnemyDragon::UpdateClow, this);
+	look_ = false;
+
+	// ランダムな待機時間
+	step_ = 3.0f + static_cast<float>(GetRand(3));
+	// 移動量ゼロ
+	movePow_ = AsoUtility::VECTOR_ZERO;
+	// 待機アニメーション再生
+	animationController_->Play(
+		static_cast<int>(ANIM_TYPE::CLOW), false);
 }
 
 void EnemyDragon::UpdateThink()
@@ -432,7 +536,7 @@ void EnemyDragon::UpdateBreath()
 		if (anim.totalTime <= 0.0f) return;
 
 		//アニメーションの指定時間までブレスを生成しない
-		float breathTriggerTime = anim.totalTime * ATTACK_BREATH_TIME;
+		float breathTriggerTime = anim.totalTime * ATTACK_FREAM_BREATH_TIME;
 		if (anim.step >= breathTriggerTime)
 		{
 			//まだ生成されていない場合
@@ -441,6 +545,7 @@ void EnemyDragon::UpdateBreath()
 				//一度だけ生成
 				CreateBreath();
 				isAliveBreath_ = true;
+				look_ = false;
 			}
 		}
 	}
@@ -552,6 +657,47 @@ void EnemyDragon::UpdateLanding()
 	}
 }
 
+void EnemyDragon::UpdateClow()
+{
+	if (!isAliveClow_)
+	{
+		//アニメーションコントローラーの取得
+		if (animationController_ == nullptr) return;
+		const auto& anim = animationController_->GetPlayAnim();
+		if (anim.totalTime <= 0.0f) return;
+
+		//アニメーションの指定時間までブレスを生成しない
+		float breathTriggerTime = anim.totalTime * ATTACK_FRAME_CLOW_TIME;
+		if (anim.step >= breathTriggerTime)
+		{
+			//ブレスが生成されていない時のみ
+			if (!isAliveClow_)
+			{
+				//一度だけ生成
+				CreateClow();
+				isAliveClow_ = true;
+			}
+		}
+	
+	}
+
+	//アニメーションが終了した場合
+	if (animationController_->IsEnd())
+	{
+		//衝突情報削除
+		DestroyClowColier(clowInfo_);
+		//ブレス生存状態
+		isAliveClow_ = false;
+		player_->SetWasHitClow(false);
+		//ブレス終了後、次の状態へ
+		ChangeState(STATE::IDLE);
+	
+	}
+	
+	clowInfo_.transform.Update();
+
+}
+
 void EnemyDragon::CreateBreathCollider(BreathInfo& breathInfo)
 {
 	//コライダー生成
@@ -559,7 +705,7 @@ void EnemyDragon::CreateBreathCollider(BreathInfo& breathInfo)
 		ColliderBase::TAG::ENEMY_DRAGON_BREATH, &breathInfo.transform,
 		CAPSULE_ADD_BREATH_POS,CAPSULE_DOWN_BREATH_POS, 100.0f);
 
-	breathInfo_.collider = colCapsule;
+	breathInfo.collider = colCapsule;
 
 	ownColliders_.emplace(static_cast<int>(COLLIDER_TYPE::CAPSULE), colCapsule);
 
@@ -612,7 +758,7 @@ void EnemyDragon::CreateBreath()
 			breathInfo_.effect.reset();
 		}
 	}
-}
+};
 
 
 void EnemyDragon::CreateTornadoCollider(TornadoInfo& tornadoInfo)

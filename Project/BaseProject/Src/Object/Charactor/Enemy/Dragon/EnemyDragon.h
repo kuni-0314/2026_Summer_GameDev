@@ -11,6 +11,7 @@ class GameScene;
 class Player;
 class ItemManger;
 class ColliderCapsule;
+class ColliderSphere;
 
 
 class EnemyDragon : public EnemyBase
@@ -26,6 +27,7 @@ public:
 		BREARH,
 		TORNADO,
 		LANDING,
+		CLOW,
 		DIE,
 	};
 	
@@ -40,6 +42,7 @@ public:
 		TORNADO,
 		LANDING,
 		MOVE,
+		CLOW
 	};
 
 	EnemyDragon(const EnemyBase::EnemyData& data, int attackModel, Player* player);
@@ -106,8 +109,12 @@ private:
 	static constexpr float SCALE = 120.0f;
 
 	//ブレスの判定開始フレーム時間
-	static constexpr float ATTACK_BREATH_TIME = 0.20f;
+	static constexpr float ATTACK_FREAM_BREATH_TIME = 0.20f;
 	static constexpr int TORNADO_RESET_TIME = 200;
+
+	//クローの判定開始フレーム　
+	static constexpr float ATTACK_FRAME_CLOW_TIME = 0.14f;
+
 
 	//ゲームシーン
 	GameScene* gamescene_;
@@ -125,7 +132,7 @@ private:
 	Quaternion headRot_;
 
 	//空中上昇量
-	int pow = 5;
+	int pow = 10;
 
 	//ブレス情報関連
 	struct BreathInfo
@@ -183,7 +190,6 @@ private:
 
 	bool isTakeOffEffect_ = false;
 
-
 	//トルネードコライダー生成
 	void CreateTornadoCollider(TornadoInfo& tornadoInfo);
 	//トルネードコライダー削除
@@ -191,11 +197,32 @@ private:
 	//トルネード生成
 	void CreateTornado();
 
+	//トルネード情報関連
+	struct ClowInfo
+	{
+		Transform transform = {};				//座標等の情報
+		ColliderSphere* collider = nullptr;	//コライダー
+		std::shared_ptr<EffekseerEffect> effect;
+
+		bool wasHitPlayer = false;
+	};
+
+	ClowInfo clowInfo_;
+	//クロー生存状態
+	bool isAliveClow_;
+
+
+
+
+	//クローコライダー作成・削除
+	void CreateClowCollider(ClowInfo& clowInfo);
+	void DestroyClowColier(ClowInfo& clowInfo);
+	//クロー生成
+	void CreateClow();
 
 
 	// 状態遷移
 	void ChangeState(STATE state);
-
 
 	//切り替え準備
 	void ChangeStateThink();
@@ -204,6 +231,7 @@ private:
 	void ChangeStateBreath();
 	void ChangeStateTornado();
 	void ChangeStateLanding();
+	void ChangeStateClow();
 
 	//状態更新
 	void UpdateThink();
@@ -212,6 +240,7 @@ private:
 	void UpdateBreath();
 	void UpdateTornado();
 	void UpdateLanding();
+	void UpdateClow();
 
 	//VECTOR tmpCol_;
 	
