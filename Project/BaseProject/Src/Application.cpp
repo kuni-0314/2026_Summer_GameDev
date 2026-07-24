@@ -108,35 +108,35 @@ void Application::Init()
 	SceneManager::CreateInstance();
 
 #ifndef _DEBUG
-	if (volume < 0.01f)
-	{
-		int result = MessageBoxA(
-			nullptr,
-			"音量が0やんけ、試遊なのに音なしでするんか？",
-			"確認",
-			MB_YESNO | MB_ICONEXCLAMATION
-		);
-		if (result == IDYES)
-		{
-			MessageBoxA(
-				nullptr,
-				"音量上げてね",
-				"確認",
-				MB_OK | MB_ICONINFORMATION
-			);
-			isEnd_ = true;
-		}
-		else
-		{
-			MessageBoxA(
-				nullptr,
-				"じゃあ遊べんなぁ",
-				"残念",
-				MB_OK | MB_ICONERROR
-			);
-			isEnd_ = true;
-		}
-	}
+	//if (volume < 0.01f)
+	//{
+	//	int result = MessageBoxA(
+	//		nullptr,
+	//		"音量が0やんけ、試遊なのに音なしでするんか？",
+	//		"確認",
+	//		MB_YESNO | MB_ICONEXCLAMATION
+	//	);
+	//	if (result == IDYES)
+	//	{
+	//		MessageBoxA(
+	//			nullptr,
+	//			"音量上げてね",
+	//			"確認",
+	//			MB_OK | MB_ICONINFORMATION
+	//		);
+	//		isEnd_ = true;
+	//	}
+	//	else
+	//	{
+	//		MessageBoxA(
+	//			nullptr,
+	//			"じゃあ遊べんなぁ",
+	//			"残念",
+	//			MB_OK | MB_ICONERROR
+	//		);
+	//		isEnd_ = true;
+	//	}
+	//}
 #endif
 }
 

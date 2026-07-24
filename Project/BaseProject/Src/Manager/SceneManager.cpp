@@ -132,6 +132,7 @@ void SceneManager::Update()
 void SceneManager::Draw()
 {
 	SetDrawScreen(mainScreen_);
+	SetDrawScreen(DX_SCREEN_BACK);
 	ClearDrawScreen();
 
 	camera_->SetBeforeDraw();
@@ -139,15 +140,14 @@ void SceneManager::Draw()
 
 	scene_->Draw();
 
+	return;
 	camera_->DrawDebug();
 	DrawEffekseer3D();
 	fader_->Draw();
-
-
 	// 一時スクリーンへコピー
 	SetDrawScreen(postEffectScreen_);
 	ClearDrawScreen();
-	DrawGraph(0, 0, mainScreen_, false);
+	DrawGraph(0, 0, mainScreen_, true);
 
 	// 色覚シェーダーを最後に適用
 	PostEffectManager::GetInstance().ApplyEffect(
