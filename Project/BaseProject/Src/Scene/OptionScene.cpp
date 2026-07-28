@@ -483,7 +483,7 @@ void OptionScene::Draw()
 			startX + x + 1,
 			startY + height,
 			GetColor(r, g, b),
-			TRUE
+			true
 		);
 	}
 
@@ -503,15 +503,15 @@ void OptionScene::Draw()
 			startX + x + 1,
 			startY + height * 2,
 			GetColor(r, g, b),
-			TRUE
+			true
 		);
 	}
 
 
 	// 原色確認用
-	DrawBox(100, 250, 150, 300, GetColor(255, 0, 0), TRUE);
-	DrawBox(160, 250, 210, 300, GetColor(0, 255, 0), TRUE);
-	DrawBox(220, 250, 270, 300, GetColor(0, 0, 255), TRUE);
+	DrawBox(100, 250, 150, 300, GetColor(255, 0, 0), true);
+	DrawBox(160, 250, 210, 300, GetColor(0, 255, 0), true);
+	DrawBox(220, 250, 270, 300, GetColor(0, 0, 255), true);
 
 	// 最終結果をメイン画面に描画
 	int mainScreen = SceneManager::GetInstance().GetMainScreen();

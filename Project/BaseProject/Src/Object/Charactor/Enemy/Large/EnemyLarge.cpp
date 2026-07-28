@@ -60,9 +60,9 @@ void EnemyLarge::Draw(void)
 	DrawFormatString(500, 250, GetColor(255, 255, 255), "isAttack_", isAttack_);
 
 	// Aの球（赤）
-	DrawSphere3D(transform_.pos, pushOutRadius_, 16, GetColor(255, 0, 0), GetColor(255, 0, 0), FALSE);
+	DrawSphere3D(transform_.pos, pushOutRadius_, 16, GetColor(255, 0, 0), GetColor(255, 0, 0), false);
 	// Bの球（青）
-	DrawSphere3D(playerPos_, playerRad_, 16, GetColor(0, 0, 255), GetColor(0, 0, 255), FALSE);
+	DrawSphere3D(playerPos_, playerRad_, 16, GetColor(0, 0, 255), GetColor(0, 0, 255), false);
 	// 中心を結ぶ線（緑）
 	DrawLine3D(transform_.pos, playerPos_, GetColor(0, 255, 0));
 

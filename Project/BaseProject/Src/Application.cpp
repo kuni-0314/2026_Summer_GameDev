@@ -189,7 +189,7 @@ void Application::Run()
 		DebugStringDrawer::GetInstance().Draw();
 		
 		SetDrawBlendMode(DX_BLENDMODE_ALPHA, 255 * 0.8f * (1.0f - brightness_ / 100.0f));
-		DrawBox(0, 0, SCREEN_SIZE_X, SCREEN_SIZE_Y, GetColor(0, 0, 0), TRUE);
+		DrawBox(0, 0, SCREEN_SIZE_X, SCREEN_SIZE_Y, GetColor(0, 0, 0), true);
 		SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
 
 		ScreenFlip();

@@ -40,11 +40,11 @@ void TutorialScene::Draw()
 {
 	if (page_ == 0)
 	{
-		DrawGraph(0, 0, imgTutorialMouse_, TRUE);
+		DrawGraph(0, 0, imgTutorialMouse_, true);
 	}
 	else if (page_ == 1)
 	{
-		DrawGraph(0, 0, imgTutorialPad_, TRUE);
+		DrawGraph(0, 0, imgTutorialPad_, true);
 	}
 }
 

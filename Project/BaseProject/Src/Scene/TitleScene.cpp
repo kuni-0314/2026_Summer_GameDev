@@ -98,7 +98,7 @@ void TitleScene::Draw()
 	// デバッグ用でとりあえず真ん中に赤い正方形を描画
 	int screenX = Application::SCREEN_SIZE_X / 2;
 	int screenY = Application::SCREEN_SIZE_Y / 2;
-	DrawBox(screenX - 10, screenY - 10, screenX + 10, screenY + 10, GetColor(255, 0, 0), TRUE);
+	DrawBox(screenX - 10, screenY - 10, screenX + 10, screenY + 10, GetColor(255, 0, 0), true);
 	
 	static int blinkCounter_ = 0;
 	blinkCounter_++;

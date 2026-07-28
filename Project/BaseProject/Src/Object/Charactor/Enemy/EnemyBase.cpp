@@ -143,9 +143,9 @@ bool EnemyBase::PushOutSphere(
 	if (debugDraw)
 	{
 		// Aの球（赤）
-		DrawSphere3D(posA,radiusA,16,GetColor(255, 0, 0),GetColor(255, 0, 0),FALSE);
+		DrawSphere3D(posA,radiusA,16,GetColor(255, 0, 0),GetColor(255, 0, 0),false);
 		// Bの球（青）
-		DrawSphere3D(posB,radiusB,16,GetColor(0, 0, 255),GetColor(0, 0, 255),FALSE);
+		DrawSphere3D(posB,radiusB,16,GetColor(0, 0, 255),GetColor(0, 0, 255),false);
 		// 中心を結ぶ線（緑）
 		DrawLine3D(posA,posB,GetColor(0, 255, 0));
 	}
