@@ -191,7 +191,7 @@ void EnemyDragon::InitPost()
 		std::bind(&EnemyDragon::ChangeStateClow, this));
 
 	// èâä˙èÛë‘ê›íË
-	ChangeState(STATE::IDLE);
+	ChangeState(STATE::CLOW);
 }
 
 void EnemyDragon::UpdateProcess()
@@ -274,35 +274,6 @@ void EnemyDragon::LandingEffect(const VECTOR& pos, const VECTOR& normal, float s
 	effect->Play(transform_.pos, transform_.quaRot);
 
 	EffectManager::GetInstance().RegisterEffect(effect);
-}
-
-void EnemyDragon::CreateClowCollider(ClowInfo& clowInfo)
-{
-	ColliderSphere* colSphere = new ColliderSphere(
-		ColliderBase::TAG::ENEMY_DRAGON_CLOW,
-		&clowInfo.transform,
-		AsoUtility::VECTOR_ZERO,
-	200.0f);
-
-	clowInfo.collider = colSphere;
-
-	ownColliders_.emplace(
-		static_cast<int>(COLLIDER_TYPE::SPHERE),
-		colSphere);
-
-	//è’ìÀèÓïÒí«â¡
-	GameScene* gameScene = dynamic_cast<GameScene*>(SceneManager::GetInstance().GetScene());
-	gameScene->AddPlayerHitCollider(colSphere);
-}
-
-void EnemyDragon::DestroyClowColier(ClowInfo& clowInfo)
-{
-	//è’ìÀèÓïÒçÌèú
-	GameScene* gameScene = dynamic_cast<GameScene*>(SceneManager::GetInstance().GetScene());
-	gameScene->RemovePlayerHitCollider(clowInfo.collider);
-
-	delete clowInfo.collider;
-	clowInfo.collider = nullptr;
 }
 
 void EnemyDragon::CreateClow()
@@ -777,6 +748,34 @@ void EnemyDragon::CreateTornadoCollider(TornadoInfo& tornadoInfo)
 
 }
 
+void EnemyDragon::CreateClowCollider(ClowInfo& clowInfo)
+{
+	ColliderSphere* colSphere = new ColliderSphere(
+		ColliderBase::TAG::ENEMY_DRAGON_CLOW,
+		&clowInfo.transform,
+		AsoUtility::VECTOR_ZERO,
+		200.0f);
+
+	clowInfo.collider = colSphere;
+
+	ownColliders_.emplace(
+		static_cast<int>(COLLIDER_TYPE::SPHERE),
+		colSphere);
+
+	//è’ìÀèÓïÒí«â¡
+	GameScene* gameScene = dynamic_cast<GameScene*>(SceneManager::GetInstance().GetScene());
+	gameScene->AddPlayerHitCollider(colSphere);
+}
+
+void EnemyDragon::DestroyClowColier(ClowInfo& clowInfo)
+{
+	//è’ìÀèÓïÒçÌèú
+	GameScene* gameScene = dynamic_cast<GameScene*>(SceneManager::GetInstance().GetScene());
+	gameScene->RemovePlayerHitCollider(clowInfo.collider);
+
+	delete clowInfo.collider;
+	clowInfo.collider = nullptr;
+}
 
 void EnemyDragon::DestoryTornadoCollider(TornadoInfo& tornadoInfo)
 {
