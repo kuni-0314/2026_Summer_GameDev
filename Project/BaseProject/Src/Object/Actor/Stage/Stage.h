@@ -1,5 +1,8 @@
 #pragma once
 #include "../ActorBase.h"
+#include "../../../Renderer/ModelMaterial.h"
+#include "../../../Renderer/ModelRenderer.h"
+#include "../../../Manager/Camera.h"
 #include <vector>
 class Stage :public ActorBase
 {
@@ -19,6 +22,7 @@ public:
 	~Stage() override;
 
 	void Update() override;
+	void Draw() override;
 
 
 
@@ -40,6 +44,13 @@ protected:
 	void InitPost() override;
 
 private:
+
+	//マテリアル
+	std::unique_ptr<ModelMaterial> material_;
+	//レンダー
+	std::unique_ptr<ModelRenderer> renderer_;
+
+	std::unique_ptr<Camera> camera_;
 
 	Transform mainStage_;
 

@@ -18,6 +18,12 @@ Stage::~Stage()
 
 void Stage::Update()
 {
+
+}
+
+void Stage::Draw()
+{
+	renderer_->Draw();
 }
 
 
@@ -37,6 +43,15 @@ void Stage::InitTransform()
 
 	transform_.Update();
 
+	camera_ = std::make_unique<Camera>();
+
+	//モデル描画用
+	//マテリアル
+	material_ = std::make_unique<ModelMaterial>
+		("MetalModelVS.cso", 0, "MetalModelPS.cso", 2);
+	//レンダラ
+	renderer_ = std::make_unique<ModelRenderer>(transform_.modelId, *material_);
+	
 }
 
 void Stage::InitCollider()
