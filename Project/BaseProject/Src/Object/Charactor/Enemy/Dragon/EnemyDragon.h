@@ -52,9 +52,6 @@ public:
 	void Draw(void) override;
 	void Release(void) override;
 
-
-
-
 protected:
 
 	// リソースロード
@@ -85,9 +82,6 @@ private:
 	//ドラゴン当たり判定用
 	static constexpr VECTOR COLBODY_CAPSULE_TOP_LOCAL_POS = { 0.0f, 300.0f, 250.0f };
 	static constexpr VECTOR COLBODY_CAPSULE_DOWN_LOCAL_POS = { 0.0f, 230.0f, -250.0f };
-
-
-
 
 	//ブレス用カプセルコライダーサイズ(カプセルがステージに当たると座標移動する)
 	static constexpr VECTOR CAPSULE_ADD_BREATH_POS = { 0.0f, 0.0f, 50.0f };		//ブレス開始位置調整
@@ -210,17 +204,14 @@ private:
 	ClowInfo clowInfo_;
 	//クロー生存状態
 	bool isAliveClow_;
-
-
-
+	//マトリックス
+	MATRIX offsetclow;
 
 	//クローコライダー作成・削除
 	void CreateClowCollider(ClowInfo& clowInfo);
 	void DestroyClowColier(ClowInfo& clowInfo);
 	//クロー生成
 	void CreateClow();
-
-
 	// 状態遷移
 	void ChangeState(STATE state);
 

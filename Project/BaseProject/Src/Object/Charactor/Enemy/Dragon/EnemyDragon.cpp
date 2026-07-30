@@ -37,6 +37,7 @@ void EnemyDragon::Draw(void)
 	EnemyBase::Draw();
 
 #ifdef _DEBUG
+
 	DrawSphere3D(breathTopPos_, 10.0f, 10, 0xffffff, 0xffffff, true);
 
 	DrawFormatString(300, 500, GetColor(255, 255, 255), "Pos: %f,%f,%f", transform_.pos.x, transform_.pos.y, transform_.pos.z);
@@ -52,9 +53,6 @@ void EnemyDragon::Draw(void)
 		DrawSphere3D(Pos, 100.0f, 16, 0xff00ff, 0xff00ff, false);
 
 	}
-
-	//クロー攻撃
-	DrawSphere3D(clowInfo_.transform.pos, 200.0f, 10, 0xffffff, 0xffffff, false);
 
 #endif
 
@@ -213,36 +211,11 @@ void EnemyDragon::UpdateProcess()
 	breathTopPos_ = VAdd(breathTopPos_, CAPSULE_ADD_BREATH_POS);
 
 
-	//プレイヤー視認状態
-	if (look_)
-	{
-		LookPlayer();
-	}
-
-	//==============================
 	// クロー位置更新
-	//==============================
-	MATRIX matclow =
-		MV1GetFrameLocalWorldMatrix(
-			transform_.modelId, 10);
+	MATRIX matclow =MV1GetFrameLocalWorldMatrix(transform_.modelId, 10);
+	offsetclow = MMult(MGetTranslate(VGet(0.0f, 0.0f, -3.0f)),matclow);
 
-	MATRIX offsetclow = MMult(
-		MGetTranslate(VGet(0.0f, 0.0f, -3.0f)),
-		matclow);
-
-	clowInfo_.transform.pos =
-		VGet(offsetclow.m[3][0],
-			offsetclow.m[3][1],
-			offsetclow.m[3][2]);
-
-	VECTOR test = { 0,80,450 };
-
-	clowInfo_.transform.pos = VAdd(clowInfo_.transform.pos, test);
-
-	// Transform更新
-	clowInfo_.transform.Update();
-
-	//
+	//トルネードクールタイム
 	if (tornadoCoolTime_ > 0)
 	{
 		tornadoCoolTime_--;
@@ -402,7 +375,15 @@ void EnemyDragon::UpdateIdle()
 		}
 		else
 		{
-			ChangeState(STATE::BREARH);
+			int rand2 = GetRand(100);
+			if (rand > 50)
+			{
+				ChangeState(STATE::BREARH);
+			}
+			else
+			{
+				ChangeState(STATE::CLOW);
+			}
 		}
 	}
 
@@ -444,7 +425,7 @@ void EnemyDragon::UpdateFlayIdle()
 	{
 		transform_.pos.y -= 5;
 
-		if (transform_.pos.y < -40)
+		if (transform_.pos.y < -75)
 		{
 			landing_ = false;
 
@@ -652,6 +633,14 @@ void EnemyDragon::UpdateClow()
 	
 	}
 
+
+	clowInfo_.transform.pos = VGet(offsetclow.m[3][0], offsetclow.m[3][1], offsetclow.m[3][2]);
+	VECTOR test = { 0,80,450 };
+	clowInfo_.transform.pos = VAdd(clowInfo_.transform.pos, test);
+
+	// Transform更新
+	clowInfo_.transform.Update();
+
 	//アニメーションが終了した場合
 	if (animationController_->IsEnd())
 	{
@@ -660,13 +649,19 @@ void EnemyDragon::UpdateClow()
 		//ブレス生存状態
 		isAliveClow_ = false;
 		player_->SetWasHitClow(false);
+
+		int rand = GetRand(100);
 		//ブレス終了後、次の状態へ
-		ChangeState(STATE::IDLE);
+		if (rand > 40)
+		{
+			ChangeState(STATE::IDLE);
+		}
+		else
+		{
+			ChangeState(STATE::CLOW);
+		}
 	
 	}
-	
-	clowInfo_.transform.Update();
-
 }
 
 void EnemyDragon::CreateBreathCollider(BreathInfo& breathInfo)
@@ -757,11 +752,7 @@ void EnemyDragon::CreateClowCollider(ClowInfo& clowInfo)
 		200.0f);
 
 	clowInfo.collider = colSphere;
-
-	ownColliders_.emplace(
-		static_cast<int>(COLLIDER_TYPE::SPHERE),
-		colSphere);
-
+	ownColliders_.emplace(static_cast<int>(COLLIDER_TYPE::SPHERE),colSphere);
 	//衝突情報追加
 	GameScene* gameScene = dynamic_cast<GameScene*>(SceneManager::GetInstance().GetScene());
 	gameScene->AddPlayerHitCollider(colSphere);
@@ -769,9 +760,23 @@ void EnemyDragon::CreateClowCollider(ClowInfo& clowInfo)
 
 void EnemyDragon::DestroyClowColier(ClowInfo& clowInfo)
 {
+	if (clowInfo.collider == nullptr)
+	{
+		return;
+	}
+
 	//衝突情報削除
 	GameScene* gameScene = dynamic_cast<GameScene*>(SceneManager::GetInstance().GetScene());
 	gameScene->RemovePlayerHitCollider(clowInfo.collider);
+
+	// ownColliders_から削除
+	auto it = ownColliders_.find(
+		static_cast<int>(COLLIDER_TYPE::SPHERE));
+
+	if (it != ownColliders_.end())
+	{
+		ownColliders_.erase(it);
+	}
 
 	delete clowInfo.collider;
 	clowInfo.collider = nullptr;
