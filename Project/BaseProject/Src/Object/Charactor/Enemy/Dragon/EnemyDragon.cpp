@@ -109,8 +109,6 @@ void EnemyDragon::InitTransform()
 	bodyPos_ = VGet(offset2.m[3][0], offset2.m[3][1], offset2.m[3][2]);
 	// ‰ñ“]‚ðQuaternion‚É•ÏŠ·
 	Quaternion rot2 = Quaternion::GetRotation(mat2);
-
-
 }
 
 void EnemyDragon::InitCollider()
@@ -224,6 +222,10 @@ void EnemyDragon::UpdateProcess()
 	//Œ•‚Æ–‚–@‚Ì“–‚½‚è”»’è
 	CheckPlayerSwordCollision();
 	CheckPlayerMagicCollision();
+	if(look_)
+	{
+		LookPlayer();
+	}
 
 	if (hp_ <= 0)
 	{
