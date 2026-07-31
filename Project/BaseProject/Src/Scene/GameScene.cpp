@@ -101,13 +101,13 @@ void GameScene::Init()
 	audioHandle_ = LoadSoundMem("Data/Sound/BGM/GameBGM.wav");
 	wargnigHandle_ = LoadSoundMem("Data/Sound/BGM/WarnigBgm.wav");
 	ChangeVolumeSoundMem(100, wargnigHandle_);
-
+	// 音量
 	AudioManager::GetInstance()->PlayBGM(SoundID::BGM_GAME);
 	AudioManager::GetInstance()->SetBgmVolume(100);
-	// 音量
 
+
+	//HPUIハンドル
 	hpHandles_.resize(11);
-
 	const int MAX_HP = 10;
 	for (int i = 0; i <= MAX_HP; ++i)
 	{
@@ -116,17 +116,17 @@ void GameScene::Init()
 		GraphFilter(hpHandles_[i], DX_GRAPH_FILTER_HSB, 0, (MAX_HP - i) * -12, 0, 0);
 	}
 
+	//魔法コマンドハンドル
 	commandHandles_.resize(4);
-
 	commandHandles_[static_cast <int>(COMMAND::THUNDER)] = resMng_.Load(ResourceManager::SRC::IMG_SELECT_SANDER).handleId_;
 	commandHandles_[static_cast <int>(COMMAND::FIRE)] = resMng_.Load(ResourceManager::SRC::IMG_SELECT_FIRE).handleId_;
 	commandHandles_[static_cast <int>(COMMAND::HEAL)] = resMng_.Load(ResourceManager::SRC::IMG_SELECT_RECOVERY).handleId_;
 	commandHandles_[static_cast <int>(COMMAND::ALL)] = resMng_.Load(ResourceManager::SRC::IMG_SELECT_ALL).handleId_;
-
+	//初期選択コマンド
 	selectCommand_ = static_cast<int>(COMMAND::THUNDER);
 
+	//魔法コマンドクールタイムハンドル
 	commandHandles_.resize(6);
-
 	fontCommandHandles_[static_cast <int>(COMMAND::THUNDER)][(int)COMMAND_STATE::NOT_USE] = resMng_.Load(ResourceManager::SRC::IMG_NOTUSE_SANDER).handleId_;
 	fontCommandHandles_[static_cast <int>(COMMAND::THUNDER)][(int)COMMAND_STATE::USE] = resMng_.Load(ResourceManager::SRC::IMG_USE_SANDER).handleId_;
 	fontCommandHandles_[static_cast <int>(COMMAND::FIRE)][(int)COMMAND_STATE::NOT_USE] = resMng_.Load(ResourceManager::SRC::IMG_NOTUSE_FIRE).handleId_;
@@ -136,13 +136,13 @@ void GameScene::Init()
 
 	playerUiHandles_.resize(static_cast<int>(PLAYRE_HP_STATE::STATE_MAX));
 
+	//プレイヤーUIハンドル
 	playerUiHandles_[static_cast<int>(PLAYRE_HP_STATE::DEF)] = resMng_.Load(ResourceManager::SRC::IMG_PLAYER_UI_DEF).handleId_;
 	playerUiHandles_[static_cast<int>(PLAYRE_HP_STATE::DAMAGE)] = resMng_.Load(ResourceManager::SRC::IMG_PLAYER_UI_DAMEGE).handleId_;
 	playerUiHandles_[static_cast<int>(PLAYRE_HP_STATE::WARNING)] = resMng_.Load(ResourceManager::SRC::IMG_PLAYER_UI_WARNIG).handleId_;
 
-
+	//ロックオン画像ハンドル
 	lockOnImageHandle_ = resMng_.Load(ResourceManager::SRC::TARGET_CURSOR_ORANGE).handleId_;
-
 	lockOnFontHandle_ = resMng_.Load(ResourceManager::SRC::IMG_LOCKON_FONT_UI).handleId_;
 }
 
@@ -168,22 +168,22 @@ void GameScene::Update()
 		selectCommand_ = static_cast<int>(COMMAND::ALL);
 	}
 
+	//プレイヤー警告音
+	//プレイヤーのHPが３割になると警告音発生
 	if (player_->GetHp() <= 6)
 	{
 		if (!isWarning_)
 		{
 			isWarning_ = true;
-
-	
 			PlaySoundMem(wargnigHandle_, DX_PLAYTYPE_LOOP);
 		}
 	}
 	else
 	{
+		//警告音解除
 		if (isWarning_)
 		{
 			isWarning_ = false;
-
 			StopSoundMem(wargnigHandle_);
 		}
 	}

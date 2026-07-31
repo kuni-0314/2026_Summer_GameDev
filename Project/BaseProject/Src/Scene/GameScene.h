@@ -101,13 +101,13 @@ public:
 
 	VECTOR GetTargetPos() const { return targetPos_; }
 
+	//プレイヤーHPUIシェイク
 	void ShakeHpUI();
 
 	void CheckHitEnemy(const VECTOR& pos, float radius, int damage);
 
 	void SetLowHpEffect();
 
-	void PlayerDamegeVoice();
 
 private:
 
