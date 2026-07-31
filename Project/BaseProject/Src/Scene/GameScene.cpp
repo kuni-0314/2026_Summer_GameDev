@@ -161,15 +161,12 @@ void GameScene::Update()
 	enemyManager_->Update();
 	itemManger_->Update();
 
+
+	//魔法コマンドショートカットフラグ
 	if (player_->IsShortCut())
 	{
 		selectCommand_ = static_cast<int>(COMMAND::ALL);
 	}
-	else if (selectCommand_ == static_cast<int>(COMMAND::ALL))
-	{
-		//selectCommand_ = static_cast<int>(usecommand_);
-	}
-
 
 	if (player_->GetHp() <= 6)
 	{
@@ -229,9 +226,6 @@ void GameScene::Update()
 		}
 	}
 
-	// ターゲット切り替え
-	//if (ins->IsTrgDown(KEY_INPUT_LEFT) && targetEnemyId_ > 0) targetEnemyId_--;
-	//if (ins->IsTrgDown(KEY_INPUT_RIGHT)) targetEnemyId_++;
 
 	targetPos_ = enemyManager_->GetEnemyPos(targetEnemyId_);
 	SceneManager::GetInstance().GetCamera()->SetTargetPos(targetPos_);
@@ -239,7 +233,6 @@ void GameScene::Update()
 	//プレイヤーダメージUI処理
 	if (damageflag_)
 	{
-		PlayerDamegeVoice();
 		damegeTimeCount_++;
 
 		//表示時間
@@ -290,6 +283,8 @@ void GameScene::Update()
 		}
 	}
 
+#ifdef _DEBUG
+
 	PostEffectManager::EffectParams params = { radialBlurParam, 0.0f, 0.0f, 0.0f };
 	pstEfcMngIns.SetCustomParams(PostEffectManager::EFFECT_TYPE::RADIAL_BLUR, params);
 
@@ -310,10 +305,6 @@ void GameScene::Update()
 	{
 		multiEffectMode_ = !multiEffectMode_;
 	}
-
-	// 単一エフェクトモード
-	//if (!multiEffectMode_)
-	//{
 		// エフェクト切り替え (テンキー4/6)
 	if (ins->IsTrgDown(KEY_INPUT_NUMPAD4))
 	{
@@ -328,37 +319,10 @@ void GameScene::Update()
 		current = (current + 1) % static_cast<int>(PostEffectManager::EFFECT_TYPE::MAX);
 		currentEffect_ = static_cast<PostEffectManager::EFFECT_TYPE>(current);
 	}
-	//}
-	// 複数エフェクトモード
-	//else
-	//{
-	//	// Enterキーで現在のエフェクトをトグル
-	//	if (ins->IsTrgDown(KEY_INPUT_RETURN))
-	//	{
-	//		ToggleEffect(currentEffect_);
-	//	}
 
-	//	// エフェクト選択 (テンキー4/6)
-	//	if (ins->IsTrgDown(KEY_INPUT_NUMPAD4))
-	//	{
-	//		int current = static_cast<int>(currentEffect_);
-	//		current = (current - 1 + static_cast<int>(PostEffectManager::EFFECT_TYPE::MAX)) %
-	//			static_cast<int>(PostEffectManager::EFFECT_TYPE::MAX);
-	//		currentEffect_ = static_cast<PostEffectManager::EFFECT_TYPE>(current);
-	//	}
-	//	if (ins->IsTrgDown(KEY_INPUT_NUMPAD6))
-	//	{
-	//		int current = static_cast<int>(currentEffect_);
-	//		current = (current + 1) % static_cast<int>(PostEffectManager::EFFECT_TYPE::MAX);
-	//		currentEffect_ = static_cast<PostEffectManager::EFFECT_TYPE>(current);
-	//	}
 
-	//	 全クリア (テンキー0)
-	//	if (ins->IsTrgDown(KEY_INPUT_NUMPAD0))
-	//	{
-	//		activeEffects_.clear();
-	//	}
-	//}
+
+#endif
 
 
 	// ゲームオーバー判定
@@ -390,9 +354,7 @@ void GameScene::Update()
 		return;
 	}
 
-	//#ifdef _DEBUG
-
-	if (ins->IsTrgDown(KEY_INPUT_UP) /*|| ins->IsTrgDown(KEY_INPUT_E)*/ || ins->IsGamepadTrgDown(InputManager::PadInput::Up, 0))
+	if (ins->IsTrgDown(KEY_INPUT_UP) || ins->IsGamepadTrgDown(InputManager::PadInput::Up, 0))
 	{
 		AudioManager::GetInstance()->SetSeVolume(200);
 		AudioManager::GetInstance()->PlaySE(SoundID::SE_COMMAND_SELECT);
@@ -447,7 +409,6 @@ void GameScene::Draw()
 	enemyManager_->Draw();
 
 
-
 	if (camMode_ == TARGETING)
 	{
 		static float angle = 0.0f;
@@ -458,79 +419,21 @@ void GameScene::Draw()
 		DrawGraph(30, 100, lockOnFontHandle_, true);
 	}
 
-
-
-
-
 	// 一時スクリーンにメイン画面をコピー
 	int tempScreen = MakeScreen(Application::SCREEN_SIZE_X, Application::SCREEN_SIZE_Y, false);
 	SetDrawScreen(tempScreen);
 	ClearDrawScreen();
 	DrawGraph(0, 0, mainScreen, false);
 
-	// エフェクト適用
-	//if (!multiEffectMode_)
-	//{
-		// 単一エフェクトモード
-		//PostEffectManager::GetInstance().ApplyEffect(
-		//	currentEffect_,
-		//	tempScreen,
-		//	postEffectScreen_,
-		//	effectTime_
-		//);
-	//}
-	//else
-	//{
-		// 複数エフェクトモード
-		PostEffectManager::GetInstance().ApplyEffects(
-			activeEffects_,
-			tempScreen,
-			postEffectScreen_,
-			effectTime_
-		);
-	//}
+	// 複数エフェクトモード
+	PostEffectManager::GetInstance().ApplyEffects(activeEffects_,tempScreen,postEffectScreen_,effectTime_);
 
 	PlayerHpDraw();
 	CommandDraw();
 
-	//
-	// (500, 0, 0xffffff, "HP:%d", player_->GetHp());
-
 	// 最終結果をメイン画面に描画
 	SetDrawScreen(mainScreen);
 	DrawGraph(0, 0, postEffectScreen_, false);
-
-	// デバッグ表示
-	//int y = 10;
-	//DrawFormatString(10, y, 0xFFFF00, "Mode: %s (NumPad5 to toggle)",
-	//	multiEffectMode_ ? "Multi" : "Single");
-	//y += 20;
-	//// トリガー値を表示
-	//const auto& ins = InputManager::GetInstance();
-	//int leftTrigger = ins->GetGamepadTriggerValue(true, 0);
-	//int rightTrigger = ins->GetGamepadTriggerValue(false, 0);
-	//DrawFormatString(10, y, 0xFFFF00, "Left Trigger: %d, Right Trigger: %d", leftTrigger, rightTrigger);
-	//y += 20;
-	//if (!multiEffectMode_)
-	//{
-	//	DrawFormatString(10, y, 0xFFFF00, "Current Effect: %s (NumPad4/6)",
-	//		GetEffectName(currentEffect_));
-	//}
-	//else
-	//{
-	//	DrawFormatString(10, y, 0xFFFF00, "Select: %s (Enter to toggle)",
-	//		GetEffectName(currentEffect_));
-	//	y += 20;
-	//	DrawFormatString(10, y, 0xFFFF00, "Active Effects: %d (NumPad0 to clear)",
-	//		static_cast<int>(activeEffects_.size()));
-	//	y += 20;
-
-	//	for (const auto& effect : activeEffects_)
-	//	{
-	//		DrawFormatString(10, y, 0x00FF00, "  - %s", GetEffectName(effect));
-	//		y += 18;
-	//	}
-	//}
 
 	// 一時スクリーン削除
 	DeleteGraph(tempScreen);
@@ -662,13 +565,10 @@ void GameScene::RemovePlayerHitCollider(const ColliderBase* hitCollider)
 	player_->RemoveHitCollider(hitCollider);
 }
 
-//void GameScene::SetDamageFlag(bool flag)
-//{
-//	isDamageFlag_ = flag;
-//}
 
 void GameScene::ShakeHpUI()
 {
+	//プレイヤーHPUIシェイクグラグ
 	isHpUIShake_ = true;
 	shakePow_ = SHAKE_POW_MAX;
 }
@@ -681,11 +581,6 @@ void GameScene::CheckHitEnemy(const VECTOR& pos, float radius, int damage)
 void GameScene::SetLowHpEffect()
 {
 	ToggleEffect(PostEffectManager::EFFECT_TYPE::FH_LOW_HP);
-}
-
-void GameScene::PlayerDamegeVoice()
-{
-	
 }
 
 void GameScene::SelectCommand(COMMAND command)
