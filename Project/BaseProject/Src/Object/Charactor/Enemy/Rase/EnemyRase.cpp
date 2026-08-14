@@ -72,25 +72,6 @@ void EnemyRase::Release(void)
 	}
 }
 
-//void EnemyRase::Damage(int damage)
-//{
-//	if (state_ == STATE::DIE || state_ == STATE::END)
-//		return;
-//
-//	CharactorBase::Damage(damage);
-//
-//	if (hp_ <= 0)
-//	{
-//		ChangeState(STATE::DIE);
-//		isAlive_ = false;
-//	}
-//	else
-//	{
-//		ChangeState(STATE::HIT);
-//	}
-//}
-
-
 
 void EnemyRase::InitLoad()
 {

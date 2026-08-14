@@ -1,22 +1,16 @@
 {
   "enemy": [
     {
-      "id": 1,
+      "id": 0,
       "type": 1,
       "hp": 5,
-      "posX": 1000,
-      "posY": 40,
-      "posZ": 600,
       "moveRange": 4000,
       "wave": 1
     },
     {
-      "id": 2,
-      "type": 0,
+      "id": 1,
+      "type": 1,
       "hp": 5,
-      "posX": 600,
-      "posY": 40,
-      "posZ": 600,
       "moveRange": 4000,
       "wave": 1
     }

@@ -128,10 +128,11 @@ private:
 	void UpdateWave4();
 	void UpdateWaveBoss();
 
-	//エネミーの情報読み込み（パラメータ関連）
-	void LoadJsonEnemyData();
 	//エネミーWAVE情報読み込み
 	void LoadJsonWaveData();
 
+
+	std::vector<VECTOR>EnemyPos_;
+	void InitEnemyPos();
 };
 

@@ -37,14 +37,17 @@ EnemyManager::~EnemyManager()
 }
 void EnemyManager::Init()
 {
+
+	//敵生成座標
+	InitEnemyPos();
 	// CSVはゲーム開始時に1回だけ読み込む
 	//LoadCsvData();
 
 	//Json形式の読み込み
-	LoadJsonEnemyData();
-
+	LoadJsonWaveData();
 	// WAVE1の敵を生成
 	LoadWaveData(WAVE::WAVE1);
+
 
 }
 void EnemyManager::Update()
@@ -62,8 +65,6 @@ void EnemyManager::Draw()
 	else if (next == WAVE::WAVE3) name = "WAVE3";
 	else if (next == WAVE::WAVE4) name = "WAVE4";
 	else if (next == WAVE::BOSS) name = "BOSS";
-
-	//DrawFormatString(0, 100, GetColor(255, 255, 255), "WAVE: %s", name);
 
 	for (auto& enemy : enemies_)
 	{
@@ -598,7 +599,8 @@ void EnemyManager::UpdateWaveBoss()
 	}
 }
 
-void EnemyManager::LoadJsonEnemyData()
+
+void EnemyManager::LoadJsonWaveData()
 {
 	// 外部ファイルの読み込み
 	std::ifstream ifs;
@@ -617,63 +619,49 @@ void EnemyManager::LoadJsonEnemyData()
 	// enemyオブジェクトは複数あるはずなので、繰り返し処理
 	for (const json& enemyData : enemyDatas)
 	{
-		EnemyBase::EnemyStatus data{};
+		EnemyBase::EnemyData data{};
 
+		//ID
+		data.id = enemyData["id"];
 		//敵の種類
 		data.type = static_cast<EnemyBase::TYPE>(enemyData["type"]);
 		//HP
 		data.hp = enemyData["hp"];
 
-		//移動範囲
-		data.movableRange = enemyData["moveRange"];
-		
-		// 管理配列に追加
-		enemyStatusData_.emplace_back(std::move(data));
-	}
-	//ファイルを閉じる
-	ifs.close();
-}
-
-void EnemyManager::LoadJsonWaveData()
-{
-	// 外部ファイルの読み込み
-	std::ifstream ifs;
-	ifs.open(Application::PATH_JSON + "Wave.json");
-	if (!ifs)
-	{
-		// 外部ファイルの読み込み失敗
-		return;
-	}
-
-	// ファイルストリームからjsonオブジェクトに変換
-	json waveData = json::parse(ifs);
-	// jsonオブジェクトから、enemyオブジェクトを取得
-	const auto& waveDatas = waveData["enemy"];
-
-	// enemyオブジェクトは複数あるはずなので、繰り返し処理
-	for (const json& waveData : waveDatas)
-	{
-		EnemyBase::EnemyWaveData data{};
-
-		//ID
-		data.id = waveData["id"];
-		//WAVE
-		data.type = waveData["type"];
 
 		//初期座標
-		data.defaultPos =
-		{
-			waveData["posX"],
-			waveData["posY"],
-			waveData["posZ"]
-		};
+		int rand = GetRand(10);
+		data.defaultPos = EnemyPos_[rand];
+		
+	
+
+		//移動範囲
+		data.movableRange = enemyData["moveRange"];
+
+		data.wave = enemyData["wave"];
 
 		// 管理配列に追加
-		enemyWaveData_.emplace_back(std::move(data));
+		enemyData_.emplace_back(std::move(data));
 	}
 	//ファイルを閉じる
 	ifs.close();
 
 
+}
+
+void EnemyManager::InitEnemyPos()
+{
+	EnemyPos_.resize(11);
+
+	EnemyPos_[0] = { 500,  40,  500 };
+	EnemyPos_[1] = { 1200, 40, 800 };
+	EnemyPos_[2] = { 2500, 40, 300 };
+	EnemyPos_[3] = { 800,  40, 1800 };
+	EnemyPos_[4] = { 2000, 40, 1500 };
+	EnemyPos_[5] = { 300,  40, 2500 };
+	EnemyPos_[6] = { 1500, 40, 2800 };
+	EnemyPos_[7] = { 2800, 40, 2200 };
+	EnemyPos_[8] = { 2400, 40, 2700 };
+	EnemyPos_[9] = { 1000, 40, 1200 };
 }
 
