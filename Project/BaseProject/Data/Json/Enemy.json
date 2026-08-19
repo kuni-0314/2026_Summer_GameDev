@@ -4,15 +4,13 @@
       "id": 0,
       "type": 1,
       "hp": 5,
-      "moveRange": 4000,
       "wave": 1
     },
     {
       "id": 1,
-      "type": 1,
+      "type": 0,
       "hp": 5,
-      "moveRange": 4000,
-      "wave": 1
+      "wave": 2
     }
   ]
 }

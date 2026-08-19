@@ -50,7 +50,7 @@ void EnemyRase::Draw()
 	else if (next == STATE::MOVE) name = "MOVE";
 	else if (next == STATE::CHARGE) name = "CHARGE";
 
-	DrawFormatString(0, 400, GetColor(255, 255, 255), "STATE: %s", name);
+	DrawFormatString(200, 400, GetColor(255, 255, 255), "STATE: %s", name);
 
 	DrawFormatString(500, 400, GetColor(255, 255, 255), "RASE_HP: %d", hp_);
 
@@ -184,7 +184,11 @@ void EnemyRase::UpdateProcess()
 	//プレイヤーとの距離測定
 	distance_ = VSize(toPlayer_);
 
+	//方向
 	LookPlayer();
+
+	//ステート更新
+	stateUpdate_();
 
 	//上下の揺れ
 	hoverTime_ += scnMng_.GetDeltaTime();
@@ -198,14 +202,23 @@ void EnemyRase::UpdateProcess()
 		shot.shotTransform_.Update();
 	}
 
-
+	//押し出し処理
 	PushOutSphere(transform_.pos, pushOutRadius_,
 		player_->GetPos(), player_->GetCollRadius(), true);
 
 	auto const ins = InputManager::GetInstance();
-
 	CheckPlayerSwordCollision();
 	CheckPlayerMagicCollision();
+
+	//攻撃クールタイム
+	if (isCoolTime_)
+	{
+		coolTime_++;
+		if (coolTime_ > SHOT_COOL_TIME)
+		{
+			isCoolTime_ = false;
+		}
+	}
 
 	if (hp_ <= 0)
 	{
@@ -217,10 +230,8 @@ void EnemyRase::UpdateProcess()
 
 void EnemyRase::UpdateProcessPost()
 {
-	stateUpdate_();
 	//弾の更新
 	UpdateShot();
-
 }
 
 void EnemyRase::ChangeState(STATE state)
@@ -267,7 +278,7 @@ void EnemyRase::ChangeStateMove(void)
 	// ランダムな待機時間
 	step_ = 3.0f + static_cast<float>(GetRand(3));
 	// 移動スピード
-	moveSpeed_ = 3.0f;
+	moveSpeed_ = 5.0f;
 	// 待機アニメーション再生
 	animationController_->Play(static_cast<int>(ANIM_TYPE::IDLE), true);
 }
@@ -357,6 +368,7 @@ void EnemyRase::UpdateAttack()
 	{
 		AttackShot();
 		shotFired_ = true;
+		isCoolTime_ = true;
 	}
 
 	// 移動量ゼロ
@@ -371,6 +383,8 @@ void EnemyRase::UpdateMove(void)
 		ChangeState(STATE::CHARGE);
 	}
 
+	// プレイヤー方向へ移動
+	moveDir_ = VNorm(toPlayer_);
 	// 移動する ← 追加
 	movePow_ = VScale(moveDir_, moveSpeed_);
 }
@@ -385,7 +399,11 @@ void EnemyRase::UpdateThink(void)
 	//攻撃するか否や
 	if (distance_ < SWICH_DISTANCE)
 	{
-		ChangeState(STATE::CHARGE);
+		//クールタイムがない時のみ
+		if (isCoolTime_ == false)
+		{
+			ChangeState(STATE::CHARGE);
+		}
 	}
 	else
 	{
@@ -471,34 +489,7 @@ void EnemyRase::UpdateShot()
 	{
 		if (!shot.isShotAlive_) continue;
 
-		// プレイヤーとの衝突
-		if (AsoUtility::IsHitSpheres(
-			shot.shotTransform_.pos,
-			COL_SPHERE_RADIUS,
-			playerPos_,
-			playerRad_))
-		{
-			player_->Damage(1, transform_.GetForward());
-			shot.life = 0;
-		}
-
-		shot.speed += 0.05f;
-
-		// ホーミング
-		if (shot.life > 60)
-		{
-			VECTOR targetDir =
-				VNorm(VSub(player_->GetPos(),
-					shot.shotTransform_.pos));
-
-			shot.dir_ =
-				VNorm(
-					VAdd(
-						VScale(shot.dir_, 1.0f - shot.homingPower),
-						VScale(targetDir, shot.homingPower)
-					)
-				);
-		}
+		shot.speed += 0.1f;
 
 		// 移動
 		shot.shotTransform_.pos =
@@ -507,6 +498,19 @@ void EnemyRase::UpdateShot()
 				VScale(shot.dir_, shot.speed)
 			);
 
+
+		// プレイヤーとの衝突
+		if (AsoUtility::IsHitSpheres(
+			shot.shotTransform_.pos,
+			COL_SPHERE_RADIUS,
+			playerPos_,
+			80))
+		{
+			player_->Damage(1, transform_.GetForward());
+			shot.life = 0;
+		}
+
+		DrawSphere3D(shot.shotTransform_.pos, 20, 20, 0xffffff, 0xffffff, false);
 
 		// エフェクト追従
 		if (shot.effect)
@@ -583,6 +587,17 @@ void EnemyRase::DrawShot()
 
 		MV1DrawModel(
 			shot.shotTransform_.modelId);
+#ifdef DEBUG
+
+		// デバッグ用
+		DrawSphere3D(
+			shot.shotTransform_.pos,
+			COL_SPHERE_RADIUS,
+			10,
+			GetColor(255, 0, 0),
+			GetColor(255, 0, 0),
+			TRUE); 
+#endif // DEBUG
 	}
 }
 

@@ -105,6 +105,7 @@ void OverScene::SelectChange(SELECT next)
 		break;
 	case SELECT::RETRY:
 		AudioManager::GetInstance()->StopBGM();
+		sceMng_.ResetContinue();
 		sceMng_.ChangeScene(SceneManager::SCENE_ID::GAME);
 		break;
 	case SELECT::TITLE:

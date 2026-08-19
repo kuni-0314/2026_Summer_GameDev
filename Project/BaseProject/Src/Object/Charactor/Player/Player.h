@@ -62,8 +62,6 @@ public:
 
 	void Update() override;
 
-
-
 	void Draw() override;
 
 	void ChangeState(STATE newState);

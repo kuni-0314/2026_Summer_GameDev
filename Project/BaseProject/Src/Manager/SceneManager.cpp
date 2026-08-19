@@ -11,6 +11,7 @@
 #include "../Scene/OptionScene.h"
 #include "../Scene/TutorialScene.h"
 #include "../Effect/EffectManager.h"
+#include "../Object/Charactor/Enemy/EnemyManger.h"
 #include "Camera.h"
 #include "ResourceManager.h"
 #include "SceneManager.h"
@@ -204,6 +205,7 @@ int SceneManager::GetMainScreen() const
 {
 	return mainScreen_;
 }
+
 
 SceneManager::SceneManager()
 {

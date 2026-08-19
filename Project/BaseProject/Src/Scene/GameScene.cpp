@@ -19,6 +19,7 @@
 #include "../Effect/LoadEffekseer/EffekseerEffect.h"
 #include "../Object/Common/AnimationController.h"
 #include "GameScene.h"
+#include "OverScene.h"
 #include <EffekseerForDXLib.h>
 
 GameScene::GameScene()
@@ -65,6 +66,13 @@ void GameScene::Init()
 	// 敵マネージャー初期化
 	enemyManager_ = new EnemyManager(this, player_);
 	enemyManager_->Init();
+
+	if (sceMng_.IsContinue())
+	{
+		enemyManager_->SetWave(sceMng_.GetContinueWave());
+		sceMng_.ResetContinue();
+	}
+
 	enemyManager_->AddHitCollider(stageCollider);
 	enemyManager_->AddHitCollider(player_->GetSword()->GetOwnCollider(static_cast<int>(ActorBase::COLLIDER_TYPE::CAPSULE)));
 
@@ -328,37 +336,6 @@ void GameScene::Update()
 		current = (current + 1) % static_cast<int>(PostEffectManager::EFFECT_TYPE::MAX);
 		currentEffect_ = static_cast<PostEffectManager::EFFECT_TYPE>(current);
 	}
-	//}
-	// 複数エフェクトモード
-	//else
-	//{
-	//	// Enterキーで現在のエフェクトをトグル
-	//	if (ins->IsTrgDown(KEY_INPUT_RETURN))
-	//	{
-	//		ToggleEffect(currentEffect_);
-	//	}
-
-	//	// エフェクト選択 (テンキー4/6)
-	//	if (ins->IsTrgDown(KEY_INPUT_NUMPAD4))
-	//	{
-	//		int current = static_cast<int>(currentEffect_);
-	//		current = (current - 1 + static_cast<int>(PostEffectManager::EFFECT_TYPE::MAX)) %
-	//			static_cast<int>(PostEffectManager::EFFECT_TYPE::MAX);
-	//		currentEffect_ = static_cast<PostEffectManager::EFFECT_TYPE>(current);
-	//	}
-	//	if (ins->IsTrgDown(KEY_INPUT_NUMPAD6))
-	//	{
-	//		int current = static_cast<int>(currentEffect_);
-	//		current = (current + 1) % static_cast<int>(PostEffectManager::EFFECT_TYPE::MAX);
-	//		currentEffect_ = static_cast<PostEffectManager::EFFECT_TYPE>(current);
-	//	}
-
-	//	 全クリア (テンキー0)
-	//	if (ins->IsTrgDown(KEY_INPUT_NUMPAD0))
-	//	{
-	//		activeEffects_.clear();
-	//	}
-	//}
 
 
 	// ゲームオーバー判定
@@ -369,6 +346,10 @@ void GameScene::Update()
 		StopSoundMem(audioHandle_);
 		StopSoundMem(wargnigHandle_);
 		AudioManager::GetInstance()->StopBGM();
+		auto overScene = sceMng_.GetScene();
+
+		//ゲームオーバーした際にwave情報を保存
+		sceMng_.SetContinueWave(enemyManager_->GetWave());
 		sceMng_.ChangeScene(SceneManager::SCENE_ID::OVER);
 		return;
 	}

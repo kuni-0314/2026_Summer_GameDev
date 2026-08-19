@@ -16,11 +16,10 @@ public:
 
 	enum class WAVE
 	{
-		START,//wave開始（演出とか入れる用）
+		//wave開始（演出とか入れる用）
 		WAVE1,
 		WAVE2,
 		WAVE3,
-		WAVE4,
 		BOSS,
 		END
 	};
@@ -64,6 +63,11 @@ public:
 	void DeadEffect(const VECTOR& pos);
 
 	void CheckHit(const VECTOR& pos, float radius, int damage);
+
+	//外部wave情報渡し
+	WAVE GetWave() const { return wave_; }
+
+	void SetWave(const WAVE wave);
 
 private:
 	//プレイヤー

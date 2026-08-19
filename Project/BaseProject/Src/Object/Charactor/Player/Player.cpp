@@ -569,6 +569,8 @@ void Player::Draw()
 
 	VECTOR test = transform_.quaRot.PosAxis(VGet(0, 0, -100));
 	//DrawFormatString(0, 500, 0xffffff, "<Player> HP : %d", hp_);
+
+	DrawSphere3D(transform_.pos, 80, 15, 0xffffff, 0x0000FF, false);
 #endif // _DEBUG
 }
 

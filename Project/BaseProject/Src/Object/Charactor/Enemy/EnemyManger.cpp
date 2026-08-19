@@ -63,7 +63,6 @@ void EnemyManager::Draw()
 	if (next == WAVE::WAVE1) name = "WAVE1";
 	else if (next == WAVE::WAVE2) name = "WAVE2";
 	else if (next == WAVE::WAVE3) name = "WAVE3";
-	else if (next == WAVE::WAVE4) name = "WAVE4";
 	else if (next == WAVE::BOSS) name = "BOSS";
 
 	for (auto& enemy : enemies_)
@@ -330,6 +329,11 @@ void EnemyManager::CheckHit(const VECTOR& pos, float radius, int damage)
 	}
 }
 
+void EnemyManager::SetWave(const WAVE wave)
+{
+	wave_ = wave;
+}
+
 void EnemyManager::CreateHpItem()
 {
 	for (auto& enemy : enemies_)
@@ -416,15 +420,11 @@ void EnemyManager::ChangeWave(WAVE wave)
 { 
 	switch (wave)
 	{
-	case EnemyManager::WAVE::START:
-		break;
 	case EnemyManager::WAVE::WAVE1:
 		break;
 	case EnemyManager::WAVE::WAVE2:
 		break;
 	case EnemyManager::WAVE::WAVE3:
-		break;
-	case EnemyManager::WAVE::WAVE4:
 		break;
 	case EnemyManager::WAVE::BOSS:
 		break;
@@ -459,9 +459,6 @@ void EnemyManager::UpdateWave()
 {
 	switch (wave_)
 	{
-	case EnemyManager::WAVE::START:
-		UpdateWaveStart();
-		break;
 	case EnemyManager::WAVE::WAVE1:
 		UpdateWave1();
 		break;
@@ -471,9 +468,6 @@ void EnemyManager::UpdateWave()
 	case EnemyManager::WAVE::WAVE3:
 		UpdateWave3();
 		break;
-	case EnemyManager::WAVE::WAVE4:
-		UpdateWave4();
-		break;
 	case EnemyManager::WAVE::BOSS:
 		UpdateWaveBoss();
 		break;
@@ -482,12 +476,6 @@ void EnemyManager::UpdateWave()
 	default:
 		break;
 	}
-}
-
-
-
-void EnemyManager::UpdateWaveStart()
-{
 }
 
 void EnemyManager::UpdateWave1()
@@ -555,32 +543,10 @@ void EnemyManager::UpdateWave3()
 	//wave1クリア時にwave2の敵を生成
 	if (wave3Clear_)
 	{
-		LoadWaveData(WAVE::WAVE4);
-	}
-}
-
-void EnemyManager::UpdateWave4()
-{
-	CreateHpItem();
-	EnemysDelete();
-
-	//エネミー全滅フラグ
-	wave4Clear_ = true;
-	for (const auto enemy : enemies_)
-	{
-		if (enemy->IsAlive())
-		{
-			wave4Clear_ = false;
-			break;
-		}
-	}
-
-	//wave1クリア時にwave2の敵を生成
-	if (wave4Clear_)
-	{
 		LoadWaveData(WAVE::BOSS);
 	}
 }
+
 
 void EnemyManager::UpdateWaveBoss()
 {
@@ -636,7 +602,7 @@ void EnemyManager::LoadJsonWaveData()
 	
 
 		//移動範囲
-		data.movableRange = enemyData["moveRange"];
+		data.movableRange = 1000.0f;
 
 		data.wave = enemyData["wave"];
 
