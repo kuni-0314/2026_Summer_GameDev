@@ -217,6 +217,7 @@ void EnemyRase::UpdateProcess()
 		if (coolTime_ > SHOT_COOL_TIME)
 		{
 			isCoolTime_ = false;
+			coolTime_ = 0;
 		}
 	}
 

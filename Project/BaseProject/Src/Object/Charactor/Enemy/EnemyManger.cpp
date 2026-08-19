@@ -75,10 +75,15 @@ void EnemyManager::Release()
 	EffectManager::GetInstance().Clear();
 	for (auto& enemy : enemies_)
 	{
-		enemy->Release();
-		delete enemy;
+		if (enemy)
+		{
+			enemy->Release();
+			delete enemy;
+		}
 		enemy = nullptr;
 	}
+
+	enemies_.clear();
 }
 void EnemyManager::AddHitCollider(const ColliderBase* hitCollider)
 {
@@ -167,6 +172,7 @@ void EnemyManager::LoadCsvData()
 
 		// HP
 		data.hp = stoi(strSplit[idx++]);
+
 
 		// 初期座標
 		data.defaultPos =
@@ -552,6 +558,14 @@ void EnemyManager::UpdateWaveBoss()
 {
 	CreateHpItem();
 	EnemysDelete();
+	bossSpawnTimer_++;
+
+	if (bossSpawnTimer_ >= BOSS_SPAWN_INTERVAL)
+	{
+		bossSpawnTimer_ = 0.0f;
+
+		SpawnBossEnemy();
+	}
 
 	//エネミー全滅フラグ
 	isDead_ = true;
@@ -582,6 +596,10 @@ void EnemyManager::LoadJsonWaveData()
 	// jsonオブジェクトから、enemyオブジェクトを取得
 	const auto& enemyDatas = enemyData["enemy"];
 
+	// WAVEごとに使用済み座標を管理
+	std::map<int, std::vector<int>> usedPositions;
+	std::map<int, int> largeCount;
+
 	// enemyオブジェクトは複数あるはずなので、繰り返し処理
 	for (const json& enemyData : enemyDatas)
 	{
@@ -595,12 +613,84 @@ void EnemyManager::LoadJsonWaveData()
 		data.hp = enemyData["hp"];
 
 
-		//初期座標
-		int rand = GetRand(10);
-		data.defaultPos = EnemyPos_[rand];
-		
-	
+	// -------------------------
+	// 座標決定
+	// -------------------------
 
+		if (data.type == EnemyBase::TYPE::DRAGON)
+		{
+			// ボスは固定座標
+			data.defaultPos = BOSS_POS;
+		}
+		else if (data.type == EnemyBase::TYPE::LARGE)
+		{
+			// LARGEの何体目か
+			int count = largeCount[data.wave];
+
+			if (count < static_cast<int>(LargePos_.size()))
+			{
+				data.defaultPos = LargePos_[count];
+
+				largeCount[data.wave]++;
+			}
+			else
+			{
+				data.defaultPos = LargePos_.back();
+			}
+		}
+		else
+		{
+			// -------------------------
+			// 通常敵のランダム座標
+			// -------------------------
+
+			auto& used = usedPositions[data.wave];
+
+			std::vector<int> available;
+
+			for (int i = 0;
+				i < static_cast<int>(EnemyPos_.size());
+				i++)
+			{
+				if (std::find(
+					used.begin(),
+					used.end(),
+					i) == used.end())
+				{
+					available.push_back(i);
+				}
+			}
+
+			if (available.empty())
+			{
+				data.defaultPos = EnemyPos_[0];
+			}
+			else
+			{
+				int randIndex =
+					GetRand(
+						static_cast<int>(available.size()) - 1);
+
+				int posIndex = available[randIndex];
+
+				data.defaultPos = EnemyPos_[posIndex];
+
+				// 使用済みに追加
+				used.push_back(posIndex);
+			}
+
+			// RASEだけ高さ変更
+			if (data.type == EnemyBase::TYPE::RASE)
+			{
+				data.defaultPos.y = 200;
+			}
+		}
+
+		// 移動範囲
+		data.movableRange = 1000.0f;
+		// 管理配列に追加
+		enemyData_.emplace_back(std::move(data));
+	
 		//移動範囲
 		data.movableRange = 1000.0f;
 
@@ -609,17 +699,16 @@ void EnemyManager::LoadJsonWaveData()
 		// 管理配列に追加
 		enemyData_.emplace_back(std::move(data));
 	}
+
 	//ファイルを閉じる
 	ifs.close();
-
-
 }
 
 void EnemyManager::InitEnemyPos()
 {
 	EnemyPos_.resize(11);
 
-	EnemyPos_[0] = { 500,  40,  500 };
+	EnemyPos_[0] = { 600,  40,  2500 };
 	EnemyPos_[1] = { 1200, 40, 800 };
 	EnemyPos_[2] = { 2500, 40, 300 };
 	EnemyPos_[3] = { 800,  40, 1800 };
@@ -629,5 +718,36 @@ void EnemyManager::InitEnemyPos()
 	EnemyPos_[7] = { 2800, 40, 2200 };
 	EnemyPos_[8] = { 2400, 40, 2700 };
 	EnemyPos_[9] = { 1000, 40, 1200 };
+
+	// LARGE専用座標
+	LargePos_.resize(2);
+
+	LargePos_[0] = { 0, 40, 600 };
+	LargePos_[1] = { 600, 40, 0 };
+}
+
+void EnemyManager::SpawnBossEnemy()
+{
+	// BOSS自身は追加生成しない
+	// 通常敵だけを追加生成する
+
+	EnemyBase::EnemyData data{};
+
+	// 生成する敵の種類
+	data.id = -1;
+	data.type = EnemyBase::TYPE::RAT;
+	data.hp = 3;
+	data.wave = static_cast<int>(WAVE::BOSS);
+	data.movableRange = 1000.0f;
+
+	// ランダムな通常敵座標を取得
+	int randIndex = GetRand(
+		static_cast<int>(EnemyPos_.size()) - 1
+	);
+
+	data.defaultPos = EnemyPos_[randIndex];
+
+	// 敵生成
+	Create(data, player_);
 }
 

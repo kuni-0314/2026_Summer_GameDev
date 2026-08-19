@@ -107,7 +107,7 @@ public:
 
 	void SetLowHpEffect();
 
-	void PlayerDamegeVoice();
+
 
 private:
 
@@ -205,8 +205,6 @@ private:
 	//void SelectCommand(COMMAND command);
 	void CommandUpdate();
 	void CommandDraw();
-
-	void PlayerFaceUIDraw();
 
 	void UpdateHpUI();
 

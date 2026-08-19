@@ -86,9 +86,6 @@ private:
 	static constexpr VECTOR COLBODY_CAPSULE_TOP_LOCAL_POS = { 0.0f, 300.0f, 250.0f };
 	static constexpr VECTOR COLBODY_CAPSULE_DOWN_LOCAL_POS = { 0.0f, 230.0f, -250.0f };
 
-
-
-
 	//ブレス用カプセルコライダーサイズ(カプセルがステージに当たると座標移動する)
 	static constexpr VECTOR CAPSULE_ADD_BREATH_POS = { 0.0f, 0.0f, 50.0f };		//ブレス開始位置調整
 	static constexpr VECTOR CAPSULE_DOWN_BREATH_POS = { 0,-110,700 };	        //ブレス終了位置（カプセルの終わり）
@@ -102,6 +99,9 @@ private:
 	//トルネード最大移動距離（生存切り替え距離)
 	static constexpr float MAX_DIST = 2000.0f;
 
+	static constexpr float PUSH_MIN_SEPARATION = 300.0f; // 最小許容距離（水平）
+	static constexpr float PUSH_PLAYER_RATIO = 0.60f;    // 重なりを何割プレイヤーへ押すか
+	static constexpr float PUSH_ENEMY_RATIO = 0.40f;     // 何割ドラゴンへ押すか（合計1.0になるように）
 
 	// モデルのローカル回転
 	static constexpr VECTOR ROT = { 0.0f, 180.0f * DX_PI_F / 180.0f, 0.0f };
@@ -115,7 +115,7 @@ private:
 	//クローの判定開始フレーム　
 	static constexpr float ATTACK_FRAME_CLOW_TIME = 0.14f;
 
-
+	static constexpr int COLLIDER_ACTIVE_DELAY = 6; // 生成後に何フレーム待つか（調整可）
 	//ゲームシーン
 	GameScene* gamescene_;
 
@@ -205,6 +205,8 @@ private:
 		std::shared_ptr<EffekseerEffect> effect;
 
 		bool wasHitPlayer = false;
+		bool colliderRegistered = false;
+		int colliderActiveDelay = 0;
 	};
 
 	ClowInfo clowInfo_;
@@ -242,7 +244,7 @@ private:
 	void UpdateLanding();
 	void UpdateClow();
 
-	//VECTOR tmpCol_;
+	void ResolvePushWithPlayer();
 	
 };
 

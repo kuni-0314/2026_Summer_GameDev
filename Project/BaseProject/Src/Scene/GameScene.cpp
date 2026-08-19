@@ -93,10 +93,12 @@ void GameScene::Init()
 	camera->AddHitCollider(stageCollider);
 	camera->SetTargetPos(enemyManager_->GetEnemyPos(1));
 
+	
 	// ポストエフェクトマネージャーの初期化
 	PostEffectManager::GetInstance().Init();
 	postEffectScreen_ = PostEffectManager::GetInstance().CreatePostEffectScreen();
 
+	activeEffects_.clear();
 	currentEffect_ = PostEffectManager::EFFECT_TYPE::NORMAL;
 	multiEffectMode_ = false;
 
@@ -178,7 +180,7 @@ void GameScene::Update()
 		//selectCommand_ = static_cast<int>(usecommand_);
 	}
 
-
+	//HP警告
 	if (player_->GetHp() <= 6)
 	{
 		if (!isWarning_)
@@ -247,7 +249,7 @@ void GameScene::Update()
 	//プレイヤーダメージUI処理
 	if (damageflag_)
 	{
-		PlayerDamegeVoice();
+		
 		damegeTimeCount_++;
 
 		//表示時間
@@ -346,10 +348,6 @@ void GameScene::Update()
 		StopSoundMem(audioHandle_);
 		StopSoundMem(wargnigHandle_);
 		AudioManager::GetInstance()->StopBGM();
-		auto overScene = sceMng_.GetScene();
-
-		//ゲームオーバーした際にwave情報を保存
-		sceMng_.SetContinueWave(enemyManager_->GetWave());
 		sceMng_.ChangeScene(SceneManager::SCENE_ID::OVER);
 		return;
 	}
@@ -439,79 +437,27 @@ void GameScene::Draw()
 		DrawGraph(30, 100, lockOnFontHandle_, true);
 	}
 
-
-
-
-
 	// 一時スクリーンにメイン画面をコピー
 	int tempScreen = MakeScreen(Application::SCREEN_SIZE_X, Application::SCREEN_SIZE_Y, false);
 	SetDrawScreen(tempScreen);
 	ClearDrawScreen();
 	DrawGraph(0, 0, mainScreen, false);
 
-	// エフェクト適用
-	//if (!multiEffectMode_)
-	//{
-		// 単一エフェクトモード
-		//PostEffectManager::GetInstance().ApplyEffect(
-		//	currentEffect_,
-		//	tempScreen,
-		//	postEffectScreen_,
-		//	effectTime_
-		//);
-	//}
-	//else
-	//{
-		// 複数エフェクトモード
-		PostEffectManager::GetInstance().ApplyEffects(
-			activeEffects_,
-			tempScreen,
-			postEffectScreen_,
-			effectTime_
-		);
-	//}
+	// 複数エフェクトモード
+	PostEffectManager::GetInstance().ApplyEffects(
+		activeEffects_,
+		tempScreen,
+		postEffectScreen_,
+		effectTime_
+	);
 
 	PlayerHpDraw();
 	CommandDraw();
 
-	//
-	// (500, 0, 0xffffff, "HP:%d", player_->GetHp());
 
 	// 最終結果をメイン画面に描画
 	SetDrawScreen(mainScreen);
 	DrawGraph(0, 0, postEffectScreen_, false);
-
-	// デバッグ表示
-	//int y = 10;
-	//DrawFormatString(10, y, 0xFFFF00, "Mode: %s (NumPad5 to toggle)",
-	//	multiEffectMode_ ? "Multi" : "Single");
-	//y += 20;
-	//// トリガー値を表示
-	//const auto& ins = InputManager::GetInstance();
-	//int leftTrigger = ins->GetGamepadTriggerValue(true, 0);
-	//int rightTrigger = ins->GetGamepadTriggerValue(false, 0);
-	//DrawFormatString(10, y, 0xFFFF00, "Left Trigger: %d, Right Trigger: %d", leftTrigger, rightTrigger);
-	//y += 20;
-	//if (!multiEffectMode_)
-	//{
-	//	DrawFormatString(10, y, 0xFFFF00, "Current Effect: %s (NumPad4/6)",
-	//		GetEffectName(currentEffect_));
-	//}
-	//else
-	//{
-	//	DrawFormatString(10, y, 0xFFFF00, "Select: %s (Enter to toggle)",
-	//		GetEffectName(currentEffect_));
-	//	y += 20;
-	//	DrawFormatString(10, y, 0xFFFF00, "Active Effects: %d (NumPad0 to clear)",
-	//		static_cast<int>(activeEffects_.size()));
-	//	y += 20;
-
-	//	for (const auto& effect : activeEffects_)
-	//	{
-	//		DrawFormatString(10, y, 0x00FF00, "  - %s", GetEffectName(effect));
-	//		y += 18;
-	//	}
-	//}
 
 	// 一時スクリーン削除
 	DeleteGraph(tempScreen);
@@ -643,11 +589,6 @@ void GameScene::RemovePlayerHitCollider(const ColliderBase* hitCollider)
 	player_->RemoveHitCollider(hitCollider);
 }
 
-//void GameScene::SetDamageFlag(bool flag)
-//{
-//	isDamageFlag_ = flag;
-//}
-
 void GameScene::ShakeHpUI()
 {
 	isHpUIShake_ = true;
@@ -662,11 +603,6 @@ void GameScene::CheckHitEnemy(const VECTOR& pos, float radius, int damage)
 void GameScene::SetLowHpEffect()
 {
 	ToggleEffect(PostEffectManager::EFFECT_TYPE::FH_LOW_HP);
-}
-
-void GameScene::PlayerDamegeVoice()
-{
-	
 }
 
 void GameScene::SelectCommand(COMMAND command)
@@ -867,11 +803,6 @@ void GameScene::CommandDraw()
 			fontCommandHandles_[i][static_cast<int>(state)],
 			true);
 	}
-}
-
-void GameScene::PlayerFaceUIDraw()
-{
-	// 何のための関数ですか
 }
 
 void GameScene::UpdateHpUI()

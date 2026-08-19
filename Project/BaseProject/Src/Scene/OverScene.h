@@ -8,7 +8,6 @@ public:
 
 	enum class SELECT
 	{
-		CONTINUE, //‚»‚ÌWAVE‚©‚ç
 		RETRY,	  //Å‰‚©‚ç
 		TITLE	  //ƒ^ƒCƒgƒ‹‚©‚ç
 	};

@@ -17,6 +17,7 @@ public:
 	enum class WAVE
 	{
 		//wave開始（演出とか入れる用）
+		START,
 		WAVE1,
 		WAVE2,
 		WAVE3,
@@ -77,6 +78,13 @@ private:
 	//ウェーブ
 	WAVE wave_;
 
+	// 敵を追加生成する間隔
+	static constexpr float BOSS_SPAWN_INTERVAL = 100.0f; // 約5秒
+
+	static constexpr VECTOR BOSS_POS = { 0,40,0 };
+	static constexpr VECTOR LARGE_01_POS = { 300,40,0 };
+	static constexpr VECTOR LARGE_02_POS = { -300,40,0 };
+
 	// エネミー
 	std::vector<EnemyBase*> enemies_;
 	std::vector<EnemyBase::EnemyData> enemyData_;
@@ -84,6 +92,8 @@ private:
 	std::vector<EnemyBase::EnemyStatus> enemyStatusData_;
 	//エネミーWAVE情報
 	std::vector<EnemyBase::EnemyWaveData> enemyWaveData_;
+
+	std::vector<int> usedPos_;
 
 	//テスト
 	//std::vector<std::shared_ptr<EnemyBase>> testEnemys_;
@@ -135,8 +145,14 @@ private:
 	//エネミーWAVE情報読み込み
 	void LoadJsonWaveData();
 
-
+	std::vector<VECTOR>LargePos_;
 	std::vector<VECTOR>EnemyPos_;
 	void InitEnemyPos();
+
+	// BOSS WAVEの敵生成タイマー
+	float bossSpawnTimer_ = 0.0f;
+	void SpawnBossEnemy();
+
+	bool bossAlive_ = false;
 };
 

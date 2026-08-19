@@ -194,16 +194,6 @@ void EnemyRat::UpdateProcess()
 			ChangeState(STATE::HIT);
 		}
 	}
-
-	//// デバッグ用被ダメージ処理
-	//auto const ins = InputManager::GetInstance();
-	//if (ins->IsTrgDown(KEY_INPUT_1) ||
-	//	(ins->IsMouseTrgDown(MOUSE_INPUT_LEFT) && distance_ < 300.0f))
-	//{
-	//	Damege(1);
-	//	if (hp_ <= 0) ChangeState(STATE::DIE);
-	//	else          ChangeState(STATE::HIT);
-	//}
 }
 
 void EnemyRat::UpdateProcessPost()

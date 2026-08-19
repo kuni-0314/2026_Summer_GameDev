@@ -49,7 +49,6 @@ namespace SoundTable_Game
 		{ SoundID::SE_EXPLOSION, {"Data/Sound/SE/Explosion.wav", 255} },
 		{ SoundID::SE_COMMAND_SELECT, {"Data/Sound/SE/Battle_Command.wav", 255} },
 		{ SoundID::SE_ENEMY_LARGE_ATTACK_DROP, {"Data/Sound/SE/enemy_Drop.wav", 255} },
-		{ SoundID::VOICE_PLAYER_DAMEGE_0, {"Data/Sound/SE/Player_Damege_0.wav", 255} },
 		{ SoundID::VOICE_PLAYER_DAMEGE_1, {"Data/Sound/SE/PlayerDamegeVoice/Hit1.wav", 255} },
 		{ SoundID::VOICE_PLAYER_DAMEGE_2, {"Data/Sound/SE/PlayerDamegeVoice/Hit2.wav", 255} },
 		{ SoundID::VOICE_PLAYER_DAMEGE_3, {"Data/Sound/SE/PlayerDamegeVoice/Hit3.wav", 255} },

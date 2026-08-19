@@ -61,7 +61,8 @@ void EnemyDragon::Draw(void)
 }
 
 void EnemyDragon::Release(void)
-{
+{ 
+
 	EffectManager::GetInstance().Release();
 }
 
@@ -252,6 +253,8 @@ void EnemyDragon::UpdateProcess()
 	CheckPlayerSwordCollision();
 	CheckPlayerMagicCollision();
 
+	ResolvePushWithPlayer();
+
 	if (hp_ <= 0)
 	{
 		MV1DeleteModel(transform_.modelId);
@@ -278,8 +281,16 @@ void EnemyDragon::LandingEffect(const VECTOR& pos, const VECTOR& normal, float s
 
 void EnemyDragon::CreateClow()
 {
+	// 既にコライダが残っていたら先に削除（安全措置）
+	if (clowInfo_.collider != nullptr)
+	{
+		DestroyClowColier(clowInfo_);
+	}
+
 	//ブレス生成時にブレスの情報を初期化
 	clowInfo_ = ClowInfo();
+	clowInfo_.colliderRegistered = false;
+	clowInfo_.colliderActiveDelay = COLLIDER_ACTIVE_DELAY;
 
 	CreateClowCollider(clowInfo_);
 }
@@ -667,6 +678,48 @@ void EnemyDragon::UpdateClow()
 	
 	clowInfo_.transform.Update();
 
+}
+
+void EnemyDragon::ResolvePushWithPlayer()
+{
+	if (player_ == nullptr) return;
+
+	// プレイヤーとドラゴンの位置
+	VECTOR playerPos = player_->GetPos();
+	VECTOR enemyPos = transform_.pos;
+
+	// 水平方向のみで判定
+	VECTOR dir = VSub(playerPos, enemyPos);
+	dir.y = 0.0f;
+
+	float dist = VSize(dir);
+
+	// 距離がほぼゼロの場合
+	if (dist < 0.0001f)
+	{
+		dir = VGet(1.0f, 0.0f, 0.0f);
+		dist = 1.0f;
+	}
+
+	// 最低許容距離より近ければプレイヤーだけ押し出す
+	if (dist < PUSH_MIN_SEPARATION)
+	{
+		float overlap = PUSH_MIN_SEPARATION - dist;
+
+		// プレイヤーを押す方向
+		VECTOR pushDir = VNorm(dir);
+
+		// プレイヤーだけ移動
+		VECTOR movePlayer = VScale(pushDir, overlap);
+
+		VECTOR newPlayerPos = VAdd(playerPos, movePlayer);
+
+		// Y座標は変更しない
+		newPlayerPos.y = playerPos.y;
+
+		// プレイヤーだけ位置を更新
+		player_->SetPos(newPlayerPos);
+	}
 }
 
 void EnemyDragon::CreateBreathCollider(BreathInfo& breathInfo)
