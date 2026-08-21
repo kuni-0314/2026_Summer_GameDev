@@ -79,7 +79,7 @@ private:
 	WAVE wave_;
 
 	// ìGÇí«â¡ê∂ê¨Ç∑ÇÈä‘äu
-	static constexpr float BOSS_SPAWN_INTERVAL = 100.0f; // ñÒ5ïb
+	static constexpr float BOSS_SPAWN_INTERVAL = 1200.0f; // ñÒ5ïb
 
 	static constexpr VECTOR BOSS_POS = { 0,40,0 };
 	static constexpr VECTOR LARGE_01_POS = { 300,40,0 };
@@ -153,6 +153,5 @@ private:
 	float bossSpawnTimer_ = 0.0f;
 	void SpawnBossEnemy();
 
-	bool bossAlive_ = false;
 };
 
