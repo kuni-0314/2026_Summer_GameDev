@@ -85,6 +85,9 @@ private:
 	static constexpr VECTOR LARGE_01_POS = { 300,40,0 };
 	static constexpr VECTOR LARGE_02_POS = { -300,40,0 };
 
+	// 敵生成間隔
+	static constexpr float DEF_SPAWN_INTERVAL = 90.0f;
+
 	// エネミー
 	std::vector<EnemyBase*> enemies_;
 	std::vector<EnemyBase::EnemyData> enemyData_;
@@ -118,6 +121,15 @@ private:
 	bool wave4Clear_ = false;
 	bool waveBossClear_ = false;
 
+	// 敵生成用タイマー
+	float spawnTimer_ = 0.0f;
+
+	// 次に生成する敵の番号
+	int spawnIndex_ = 0;
+
+	// 現在のWAVEの敵数
+	int currentWaveEnemyCount_ = 0;
+
 	// 視野範囲用トランスフォーム
 	Transform attackTransform_;
 
@@ -135,11 +147,9 @@ private:
 	void UpdateWave();
 
 	//ウェーブ別更新
-	void UpdateWaveStart();
 	void UpdateWave1();
 	void UpdateWave2();
 	void UpdateWave3();
-	void UpdateWave4();
 	void UpdateWaveBoss();
 
 	//エネミーWAVE情報読み込み
@@ -152,6 +162,9 @@ private:
 	// BOSS WAVEの敵生成タイマー
 	float bossSpawnTimer_ = 0.0f;
 	void SpawnBossEnemy();
+
+	void SpawnNextEnemy();
+
 
 };
 

@@ -231,11 +231,9 @@ EnemyBase* EnemyManager::Create(const EnemyBase::EnemyData& data, const Player* 
 		}
 
 		enemies_.emplace_back(enemy);
-		//一旦原因がわかるまではスポーンエフェクトをボスWAVEのみにする
-		if (wave_ == WAVE::BOSS)
-		{
-			SpawnEffect(enemy->GetTransform().pos);
-		}
+	
+		SpawnEffect(enemy->GetTransform().pos);
+		
 
 	}
 	return enemy;
@@ -446,18 +444,26 @@ void EnemyManager::LoadWaveData(WAVE wave)
 	// 現在のWAVEを更新
 	wave_ = wave;
 
+	// 生成関連をリセット
+	spawnTimer_ = 0.0f;
+	spawnIndex_ = 0;
+	currentWaveEnemyCount_ = 0;
+
+	// 現在のWAVEの敵数を数える
+	for (const auto& data : enemyData_)
+	{
+		if (data.wave == static_cast<int>(wave_))
+		{
+			currentWaveEnemyCount_++;
+		}
+	}
+
 	// WAVE切り替え
 	ChangeWave(wave_);
 
-	// 現在のWAVEに該当する敵だけ生成
-	for (const auto& data : enemyData_)
-	{
-		if (data.wave ==
-			static_cast<int>(wave_))
-		{
-			Create(data, player_);
-		}
-	}
+	
+	// 最初の1体を生成
+	SpawnNextEnemy();
 }
 
 
@@ -489,21 +495,41 @@ void EnemyManager::UpdateWave1()
 	CreateHpItem();
 	EnemysDelete();
 
-	//エネミー全滅フラグ
-	wave1Clear_ = true;
-	for (const auto enemy : enemies_)
+	// 敵生成タイマー
+	spawnTimer_++;
+
+	// まだ生成する敵が残っている
+	if (spawnIndex_ < currentWaveEnemyCount_)
 	{
-		if (enemy->IsAlive())
+		if (spawnTimer_ >= DEF_SPAWN_INTERVAL)
 		{
-			wave1Clear_ = false;
-			break;
+			spawnTimer_ = 0.0f;
+
+			// 次の敵を生成
+			SpawnNextEnemy();
 		}
 	}
 
-	//wave1クリア時にwave2の敵を生成
-	if (wave1Clear_)
+	// WAVE1の敵をすべて生成したか確認
+	if (spawnIndex_ >= currentWaveEnemyCount_)
 	{
-		LoadWaveData(WAVE::WAVE2);
+		// 全滅しているか確認
+		wave1Clear_ = true;
+
+		for (const auto enemy : enemies_)
+		{
+			if (enemy->IsAlive())
+			{
+				wave1Clear_ = false;
+				break;
+			}
+		}
+
+		// 全生成済み ＆ 全滅
+		if (wave1Clear_)
+		{
+			LoadWaveData(WAVE::WAVE2);
+		}
 	}
 }
 
@@ -512,21 +538,41 @@ void EnemyManager::UpdateWave2()
 	CreateHpItem();
 	EnemysDelete();
 
-	//エネミー全滅フラグ
-	wave2Clear_ = true;
-	for (const auto enemy : enemies_)
+	// 敵生成タイマー
+	spawnTimer_++;
+
+	// まだ生成する敵が残っている
+	if (spawnIndex_ < currentWaveEnemyCount_)
 	{
-		if (enemy->IsAlive())
+		if (spawnTimer_ >= DEF_SPAWN_INTERVAL)
 		{
-			wave2Clear_ = false;
-			break;
+			spawnTimer_ = 0.0f;
+
+			// 次の敵を生成
+			SpawnNextEnemy();
 		}
 	}
 
-	//wave1クリア時にwave2の敵を生成
-	if (wave2Clear_)
+	// WAVE1の敵をすべて生成したか確認
+	if (spawnIndex_ >= currentWaveEnemyCount_)
 	{
-		LoadWaveData(WAVE::WAVE3);
+		// 全滅しているか確認
+		wave2Clear_ = true;
+
+		for (const auto enemy : enemies_)
+		{
+			if (enemy->IsAlive())
+			{
+				wave2Clear_ = false;
+				break;
+			}
+		}
+
+		// 全生成済み ＆ 全滅
+		if (wave2Clear_)
+		{
+			LoadWaveData(WAVE::WAVE3);
+		}
 	}
 }
 
@@ -535,21 +581,41 @@ void EnemyManager::UpdateWave3()
 	CreateHpItem();
 	EnemysDelete();
 
-	//エネミー全滅フラグ
-	wave3Clear_ = true;
-	for (const auto enemy : enemies_)
+	// 敵生成タイマー
+	spawnTimer_++;
+
+	// まだ生成する敵が残っている
+	if (spawnIndex_ < currentWaveEnemyCount_)
 	{
-		if (enemy->IsAlive())
+		if (spawnTimer_ >= DEF_SPAWN_INTERVAL)
 		{
-			wave3Clear_ = false;
-			break;
+			spawnTimer_ = 0.0f;
+
+			// 次の敵を生成
+			SpawnNextEnemy();
 		}
 	}
 
-	//wave1クリア時にwave2の敵を生成
-	if (wave3Clear_)
+	// WAVE1の敵をすべて生成したか確認
+	if (spawnIndex_ >= currentWaveEnemyCount_)
 	{
-		LoadWaveData(WAVE::BOSS);
+		// 全滅しているか確認
+		wave3Clear_ = true;
+
+		for (const auto enemy : enemies_)
+		{
+			if (enemy->IsAlive())
+			{
+				wave3Clear_ = false;
+				break;
+			}
+		}
+
+		// 全生成済み ＆ 全滅
+		if (wave3Clear_)
+		{
+			LoadWaveData(WAVE::BOSS);
+		}
 	}
 }
 
@@ -749,5 +815,34 @@ void EnemyManager::SpawnBossEnemy()
 
 	// 敵生成
 	Create(data, player_);
+}
+
+void EnemyManager::SpawnNextEnemy()
+{
+	int count = 0;
+
+	for (const auto& data : enemyData_)
+	{
+		// 現在のWAVEではない
+		if (data.wave != static_cast<int>(wave_))
+		{
+			continue;
+		}
+
+		// まだ生成する敵ではない
+		if (count != spawnIndex_)
+		{
+			count++;
+			continue;
+		}
+
+		// 敵を1体生成
+		Create(data, player_);
+
+		// 次の敵へ
+		spawnIndex_++;
+
+		break;
+	}
 }
 
