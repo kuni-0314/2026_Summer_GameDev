@@ -81,12 +81,18 @@ private:
 	// “G‚ğ’Ç‰Á¶¬‚·‚éŠÔŠu
 	static constexpr float BOSS_SPAWN_INTERVAL = 1200.0f; // –ñ5•b
 
+	//“G‚ÌˆÚ“®”ÍˆÍ
+	static constexpr float MOVABLE_RANGE_MAX = 1000.0f;
+
 	static constexpr VECTOR BOSS_POS = { 0,40,0 };
 	static constexpr VECTOR LARGE_01_POS = { 300,40,0 };
 	static constexpr VECTOR LARGE_02_POS = { -300,40,0 };
 
 	// “G¶¬ŠÔŠu
 	static constexpr float DEF_SPAWN_INTERVAL = 90.0f;
+
+	//“G‚ÌˆÚ“®”ÍˆÍ
+	static constexpr float RASE_POS_Y = 200;
 
 	// ƒGƒlƒ~[
 	std::vector<EnemyBase*> enemies_;

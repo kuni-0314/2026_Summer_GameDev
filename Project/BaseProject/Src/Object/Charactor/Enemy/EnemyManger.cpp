@@ -40,9 +40,6 @@ void EnemyManager::Init()
 
 	//敵生成座標
 	InitEnemyPos();
-	// CSVはゲーム開始時に1回だけ読み込む
-	//LoadCsvData();
-
 	//Json形式の読み込み
 	LoadJsonWaveData();
 	// WAVE1の敵を生成
@@ -677,12 +674,10 @@ void EnemyManager::LoadJsonWaveData()
 		data.type = static_cast<EnemyBase::TYPE>(enemyData["type"]);
 		//HP
 		data.hp = enemyData["hp"];
+		//wave
+		data.wave = enemyData["wave"];
 
-
-	// -------------------------
-	// 座標決定
-	// -------------------------
-
+		// 座標決定
 		if (data.type == EnemyBase::TYPE::DRAGON)
 		{
 			// ボスは固定座標
@@ -706,10 +701,7 @@ void EnemyManager::LoadJsonWaveData()
 		}
 		else
 		{
-			// -------------------------
-			// 通常敵のランダム座標
-			// -------------------------
-
+			// 通常敵のランダム座標	
 			auto& used = usedPositions[data.wave];
 
 			std::vector<int> available;
@@ -733,12 +725,12 @@ void EnemyManager::LoadJsonWaveData()
 			}
 			else
 			{
+				//ランダム座標を取得(WAVE内で重複させない)
 				int randIndex =
-					GetRand(
-						static_cast<int>(available.size()) - 1);
-
+				GetRand(static_cast<int>(available.size()) - 1);
 				int posIndex = available[randIndex];
 
+				//敵の初期位置に設定
 				data.defaultPos = EnemyPos_[posIndex];
 
 				// 使用済みに追加
@@ -748,20 +740,12 @@ void EnemyManager::LoadJsonWaveData()
 			// RASEだけ高さ変更
 			if (data.type == EnemyBase::TYPE::RASE)
 			{
-				data.defaultPos.y = 200;
+				data.defaultPos.y = RASE_POS_Y;
 			}
 		}
 
-		// 移動範囲
-		data.movableRange = 1000.0f;
-		// 管理配列に追加
-		enemyData_.emplace_back(std::move(data));
-	
 		//移動範囲
-		data.movableRange = 1000.0f;
-
-		data.wave = enemyData["wave"];
-
+		data.movableRange = MOVABLE_RANGE_MAX;
 		// 管理配列に追加
 		enemyData_.emplace_back(std::move(data));
 	}
