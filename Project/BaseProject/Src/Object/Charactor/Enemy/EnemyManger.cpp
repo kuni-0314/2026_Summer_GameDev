@@ -40,8 +40,11 @@ void EnemyManager::Init()
 
 	//敵生成座標
 	InitEnemyPos();
+
 	//Json形式の読み込み
+	LoadJsonStatusData();
 	LoadJsonWaveData();
+
 	// WAVE1の敵を生成
 	LoadWaveData(WAVE::WAVE1);
 
@@ -122,84 +125,14 @@ void EnemyManager::RemoveHitCollider(const ColliderBase* hitCollider)
 	}
 }
 
-void EnemyManager::LoadCsvData()
-{
-	// ファイルの読込
-	std::ifstream ifs =
-		std::ifstream(Application::PATH_CSV + "EnemyData.csv");
-
-	if (!ifs)
-	{
-		// エラーが発生
-		return;
-	}
-
-	// 1行ずつ読み込む
-	std::string line;
-
-	// 1行をカンマ区切りで分割
-	std::vector<std::string> strSplit;
-
-	bool isHeader = true;
-
-	while (getline(ifs, line))
-	{
-		// ヘッダーをスキップ
-		if (isHeader)
-		{
-			isHeader = false;
-			continue;
-		}
-
-		// カンマ区切りで分割
-		strSplit = AsoUtility::Split(line, ',');
-
-		EnemyBase::EnemyData data{};
-
-		int idx = 0;
-
-		// ID
-		data.id = stoi(strSplit[idx++]);
-
-		// 種別
-		data.type =
-			static_cast<EnemyBase::TYPE>(
-				stoi(strSplit[idx++])
-				);
-
-		// HP
-		data.hp = stoi(strSplit[idx++]);
-
-
-		// 初期座標
-		data.defaultPos =
-		{
-			stof(strSplit[idx++]),
-			stof(strSplit[idx++]),
-			stof(strSplit[idx++])
-		};
-
-		// 移動範囲
-		data.movableRange = stoi(strSplit[idx++]);
-
-		// 生成ウェーブ
-		data.wave = stoi(strSplit[idx++]);
-
-		// 敵を生成せず、データだけ保存
-		enemyData_.emplace_back(data);
-	}
-
-	ifs.close();
-}
-
 EnemyBase* EnemyManager::Create(const EnemyBase::EnemyData& data, const Player* player)
 {
-	
+
 	EnemyBase* enemy = nullptr;
 	switch (data.type)
 	{
 	case EnemyBase::TYPE::RAT:
-		enemy = new EnemyRat(data,-1, const_cast<Player*>(player));
+		enemy = new EnemyRat(data, -1, const_cast<Player*>(player));
 		break;
 	case EnemyBase::TYPE::RASE:
 		enemy = new EnemyRase(data, -1, const_cast<Player*>(player));
@@ -228,9 +161,9 @@ EnemyBase* EnemyManager::Create(const EnemyBase::EnemyData& data, const Player* 
 		}
 
 		enemies_.emplace_back(enemy);
-	
+
 		SpawnEffect(enemy->GetTransform().pos);
-		
+
 
 	}
 	return enemy;
@@ -343,7 +276,7 @@ void EnemyManager::CreateHpItem()
 
 		if (enemy->GetHp() <= 0 && enemy->IsAlive())
 		{
-			
+
 			// 死亡エフェクト
 			DeadEffect(enemy->GetTransform().pos);
 
@@ -418,7 +351,7 @@ void EnemyManager::EnemysCollision()
 }
 
 void EnemyManager::ChangeWave(WAVE wave)
-{ 
+{
 	switch (wave)
 	{
 	case EnemyManager::WAVE::WAVE1:
@@ -438,28 +371,27 @@ void EnemyManager::ChangeWave(WAVE wave)
 
 void EnemyManager::LoadWaveData(WAVE wave)
 {
-	// 現在のWAVEを更新
 	wave_ = wave;
 
-	// 生成関連をリセット
 	spawnTimer_ = 0.0f;
 	spawnIndex_ = 0;
 	currentWaveEnemyCount_ = 0;
 
-	// 現在のWAVEの敵数を数える
-	for (const auto& data : enemyData_)
+	// 現在のWAVEの敵数を取得
+	for (const auto& data : enemyWaveData_)
 	{
 		if (data.wave == static_cast<int>(wave_))
 		{
-			currentWaveEnemyCount_++;
+			currentWaveEnemyCount_ =
+				static_cast<int>(data.enemies.size());
+
+			break;
 		}
 	}
 
-	// WAVE切り替え
 	ChangeWave(wave_);
 
-	
-	// 最初の1体を生成
+	// 1体目を生成
 	SpawnNextEnemy();
 }
 
@@ -643,7 +575,7 @@ void EnemyManager::UpdateWaveBoss()
 }
 
 
-void EnemyManager::LoadJsonWaveData()
+void EnemyManager::LoadJsonStatusData()
 {
 	// 外部ファイルの読み込み
 	std::ifstream ifs;
@@ -659,97 +591,59 @@ void EnemyManager::LoadJsonWaveData()
 	// jsonオブジェクトから、enemyオブジェクトを取得
 	const auto& enemyDatas = enemyData["enemy"];
 
+	// enemyオブジェクトは複数あるはずなので、繰り返し処理
+	for (const json& enemyData : enemyDatas)
+	{
+		EnemyBase::EnemyStatus data{};
+
+		//敵の種類
+		data.type = static_cast<EnemyBase::TYPE>(enemyData["type"]);
+		//HP
+		data.hp = enemyData["hp"];
+
+		enemyStatusData_.push_back(data);
+	}
+	//ファイルを閉じる
+	ifs.close();
+
+}
+
+void EnemyManager::LoadJsonWaveData()
+{
+	
+	// 外部ファイルの読み込み
+	std::ifstream ifs;
+	ifs.open(Application::PATH_JSON + "Wave.json");
+	if (!ifs)
+	{
+		return;// 外部ファイルの読み込み失敗
+	}
+
+	// ファイルストリームからjsonオブジェクトに変換
+	json waveData = json::parse(ifs);
+	// jsonオブジェクトから、enemyオブジェクトを取得
+	const auto& waveDatas = waveData["WAVE"];
+
+
 	// WAVEごとに使用済み座標を管理
 	std::map<int, std::vector<int>> usedPositions;
 	std::map<int, int> largeCount;
 
 	// enemyオブジェクトは複数あるはずなので、繰り返し処理
-	for (const json& enemyData : enemyDatas)
+	for (const json& waveData : waveDatas)
 	{
-		EnemyBase::EnemyData data{};
+		EnemyBase::EnemyWave data{};
 
-		//ID
-		data.id = enemyData["id"];
-		//敵の種類
-		data.type = static_cast<EnemyBase::TYPE>(enemyData["type"]);
-		//HP
-		data.hp = enemyData["hp"];
-		//wave
-		data.wave = enemyData["wave"];
+		data.wave = waveData["wave"];
 
-		// 座標決定
-		if (data.type == EnemyBase::TYPE::DRAGON)
+		for (const auto& enemyType : waveData["enemies"])
 		{
-			// ボスは固定座標
-			data.defaultPos = BOSS_POS;
-		}
-		else if (data.type == EnemyBase::TYPE::LARGE)
-		{
-			// LARGEの何体目か
-			int count = largeCount[data.wave];
-
-			if (count < static_cast<int>(LargePos_.size()))
-			{
-				data.defaultPos = LargePos_[count];
-
-				largeCount[data.wave]++;
-			}
-			else
-			{
-				data.defaultPos = LargePos_.back();
-			}
-		}
-		else
-		{
-			// 通常敵のランダム座標	
-			auto& used = usedPositions[data.wave];
-
-			std::vector<int> available;
-
-			for (int i = 0;
-				i < static_cast<int>(EnemyPos_.size());
-				i++)
-			{
-				if (std::find(
-					used.begin(),
-					used.end(),
-					i) == used.end())
-				{
-					available.push_back(i);
-				}
-			}
-
-			if (available.empty())
-			{
-				data.defaultPos = EnemyPos_[0];
-			}
-			else
-			{
-				//ランダム座標を取得(WAVE内で重複させない)
-				int randIndex =
-				GetRand(static_cast<int>(available.size()) - 1);
-				int posIndex = available[randIndex];
-
-				//敵の初期位置に設定
-				data.defaultPos = EnemyPos_[posIndex];
-
-				// 使用済みに追加
-				used.push_back(posIndex);
-			}
-
-			// RASEだけ高さ変更
-			if (data.type == EnemyBase::TYPE::RASE)
-			{
-				data.defaultPos.y = RASE_POS_Y;
-			}
+			data.enemies.push_back(enemyType);
 		}
 
-		//移動範囲
-		data.movableRange = MOVABLE_RANGE_MAX;
-		// 管理配列に追加
-		enemyData_.emplace_back(std::move(data));
+		enemyWaveData_.push_back(data);
+		
 	}
-
 	//ファイルを閉じる
 	ifs.close();
 }
@@ -803,30 +697,63 @@ void EnemyManager::SpawnBossEnemy()
 
 void EnemyManager::SpawnNextEnemy()
 {
-	int count = 0;
+	const EnemyBase::EnemyWave* waveData = nullptr;
 
-	for (const auto& data : enemyData_)
+	for (const auto& data : enemyWaveData_)
 	{
-		// 現在のWAVEではない
-		if (data.wave != static_cast<int>(wave_))
+		if (data.wave == static_cast<int>(wave_))
 		{
-			continue;
+			waveData = &data;
+			break;
 		}
-
-		// まだ生成する敵ではない
-		if (count != spawnIndex_)
-		{
-			count++;
-			continue;
-		}
-
-		// 敵を1体生成
-		Create(data, player_);
-
-		// 次の敵へ
-		spawnIndex_++;
-
-		break;
 	}
+
+	if (waveData == nullptr)
+	{
+		return;
+	}
+
+	// 全敵生成済み
+	if (spawnIndex_ >= waveData->enemies.size())
+	{
+		return;
+	}
+
+	// 今から生成する敵のtype
+	int type = waveData->enemies[spawnIndex_];
+
+	// Enemy.jsonからステータスを取得
+	if (type < 0 || type >= enemyStatusData_.size())
+	{
+		return;
+	}
+
+	const auto& status = enemyStatusData_[type];
+
+	// EnemyDataを作る
+	EnemyBase::EnemyData data{};
+
+	data.id = spawnIndex_;
+	data.type = status.type;
+	data.hp = status.hp;
+
+	data.wave = static_cast<int>(wave_);
+
+	data.movableRange = 1000.0f;
+
+	// 座標
+	int randIndex = GetRand(
+		static_cast<int>(EnemyPos_.size()) - 1
+	);
+
+	data.defaultPos = EnemyPos_[randIndex];
+
+	// 生成
+	Create(data, player_);
+
+	// 次の敵へ
+	spawnIndex_++;
 }
+
+
 

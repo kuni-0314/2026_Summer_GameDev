@@ -13,21 +13,22 @@
 #include "../../Collider/Sphere/ColliderSphere.h"
 
 
-EnemyBase::EnemyBase(const EnemyBase::EnemyData& data, int attackModel, Player* player)
-	:
-CharactorBase(),
-player_(player),
-type_(data.type),
-defaultPos_(data.defaultPos),
-movableRange_(data.movableRange),
-wave_(data.wave),
-attackModle_(attackModel)
-{
 
+EnemyBase::EnemyBase(
+	const EnemyBase::EnemyData& data,
+	int attackModel, Player* player)
+	:
+	CharactorBase(),
+	player_(player),
+	type_(data.type),
+	defaultPos_(data.defaultPos),
+	movableRange_(data.movableRange),
+	wave_(data.wave),
+	attackModle_(attackModel)
+{
+	hp_ = data.hp;
 	// ‰ŠúÀ•W‚Ìİ’è
 	transform_.pos = data.defaultPos;
-
-	hp_ = data.hp;
 }
 
 EnemyBase::~EnemyBase(void)
@@ -172,8 +173,6 @@ bool EnemyBase::PushOutSphere(
 }
 
 
-
-
 void EnemyBase::ChangeState(int state)
 {
 	stateBase_ = state;
@@ -202,8 +201,6 @@ VECTOR& EnemyBase::GetPos()
 {
 	return transform_.pos;
 }
-
-
 
 void EnemyBase::CheckPlayerSwordCollision()
 {

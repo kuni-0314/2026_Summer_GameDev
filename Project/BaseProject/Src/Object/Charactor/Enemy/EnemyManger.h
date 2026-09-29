@@ -45,8 +45,6 @@ public:
 	// 衝突対象となるコライダを指定して削除
 	void RemoveHitCollider(const ColliderBase* hitCollider);
 
-	// CSVから敵情報の読取を行う
-	void LoadCsvData();
 	// エネミー生成
 	EnemyBase* Create(const EnemyBase::EnemyData& data, const Player* player);
 
@@ -97,10 +95,12 @@ private:
 	// エネミー
 	std::vector<EnemyBase*> enemies_;
 	std::vector<EnemyBase::EnemyData> enemyData_;
+
+
 	//エネミーステータス情報
 	std::vector<EnemyBase::EnemyStatus> enemyStatusData_;
 	//エネミーWAVE情報
-	std::vector<EnemyBase::EnemyWaveData> enemyWaveData_;
+	std::vector<EnemyBase::EnemyWave> enemyWaveData_;
 
 	std::vector<int> usedPos_;
 
@@ -158,18 +158,19 @@ private:
 	void UpdateWave3();
 	void UpdateWaveBoss();
 
-	//エネミーWAVE情報読み込み
-	void LoadJsonWaveData();
-
 	std::vector<VECTOR>LargePos_;
 	std::vector<VECTOR>EnemyPos_;
+
 	void InitEnemyPos();
 
 	// BOSS WAVEの敵生成タイマー
 	float bossSpawnTimer_ = 0.0f;
 	void SpawnBossEnemy();
-
 	void SpawnNextEnemy();
+
+	void LoadJsonStatusData();
+	//エネミーWAVE情報読み込み
+	void LoadJsonWaveData();
 
 
 };

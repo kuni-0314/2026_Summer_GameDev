@@ -1,32 +1,20 @@
 {
-  "wave1": [
+  "WAVE": [
     {
-      "type": 0,
-      "posX": 1000,
-      "posY": 40,
-      "posZ": 600
+      "wave": 1,
+      "enemies": [ 0, 0, 0, 0, 0 ]
     },
     {
-      "type": 1,
-      "posX": 1000,
-      "posY": 40,
-      "posZ": 600
-    }
-
-  ],
-  "wavw2": [
-    {
-      "type": 0,
-      "posX": 1000,
-      "posY": 40,
-      "posZ": 600
+      "wave": 2,
+      "enemies": [ 1, 0, 0 ]
     },
     {
-      "type": 1,
-      "posX": 1000,
-      "posY": 40,
-      "posZ": 600
+      "wave": 3,
+      "enemies": [ 2, 2, 0, 0, 0, 1, 1 ]
+    },
+    {
+      "wave": 4,
+      "enemies": [ 3 ]
     }
-
   ]
 }

@@ -32,23 +32,22 @@ public:
 		int wave;
 	};
 
-	//エネミーステータス
 	struct EnemyStatus
 	{
 		TYPE type;
 		int hp;
-		float movableRange;
 	};
-	//エネミーwave管理情報
-	struct EnemyWaveData
+
+	struct EnemyWave
 	{
-		int id;					//敵個体を識別する番号
-		TYPE type;				//エネミー種別
-		VECTOR defaultPos;		//初期位置
+		std::vector<int>enemies;
+		int wave;
 	};
 
 	// コンストラクタ
-	EnemyBase(const EnemyBase::EnemyData& data,int attackModel,Player* player);
+	EnemyBase(const EnemyBase::EnemyData& data,
+		int attackModel,
+		Player* player);
 
 	// デストラクタ
 	virtual ~EnemyBase() override;
