@@ -27,7 +27,6 @@ void Stage::InitLoad()
 
 void Stage::InitTransform()
 {
-
 	transform_.scl = { SCL_MAIN_STAGE_X, SCL_MAIN_STAGE_Y, SCL_MAIN_STAGE_Z };
 	transform_.quaRot = Quaternion::Identity();
 	transform_.quaRotLocal = Quaternion::Identity();
