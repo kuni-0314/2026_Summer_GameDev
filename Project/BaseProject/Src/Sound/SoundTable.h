@@ -40,7 +40,6 @@ enum class SoundID
 	SE_DRAGON_LANDING,
 	SE_DRAGON_SHOUT,
 	MAX
-
 };
 
 // 読み込むシーン
@@ -66,7 +65,6 @@ public:
 	// サウンドテーブルのマップ
 	// サウンドID から サウンドパスを取得
 	static const std::unordered_map<SoundID, SoundData> Table;
-
 };
 
 

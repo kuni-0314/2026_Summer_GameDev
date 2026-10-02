@@ -6,7 +6,6 @@
 class TutorialScene : public SceneBase
 {
 public:
-
 	// コンストラクタ
 	TutorialScene();
 	// デストラクタ
@@ -21,7 +20,6 @@ public:
 	void Release() override;
 
 private:
-
 	int imgTutorialMouse_;
 	int imgTutorialPad_;
 

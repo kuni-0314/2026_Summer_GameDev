@@ -11,9 +11,7 @@
 /// </summary>
 class Transform
 {
-
 public:
-
 	// モデルのハンドルID
 	int modelId;
 
@@ -36,8 +34,6 @@ public:
 
 	// ローカル回転
 	Quaternion quaRotLocal;
-
-
 
 	// コンストラクタ
 	Transform();
@@ -75,5 +71,4 @@ public:
 
 	// 対象方向を取得
 	VECTOR GetDir(const VECTOR& dir) const;
-
 };

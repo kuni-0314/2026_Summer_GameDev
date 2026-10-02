@@ -70,21 +70,21 @@ void OverScene::Draw()
 	// RETRY
 	if (selectCount_ == static_cast<int>(SELECT::RETRY))
 	{
-		DrawGraph(500, 550, imgOnRetryHandle_, true);
+		DrawGraph(SELECT_RETRY_POS_X, SELECT_RETRY_POS_Y, imgOnRetryHandle_, true);
 	}
 	else
 	{
-		DrawGraph(500, 550, imgOffRetryHandle_, true);
+		DrawGraph(SELECT_RETRY_POS_X, SELECT_RETRY_POS_Y, imgOffRetryHandle_, true);
 	}
 
 	// TITLE
 	if (selectCount_ == static_cast<int>(SELECT::TITLE))
 	{
-		DrawGraph(500, 750, imgOnTitleHandle_, true);
+		DrawGraph(SELECT_TITLE_POS_X, SELECT_TITLE_POS_Y, imgOnTitleHandle_, true);
 	}
 	else
 	{
-		DrawGraph(500, 750, imgOffTitleHandle_, true);
+		DrawGraph(SELECT_TITLE_POS_X, SELECT_TITLE_POS_Y, imgOffTitleHandle_, true);
 	}
 }
 

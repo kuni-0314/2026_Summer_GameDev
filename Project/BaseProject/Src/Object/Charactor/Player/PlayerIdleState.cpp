@@ -8,15 +8,11 @@ void PlayerIdleState::Enter(Player* player)
 {
 	// 初期アニメーション再生
 	player->GetAnimationController()->Play(static_cast<int>(Player::ANIM_TYPE::IDLE), true);
-
-	// 慣性を採用のためコメントアウト
-	// 移動量をゼロにする
-	//VECTOR movePow = {0, 0, 0};
-	//player->SetMovePow(movePow);
 }
 
 void PlayerIdleState::Update(Player* player)
 {
+	// 入力管理クラスのインスタンスを取得
 	auto ins = InputManager::GetInstance();
 
 	// 慣性による移動量の減衰
@@ -52,6 +48,7 @@ void PlayerIdleState::Update(Player* player)
 	bool isDashInput = false;
 	VECTOR dir = AsoUtility::VECTOR_ZERO;
 
+	// ゲームパッドが接続されている場合はゲームパッドの入力を優先
 	if (isGamepadConnected)
 	{
 		if (enableKAM)
@@ -80,17 +77,9 @@ void PlayerIdleState::Update(Player* player)
 	// 移動キーが入力されているか
 	if (hasMoveInput)
 	{
-		// ダッシュキーが入力されているか
-		//if (isDashInput)
-		//{
-		//	player->ChangeState(Player::STATE::FAST_RUN);
-		//	return;
-		//}
-		//else
-		{
-			player->ChangeState(Player::STATE::RUN);
-			player->SetAttacking(false);
-			return;
-		}
+		player->ChangeState(Player::STATE::RUN);
+		player->SetAttacking(false);
+		return;
+
 	}
 }

@@ -86,7 +86,6 @@ bool InputManager::Init()
 	Add(KEY_INPUT_LSHIFT);		// ダッシュ
 	Add(KEY_INPUT_LCONTROL);	// 向きを変えずに移動
 
-
 	Add(KEY_INPUT_SPACE);	// シーン遷移
 
 	Add(KEY_INPUT_RETURN);	// 攻撃
@@ -100,7 +99,6 @@ bool InputManager::Init()
 	Add(KEY_INPUT_RIGHT);	// 
 	Add(KEY_INPUT_UP);		// 
 	Add(KEY_INPUT_DOWN);	// 
-
 
 	//num
 	Add(KEY_INPUT_NUMPAD1);
@@ -124,7 +122,6 @@ bool InputManager::Init()
 	Add(KEY_INPUT_8);	// デバッグ用
 	Add(KEY_INPUT_9);
 	Add(KEY_INPUT_0);
-
 
 	AddMouse(MOUSE_INPUT_LEFT);
 	AddMouse(MOUSE_INPUT_RIGHT);

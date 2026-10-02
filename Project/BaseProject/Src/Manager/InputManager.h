@@ -231,7 +231,6 @@ private:
 	bool isVibrationEnabled_ = true;
 #endif
 
-
 	// インスタンス
 	static InputManager* instance_;	// 自己
 

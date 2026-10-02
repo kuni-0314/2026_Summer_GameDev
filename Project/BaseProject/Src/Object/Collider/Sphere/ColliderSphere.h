@@ -27,16 +27,11 @@ public:
 		int maxTryCnt,
 		float pushDistance) const override;
 
-	//todo
-
-                                                                    
-
-
 protected:
 	// デバッグ用描画
 	void DrawDebug(int color) override;
-private:
 
+private:
 	// 親Transformからの相対位置(下側)
 	VECTOR localPos_;
 	// 半径

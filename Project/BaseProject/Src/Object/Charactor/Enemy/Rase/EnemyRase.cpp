@@ -82,7 +82,6 @@ void EnemyRase::InitLoad()
 	shotmodel_ = resMng_.LoadModelDuplicate(ResourceManager::SRC::ENEMY_RASE_BALL);
 
 	AudioManager::GetInstance()->LoadSceneSound(LoadScene::GAME);
-
 }
 
 void EnemyRase::InitTransform()
@@ -94,7 +93,6 @@ void EnemyRase::InitTransform()
 	//transform_.pos = { 0.0f, 100.0f, 1500.0f };
 
 	transform_.Update();
-
 }
 
 void EnemyRase::InitCollider()
@@ -111,7 +109,6 @@ void EnemyRase::InitCollider()
 		COL_CAPSULE_TOP_LOCAL_POS, COL_CAPSULE_DOWN_LOCAL_POS,
 		COL_CAPSULE_RADIUS);
 	ownColliders_.emplace(static_cast<int>(COLLIDER_TYPE::CAPSULE), colCapsule);
-
 }
 
 void EnemyRase::InitAnimation()
@@ -143,7 +140,6 @@ void EnemyRase::InitPost()
 
 	//基準の高さ保存
 	baseHeight_ = transform_.pos.y;
-
 	
 	stateChanges_.emplace(static_cast<int>(STATE::IDLE),
 		std::bind(&EnemyRase::ChangeStateIdle, this));
@@ -170,7 +166,6 @@ void EnemyRase::InitPost()
 
 	// 初期状態設定
 	ChangeState(STATE::THINK);
-	
 }
 
 void EnemyRase::UpdateProcess()
@@ -225,8 +220,6 @@ void EnemyRase::UpdateProcess()
 	{
 		ChangeState(STATE::DIE);
 	}
-
-
 }
 
 void EnemyRase::UpdateProcessPost()
@@ -252,7 +245,6 @@ void EnemyRase::ChangeStateIdle()
 	// 待機アニメーション再生
 	animationController_->Play(
 		static_cast<int>(ANIM_TYPE::IDLE), true);
-
 }
 
 void EnemyRase::ChangeStateAttack()
@@ -294,7 +286,6 @@ void EnemyRase::ChangeStateWait(void)
 	movePow_ = AsoUtility::VECTOR_ZERO;
 	// 待機アニメーション再生
 	animationController_->Play(static_cast<int>(ANIM_TYPE::IDLE), true);
-
 }
 
 void EnemyRase::ChangeStateHit()
@@ -312,7 +303,6 @@ void EnemyRase::ChangeStateHit()
 void EnemyRase::ChangeStateEnd()
 {
 	stateUpdate_ = std::bind(&EnemyRase::UpdateEnd, this);
-
 }
 
 void EnemyRase::ChangeStateDie()
@@ -321,7 +311,6 @@ void EnemyRase::ChangeStateDie()
 	movePow_ = AsoUtility::VECTOR_ZERO;
 	// 待機アニメーション再生
 	animationController_->Play(static_cast<int>(ANIM_TYPE::DIE), false);
-
 }
 
 void EnemyRase::ChangeStateCharge(void)
@@ -396,7 +385,6 @@ void EnemyRase::UpdateWait(void)
 
 void EnemyRase::UpdateThink(void)
 {
-	
 	//攻撃するか否や
 	if (distance_ < SWICH_DISTANCE)
 	{
@@ -479,7 +467,6 @@ void EnemyRase::AttackShot()
 	EffectManager::GetInstance().RegisterEffect(shot.effect);
 
 	shots_.emplace_back(std::move(shot));
-
 }
 
 void EnemyRase::UpdateShot()
@@ -498,7 +485,6 @@ void EnemyRase::UpdateShot()
 				shot.shotTransform_.pos,
 				VScale(shot.dir_, shot.speed)
 			);
-
 
 		// プレイヤーとの衝突
 		if (AsoUtility::IsHitSpheres(

@@ -13,45 +13,56 @@ ColliderCapsule::ColliderCapsule(
 	radius_(radius)
 {
 }
+
 ColliderCapsule::~ColliderCapsule()
 {
 }
+
 const VECTOR& ColliderCapsule::GetLocalPosTop() const
 {
 	return localPosTop_;
 }
+
 const VECTOR& ColliderCapsule::GetLocalPosDown() const
 {
 	return localPosDown_;
 }
+
 void ColliderCapsule::SetLocalPosTop(const VECTOR& pos)
 {
 	localPosTop_ = pos;
 }
+
 void ColliderCapsule::SetLocalPosDown(const VECTOR& pos)
 {
 	localPosDown_ = pos;
 }
+
 VECTOR ColliderCapsule::GetPosTop() const
 {
 	return GetRotPos(localPosTop_);
 }
+
 VECTOR ColliderCapsule::GetPosDown() const
 {
 	return GetRotPos(localPosDown_);
 }
+
 float ColliderCapsule::GetRadius() const
 {
 	return radius_;
 }
+
 void ColliderCapsule::SetRadius(float radius)
 {
 	radius_ = radius;
 }
+
 float ColliderCapsule::GetHeight() const
 {
 	return localPosTop_.y;
 }
+
 VECTOR ColliderCapsule::GetCenter() const
 {
 	VECTOR top = GetPosTop();
@@ -60,13 +71,10 @@ VECTOR ColliderCapsule::GetCenter() const
 	return VAdd(down, VScale(diff, 0.5f));
 }
 
-
-
 void ColliderCapsule::SetWasHit(bool washit)
 {
 	wasHit_ = washit;
 }
-
 
 bool ColliderCapsule::GetwasHit() const
 {
@@ -194,8 +202,6 @@ void ColliderCapsule::PushBackAlongNormal(
 
 bool ColliderCapsule::IsHit(const ColliderModel* colliderModel, bool isExclude, bool isTarget) const
 {
-
-
 	bool ret = false;
 
 	// モデルとカプセルの衝突判定

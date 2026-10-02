@@ -24,22 +24,17 @@ Camera::Camera()
 	zoomScale_(ZOOM_DEFAULT),
 	zoomScaleGoal_(ZOOM_DEFAULT),
 	ActorBase()
-
 {
 	// DxLibの初期設定では、
 	// カメラの位置が x = 320.0f, y = 240.0f, z = (画面のサイズによって変化)、
 	// 注視点の位置は x = 320.0f, y = 240.0f, z = 1.0f
 	// カメラの上方向は x = 0.0f, y = 1.0f, z = 0.0f
 	// 右上位置からZ軸のプラス方向を見るようなカメラ
-
-	
-		
 }
 
 Camera::~Camera()
 {
 }
-
 
 void Camera::Update()
 {
@@ -47,7 +42,6 @@ void Camera::Update()
 
 void Camera::SetBeforeDraw()
 {
-
 	// クリップ距離を設定する(SetDrawScreenでリセットされる)
 	SetCameraNearFar(VIEW_NEAR, VIEW_FAR);
 
@@ -82,15 +76,10 @@ void Camera::SetBeforeDraw()
 
 	// DXライブラリのカメラとEffekseerのカメラを同期する。
 	Effekseer_Sync3DSetting();
-
 }
 
 void Camera::DrawDebug()
 {
-	//DrawSphere3D(debugTargetPos_, 10.0f, 16, 0xff00ff, 0xff00ff, true);	
-
-	//DrawFormatString(10, 200, 0xffffff, "camera angles: %f, %f, %f", angles_.x, angles_.y, angles_.z);
-	//DrawFormatString(10, 220, 0xffffff, "zoom scale: %f", zoomScale_);
 }
 
 void Camera::Release()
@@ -125,9 +114,6 @@ void Camera::SetTargetPos(const VECTOR& pos)
 
 void Camera::InitCollider()
 {
-
-
-
 	// 主に地面との衝突で使用する球体コライダ
 	ColliderSphere* colliderSphere = new ColliderSphere(
 		ColliderBase::TAG::CAMERA,
@@ -137,7 +123,6 @@ void Camera::InitCollider()
 	);
 	ownColliders_.emplace(
 		static_cast<int>(COLLIDER_TYPE::SPHERE), colliderSphere);
-
 }
 
 void Camera::InitPost()
@@ -177,7 +162,6 @@ VECTOR Camera::GetForward() const
 
 void Camera::ChangeMode(MODE mode)
 {
-
 	// カメラの初期設定
 	SetDefault();
 
@@ -202,12 +186,10 @@ void Camera::ChangeMode(MODE mode)
 		openingTimer_ = 0.0f;
 		break;
 	}
-
 }
 
 void Camera::SetDefault()
 {
-
 	// カメラの初期設定
 	transform_.pos = DERFAULT_POS;
 
@@ -224,12 +206,10 @@ void Camera::SetDefault()
 	// ズームをデフォルトに戻す
 	zoomScale_ = ZOOM_DEFAULT;
 	zoomScaleGoal_ = ZOOM_DEFAULT;
-
 }
 
 void Camera::SyncFollow()
 {
-
 	// 追従対象のルートフレーム2のワールド座標を取得
 	VECTOR rootFramePos = MV1GetFramePosition(followTransform_->modelId, 2);
 	
@@ -257,12 +237,10 @@ void Camera::SyncFollow()
 
 	// カメラの上方向
 	transform_.quaRot.GetUp();
-
 }
 
 void Camera::ProcessRot(bool isLimit)
 {
-
 	if (GetJoypadNum() == 0)
 	{
 		// 方向回転によるXYZの移動(キーボード)
@@ -273,12 +251,10 @@ void Camera::ProcessRot(bool isLimit)
 		// 方向回転によるXYZの移動(ゲームパッド)
 		RotGamePad(isLimit);
 	}
-
 }
 
 void Camera::ProcessMove()
 {
-
 	auto ins = InputManager::GetInstance();
 
 	VECTOR moveDir = AsoUtility::VECTOR_ZERO;
@@ -320,9 +296,7 @@ void Camera::ProcessMove()
 		// カメラ位置も注視点も移動させる
 		transform_.pos = VAdd(transform_.pos, movePow);
 		targetPos_ = VAdd(targetPos_, movePow);
-
 	}
-
 }
 
 void Camera::ProcessZoom()
@@ -350,12 +324,10 @@ void Camera::ProcessZoom()
 
 void Camera::SetBeforeDrawFixedPoint()
 {
-	// 何もしない
 }
 
 void Camera::SetBeforeDrawFree()
 {
-
 	// カメラ操作(回転)
 	ProcessRot(false);
 	
@@ -373,12 +345,10 @@ void Camera::SetBeforeDrawFree()
 
 	// カメラの上方向更新
 	transform_.quaRot.GetUp();
-
 }
 
 void Camera::SetBeforeDrawFollow()
 {
-
 	// カメラ操作(回転)
 	ProcessRot(true);
 
@@ -390,12 +360,10 @@ void Camera::SetBeforeDrawFollow()
 
 	//当たり判定
 	Collision();
-	
 }
 
 void Camera::SetBeforeDrawManual()
 {
-
 	// マウスによるカメラ回転
 	RotMouse(true);
 
@@ -409,13 +377,6 @@ void Camera::SetBeforeDrawManual()
 	if (followTransform_ != nullptr)
 	{
 		SyncFollow();
-
-		//// プレイヤーの位置
-		//VECTOR playerPos = followTransform_->pos;
-
-		//// カメラ位置をプレイヤーの後ろに配置
-		//VECTOR localPos = transform_.quaRot.PosAxis(MOUSE_CAMERA_LOCAL_POS);
-		//transform_.pos = VAdd(playerPos, localPos);
 
 		// 当たり判定
 		Collision();
@@ -438,8 +399,6 @@ void Camera::SetBeforeDrawManual()
 
 	// ゲームパッド操作
 	RotGamePad(true);
-
-
 }
 
 void Camera::SetBeforeDrawTargeting()
@@ -593,8 +552,6 @@ void Camera::Collision()
 				minDist = dist;
 				hitPoly = hit;
 			}
-
-		
 		}
 
 		// 検出した地面ポリゴン情報の後始末
@@ -605,7 +562,6 @@ void Camera::Collision()
 			// 衝突していなければ次のコライダへ
 			continue;
 		}
-
 	
 		// カメラ位置から注視点への方向
 		VECTOR dirToTarget = VNorm(VSub(targetPos_, transform_.pos));
@@ -622,26 +578,15 @@ void Camera::Collision()
 		// 球体コライダが無ければ処理を抜ける
 		if (ownColliders_.count(typeSphere) == 0) continue;
 
-		//// 球体コライダ情報
-		//ColliderSphere* colliderSphere =
-		//	dynamic_cast<ColliderSphere*>(ownColliders_.at(typeSphere));
-		//if (colliderSphere == nullptr) return;
-
-
 		// 衝突していたら法線方向に押し戻し
 		transform_.pos = ownColliders_.at(typeSphere)->GetPosPushBackAlongNormal
 		(hitPoly, CNT_TRY_COLLISION_CAMERA, COLLISION_BACK_DIS);
-		
 #pragma endregion
-
 	}
-
-
 }
 
 void Camera::RotKeyboard(bool isLimit)
 {
-
 	const auto ins = InputManager::GetInstance();
 
 	// カメラ回転
@@ -675,18 +620,15 @@ void Camera::RotKeyboard(bool isLimit)
 			angles_.x = -LIMIT_X_DW_RAD;
 		}
 	}
-
 }
 
 void Camera::RotGamePad(bool isLimit)
 {
-
 	auto ins = InputManager::GetInstance();
 
 	// アナログキーの入力値から方向を取得
 	short rightX, rightY;
 	ins->GetRightStick(0, rightX, rightY);
-	//rightY = -rightY; // 上方向を正にするために反転
 
 	// アナログスティックの入力値を正規化して方向ベクトルを作成
 	VECTOR dir = AsoUtility::VECTOR_ZERO;
@@ -712,12 +654,10 @@ void Camera::RotGamePad(bool isLimit)
 	{
 		angles_.x = LIMIT_X_UP_RAD;
 	}
-
 }
 
 void Camera::RotMouse(bool isLimit)
 {
-
 	// マウスの移動量を取得
 	int mouseX, mouseY;
 	GetMousePoint(&mouseX, &mouseY);
@@ -750,15 +690,11 @@ void Camera::RotMouse(bool isLimit)
 		{
 			angles_.x = LIMIT_X_UP_RAD;
 		}
-
-
 	}
 
 	// マウスカーソルを画面中央に戻す
 	SetMousePoint(centerX, centerY);
-
 }
-
 
 // イージング処理の実装を追加（ファイル末尾に追加）
 VECTOR Camera::LerpVector(const VECTOR& current, const VECTOR& target, float rate)

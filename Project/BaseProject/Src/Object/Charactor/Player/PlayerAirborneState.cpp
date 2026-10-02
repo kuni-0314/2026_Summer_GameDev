@@ -18,6 +18,7 @@ void PlayerAirborneState::Update(Player* player)
 		return;
 	}
 
+	// キーとマウスの両方が有効か
 	bool enableKAM = ins->IsEnableKeyAndMouse();
 	bool isGamepadConnected = (GetJoypadNum() > 0);
 
@@ -64,7 +65,7 @@ void PlayerAirborneState::Update(Player* player)
 				isJumpKeyPressed = true;
 			}
 		}
-		
+		//ジャンプキーが押されていない場合は、ジャンプ力を減衰させる
 		if (!isJumpKeyPressed)
 		{
 			if (player->GetStepJump() < Player::TIME_JUMP_INPUT)
@@ -113,14 +114,7 @@ void PlayerAirborneState::Update(Player* player)
 	{
 		// 移動速度を設定
 		float speed = 0.0f;
-		//if (ins->IsNew(KEY_INPUT_LSHIFT))
-		//{
-		//	speed = Player::SPEED_DASH;
-		//}
-		//else
-		//{
-			speed = Player::SPEED_MOVE;
-		//}
+		speed = Player::SPEED_MOVE;
 
 		//Y軸のみのカメラ角度を取得
 		Quaternion cameraRot = SceneManager::GetInstance().GetCamera()->GetQuaRotY();
@@ -146,18 +140,9 @@ void PlayerAirborneState::Update(Player* player)
 		// ジャンプ中でない場合は状態を変更
 		if (!player->IsJump())
 		{
-			// ダッシュキーが入力されているか
-			//if (ins->IsNew(KEY_INPUT_LSHIFT))
-			//{
-			//	player->ChangeState(Player::STATE::FAST_RUN);
-			//	return;
-			//}
-			//else
-			{
-				player->ChangeState(Player::STATE::RUN);
-				player->SetAttacking(false);
-				return;
-			}
+			player->ChangeState(Player::STATE::RUN);
+			player->SetAttacking(false);
+			return;
 		}
 	}
 	else

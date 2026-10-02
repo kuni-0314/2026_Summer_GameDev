@@ -135,6 +135,24 @@ private:
 	static constexpr int IMG_HP_X = 1550;
 	static constexpr int IMG_HP_Y = 700;
 
+	//ボリューム
+	static constexpr int VOLUME_BGM_MAX = 100;
+	static constexpr int VOLUME_ROCKON_MAX = 150;
+	static constexpr int VOLUME_COMMAND_MAX = 200;
+
+	//ダメージタイムカウント
+	static constexpr int DAMAGE_TIME_COUNT = 60;
+
+	//クリアタイマー
+	static constexpr int CLEAR_TIMER = 100;
+
+	//HP瀕死時
+	static constexpr int HP_LOW = 6;
+
+	//セレクトの位置
+	static constexpr int SELECT_POS = 780;
+	static constexpr int SELECT_OFFSET = 75;
+
 	//コマンド
 	COMMAND command_;
 	COMMAND useCommand_;

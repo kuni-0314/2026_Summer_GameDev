@@ -113,7 +113,7 @@ void GameScene::Init()
 	ChangeVolumeSoundMem(100, wargnigHandle_);
 
 	AudioManager::GetInstance()->PlayBGM(SoundID::BGM_GAME);
-	AudioManager::GetInstance()->SetBgmVolume(100);
+	AudioManager::GetInstance()->SetBgmVolume(VOLUME_BGM_MAX);
 	// 音量
 
 	hpHandles_.resize(11);
@@ -213,14 +213,14 @@ void GameScene::Update()
 				VECTOR dir = VNorm(VSub(ePos, pPos));
 				player_->SetMoveDir(dir);
 				sceMng_.GetCamera()->ChangeMode(Camera::MODE::TARGETING);
-				AudioManager::GetInstance()->SetSeVolume(150);
+				AudioManager::GetInstance()->SetSeVolume(VOLUME_ROCKON_MAX);
 				AudioManager::GetInstance()->PlaySE(SoundID::SE_LOCKON);
 			}
 			else
 			{
 				camMode_ = CAM_MODE::MANUAL;
 				sceMng_.GetCamera()->ChangeMode(Camera::MODE::MANUAL);
-				AudioManager::GetInstance()->SetSeVolume(150);
+				AudioManager::GetInstance()->SetSeVolume(VOLUME_ROCKON_MAX);
 				AudioManager::GetInstance()->PlaySE(SoundID::SE_LOCKON_CHANGE);
 			}
 		}
@@ -253,7 +253,7 @@ void GameScene::Update()
 		damegeTimeCount_++;
 
 		//表示時間
-		if (damegeTimeCount_ > 60)
+		if (damegeTimeCount_ > DAMAGE_TIME_COUNT)
 		{
 			damageflag_ = false;
 			damegeTimeCount_ = 0;
@@ -358,7 +358,7 @@ void GameScene::Update()
 	{
 		clearTimer_++;
 
-		if (clearTimer_ > 100)   // Deathエフェクト終了後
+		if (clearTimer_ > CLEAR_TIMER)   // Deathエフェクト終了後
 		{
 			StopMusic();
 			StopSoundMem(audioHandle_);
@@ -373,7 +373,7 @@ void GameScene::Update()
 
 	if (ins->IsTrgDown(KEY_INPUT_UP) /*|| ins->IsTrgDown(KEY_INPUT_E)*/ || ins->IsGamepadTrgDown(InputManager::PadInput::Up, 0))
 	{
-		AudioManager::GetInstance()->SetSeVolume(200);
+		AudioManager::GetInstance()->SetSeVolume(VOLUME_COMMAND_MAX);
 		AudioManager::GetInstance()->PlaySE(SoundID::SE_COMMAND_SELECT);
 
 		selectCommand_--;
@@ -385,7 +385,7 @@ void GameScene::Update()
 
 	if (ins->IsTrgDown(KEY_INPUT_DOWN) || ins->IsTrgDown(KEY_INPUT_Q) || ins->IsGamepadTrgDown(InputManager::PadInput::Down, 0))
 	{
-		AudioManager::GetInstance()->SetSeVolume(200);
+		AudioManager::GetInstance()->SetSeVolume(VOLUME_COMMAND_MAX);
 		AudioManager::GetInstance()->PlaySE(SoundID::SE_COMMAND_SELECT);
 
 		selectCommand_++;
@@ -708,7 +708,7 @@ void GameScene::PlayerHpDraw()
 	}
 	else
 	{
-		if (player_->GetHp() <= 6)
+		if (player_->GetHp() <= HP_LOW)
 		{
 			//瀕死状態UI
 			DrawGraph(IMG_HP_X, UI_OFFSET_Y, playerUiHandles_[static_cast<int>(PLAYRE_HP_STATE::WARNING)], true);
@@ -797,9 +797,10 @@ void GameScene::CommandDraw()
 			break;
 		}
 
+		// 選択中のコマンドは少し右にずらして描画
 		DrawGraph(
 			baseX + (isSelect ? selectOffset : 0),
-			780 + i * 75,
+			SELECT_POS + i * SELECT_OFFSET,
 			fontCommandHandles_[i][static_cast<int>(state)],
 			true);
 	}

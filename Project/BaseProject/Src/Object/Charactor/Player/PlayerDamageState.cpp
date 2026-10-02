@@ -5,6 +5,7 @@
 
 void PlayerDamageState::Enter(Player* player)
 {
+	// ダメージアニメーション再生
 	auto anim = player->GetAnimationController();
 	anim->Play(static_cast<int>(Player::ANIM_TYPE::DAMAGE), false);
 }

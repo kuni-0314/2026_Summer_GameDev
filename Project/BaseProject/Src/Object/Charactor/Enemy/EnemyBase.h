@@ -11,7 +11,6 @@ class AudioManager;
 class EnemyBase : public CharactorBase
 {
 public:
-
 	// 種別
 	enum class TYPE
 	{
@@ -51,6 +50,7 @@ public:
 
 	// デストラクタ
 	virtual ~EnemyBase() override;
+
 	//更新
 	virtual void Update() override;
 	//描画
@@ -75,17 +75,14 @@ public:
 		float radiusB,
 		bool debugDraw = false);
 
-
 	float GetCollRadius();
 	VECTOR& GetPos();
 
-
 protected:
-
+	// プレイヤー
 	Player* player_;
 	// 種別
 	TYPE type_;
-
 
 	// 初期位置
 	const VECTOR defaultPos_;
@@ -128,7 +125,6 @@ protected:
 	// 初期化後の個別処理
 	void InitPost() override {}
 
-
 	// 状態遷移
 	void ChangeState(int state);
 
@@ -139,6 +135,5 @@ protected:
 
 	//視線ベクトル
 	void LookPlayer();
-	
 };
 

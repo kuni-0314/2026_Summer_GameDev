@@ -2,7 +2,6 @@
 class Vector2
 {
 public:
-
 	int x;
 	int y;
 
@@ -14,5 +13,4 @@ public:
 
 	// デストラクタ
 	~Vector2();
-
 };

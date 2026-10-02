@@ -10,14 +10,7 @@ class Camera;
 
 class SceneManager
 {
-
 public:
-
-	// 背景色
-	//static constexpr int BACKGROUND_COLOR_R = 0;
-	//static constexpr int BACKGROUND_COLOR_G = 139;
-	//static constexpr int BACKGROUND_COLOR_B = 139;
-
 	static constexpr int BACKGROUND_COLOR_R = 255;
 	static constexpr int BACKGROUND_COLOR_G = 255;
 	static constexpr int BACKGROUND_COLOR_B = 255;
@@ -89,7 +82,6 @@ public:
 	void ResetContinue() { isContinue_ = false; }
 
 private:
-
 	// 静的インスタンス
 	static SceneManager* instance_;
 
@@ -140,5 +132,4 @@ private:
 
 	// フェード
 	void Fade();
-
 };

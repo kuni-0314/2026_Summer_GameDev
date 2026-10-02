@@ -18,9 +18,11 @@ EnemyRobot::EnemyRobot(const EnemyBase::EnemyData& data, int attackModel,Player*
 	nextWayPoint_(AsoUtility::VECTOR_ZERO)
 {
 }
+
 EnemyRobot::~EnemyRobot()
 {
 }
+
 void EnemyRobot::InitLoad()
 {
 	// 基底クラスのリソースロード
@@ -33,6 +35,7 @@ void EnemyRobot::InitLoad()
 	viewRangeTransform_.SetModel(
 		resMng_.LoadModelDuplicate(ResourceManager::SRC::VIEW_RANGE));
 }
+
 void EnemyRobot::InitTransform()
 {
 	//ロボット
@@ -52,6 +55,7 @@ void EnemyRobot::InitTransform()
 		Quaternion::AngleAxis(VIEW_RANGE_LOCAL_ROT_X, AsoUtility::AXIS_X);
 	viewRangeTransform_.Update();
 }
+
 void EnemyRobot::InitCollider()
 {
 	// 主に地面との衝突で使用する線分コライダ
@@ -81,6 +85,7 @@ void EnemyRobot::InitCollider()
 		static_cast<int>(COLLIDER_TYPE::VIEW_RANGE), colModel);
 
 }
+
 void EnemyRobot::InitAnimation()
 {
 	animationController_ = new AnimationController(transform_.modelId);
@@ -101,6 +106,7 @@ void EnemyRobot::InitAnimation()
 	// 初期アニメーション再生
 	animationController_->Play(static_cast<int>(ANIM_TYPE::IDLE), true);
 }
+
 void EnemyRobot::InitPost()
 {
 	// 状態遷移初期処理登録
@@ -140,11 +146,13 @@ void EnemyRobot::InitPost()
 	// 初期状態設定
 	ChangeState(STATE::THINK);
 }
+
 void EnemyRobot::UpdateProcess()
 {
 	// 状態別更新
 	stateUpdate_();
 }
+
 void EnemyRobot::UpdateProcessPost()
 {
 	EnemyBase::UpdateProcessPost();
@@ -158,6 +166,7 @@ void EnemyRobot::UpdateProcessPost()
 
 	viewRangeTransform_.Update();
 }
+
 void EnemyRobot::Draw()
 {
 	// 基底クラスの描画処理
@@ -179,15 +188,18 @@ void EnemyRobot::Draw()
 	//}
 #endif // _DEBUG
 }
+
 void EnemyRobot::ChangeState(STATE state)
 {
 	state_ = state;
 	EnemyBase::ChangeState(static_cast<int>(state_));
 }
+
 void EnemyRobot::ChangeStateNone()
 {
 	stateUpdate_ = std::bind(&EnemyRobot::UpdateNone, this);
 }
+
 void EnemyRobot::ChangeStateThink()
 {
 	stateUpdate_ = std::bind(&EnemyRobot::UpdateThink, this);
@@ -208,6 +220,7 @@ void EnemyRobot::ChangeStateThink()
 	//// 思考：最初はIDLEのみ
 	//ChangeState(STATE::IDLE);
 }
+
 void EnemyRobot::ChangeStateIdle()
 {
 	stateUpdate_ = std::bind(&EnemyRobot::UpdateIdle, this);
@@ -219,6 +232,7 @@ void EnemyRobot::ChangeStateIdle()
 	animationController_->Play(
 		static_cast<int>(ANIM_TYPE::IDLE), true);
 }
+
 void EnemyRobot::ChangeStatePatrol()
 {
 	stateUpdate_ = std::bind(&EnemyRobot::UpdatePatrol, this);
@@ -241,12 +255,13 @@ void EnemyRobot::ChangeStatePatrol()
 	// 歩きアニメーション再生
 	animationController_->Play(
 		static_cast<int>(ANIM_TYPE::WALK), true);
-
 }
+
 void EnemyRobot::ChangeStateSurprise()
 {
 	stateUpdate_ = std::bind(&EnemyRobot::UpdateSurprise, this);
 }
+
 void EnemyRobot::ChangeStateAlert()
 {
 	stateUpdate_ = std::bind(&EnemyRobot::UpdateAlert, this);
@@ -255,42 +270,51 @@ void EnemyRobot::ChangeStateAlert()
 	// ダンス(足踏み)アニメーション再生
 	animationController_->Play(
 		static_cast<int>(ANIM_TYPE::DANCE), true);
-
 }
+
 void EnemyRobot::ChangeStateChase()
 {
 	stateUpdate_ = std::bind(&EnemyRobot::UpdateChase, this);
 }
+
 void EnemyRobot::ChangeStateAttackKick()
 {
 	stateUpdate_ = std::bind(&EnemyRobot::UpdateAttackKick, this);
 }
+
 void EnemyRobot::ChangeStateAttackShoot()
 {
 	stateUpdate_ = std::bind(&EnemyRobot::UpdateAttackShoot, this);
 }
+
 void EnemyRobot::ChangeStateEscape()
 {
 	stateUpdate_ = std::bind(&EnemyRobot::UpdateEscape, this);
 }
+
 void EnemyRobot::ChangeStateDead()
 {
 	stateUpdate_ = std::bind(&EnemyRobot::UpdateDead, this);
 }
+
 void EnemyRobot::ChangeStateKnockBack()
 {
 	stateUpdate_ = std::bind(&EnemyRobot::UpdateKnockBack, this);
 }
+
 void EnemyRobot::ChangeStateEnd()
 {
 	stateUpdate_ = std::bind(&EnemyRobot::UpdateEnd, this);
 }
+
 void EnemyRobot::UpdateNone()
 {
 }
+
 void EnemyRobot::UpdateThink()
 {
 }
+
 void EnemyRobot::UpdateIdle()
 {
 	step_ -= scnMng_.GetDeltaTime();
@@ -307,6 +331,7 @@ void EnemyRobot::UpdateIdle()
 		ChangeState(STATE::ALERT);
 	}
 }
+
 void EnemyRobot::UpdatePatrol()
 {
 	// 巡回ポイントとの球体衝突判定(半径30.0fくらい)
@@ -319,7 +344,6 @@ void EnemyRobot::UpdatePatrol()
 		return;
 	}
 	
-
 	// 巡回ルートの移動方向を設定する
 	SetMoveDirPatrol();
 	// 移動量の計算
@@ -331,8 +355,8 @@ void EnemyRobot::UpdatePatrol()
 		//プレイヤー発見
 		ChangeState(STATE::ALERT);
 	}
-	
 }
+
 void EnemyRobot::SetMoveDirPatrol()
 {
 	// 巡回先座標XZ
@@ -343,30 +367,26 @@ void EnemyRobot::SetMoveDirPatrol()
 	pos.y = 0.0f;
 	// XZ平面上の移動方向を計算
 	moveDir_ = VNorm(VSub(tmpPos, pos));
-
 }
 
 bool EnemyRobot::InSearchConeModel()
 {
-
 	bool ret = false;//判定結果
-
-	//player_->GetOwnCollider(static_cast<int>(CharactorBase::COLLIDER_TYPE::CAPSULE));
 
 	// 視野モデルコライダ
 	int viewrangeType = static_cast<int>(COLLIDER_TYPE::VIEW_RANGE);
+
 	// 視野モデルコライダが無ければ処理を抜ける
 	if (ownColliders_.count(viewrangeType) == 0) return ret;
+
 	// 視野モデルコライダ情報
 	ColliderModel* colliderModel =
 		dynamic_cast<ColliderModel*>(ownColliders_.at(viewrangeType));
 
 	if (colliderModel == nullptr) return ret;
 
-
 	//衝突情報更新
 	MV1RefreshCollInfo(colliderModel->GetFollow()->modelId);
-
 
 	// 登録されている衝突物を全てチェック
 	for (const auto& hitCol : hitColliders_)
@@ -381,21 +401,18 @@ bool EnemyRobot::InSearchConeModel()
 		if (colliderCapsule == nullptr) continue;
 
 		//モデルとカプセルの諸突判定
-
 		if (colliderCapsule->IsHit(colliderModel))
 		{
 			return true;
 		}
 	}
-
-
-
 	return ret;
 }
 
 void EnemyRobot::UpdateSurprise()
 {
 }
+
 void EnemyRobot::UpdateAlert()
 {
 	if (!InSearchConeModel())
@@ -403,15 +420,19 @@ void EnemyRobot::UpdateAlert()
 		ChangeState(STATE::THINK);
 	}
 }
+
 void EnemyRobot::UpdateChase()
 {
 }
+
 void EnemyRobot::UpdateAttackKick()
 {
 }
+
 void EnemyRobot::UpdateAttackShoot()
 {
 }
+
 void EnemyRobot::UpdateEscape()
 {
 }
@@ -419,9 +440,11 @@ void EnemyRobot::UpdateEscape()
 void EnemyRobot::UpdateDead()
 {
 }
+
 void EnemyRobot::UpdateKnockBack()
 {
 }
+
 void EnemyRobot::UpdateEnd()
 {
 }

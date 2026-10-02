@@ -213,15 +213,11 @@ private:
 	//クロー生存状態
 	bool isAliveClow_;
 
-
-
-
 	//クローコライダー作成・削除
 	void CreateClowCollider(ClowInfo& clowInfo);
 	void DestroyClowColier(ClowInfo& clowInfo);
 	//クロー生成
 	void CreateClow();
-
 
 	// 状態遷移
 	void ChangeState(STATE state);
@@ -245,6 +241,5 @@ private:
 	void UpdateClow();
 
 	void ResolvePushWithPlayer();
-	
 };
 

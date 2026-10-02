@@ -17,8 +17,6 @@ public:
 	//初期回転
 	static constexpr VECTOR ROT_LOCAL_SKYDOME = { 0.0f, 180.0f * DX_PI_F / 180.0f, 0.0f };
 
-	//static constexpr VECTOR ROT_LOCAL_SKYDOME = { 0.0f, 0.0f, 0.0f };
-
 	//コンストラクタ
 	SkyDome(const Transform& followTransform);
 	//デストラクタ
@@ -28,9 +26,7 @@ public:
 
 	void Draw() override;
 
-
 protected:
-
 	// リソースロード
 	void InitLoad() override;
 
@@ -47,7 +43,6 @@ protected:
 	void InitPost() override;
 
 private:
-
 	const Transform& followTransform_;
 
 	STATE state_; //状態
@@ -61,8 +56,6 @@ private:
 	void UpdateNone();
 	void UpdateStay();
 	void UpdateFollow();
-
-	
 };
 
 

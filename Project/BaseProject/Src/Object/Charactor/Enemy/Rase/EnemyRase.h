@@ -8,7 +8,6 @@
 class Player;
 class ItemManger;
 
-
 class EnemyRase : public EnemyBase
 {
 public:
@@ -52,9 +51,10 @@ public:
 		std::shared_ptr<EffekseerEffect> effect;
 	
 	};
-	// コンストラクタ
 
+	// コンストラクタ
 	EnemyRase(const EnemyBase::EnemyData& data, int attackModel,Player* player);
+
 	// デストラクタ
 	~EnemyRase() override;
 
@@ -77,9 +77,7 @@ protected:
 	void UpdateProcess() override;
 	void UpdateProcessPost() override;
 
-
 private:
-
 	ItemManger* itemManager_;
 	//攻撃弾
 	std::vector<SHOT> shots_;
@@ -172,10 +170,8 @@ private:
 	//プレイヤー座標
 	VECTOR playerPos_;
 
-
 	// 状態遷移
 	void ChangeState(STATE state);
-
 	void ChangeStateThink(void);
 	void ChangeStateIdle(void);
 	void ChangeStateAttack(void);
@@ -203,7 +199,6 @@ private:
 	//弾用更新・描画
 	void UpdateShot(void);
 	void DrawShot(void);
-
 };
 
 

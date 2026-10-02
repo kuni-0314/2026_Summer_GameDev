@@ -37,11 +37,6 @@ void OptionScene::Init()
 
 	 // オプション枠
 	 optionFrameHandle_ = resMng_.Load(ResourceManager::SRC::OPTION_FRAME).handleId_;
-
-	// ボタン用画像の読み込み
-	// TODO: ResourceManager::SRC に追加する必要があります
-	 //buttonApplyHandle_ = resMng_.Load(ResourceManager::SRC::BUTTON_APPLY).handleId_;
-	 //buttonExitHandle_ = resMng_.Load(ResourceManager::SRC::BUTTON_EXIT).handleId_;
 }
 
 void OptionScene::Update()

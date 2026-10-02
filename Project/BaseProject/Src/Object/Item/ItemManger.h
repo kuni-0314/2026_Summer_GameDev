@@ -9,7 +9,6 @@ class Player;
 
 class ItemManger
 {
-
 public:
 	// コンストラクタ
 	// デストラクタ
@@ -31,12 +30,7 @@ public:
 	// アイテム生成
 	ItemBase* Create(const ItemBase::TYPE& type, VECTOR pos, const ColliderBase* hitCollider, const int key, const Player* player);
 
-
-
-
 private:
-
-
 	//アイテム
 	std::vector<ItemBase*> items_;
 	//enemy

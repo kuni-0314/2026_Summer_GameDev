@@ -7,16 +7,13 @@ class Stage;
 
 class Camera : public ActorBase
 {
-
 public:
-
 	// 衝突判定種別
 	enum class COLLIDER_TYPE
 	{
 		SPHERE,
 		MAX,
 	};
-
 
 	// カメラの初期座標
 	static constexpr VECTOR DERFAULT_POS = { 0.0f, 200.0f, -500.0f };
@@ -83,7 +80,6 @@ public:
 	// デストラクタ
 	~Camera()override;
 
-
 	// 更新
 	void Update()override;
 
@@ -124,7 +120,6 @@ public:
 	VECTOR debugTargetPos_;
 
 protected:
-
 	// リソースロード
 	void InitLoad() override {}
 	// 大きさ、回転、座標の初期化
@@ -135,11 +130,8 @@ protected:
 	void InitAnimation() override {}
 	// 初期化後の個別処理
 	void InitPost() override;
-	
-	
 
 private:
-
 	Stage* stage_;
 
 	// 衝突時の押し戻し試行回数
@@ -150,7 +142,6 @@ private:
 
 	// 衝突判定用球体半径
 	static constexpr float COL_CAPSULE_SPHERE = 50.0f;
-
 
 	// カメラが追従対象とするTransform
 	const Transform* followTransform_;

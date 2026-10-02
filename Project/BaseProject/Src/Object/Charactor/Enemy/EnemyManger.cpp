@@ -25,19 +25,19 @@
 // 長いのでnamespaceの省略
 using json = nlohmann::json;
 
-
 EnemyManager::EnemyManager(GameScene* gamescene, Player* player)
 	:
 	gameScene_(gamescene),
 	player_(player)
 {
 }
+
 EnemyManager::~EnemyManager()
 {
 }
+
 void EnemyManager::Init()
 {
-
 	//敵生成座標
 	InitEnemyPos();
 
@@ -47,9 +47,8 @@ void EnemyManager::Init()
 
 	// WAVE1の敵を生成
 	LoadWaveData(WAVE::WAVE1);
-
-
 }
+
 void EnemyManager::Update()
 {
 	//wave更新
@@ -82,9 +81,9 @@ void EnemyManager::Release()
 		}
 		enemy = nullptr;
 	}
-
 	enemies_.clear();
 }
+
 void EnemyManager::AddHitCollider(const ColliderBase* hitCollider)
 {
 	//重複登録を避けるため、既存の敵に登録されているかの確認
@@ -94,7 +93,6 @@ void EnemyManager::AddHitCollider(const ColliderBase* hitCollider)
 	}
 
 	hitCollider_ = hitCollider;
-
 
 	//衝突判定の追加
 	for (auto& enemy : enemies_)
@@ -167,7 +165,6 @@ EnemyBase* EnemyManager::Create(const EnemyBase::EnemyData& data, const Player* 
 
 	}
 	return enemy;
-
 }
 
 VECTOR EnemyManager::GetNearEnemyPos(const VECTOR& pos) const
@@ -276,7 +273,6 @@ void EnemyManager::CreateHpItem()
 
 		if (enemy->GetHp() <= 0 && enemy->IsAlive())
 		{
-
 			// 死亡エフェクト
 			DeadEffect(enemy->GetTransform().pos);
 
@@ -292,7 +288,6 @@ void EnemyManager::CreateHpItem()
 
 			// ここで確実に地面より上に出す
 			hpPos.y += 80.0f;
-
 
 			// 安全チェック：ItemManager とステージコライダが有効か確認してから生成
 			auto itemMgr = gameScene_ ? gameScene_->GetItemManger() : nullptr;
@@ -394,7 +389,6 @@ void EnemyManager::LoadWaveData(WAVE wave)
 	// 1体目を生成
 	SpawnNextEnemy();
 }
-
 
 void EnemyManager::UpdateWave()
 {
@@ -610,7 +604,6 @@ void EnemyManager::LoadJsonStatusData()
 
 void EnemyManager::LoadJsonWaveData()
 {
-	
 	// 外部ファイルの読み込み
 	std::ifstream ifs;
 	ifs.open(Application::PATH_JSON + "Wave.json");

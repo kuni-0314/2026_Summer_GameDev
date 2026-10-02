@@ -2,9 +2,7 @@
 
 class Fader
 {
-
 public:
-
 	// フェードが進む速さ
 	static constexpr float SPEED_ALPHA = 5.0f;
 
@@ -41,7 +39,6 @@ public:
 	void Draw();
 
 private:
-
 	// 状態
 	STATE state_;
 
@@ -54,5 +51,4 @@ private:
 
 	// フェード処理の終了判定
 	bool isEnd_;
-
 };

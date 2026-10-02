@@ -12,14 +12,13 @@
 ItemManger::ItemManger()
 {
 }
+
 ItemManger::~ItemManger()
 {
 }
+
 void ItemManger::Init()
 {
-
-
-
 }
 void ItemManger::Update()
 {
@@ -49,6 +48,7 @@ void ItemManger::Draw()
 
 	}
 }
+
 void ItemManger::Release()
 {
 	for (auto& item : items_)
@@ -58,6 +58,7 @@ void ItemManger::Release()
 		item = nullptr;
 	}
 }
+
 void ItemManger::AddHitCollider(const ColliderBase* hitCollider)
 {
 	hitCollider_ = hitCollider;

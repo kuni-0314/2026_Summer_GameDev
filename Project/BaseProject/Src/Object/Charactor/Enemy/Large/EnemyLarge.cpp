@@ -93,7 +93,6 @@ void EnemyLarge::InitLoad()
 
 	//SE読み込み
 	AudioManager::GetInstance()->LoadSceneSound(LoadScene::GAME);
-	
 }
 
 void EnemyLarge::InitTransform()
@@ -161,7 +160,6 @@ void EnemyLarge::InitAnimation()
 
 
 	animationController_->Play(static_cast<int>(ANIM_TYPE::IDLE), true);
-	
 }
 
 void EnemyLarge::InitPost()
@@ -195,10 +193,8 @@ void EnemyLarge::InitPost()
 	// 初期状態設定
 	ChangeState(STATE::IDLE);
 
-
 	power_ = 2;
-	pushOutRadius_  = 150.0f;
-
+	pushOutRadius_ = 150.0f;
 }
 
 void EnemyLarge::UpdateProcess()
@@ -250,8 +246,6 @@ void EnemyLarge::UpdateProcess()
 	PushOutSphere(transform_.pos,pushOutRadius_,
 		player_->GetPos(),player_->GetCollRadius(),true); 
 	
-
-
 	//衝撃波
 	if (isDrop_)
 	{
@@ -266,7 +260,6 @@ void EnemyLarge::UpdateProcess()
 
 		ringTransform_->Update();
 	}
-	
 
 	//パンチ攻撃判定座標更新
 	// フレーム22のワールドマトリクスを取得
@@ -282,7 +275,6 @@ void EnemyLarge::UpdateProcess()
 void EnemyLarge::UpdateProcessPost()
 {
 	stateUpdate_();
-
 }
 
 void EnemyLarge::ATfield(const VECTOR& pos)
@@ -440,7 +432,6 @@ void EnemyLarge::UpdateIdle()
 
 void EnemyLarge::UpdateDie()
 {
-
 	if (animationController_->IsEnd())
 	{
 		MV1DeleteModel(transform_.modelId);
@@ -449,7 +440,6 @@ void EnemyLarge::UpdateDie()
 
 void EnemyLarge::UpdateThink()
 {
-
 	int rand = GetRand(100);
 
 	//距離が近かったらパンチ
@@ -510,7 +500,6 @@ bool EnemyLarge::InFront()
 
 void EnemyLarge::UpdateAttackPunch()
 {
-
 	//アニメーションコントローラーの取得
 	if (animationController_ == nullptr) return;
 	const auto& anim = animationController_->GetPlayAnim();

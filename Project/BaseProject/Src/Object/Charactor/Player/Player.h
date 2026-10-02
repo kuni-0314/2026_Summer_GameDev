@@ -158,6 +158,9 @@ public:
 	// 空中での移動減衰率
 	static constexpr float AIR_MOVE_DEC_RATE = 0.975f;
 
+	//エフェクト時間
+	static constexpr int HEAL_EFFECT_TIME = 60;	
+	static constexpr int THUNDER_EFFECT_TIME = 30;
 
 	// 衝突判定用カプセル上部座標
 	static constexpr VECTOR COL_CAPSULE_TOP_LOCAL_POS = { 0.0f, 110.0f, 0.0f };

@@ -27,7 +27,6 @@ EnemyRat::~EnemyRat()
 
 void EnemyRat::Draw()
 {
-
 	// 親クラスの描画処理
 	EnemyBase::Draw();
 
@@ -42,8 +41,6 @@ void EnemyRat::Draw()
 	else if (next == STATE::RUN) name = "RUN";
 	else if (next == STATE::HIT) name = "HIT";
 	else if (next == STATE::CHARGE) name = "CHARGE";
-
-	//DrawFormatString(0, 350, GetColor(255, 255, 255), "RAT_STATE: %s", name);
 }
 
 
@@ -54,10 +51,7 @@ void EnemyRat::InitLoad()
 	CharactorBase::InitLoad();
 	transform_.SetModel(resMng_.LoadModelDuplicate(ResourceManager::SRC::ENEMY_RAT));
 
-
 	AudioManager::GetInstance()->LoadSceneSound(LoadScene::GAME);
-
-
 }
 
 void EnemyRat::InitTransform()
@@ -66,7 +60,6 @@ void EnemyRat::InitTransform()
 	transform_.scl = { SCALE ,SCALE ,SCALE };
 	transform_.quaRot = Quaternion::Identity();
 	transform_.quaRotLocal = Quaternion::Euler(ROT);
-	//transform_.pos = { 0.0f, 100.0f, 1500.0f };
 
 	transform_.Update();
 }
@@ -85,7 +78,6 @@ void EnemyRat::InitCollider()
 		COL_CAPSULE_TOP_LOCAL_POS, COL_CAPSULE_DOWN_LOCAL_POS,
 		COL_CAPSULE_RADIUS);
 	ownColliders_.emplace(static_cast<int>(COLLIDER_TYPE::CAPSULE), colCapsule);
-
 }
 
 
@@ -117,8 +109,6 @@ void EnemyRat::InitAnimation()
 	animationController_->AddInFbx(type, 20.0f, ANIM_INDX_RUN);
 
 	animationController_->Play(static_cast<int>(ANIM_TYPE::IDLE), true);
-
-
 }
 
 void EnemyRat::InitPost()
@@ -198,8 +188,6 @@ void EnemyRat::UpdateProcess()
 
 void EnemyRat::UpdateProcessPost()
 {
-	
-
 	if (!InMovableRange())
 	{
 		//移動可能範囲外に出たら移動座標に戻す
@@ -210,7 +198,6 @@ void EnemyRat::UpdateProcessPost()
 		ChangeState(STATE::THINK);
 		look_ = false;
 	}
-
 }
 
 void EnemyRat::ChangeState(STATE state)
@@ -223,15 +210,15 @@ void EnemyRat::ChangeStateNone()
 {
 	stateUpdate_ = std::bind(&EnemyRat::UpdateNone, this);
 }
+
 void EnemyRat::ChangeStateThink()
 {
-
 	stateUpdate_ = std::bind(&EnemyRat::UpdateThink, this);
 	step_ = 0.5f + static_cast<float>(GetRand(2));
 	movePow_ = AsoUtility::VECTOR_ZERO;
 	animationController_->Play(static_cast<int>(ANIM_TYPE::IDLE), true);
-	
 }
+
 void EnemyRat::ChangeStateIdle()
 {
 	stateUpdate_ = std::bind(&EnemyRat::UpdateIdle, this);
@@ -243,8 +230,8 @@ void EnemyRat::ChangeStateIdle()
 	// 待機アニメーション再生
 	animationController_->Play(
 		static_cast<int>(ANIM_TYPE::IDLE), true);
-
 }
+
 void EnemyRat::ChangeStateAttack(void)
 {
 	stateUpdate_ = std::bind(&EnemyRat::UpdateAttack, this);
@@ -304,6 +291,7 @@ void EnemyRat::UpdateThink(void)
 		movePow_ = AsoUtility::VECTOR_ZERO;
 		return;
 	}
+
 	//まだプレイヤーを見つけていない状態
 	if (!look_)
 	{
@@ -330,6 +318,7 @@ void EnemyRat::ChangeStateHit(void)
 	animationController_->Play(
 		static_cast<int>(ANIM_TYPE::HIT), false);
 }
+
 void EnemyRat::ChangeStateDie()
 {
 	stateUpdate_ = std::bind(&EnemyRat::UpdateDie, this);
@@ -339,10 +328,10 @@ void EnemyRat::ChangeStateDie()
 	animationController_->Play(
 		static_cast<int>(ANIM_TYPE::END), false);
 }
+
 void EnemyRat::ChangeStateEnd()
 {
 	stateUpdate_ = std::bind(&EnemyRat::UpdateEnd, this);
-
 }
 
 void EnemyRat::UpdateCharge(void)
@@ -365,7 +354,6 @@ void EnemyRat::UpdateAttack(void)
 	// 飛び込み攻撃のように前進させる場合
 	movePow_ = VScale(moveDir_, ATTACK_MOVE_SPEED);
 
-
 	if (!isAttack_)
 	{
 		// 攻撃判定
@@ -386,13 +374,11 @@ void EnemyRat::UpdateAttack(void)
 
 void EnemyRat::UpdateHit()
 {
-	
 	if (animationController_->IsEnd())
 	{
 		ChangeState(STATE::THINK);
 		return;
 	}
-
 }
 
 void EnemyRat::UpdateDie()
@@ -403,13 +389,10 @@ void EnemyRat::UpdateDie()
 		ChangeState(STATE::END);
 	}
 	movePow_ = AsoUtility::VECTOR_ZERO;
-
 }
 
 void EnemyRat::UpdateEnd()
 {
-
-	
 }
 
 void EnemyRat::UpdateRun()
@@ -419,7 +402,6 @@ void EnemyRat::UpdateRun()
 	{
 		ChangeState(STATE::CHARGE);
 	}
-
 
 	// 移動量を適用
 	movePow_ = VScale(moveDir_, moveSpeed_);

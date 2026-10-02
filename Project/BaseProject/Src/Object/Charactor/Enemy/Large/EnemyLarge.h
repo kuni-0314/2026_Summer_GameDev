@@ -44,7 +44,6 @@ public:
 	};
 
 	// コンストラクタ
-
 	EnemyLarge(const EnemyBase::EnemyData& data, int attackModel, Player* player);
 	// デストラクタ
 	~EnemyLarge() override;
@@ -69,9 +68,7 @@ protected:
 
 	void ATfield(const VECTOR& pos);
 
-
 private:
-
 	ItemManger* itemManager_;
 
 	//アニメーション登録番号
@@ -107,7 +104,6 @@ private:
 	static constexpr float COL_CAPSULE_RADIUS = 40.0f;
 	// 衝突判定用カプセル球体半径（球体判定用）
 	static constexpr float COL_SPHERE_RADIUS = 80.0f;
-
 
 	//固有で管理するコライダー番号
 	static constexpr int COLLIDER_KEY_BODY_FRONT = 100;
@@ -149,7 +145,6 @@ private:
 	// 状態
 	STATE state_;
 
-
 	bool isAttack_;			//攻撃判定
 	bool isAlive_ = true;	//生存判定
 	bool look_ = false;		//LookPlayer用フラグ(true:ON)
@@ -169,7 +164,6 @@ private:
 	//パンチ用攻撃座標
 	VECTOR attackWorldPos_;
 
-
 	//衝撃波用トランスフォーム
 	std::unique_ptr<Transform> ringTransform_;
 	std::shared_ptr<EffekseerEffect> shockWaveEffect_;
@@ -177,7 +171,6 @@ private:
 	// 実体の前後コライダへの直接参照（必要なら使う）
 	ColliderCapsule* colFrontCapsule_ = nullptr;
 	ColliderCapsule* colBackCapsule_ = nullptr;
-	
 
 	// 状態遷移
 	void ChangeState(STATE state);

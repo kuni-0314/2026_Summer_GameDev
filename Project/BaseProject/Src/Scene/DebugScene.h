@@ -18,6 +18,7 @@ public:
 	void Draw() override;
 	// 解放
 	void Release() override;
+
 private:
 	// ステージ
 	Stage* stage_;

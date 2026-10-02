@@ -23,20 +23,14 @@ AudioManager::~AudioManager()
 void AudioManager::Init()
 {
 	HRESULT hr = CoInitialize(nullptr);
-	//if (FAILED(hr))
-	//{
-	//	return;
-	//}
+
 	hr = CoCreateInstance(
 		__uuidof(MMDeviceEnumerator),
 		nullptr,
 		CLSCTX_ALL,
 		__uuidof(IMMDeviceEnumerator),
 		(void**)&pEnumerator_);
-	//if (FAILED(hr))
-	//{
-	//	return;
-	//}
+
 	InitAudioDevice();
 	float volume = 0.0f;
 	pVolume_->GetMasterVolumeLevelScalar(&volume);
@@ -47,7 +41,6 @@ void AudioManager::Init()
 	const int DEFAULT_VOLUME = 100;
 	bgmVolume_ = DEFAULT_VOLUME;// bgm‰¹—Ê
 	seVolume_ = DEFAULT_VOLUME;// se‰¹—Ê
-	//masterVolume_ = 255;// master‰¹—Ê
 	masterVolume_ = static_cast<int>(volume * 255.0f);
 }
 
@@ -81,7 +74,7 @@ void AudioManager::LoadSceneSound(LoadScene scene)
 		handles_[id] = LoadSoundMem(path.c_str());
 		
 		// Šî‘b‰¹—Ê‚ğİ’èi0`255‚Éû‚ß‚éj
-		baseVolumes_[id] = std::clamp(baseVol, 0, 255);
+		baseVolumes_[id] = std::clamp(baseVol, VOLUME_MIN, VOLUME_MAX);
 	}
 }
 
@@ -140,7 +133,7 @@ void AudioManager::PlayBGM(SoundID id)
 	currentBgm_ = id;
 
 	// À‰¹—Ê‚ğŒvZ
-	int volume = isMuted_ ? 0 : static_cast<int>(bgmVolume_ * baseVolumes_[id] / 255);
+	int volume = isMuted_ ? VOLUME_MIN : static_cast<int>(bgmVolume_ * baseVolumes_[id] / VOLUME_MAX);
 
 	// ‰¹—Ê‚ğ•ÏX
 	ChangeVolumeSoundMem(volume, it->second);
@@ -178,7 +171,7 @@ void AudioManager::PlaySE(SoundID id)
 		return;
 
 	// À‰¹—Ê‚ğŒvZ
-	int volume = isMuted_ ? 0 : static_cast<int>(seVolume_ * baseVolumes_[id] / 255);
+	int volume = isMuted_ ? VOLUME_MIN : static_cast<int>(seVolume_ * baseVolumes_[id] / VOLUME_MAX);
 
 	// ‰¹—Ê‚ğ•ÏX
 	ChangeVolumeSoundMem(volume, it->second);
@@ -211,7 +204,7 @@ void AudioManager::DeleteAll()
 void AudioManager::SetBgmVolume(int volume)
 {
 	// 0 ` 255 ‚Ü‚Å‚Éû‚ß‚é
-	bgmVolume_ = std::clamp(volume, 0, 255);
+	bgmVolume_ = std::clamp(volume, VOLUME_MIN, VOLUME_MAX);
 
 	// •Ê‚ÌBGM‚ªÄ¶’†
 	if (currentBgm_ != static_cast<SoundID>(-1))
@@ -223,7 +216,7 @@ void AudioManager::SetBgmVolume(int volume)
 		if (it != handles_.end())
 		{
 			// À‰¹—Ê‚ğŒvZ
-			int volume = isMuted_ ? 0 : static_cast<int>(bgmVolume_ * baseVolumes_[currentBgm_] / 255);
+			int volume = isMuted_ ? VOLUME_MIN : static_cast<int>(bgmVolume_ * baseVolumes_[currentBgm_] / VOLUME_MAX);
 
 			// ‰¹—Ê‚ğ•ÏX
 			ChangeVolumeSoundMem(volume, it->second);
@@ -234,13 +227,13 @@ void AudioManager::SetBgmVolume(int volume)
 void AudioManager::SetSeVolume(int volume)
 {
 	// 0 ` 255 ‚Ü‚Å‚Éû‚ß‚é
-	seVolume_ = (std::clamp(volume, 0, 255));
+	seVolume_ = (std::clamp(volume, VOLUME_MIN, VOLUME_MAX));
 }
 
 void AudioManager::SetMasterVolume(int volume)
 {
 	// 0 ` 255 ‚Ü‚Å‚Éû‚ß‚é
-	masterVolume_ = std::clamp(volume, 0, 255);
+	masterVolume_ = std::clamp(volume, VOLUME_MIN, VOLUME_MAX);
 
 	pVolume_->SetMasterVolumeLevelScalar(static_cast<float>(masterVolume_) / 255.0f, nullptr);
 }
@@ -260,7 +253,7 @@ void AudioManager::SetMute(bool mute)
 		if (it != handles_.end())
 		{
 			// À‰¹—Ê‚ğŒvZ
-			int volume = isMuted_ ? 0 : static_cast<int>(bgmVolume_ * baseVolumes_[currentBgm_] / 255);
+			int volume = isMuted_ ? VOLUME_MIN : static_cast<int>(bgmVolume_ * baseVolumes_[currentBgm_] / VOLUME_MAX);
 			// ‰¹—Ê‚ğ•ÏX
 			ChangeVolumeSoundMem(volume, it->second);
 		}

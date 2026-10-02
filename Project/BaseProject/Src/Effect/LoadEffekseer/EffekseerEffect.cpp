@@ -96,14 +96,12 @@ void EffekseerEffect::Play(VECTOR pos, Quaternion rot)
     m_playingHandle =
         PlayEffekseer3DEffect(m_effectHandle);
 
-
     SetPosPlayingEffekseer3DEffect(
         m_playingHandle,
         pos.x,
         pos.y,
         pos.z
     );
-
 
     SetScalePlayingEffekseer3DEffect(
         m_playingHandle,
@@ -112,10 +110,8 @@ void EffekseerEffect::Play(VECTOR pos, Quaternion rot)
         30.0f
     );
 
-
     // ÉvÉåÉCÉÑÅ[ÇÃå¸Ç´
     VECTOR euler = rot.ToEuler();
-
 
     SetRotationPlayingEffekseer3DEffect(
         m_playingHandle,

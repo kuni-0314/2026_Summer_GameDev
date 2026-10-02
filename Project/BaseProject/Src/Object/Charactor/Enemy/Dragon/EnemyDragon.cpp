@@ -88,32 +88,37 @@ void EnemyDragon::InitTransform()
 	//スケール設定
 	//MV1SetScale(transform_.modelId,transform_.scl);
 
-
 	//ブレス位置取得
 	// フレーム22のワールドマトリクスを取得
 	MATRIX mat = MV1GetFrameLocalWorldMatrix(transform_.modelId, 16);
+
 	// 位置補正（プレイヤーの向きに合わせて微調整）
 	MATRIX offset = MMult(MGetTranslate(VGet(0.0f, 0.0f, -3.0f)), mat);
+
 	// 位置を適用
 	breathTopPos_ = VGet(offset.m[3][0], offset.m[3][1], offset.m[3][2]);
 	breathDownPos_ = VGet(offset.m[3][0], offset.m[3][1], offset.m[3][2]);
+
 	// 回転をQuaternionに変換
 	Quaternion rot = Quaternion::GetRotation(mat);
+
 	//ブレス発射位置
 	breathTopPos_ = VAdd(breathTopPos_, CAPSULE_ADD_BREATH_POS);
+
 	//ブレス終了位置
 	breathDownPos_ = VAdd(breathDownPos_, CAPSULE_DOWN_BREATH_POS);
 
 	// フレーム22のワールドマトリクスを取得
 	MATRIX mat2 = MV1GetFrameLocalWorldMatrix(transform_.modelId, 4);
+
 	// 位置補正（プレイヤーの向きに合わせて微調整）
 	MATRIX offset2 = MMult(MGetTranslate(VGet(0.0f, 0.0f, -3.0f)), mat2);
+
 	// 位置を適用
 	bodyPos_ = VGet(offset2.m[3][0], offset2.m[3][1], offset2.m[3][2]);
+
 	// 回転をQuaternionに変換
 	Quaternion rot2 = Quaternion::GetRotation(mat2);
-
-
 }
 
 void EnemyDragon::InitCollider()
@@ -141,6 +146,7 @@ void EnemyDragon::InitAnimation()
 	//待機
 	animationController_->Add(static_cast<int>(ANIM_TYPE::IDLE)
 		, 20.0f, Application::PATH_MODEL + "Enemy/Dragon/Idle_1.mv1");
+
 	//空中待機
 	animationController_->Add(static_cast<int>(ANIM_TYPE::FRY_IDLE)
 		, 20.0f, Application::PATH_MODEL + "Enemy/Dragon/FlyIdle.mv1");
@@ -157,9 +163,7 @@ void EnemyDragon::InitAnimation()
 	animationController_->Add(static_cast<int>(ANIM_TYPE::CLOW)
 		, 20.0f, Application::PATH_MODEL + "Enemy/Dragon/AttackWingClaw.mv1");
 
-
 	animationController_->Play(static_cast<int>(ANIM_TYPE::IDLE), true);
-
 
 	//animationController_->SetupRootMotionControl(true, "Root");
 	animationController_->SetRootFrameParams(true, "Root", { 0.0f, 2.458f, 0.0f });
@@ -204,12 +208,16 @@ void EnemyDragon::UpdateProcess()
 	//ブレス位置取得
 	// フレーム22のワールドマトリクスを取得
 	MATRIX mat = MV1GetFrameLocalWorldMatrix(transform_.modelId, 16);
+
 	// 位置補正（プレイヤーの向きに合わせて微調整）
 	MATRIX offset = MMult(MGetTranslate(VGet(0.0f, 0.0f, -3.0f)), mat);
+
 	// 位置を適用
 	breathTopPos_ = VGet(offset.m[3][0], offset.m[3][1], offset.m[3][2]);
+
 	// 回転をQuaternionに変換
 	Quaternion rot = Quaternion::GetRotation(mat);
+
 	//ブレス発射位置
 	breathTopPos_ = VAdd(breathTopPos_, CAPSULE_ADD_BREATH_POS);
 

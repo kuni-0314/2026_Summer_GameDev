@@ -18,7 +18,6 @@ ActorBase::~ActorBase()
 
 void ActorBase::Init()
 {
-
 	// リソースロード
 	InitLoad();
 
