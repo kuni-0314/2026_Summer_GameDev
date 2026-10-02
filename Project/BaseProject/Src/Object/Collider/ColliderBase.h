@@ -14,6 +14,7 @@ public:
 		CAPSULE,
 		MODEL,
 	};
+
 	// 衝突種別
 	enum class TAG
 	{
@@ -33,6 +34,7 @@ public:
 		ENEMY_DRAGON_CLOW,
 
 	};
+
 	// コンストラクタ
 	ColliderBase(SHAPE shape, TAG tag, const Transform* follow);
 	// デストラクタ

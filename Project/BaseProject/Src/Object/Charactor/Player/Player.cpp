@@ -35,6 +35,8 @@
 Player::Player(int padNum)
 	:
 	padNum_(padNum),
+	animDiffPos_({ 0.0f, 0.0f, 0.0f }),
+	animStartModelPos_({ 0.0f, 0.0f, 0.0f }),
 	CharactorBase()
 {
 	weight_ = WEIGHT::NORMAL;
@@ -943,7 +945,7 @@ void Player::CreateHealMagic()
 		transform_.pos
 	);
 
-	effect->SetLifeTime(60);
+	effect->SetLifeTime(HEAL_EFFECT_TIME);
 
 	effect->Play(
 		transform_.pos,
@@ -1051,7 +1053,7 @@ void Player::UpdateMagic()
 						pos
 					);
 
-					effect->SetLifeTime(30);
+					effect->SetLifeTime(THUNDER_EFFECT_TIME);
 
 					effect->Play(
 						pos,

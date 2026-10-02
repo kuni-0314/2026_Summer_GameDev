@@ -8,9 +8,11 @@ ColliderBase::ColliderBase(SHAPE shape, TAG tag, const Transform* follow)
 	isValid_(true)
 {
 }
+
 ColliderBase::~ColliderBase()
 {
 }
+
 void ColliderBase::Draw()
 {
 	int color = COLOR_INVALID;
@@ -20,10 +22,12 @@ void ColliderBase::Draw()
 	}
 	DrawDebug(color);
 }
+
 void ColliderBase::SetFollow(Transform* follow)
 {
 	follow_ = follow;
 }
+
 VECTOR ColliderBase::GetRotPos(const VECTOR& localPos) const
 {
 	// 追従相手の回転に合わせて指定ローカル座標を回転し、

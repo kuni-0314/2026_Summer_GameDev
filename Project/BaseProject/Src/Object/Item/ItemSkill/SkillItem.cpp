@@ -20,28 +20,17 @@ SkillItem::~SkillItem()
 void SkillItem::Update()
 {
     ItemBase::Update();
-    //プレイヤーとの判定
-    //InSearchModel()
-
-
-
 }
 
 void SkillItem::Draw()
 {
-
-
     ItemBase::Draw();
-    //DrawSphere3D(transform_.pos,COL_SPHERE_RADIUS, 10, 0x0000ff, 0x0000ff, false);
-
-
 }
 
 void SkillItem::InitLoad()
 {
     //基底クラスのリソースロード
     transform_.SetModel(resMng_.LoadModelDuplicate(ResourceManager::SRC::ITEM_SKILL));
-
 }
 
 void SkillItem::InitTransform()
@@ -87,9 +76,6 @@ void SkillItem::InitPost()
 
 void SkillItem::UpdateProcess()
 {
-
-	//transform_.rot.y +=  5 * DX_PI_F / 180.0f;
-
     //プレイヤー座標取得
     VECTOR playerPos = player_->GetPos();
 
@@ -115,7 +101,6 @@ void SkillItem::UpdateProcess()
                 transform_.pos,
                 VScale(dir, MOVE_SPEED));
         }
-
 
         float playerRad = player_->GetCollRadius();
 
@@ -143,8 +128,6 @@ void SkillItem::UpdateProcess()
             isAlive_ = false;
         }
     }
-
-
     transform_.Update();
 }
 

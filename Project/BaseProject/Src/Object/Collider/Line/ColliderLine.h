@@ -37,8 +37,6 @@ public:
 		float pushDistance,
 		bool isExclude = false, bool isTarget = false) const;
 
-	
-
 protected:
 	// デバッグ用描画
 	void DrawDebug(int color) override;

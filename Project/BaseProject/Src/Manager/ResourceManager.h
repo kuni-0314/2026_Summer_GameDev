@@ -5,9 +5,7 @@
 
 class ResourceManager
 {
-
 public:
-
 	// リソース名
 	enum class SRC
 	{
@@ -87,7 +85,6 @@ public:
 		OPTION_FRAME,
 		EFFECT_DEATH,				//死亡エフェクト
 		IMG_LOCKON_FONT_UI,			//ロックオン時用UI（フォント）
-		//ENEMY_DRAGON,
 		IMG_TUTORIAL_KEYBOARD,		//チュートリアル画像
 		IMG_TUTORIAL_GAMEPAD,		//チュートリアル画像
 		IMG_GAMECLEAR,				//ゲームクリア画像
@@ -116,7 +113,6 @@ public:
 	int LoadModelDuplicate(SRC src);
 
 private:
-
 	// 静的インスタンス
 	static ResourceManager* instance_;
 
@@ -136,5 +132,4 @@ private:
 
 	// 内部ロード
 	Resource& _Load(SRC src);
-
 };

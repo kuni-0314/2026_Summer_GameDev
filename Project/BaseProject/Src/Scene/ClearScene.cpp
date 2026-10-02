@@ -38,8 +38,6 @@ void ClearScene::Init()
 
 	MV1SetPosition(playerHandle_, playerPos_);
 	sceMng_.GetCamera()->ChangeMode(Camera::MODE::FIXED_POINT);
-
-	
 }
 
 void ClearScene::Update()
@@ -103,10 +101,8 @@ void ClearScene::Draw()
 	{
 		DrawGraph(IMG_POS_X, IMG_POS_Y, imgOffTitleHandle_, true);
 	}
-
 }
 
 void ClearScene::Release()
 {
-	
 }

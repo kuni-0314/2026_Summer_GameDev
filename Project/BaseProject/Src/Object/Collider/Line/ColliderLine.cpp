@@ -10,33 +10,41 @@ ColliderLine::ColliderLine(
 	localPosEnd_(localPosEnd)
 {
 }
+
 ColliderLine::~ColliderLine()
 {
 }
+
 void ColliderLine::SetLocalPosStart(const VECTOR& pos)
 {
 	localPosStart_ = pos;
 }
+
 void ColliderLine::SetLocalPosEnd(const VECTOR& pos)
 {
 	localPosEnd_ = pos;
 }
+
 const VECTOR& ColliderLine::GetLocalPosStart() const
 {
 	return localPosStart_;
 }
+
 const VECTOR& ColliderLine::GetLocalPosEnd() const
 {
 	return localPosEnd_;
 }
+
 VECTOR ColliderLine::GetPosStart() const
 {
 	return GetRotPos(localPosStart_);
 }
+
 VECTOR ColliderLine::GetPosEnd() const
 {
 	return GetRotPos(localPosEnd_);
 }
+
 bool ColliderLine::PushBackUp(const ColliderModel* colliderModel, Transform& transform, float pushDistance, bool isExclude, bool isTarget) const
 {
 	bool ret = false;
@@ -69,7 +77,6 @@ bool ColliderLine::PushBackUp(const ColliderModel* colliderModel, Transform& tra
 
 		//衝突
 		ret = true;
-		
 	}
 
 	// 検出した地面ポリゴン情報の後始末

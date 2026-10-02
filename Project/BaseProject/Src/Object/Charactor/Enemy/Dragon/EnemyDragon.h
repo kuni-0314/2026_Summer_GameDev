@@ -281,6 +281,5 @@ private:
 
 	//‰Ÿ‚µo‚µˆ—
 	void ResolvePushWithPlayer();
-	
 };
 

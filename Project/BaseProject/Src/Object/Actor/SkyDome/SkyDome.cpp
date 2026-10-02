@@ -20,11 +20,6 @@ SkyDome::~SkyDome()
 
 void SkyDome::Update()
 {
-
-	//スカイドームをゆっくり回転させる（Y軸）
-	/*transform_.quaRot = transform_.quaRot.Quaternion::Mult(
-		Quaternion::Euler(0.0f, AsoUtility::Deg2RadF(0.1f), 0.0f));*/
-
 	switch (state_)
 	{
 	case SkyDome::STATE::NONE:
@@ -41,7 +36,6 @@ void SkyDome::Update()
 	}
 
 	transform_.Update();
-
 }
 
 void SkyDome::Draw()
@@ -90,7 +84,6 @@ void SkyDome::InitPost()
 	{
 		ChangeState(STATE::STAY);
 	}
-
 }
 
 void SkyDome::ChangeState(STATE state)
@@ -133,7 +126,6 @@ void SkyDome::UpdateNone()
 
 void SkyDome::UpdateStay()
 {
-
 	//モデルのY軸回転
 	Quaternion rot = Quaternion::AngleAxis(AsoUtility::Deg2RadF(0.1f), AsoUtility::AXIS_Y);
 	transform_.quaRot = transform_.quaRot.Mult(rot);

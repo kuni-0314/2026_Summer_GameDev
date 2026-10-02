@@ -36,5 +36,4 @@ public:
 	void Stop();
 
 	void SetScale(float scale);
-
 };

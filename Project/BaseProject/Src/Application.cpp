@@ -101,7 +101,6 @@ void Application::Init()
 	InputManager::GetInstance()->Init();
 	InputManager::GetInstance()->SetKeyAndMouseEnabled(true);
 
-
 	// ƒŠƒ\[ƒXŠÇ—‰Šú‰»
 	ResourceManager::CreateInstance();
 
@@ -173,10 +172,6 @@ void Application::Run()
 				}
 			}
 		}
-
-		//InitAudioDevice();
-		//float volume = 0.0f;
-		//pVolume_->GetMasterVolumeLevelScalar(&volume);
 
 		inputManager->Update();
 		sceneManager.Update();

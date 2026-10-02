@@ -4,9 +4,7 @@
 
 class Resource
 {
-
 public:
-	
 	// リソースタイプ
 	enum class TYPE
 	{
@@ -54,5 +52,4 @@ public:
 
 	// モデル複製用
 	std::vector<int> duplicateModelIds_;
-
 };

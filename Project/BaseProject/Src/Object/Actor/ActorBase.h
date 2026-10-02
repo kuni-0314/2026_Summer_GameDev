@@ -11,8 +11,6 @@ class ActorBase
 {
 
 public:
-
-
 	enum class COLLIDER_TYPE : std::uint8_t
 	{
 		LINE,
@@ -68,7 +66,6 @@ public:
 	bool IsAlive() const { return isAlive_; }
 
 protected:
-
 	// シングルトン参照
 	ResourceManager& resMng_;
 	SceneManager& scnMng_;
@@ -97,8 +94,6 @@ protected:
 	// 初期化後の個別処理
 	virtual void InitPost() = 0;
 
-
 	//変数
 	bool isAlive_;
-
 };

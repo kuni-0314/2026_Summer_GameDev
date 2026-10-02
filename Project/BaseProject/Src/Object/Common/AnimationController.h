@@ -75,6 +75,7 @@ public:
 		SetRootMoveOffset(offset);
 	}
 
+	// ルートモーション制御の設定
 	void SetupRootMotionControl(bool isEnabled, const std::string& frameName = "");
 
 	// 再生中のアニメーションのフレーム数を取得

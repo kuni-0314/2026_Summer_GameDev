@@ -14,8 +14,6 @@ void PlayerRollState::Enter(Player* player)
 	player->SetInvincible(true);
 
 	// アニメーション再生
-	//player->GetAnimationController()->SetRootFrameParams(true, "mixamorig:Hips");
-	//player->GetAnimationController()->SetDynamicOffset(true);
 	player->GetAnimationController()->SetupRootMotionControl(true, "mixamorig:Hips");
 	player->GetAnimationController()->Play(
 		static_cast<int>(Player::ANIM_TYPE::ROLLING), false, true);
@@ -63,12 +61,12 @@ void PlayerRollState::Update(Player* player)
 
 void PlayerRollState::Exit(Player* player)
 {
+	// ローリング終了時にジェット状態を解除
 	player->SetJet(false);
 
+	// ローリング終了時に無敵状態を解除
 	player->SetInvincible(false);
 
-	//player->GetAnimationController()->SetIgnoreRootMove(false);
-	//player->GetAnimationController()->SetDynamicOffset(false);
-
+	// ルートモーション制御を解除
 	player->GetAnimationController()->SetupRootMotionControl(false);
 }

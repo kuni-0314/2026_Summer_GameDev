@@ -18,6 +18,7 @@ ItemBase::ItemBase()
 	movePow_(AsoUtility::VECTOR_ZERO)
 {
 }
+
 ItemBase::~ItemBase()
 {
 }
@@ -28,15 +29,12 @@ void ItemBase::InitLoad()
 	imgShadow_ = resMng_.Load(ResourceManager::SRC::PLAYER_SHADOW).handleId_;
 
 	stage_ = resMng_.Load(ResourceManager::SRC::MAIN_STAGE).handleId_;
-
 }
-
 
 void ItemBase::Update()
 {
 	// 移動前座標を更新
 	prevPos_ = transform_.pos;
-
 
 	// 各キャラクターごとの更新処理
 	UpdateProcess();
@@ -50,20 +48,19 @@ void ItemBase::Update()
 	transform_.Update();
 	// 各キャラクターごとの更新後処理
 	UpdateProcessPost();
-
 }
 
 void ItemBase::Draw()
 {
 	//基底クラスの描画処理
 	ActorBase::Draw();
+
 	// 丸影の描画
 	DrawShadow();
 }
 
 void ItemBase::Release()
 {
-
 	//基底クラスの開放
 	ActorBase::Release();
 }
@@ -71,7 +68,6 @@ void ItemBase::Release()
 bool ItemBase::InSearchModel()
 {
 	bool ret = false;//判定結果
-
 
 	// 視野モデルコライダ
 	int itemType = static_cast<int>(COLLIDER_TYPE::ITEM);
@@ -83,10 +79,8 @@ bool ItemBase::InSearchModel()
 
 	if (colliderModel == nullptr) return ret;
 
-
 	//衝突情報更新
 	MV1RefreshCollInfo(colliderModel->GetFollow()->modelId);
-
 
 	// 登録されている衝突物を全てチェック
 	for (const auto& hitCol : hitColliders_)
@@ -110,8 +104,6 @@ bool ItemBase::InSearchModel()
 
 	return ret;
 }
-
-
 
 void ItemBase::DelayRotate()
 {
@@ -147,7 +139,6 @@ void ItemBase::Collision()
 	transform_.pos = VAdd(transform_.pos, jumpPow_);
 	// 衝突(重力)
 	CollisionGravity();
-
 }
 
 void ItemBase::CollisionGravity()
@@ -160,7 +151,6 @@ void ItemBase::CollisionGravity()
 	ColliderLine* colliderLine_ = dynamic_cast<ColliderLine*>(ownColliders_.at(lineType));
 
 	if (colliderLine_ == nullptr) return;
-
 
 	// 登録されている衝突物を全てチェック
 	for (const auto& hitCol : hitColliders_)
@@ -228,7 +218,6 @@ void ItemBase::CollisionCapsule()
 				colliderCapsule->PushBackAlongNormal(colliderModel, tempTrans, CNT_TRY_COLLISION,
 					COLLISION_BACK_DIS, true, false);
 			}
-
 			// 修正された位置を次のステップに引き継ぐ
 			currentPos = tempTrans.pos;
 		}
@@ -261,7 +250,6 @@ void ItemBase::CollisionCapsule()
 void ItemBase::DrawShadow()
 {
 	int i, j;
-
 
 	// ライティングを無効にする
 	SetUseLighting(false);

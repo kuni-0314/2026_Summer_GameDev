@@ -12,8 +12,6 @@
 #include "EnemyBase.h"
 #include "../../Collider/Sphere/ColliderSphere.h"
 
-
-
 EnemyBase::EnemyBase(
 	const EnemyBase::EnemyData& data,
 	int attackModel, Player* player)
@@ -33,7 +31,6 @@ EnemyBase::EnemyBase(
 
 EnemyBase::~EnemyBase(void)
 {
-
 }
 
 void EnemyBase::Update()
@@ -52,8 +49,6 @@ void EnemyBase::Draw()
 		auto colSphere = dynamic_cast<const ColliderSphere*>(col);
 		DrawSphere3D(colSphere->GetPos(), colSphere->GetRadius(), 16, GetRand(0xffffff), GetColor(0, 255, 0), false);
 	}
-
-
 #endif
 }
 
@@ -109,12 +104,10 @@ bool EnemyBase::InMovableRange(void) const
 		return true;
 	}
 	return ret;
-
 }
 
 void EnemyBase::LookPlayer()
 {
-
 	VECTOR playerPos = player_->GetPos();
 
 	//ベクトル計算
@@ -177,7 +170,6 @@ void EnemyBase::ChangeState(int state)
 {
 	stateBase_ = state;
 
-
 	auto it = stateChanges_.find(stateBase_);
 
 	if (it != stateChanges_.end())
@@ -215,7 +207,6 @@ void EnemyBase::CheckPlayerSwordCollision()
 	}
 
 	if (wasHitSword_) return;
-
 
 	// 自身のカプセルコライダを取得
 	ColliderCapsule* ownColCapsule = nullptr;

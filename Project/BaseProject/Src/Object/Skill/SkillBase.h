@@ -68,6 +68,4 @@ protected:
 	float recoveryMag_;
 
 	std::map<int, SkillData> skillDataMap_;	// スキルデータ
-
-	
 };

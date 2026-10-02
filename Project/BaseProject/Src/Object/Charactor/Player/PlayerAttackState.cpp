@@ -18,9 +18,6 @@ void PlayerAttackState::Enter(Player* player)
 	noMovementFrameCount_ = 0;
 	isAnimationSkipped_ = false;
 	forceResumed_ = false;
-
-	// ルートモーション有効化
-	//player->SetApplyRootMotion(true);
 	
 	// アニメーション開始時のモデルのローカル座標を記録
 	MATRIX modelMatrix = MV1GetFrameLocalWorldMatrix(player->GetTransform().modelId, 2);
@@ -52,14 +49,10 @@ void PlayerAttackState::Enter(Player* player)
 	}
 
 	AudioManager::GetInstance()->LoadSceneSound(LoadScene::GAME);
-
 }
 
 void PlayerAttackState::Update(Player* player)
 {
-	// 攻撃アニメーション中は他の状態への遷移をチェックしない
-	// はずだったけど回避だけ可能にしますわ
-
 	// 移動量の減衰
 	if (!AsoUtility::EqualsVZero(player->GetMovePow()))
 	{
@@ -207,9 +200,6 @@ void PlayerAttackState::Update(Player* player)
 		player->SetAttacking(false);
 		return;
 	}
-
-	// 
-	int a = 0;
 }
 
 void PlayerAttackState::Draw(Player* player)
@@ -259,11 +249,13 @@ VECTOR PlayerAttackState::CalculateAttackPosition(Player* player)
 
 void PlayerAttackState::UpdateAttack(Player* player)
 {
+	// 攻撃判定の開始・終了フレームを取得
 	auto animController = player->GetAnimationController();
 	int currentFrame = animController->GetAnimFrameNum();
 	const int ATK_START_FRAME = ATTACK_FRAME[static_cast<int>(attackType_)][ATK_S_ANIM_INDEX];
 	const int ATK_END_FRAME = ATTACK_FRAME[static_cast<int>(attackType_)][ATK_E_ANIM_INDEX];
 	
+	// 攻撃判定の開始・終了フレームに応じて攻撃状態を設定
 	if (currentFrame >= ATK_END_FRAME)
 	{
 		if (player->IsAttacking()) 
@@ -274,6 +266,7 @@ void PlayerAttackState::UpdateAttack(Player* player)
 		player->SetAttacking(true);
 	}
 
+	// 攻撃アニメーションのスキップ判定
 	isAnimationSkipped_ = false;
 	switch (attackType_)
 	{
@@ -333,13 +326,16 @@ void PlayerAttackState::UpdateAttack(Player* player)
 			}
 		}
 
+		// 空中での移動がない場合の判定
 		static VECTOR pP = {};
 		static VECTOR nP = player->GetPos();
 		pP = nP;
 		nP = player->GetPos();
+
 		// スタック防止：空中でアニメーションが停止している場合のみ判定
 		if (player->IsAir() && animController->IsStopped() && !forceResumed_)
 		{
+			// 移動量の計算
 			auto vec = VSub(pP, nP);
 			auto size = VSize(vec);
    			float movePowMagnitude = size;
@@ -401,46 +397,13 @@ PlayerAttackState::ATTACK_TYPE PlayerAttackState::GetNextAttackType(Player* play
 		return ATTACK_TYPE::HEAVY;
 	}
 
-	// ダッシュ攻撃判定
-	//bool isDashAttack = false;
-	//if (!player->IsAir())
-	//{
-	//	if (isGamepadConnected)
-	//	{
-	//		// ゲームパッド：左スティック入力中
-	//		short stickX = 0, stickY = 0;
-	//		ins->GetLeftStick(GAMEPAD_INDEX, stickX, stickY);
-
-	//		constexpr float STICK_DEADZONE = 0.2f;
-	//		constexpr float STICK_MAX = 32767.0f;
-	//		float normalizedX = stickX / STICK_MAX;
-	//		float normalizedY = stickY / STICK_MAX;
-
-	//		isDashAttack = (abs(normalizedX) > STICK_DEADZONE || abs(normalizedY) > STICK_DEADZONE);
-	//	}
-	//	else
-	//	{
-	//		// キーボード：シフト + WASD
-	//		isDashAttack = ins->IsNew(KEY_INPUT_LSHIFT) &&
-	//			(ins->IsNew(KEY_INPUT_W) || ins->IsNew(KEY_INPUT_A) || 
-	//			 ins->IsNew(KEY_INPUT_S) || ins->IsNew(KEY_INPUT_D));
-	//	}
-	//}
-
-	//if (isDashAttack)
-	//{
-	//	// アニメーション再生
-	//	player->GetAnimationController()->Play(
-	//		static_cast<int>(Player::ANIM_TYPE::ATK_D), false, true);
-	//	return ATTACK_TYPE::DASH;
-	//}
-
 	// コンボ継続判定
 	bool inCombo = player->GetComboTimer() > 0;
 
 	// 地上コンボ
 	if (!inCombo)
 	{
+		// アニメーション再生
 		player->GetAnimationController()->Play(
 			static_cast<int>(Player::ANIM_TYPE::ATK_N1), false, true);
 		AudioManager::GetInstance()->SetSeVolume(300);
@@ -494,19 +457,3 @@ PlayerAttackState::ATTACK_TYPE PlayerAttackState::GetNextAttackType(Player* play
 		return ATTACK_TYPE::NORMAL1;
 	}
 }
-
-//void PlayerAttackState::PlayerAttackVoice()
-//{
-//	switch (GetRand(2))
-//	{
-//	case 0:
-//		AudioManager::GetInstance()->PlaySE(SoundID::VOICE_PLAYER_ATTACK_1);
-//		break;
-//	case 1:
-//		AudioManager::GetInstance()->PlaySE(SoundID::VOICE_PLAYER_ATTACK_2);
-//		break;
-//	case 2:
-//		AudioManager::GetInstance()->PlaySE(SoundID::VOICE_PLAYER_ATTACK_3);
-//		break;
-//	}
-//}

@@ -4,14 +4,11 @@
 class Stage :public ActorBase
 {
 public:
-
-
 	static constexpr float SCL_MAIN_STAGE_X = 3.0f;
 	static constexpr float SCL_MAIN_STAGE_Y = 1.0f;
 	static constexpr float SCL_MAIN_STAGE_Z = 3.0f;
 
 	static constexpr VECTOR POS_MAIN_STAGE = { 0.0f, -100.0f, 0.0f };
-
 
 	//コンストラクタ
 	Stage();
@@ -20,10 +17,7 @@ public:
 
 	void Update() override;
 
-
-
 protected:
-
 	// リソースロード
 	void InitLoad() override;
 
@@ -40,7 +34,6 @@ protected:
 	void InitPost() override;
 
 private:
-
 	Transform mainStage_;
 
 	// 除外フレーム名称

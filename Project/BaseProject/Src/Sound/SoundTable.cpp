@@ -21,7 +21,6 @@ namespace SoundTable_System
 // タイトル画面用
 namespace SoundTable_Title
 {
-
 	static const std::unordered_map<SoundID, std::pair<std::string, int>> Table =
 	{
 		{ SoundID::BGM_TITLE, {"Data/Sound/BGM/TitleBgm.wav", 255} },
@@ -76,8 +75,7 @@ namespace SoundTable_Option
 	};
 }
 
-
-// 
+// スキル選択画面用
 namespace SoundTable_Skill
 {
 	static const std::unordered_map<SoundID, std::pair<std::string, int>> Table =

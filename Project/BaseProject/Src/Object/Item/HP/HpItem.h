@@ -8,10 +8,9 @@ class Player;
 class HpItem : public ItemBase
 {
 public:
-
-
 	// コンストラクタ
 	HpItem(Player* player);
+
 	// デストラクタ
 	~HpItem() override;
 
@@ -34,9 +33,7 @@ protected:
 	void UpdateProcess() override;
 	void UpdateProcessPost() override;
 
-
 private:
-
 	//enemy
 	EnemyBase* enemys_;
 
@@ -73,6 +70,9 @@ private:
 	//回復量
 	static constexpr int  HEAL_HP = 1;
 
+	//回復エフェクト時間
+	static constexpr int HEAL_EFFECT_TIME = 60;
+
 	bool isGet_ = false;
 
 
@@ -81,8 +81,6 @@ private:
 	VECTOR spawnPos_;
 
 	void PlayerHpGet();
-
-
 };
 
 

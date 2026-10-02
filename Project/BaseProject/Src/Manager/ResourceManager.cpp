@@ -21,7 +21,6 @@ ResourceManager& ResourceManager::GetInstance()
 
 void ResourceManager::Init()
 {
-
 	// 推奨しませんが、どうしても使いたい方は
 	using RES = Resource;
 	using RES_T = RES::TYPE;
@@ -235,7 +234,6 @@ void ResourceManager::Init()
 	res = new RES(RES_T::MODEL, PATH_MDL + "Enemy/Dragon/Idle_1.mv1");
 	resourcesMap_.emplace(SRC::ENEMY_DRAGON, res);	//mapに登録
 	
-
 	//ゲームステージ
 	res = new RES(RES_T::MODEL, PATH_MDL + "Stage/MainStage/GameStage/GameStage.mv1");
 	resourcesMap_.emplace(SRC::BATTLE_STAGE, res);	//mapに登録
@@ -248,8 +246,6 @@ void ResourceManager::Init()
 	//プレイヤーゲームオーバー用
 	res = new RES(RES_T::MODEL, PATH_MDL + "Player/Player_GameOver.mv1");
 	resourcesMap_.emplace(SRC::PLAYER_GAMEOVER, res);	//mapに登録
-
-	
 
 	//いったんエフェクトを置いときますわ
 	//パワーアップエフェクト
@@ -267,8 +263,6 @@ void ResourceManager::Init()
 	//死亡エフェクト
 	res = new RES(RES_T::EFFEKSEER, PATH_EFF + "Death/Death.efkefc");
 	resourcesMap_.emplace(SRC::EFFECT_DEATH, res);	//mapに登録
-
-
 }
 
 void ResourceManager::Release()
@@ -347,5 +341,4 @@ Resource& ResourceManager::_Load(SRC src)
 	loadedMap_.emplace(src, *rPair->second);
 
 	return *rPair->second;
-
 }

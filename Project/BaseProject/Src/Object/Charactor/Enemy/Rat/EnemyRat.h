@@ -5,7 +5,6 @@
 class Player;
 class ItemManger;
 
-
 class EnemyRat : public EnemyBase
 {
 public:
@@ -36,10 +35,12 @@ public:
 
 	// コンストラクタ
 	EnemyRat(const EnemyBase::EnemyData& data, int attackModel, Player* player);
+
 	// デストラクタ
 	~EnemyRat() override;
 
 	void Draw() override;
+
 protected:
 	// リソースロード
 	void InitLoad() override;
@@ -55,11 +56,7 @@ protected:
 	void UpdateProcess() override;
 	void UpdateProcessPost() override;
 
-
 private:
-
-
-	
 	ItemManger* itemManager_ ;
 
 	//アニメーション登録番号
@@ -69,7 +66,6 @@ private:
 	static constexpr int  ANIM_INDX_END = 6;
 	static constexpr int  ANIM_INDX_HIT = 7;
 	static constexpr int  ANIM_INDX_RUN = 11;
-
 
 	// モデルの大きさ
 	static constexpr float SCALE = 0.5f;
@@ -116,19 +112,17 @@ private:
 	STATE state_;
 
 	VECTOR attackWorldPos_;
+
 	//プレイヤー方向
 	VECTOR toPlayer_;
+
 	//プレイヤー座標
 	VECTOR playerPos_;
-
-
-
 
 	// 更新ステップ
 	float step_;// 状態管理(更新ステップ)
 
 	float distance_;
-
 
 	// 状態遷移
 	void ChangeState(STATE state);
@@ -143,7 +137,6 @@ private:
 	void ChangeStateEnd(void);
 	void ChangeStateRun(void);
 	
-
 	// 更新系
 	void UpdateNone(void);
 	void UpdateThink(void);
@@ -154,7 +147,5 @@ private:
 	void UpdateDie(void);
 	void UpdateEnd(void);
 	void UpdateRun(void);
-
-
 };
 

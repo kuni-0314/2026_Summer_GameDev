@@ -21,6 +21,7 @@ CharactorBase::CharactorBase()
 	hp_(0)
 {
 }
+
 CharactorBase::~CharactorBase()
 {
 }
@@ -78,7 +79,6 @@ void CharactorBase::Update()
 	UpdateProcessPost();
 	// アニメーション再生
 	animationController_->Update();
-
 }
 
 void CharactorBase::Draw()
@@ -87,7 +87,6 @@ void CharactorBase::Draw()
 	ActorBase::Draw();
 	// 丸影の描画
 	DrawShadow();
-
 }
 
 void CharactorBase::Release()
@@ -295,8 +294,10 @@ void CharactorBase::CollisionCapsule()
 {
 	// カプセルコライダ
 	int capsuleType = static_cast<int>(COLLIDER_TYPE::CAPSULE);
+
 	// カプセルコライダが無ければ処理を抜ける
 	if (ownColliders_.count(capsuleType) == 0) return;
+
 	// カプセルコライダ情報
 	ColliderCapsule* colliderCapsule =
 		dynamic_cast<ColliderCapsule*>(ownColliders_.at(capsuleType));
@@ -373,9 +374,7 @@ void CharactorBase::CollisionCapsule()
 
 void CharactorBase::DrawShadow()
 {
-
 	int i, j;
-
 
 	// ライティングを無効にする
 	SetUseLighting(false);

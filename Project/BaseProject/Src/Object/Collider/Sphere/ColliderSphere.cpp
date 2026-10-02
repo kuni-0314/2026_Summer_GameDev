@@ -74,10 +74,8 @@ VECTOR ColliderSphere::GetPosPushBackAlongNormal(const MV1_COLL_RESULT_POLY& hit
 
 void ColliderSphere::DrawDebug(int color)
 {
-	
 	// 始点・終点を球体で補助表示
 	DrawSphere3D(GetPos(), radius_, 16, color, color, false);
-	
 }
 
 

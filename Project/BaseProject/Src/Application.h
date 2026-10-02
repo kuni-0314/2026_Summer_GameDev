@@ -7,13 +7,7 @@ class FpsController;
 
 class Application
 {
-
 public:
-
-	// 固定FPS
-	//static constexpr int FRAME_RATE = 60;
-
-
 	// スクリーンサイズ
 	static constexpr int SCREEN_SIZE_X = 1920;
 	static constexpr int SCREEN_SIZE_Y = 1080;
@@ -35,13 +29,10 @@ public:
 	static const std::string PATH_SOUND_SE;
 	static const std::string PATH_FONT;
 	static const std::string PATH_JSON;
-
-
 	static const std::string PATH_KEY_CONFIG;
 	static const std::string PATH_KEY_CONFIG_GAMEPAD;
 	static const std::string PATH_KEY_CONFIG_KEYBOARD;
 	//-------------------------------------------
-
 
 	// インスタンスを明示的に生成
 	static void CreateInstance();
@@ -114,7 +105,6 @@ public:
 	};
 
 private:
-
 	// 静的インスタンス
 	static Application* instance_;
 

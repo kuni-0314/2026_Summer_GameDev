@@ -11,9 +11,7 @@ class Stage;
 
 class EnemyManager
 {
-
 public:
-
 	enum class WAVE
 	{
 		//wave開始（演出とか入れる用）
@@ -24,7 +22,6 @@ public:
 		BOSS,
 		END
 	};
-
 
 	// コンストラクタ
 	EnemyManager(GameScene* gamescene, Player* player);
@@ -57,15 +54,15 @@ public:
 	//enemyの絶滅フラグ渡し
 	bool GetEnemyDead();
 
+	//エフェクト生成
 	void SpawnEffect(const VECTOR& pos);
-
 	void DeadEffect(const VECTOR& pos);
-
 	void CheckHit(const VECTOR& pos, float radius, int damage);
 
 	//外部wave情報渡し
 	WAVE GetWave() const { return wave_; }
 
+	//wave情報セット
 	void SetWave(const WAVE wave);
 
 private:
@@ -96,17 +93,16 @@ private:
 	std::vector<EnemyBase*> enemies_;
 	std::vector<EnemyBase::EnemyData> enemyData_;
 
-
 	//エネミーステータス情報
 	std::vector<EnemyBase::EnemyStatus> enemyStatusData_;
+
 	//エネミーWAVE情報
 	std::vector<EnemyBase::EnemyWave> enemyWaveData_;
 
+	//使用済み座標番号
 	std::vector<int> usedPos_;
 
-	//テスト
-	//std::vector<std::shared_ptr<EnemyBase>> testEnemys_;
-
+	// 衝突対象コライダ（単一登録用）
 	const ColliderBase* hitCollider_;
 
 	// 衝突対象コライダ（複数登録を保持するため vector に変更）
@@ -118,6 +114,7 @@ private:
 	// 攻撃エフェクト用のモデルハンドルID
 	int attackModel_;
 
+	// 敵全滅フラグ
 	bool isDead_ = false;
 
 	//wave敵全滅フラグ
@@ -158,9 +155,11 @@ private:
 	void UpdateWave3();
 	void UpdateWaveBoss();
 
+	//ウェーブ別敵生成
 	std::vector<VECTOR>LargePos_;
 	std::vector<VECTOR>EnemyPos_;
 
+	//敵生成座標初期化
 	void InitEnemyPos();
 
 	// BOSS WAVEの敵生成タイマー
@@ -168,10 +167,10 @@ private:
 	void SpawnBossEnemy();
 	void SpawnNextEnemy();
 
+	//エネミーステータス情報読み込み
 	void LoadJsonStatusData();
+
 	//エネミーWAVE情報読み込み
 	void LoadJsonWaveData();
-
-
 };
 

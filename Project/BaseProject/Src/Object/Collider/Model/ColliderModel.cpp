@@ -6,9 +6,11 @@ ColliderModel::ColliderModel(TAG tag, const Transform* follow)
 	ColliderBase(SHAPE::MODEL, tag, follow)
 {
 }
+
 ColliderModel::~ColliderModel()
 {
 }
+
 void ColliderModel::AddExcludeFrameIds(const std::string& name)
 {
 	// フレーム数を取得
@@ -21,15 +23,15 @@ void ColliderModel::AddExcludeFrameIds(const std::string& name)
 		{
 			// 除外フレームに追加
 			excludeFrameIds_.push_back(i);
-		
 		}
-		
 	}
 }
+
 void ColliderModel::ClearExcludeFrame()
 {
 	excludeFrameIds_.clear();
 }
+
 bool ColliderModel::IsExcludeFrame(int frameIdx) const
 {
 	// 除外判定
@@ -56,9 +58,7 @@ void ColliderModel::AddTargetFrameIds(const std::string& name)
 		{
 			// 除外フレームに追加
 			targetFrameIds_.push_back(i);
-
 		}
-
 	}
 }
 

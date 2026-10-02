@@ -3,7 +3,8 @@
 #include <memory>
 #include "EffectBase.h"
 
-class EffectManager {
+class EffectManager
+{
 private:
     // 生存しているエフェクトを一元管理するリスト
     std::vector<std::shared_ptr<EffectBase>> m_effects;
@@ -14,7 +15,8 @@ private:
 
 public:
     // インスタンスの取得（シングルトンパターンの場合）
-    static EffectManager& GetInstance() {
+    static EffectManager& GetInstance() 
+    {
         static EffectManager instance;
         return instance;
     }
@@ -29,6 +31,7 @@ public:
     // エフェクトの描画（全エフェクトの描画）
     void Draw() const;
 
+	// 全エフェクトの強制消滅（外部から呼び出す用）
 	void Release();
 
     // 全エフェクトの強制削除（ステージ切り替え時などに使用）
@@ -36,5 +39,4 @@ public:
 
     // エフェクトの登録（外部から呼び出す用）
     void RegisterEffect(const std::shared_ptr<EffectBase>& effect);
-
 };

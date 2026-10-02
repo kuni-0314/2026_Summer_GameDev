@@ -4,10 +4,7 @@
 
 class ClearScene : public SceneBase
 {
-
 public:
-
-
 	// コンストラクタ
 	ClearScene();
 
@@ -26,9 +23,7 @@ public:
 	// 解放
 	void Release() override;
 
-
 private:
-
 	int playerHandle_;
 
 	//タイトルコマンド画像ハンドル

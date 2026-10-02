@@ -111,7 +111,6 @@ void AnimationController::Update()
 
 	// アニメーション設定
 	MV1SetAttachAnimTime(modelId_, playAnim_.attachNo, playAnim_.step);
-
 }
 
 void AnimationController::UpdateBeforeAnimation()
@@ -120,16 +119,21 @@ void AnimationController::UpdateBeforeAnimation()
 	{
 		// 対象フレームのローカル行列を初期値にリセットする
 		MV1ResetFrameUserLocalMatrix(modelId_, rootFrameNo_);
+
 		// 対象フレームのローカル行列(大きさ、回転、位置)を取得する
 		auto mat = MV1GetFrameLocalMatrix(modelId_, rootFrameNo_);
+
 		//auto scl = MGetSize(mat); // 行列から大きさを取り出す
 		VECTOR scl = { 1.0f,1.0f,1.0f };//tmp
+
 		auto rot = MGetRotElem(mat); // 行列から回転を取り出す
 		auto pos = MGetTranslateElem(mat); // 行列から移動値を取り出す
+
 		// 大きさ、回転、位置をローカル行列に戻す
 		MATRIX mix = MGetIdent();
 		mix = MMult(mix, MGetScale(scl)); // 大きさ
 		mix = MMult(mix, rot); // 回転
+
 		// ここでローカル座標を行列に、そのまま戻さず、
 		// 調整したローカル座標を設定する
 		if (isDynamicOffsetY_)
@@ -156,7 +160,6 @@ void AnimationController::UpdateBeforeAnimation()
 
 void AnimationController::Release()
 {
-
 	// 外部FBXのモデル(アニメーション)解放
 	for (const std::pair<int, Animation>& pair : animations_)
 	{
@@ -168,7 +171,6 @@ void AnimationController::Release()
 	
 	// 可変長配列をクリアする
 	animations_.clear();
-	
 }
 
 int AnimationController::GetPlayType() const
@@ -178,7 +180,6 @@ int AnimationController::GetPlayType() const
 
 bool AnimationController::IsEnd() const
 {
-
 	bool ret = false;
 
 	if (isLoop_)
@@ -195,7 +196,6 @@ bool AnimationController::IsEnd() const
 	}
 
 	return ret;
-
 }
 
 const AnimationController::Animation& AnimationController::GetPlayAnim() const
@@ -214,7 +214,6 @@ void AnimationController::SetRootFrameNo(const std::string& frameName)
 	rootFrameNo_ = MV1SearchFrame(modelId_, frameName.c_str());
 }
 
-
 void AnimationController::SetupRootMotionControl(bool isEnabled, const std::string& frameName)
 {
 	SetIgnoreRootMove(isEnabled);
@@ -223,7 +222,6 @@ void AnimationController::SetupRootMotionControl(bool isEnabled, const std::stri
 	{
 		SetDynamicOffset(isEnabled);
 		SetRootFrameNo(frameName);
-		//SetRootMoveOffset(VECTOR{ 0.0f, 0.0f, 0.0f });	// なくても変わらない
 	}
 }
 
@@ -238,7 +236,6 @@ void AnimationController::Add(int type, float speed, Animation& animation)
 
 	if (animations_.count(type) == 0)
 	{
-		// 追加
 		animations_.emplace(type, animation);
 	}
 }
