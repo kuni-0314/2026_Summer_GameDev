@@ -52,9 +52,6 @@ public:
 	void Draw(void) override;
 	void Release(void) override;
 
-
-
-
 protected:
 
 	// リソースロード
@@ -71,12 +68,13 @@ protected:
 	void UpdateProcess() override;
 	void UpdateProcessPost() override;
 
+	//風圧エフェクト
 	void LandingEffect(const VECTOR& pos, const VECTOR& normal, float size);
 
 private:
 
+#pragma region 判定系定数
 
-	//ステージ判定用
 	// 衝突判定用線分開始
 	static constexpr VECTOR COL_LINE_START_LOCAL_POS = { 0.0f, 80.0f, 0.0f };
 	// 衝突判定用線分終了
@@ -93,6 +91,9 @@ private:
 	//トルネード用カプセルコライダーサイズ
 	static constexpr VECTOR CAPSULE_TOP_TORUNADO_POS = { 0.0f, 200.0f, 0.0f };
 	static constexpr VECTOR CAPSULE_DOWN_TORUNADO_POS = { 0.0f, -40.0f, 0.0f };
+#pragma endregion
+
+
 
 	//トルネード生成位置
 	static constexpr VECTOR TORNADO_CREATE_START_POS = { 0,0,0 };
@@ -103,6 +104,14 @@ private:
 	static constexpr float PUSH_PLAYER_RATIO = 0.60f;    // 重なりを何割プレイヤーへ押すか
 	static constexpr float PUSH_ENEMY_RATIO = 0.40f;     // 何割ドラゴンへ押すか（合計1.0になるように）
 
+	//最大上昇量
+	static constexpr float ANIM_SPEED = 20.0f;
+
+	//上昇量
+	static constexpr float FLY_POW = 0.5f;
+	//最大上昇量
+	static constexpr float FLY_POW_MAX = 500.0f;
+
 	// モデルのローカル回転
 	static constexpr VECTOR ROT = { 0.0f, 180.0f * DX_PI_F / 180.0f, 0.0f };
 	// モデルの大きさ
@@ -110,29 +119,57 @@ private:
 
 	//ブレスの判定開始フレーム時間
 	static constexpr float ATTACK_FREAM_BREATH_TIME = 0.20f;
-	static constexpr int TORNADO_RESET_TIME = 200;
+	//トルネードクールタイム時間
+	static constexpr int TORNADO_COOL_TIME_MAX = 200;
+
+
+	//待機状態切替時間
+	static constexpr int IDLE_CHANGE_TIME = 60;
+
+	//待機状態切替時間
+	static constexpr int BREATH_FRAME_INDEX = 16;
 
 	//クローの判定開始フレーム　
 	static constexpr float ATTACK_FRAME_CLOW_TIME = 0.14f;
+	// 生成後に何フレーム待つか（調整可）
+	static constexpr int COLLIDER_ACTIVE_DELAY = 6; 
 
-	static constexpr int COLLIDER_ACTIVE_DELAY = 6; // 生成後に何フレーム待つか（調整可）
+	//確率最大値
+	static constexpr int RAND_MAX_POW = 100;
+	//飛行状態切り替え値
+	static constexpr int CHANGE_FLY_POW = 50;
+	//トルネード状態切り替え値
+	static constexpr int CHANGE_TORUNADO_POW = 30;
+
+	//上昇時の最大
+	static constexpr float FLY_POS_Y_MAX = 500.0f;
+
+	//降下量
+	static constexpr float LANDING_POW = 5.0f;
+	//降下状態切替座標
+	static constexpr float LANDING_CHANGE_POS_Y = -40.0f;
+
+
 	//ゲームシーン
 	GameScene* gamescene_;
-
 	// 状態
 	STATE state_;
+
 	// 更新ステップ
 	float step_;// 状態管理(更新ステップ)
+	//空中上昇量
+	float pow = 10;
 
+	// 待機時間カウント
 	int idleTime_;
-	int changetime = 60;
-
+	//トルネードクールタイム(カウント)
 	int tornadoCoolTime_;
 
+	//頭のローカル回転
 	Quaternion headRot_;
 
 	//空中上昇量
-	int pow = 10;
+	float pow = 10;
 
 	//ブレス情報関連
 	struct BreathInfo
@@ -153,7 +190,7 @@ private:
 	VECTOR breathTopPos_;
 	//ブレス終了位置
 	VECTOR breathDownPos_;
-
+	//胴体座標
 	VECTOR bodyPos_;
 
 	//ブレス攻撃
@@ -186,6 +223,7 @@ private:
 
 	//トルネード生存状態
 	bool isAliveTornado_;
+	//降下状態判定
 	bool landing_ ;
 
 	bool isTakeOffEffect_ = false;
@@ -209,19 +247,16 @@ private:
 		int colliderActiveDelay = 0;
 	};
 
+	//クロー情報
 	ClowInfo clowInfo_;
 	//クロー生存状態
 	bool isAliveClow_;
-
-
-
 
 	//クローコライダー作成・削除
 	void CreateClowCollider(ClowInfo& clowInfo);
 	void DestroyClowColier(ClowInfo& clowInfo);
 	//クロー生成
 	void CreateClow();
-
 
 	// 状態遷移
 	void ChangeState(STATE state);
@@ -244,6 +279,7 @@ private:
 	void UpdateLanding();
 	void UpdateClow();
 
+	//押し出し処理
 	void ResolvePushWithPlayer();
 	
 };

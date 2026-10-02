@@ -152,12 +152,13 @@ private:
 
 	bool isAttack_;			//攻撃判定
 	bool isAlive_ = true;	//生存判定
+	bool isDrop_ = false;		//衝撃破生存判定
 	bool look_ = false;		//LookPlayer用フラグ(true:ON)
 	bool attackHit_ = false;//連続攻撃判定
 	bool jumpApplied_ = false;	//ジャンプ処理実行判定
-	bool isDrop_ = false;		//衝撃破生存判定
 	bool attackTriggerRing_ = false;	//衝撃波生成判定
 	bool isATField_ = false;
+	bool wasHitRing_;
 
 	VECTOR worldPos;
 	//プレイヤー方向
@@ -206,7 +207,6 @@ private:
 	void UpdateCharge();
 
 	static constexpr VECTOR RING_INIT_POS = { 0.0f, -1000.0f, 0.0f };	//衝撃波初期位置
-	bool wasHitRing_;
 	//正面からの攻撃を取得する
 	bool InFront();
 };

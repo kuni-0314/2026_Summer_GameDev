@@ -43,26 +43,20 @@ void EnemyDragon::Draw(void)
 
 	DrawSphere3D(breathInfo_.transform.pos, 100, 5, 0xffffff, 0xffffff, false);
 
-	//DrawCapsule3D(breathInfo_.transform.pos, breathDownPos_, 100, 5, 0xffffff, 0xffffff, false);
-
 	for (int i = 0; i < tornadoCount_; i++)
 	{
 		if (tornadoInfo_[i].isDestory) continue;
 		VECTOR Pos = tornadoInfo_[i].transform.pos;
 		DrawSphere3D(Pos, 100.0f, 16, 0xff00ff, 0xff00ff, false);
-
 	}
-
 	//クロー攻撃
 	DrawSphere3D(clowInfo_.transform.pos, 200.0f, 10, 0xffffff, 0xffffff, false);
-
 #endif
 
 }
 
 void EnemyDragon::Release(void)
 { 
-
 	EffectManager::GetInstance().Release();
 }
 
@@ -79,21 +73,16 @@ void EnemyDragon::InitTransform()
 {
 	//スケール設定
 	transform_.scl = { SCALE,SCALE ,SCALE };
-
 	transform_.quaRot = Quaternion::Identity();
 	transform_.quaRotLocal = Quaternion::Euler(ROT);
-
 	transform_.Update();
-
-	//スケール設定
-	//MV1SetScale(transform_.modelId,transform_.scl);
-
 
 	//ブレス位置取得
 	// フレーム22のワールドマトリクスを取得
 	MATRIX mat = MV1GetFrameLocalWorldMatrix(transform_.modelId, 16);
 	// 位置補正（プレイヤーの向きに合わせて微調整）
 	MATRIX offset = MMult(MGetTranslate(VGet(0.0f, 0.0f, -3.0f)), mat);
+
 	// 位置を適用
 	breathTopPos_ = VGet(offset.m[3][0], offset.m[3][1], offset.m[3][2]);
 	breathDownPos_ = VGet(offset.m[3][0], offset.m[3][1], offset.m[3][2]);
@@ -112,8 +101,6 @@ void EnemyDragon::InitTransform()
 	bodyPos_ = VGet(offset2.m[3][0], offset2.m[3][1], offset2.m[3][2]);
 	// 回転をQuaternionに変換
 	Quaternion rot2 = Quaternion::GetRotation(mat2);
-
-
 }
 
 void EnemyDragon::InitCollider()
@@ -140,22 +127,22 @@ void EnemyDragon::InitAnimation()
 
 	//待機
 	animationController_->Add(static_cast<int>(ANIM_TYPE::IDLE)
-		, 20.0f, Application::PATH_MODEL + "Enemy/Dragon/Idle_1.mv1");
+		, ANIM_SPEED, Application::PATH_MODEL + "Enemy/Dragon/Idle_1.mv1");
 	//空中待機
 	animationController_->Add(static_cast<int>(ANIM_TYPE::FRY_IDLE)
-		, 20.0f, Application::PATH_MODEL + "Enemy/Dragon/FlyIdle.mv1");
+		, ANIM_SPEED, Application::PATH_MODEL + "Enemy/Dragon/FlyIdle.mv1");
 
 	animationController_->Add(static_cast<int>(ANIM_TYPE::BREARH)
-		, 20.0f, Application::PATH_MODEL + "Enemy/Dragon/Flame_Attack.mv1");
+		, ANIM_SPEED, Application::PATH_MODEL + "Enemy/Dragon/Flame_Attack.mv1");
 
 	animationController_->Add(static_cast<int>(ANIM_TYPE::TORNADO)
-		, 20.0f, Application::PATH_MODEL + "Enemy/Dragon/FlyAttack.mv1");
+		, ANIM_SPEED, Application::PATH_MODEL + "Enemy/Dragon/FlyAttack.mv1");
 
 	animationController_->Add(static_cast<int>(ANIM_TYPE::LANDING)
-		, 20.0f, Application::PATH_MODEL + "Enemy/Dragon/Landing.mv1");
+		, ANIM_SPEED, Application::PATH_MODEL + "Enemy/Dragon/Landing.mv1");
 
 	animationController_->Add(static_cast<int>(ANIM_TYPE::CLOW)
-		, 20.0f, Application::PATH_MODEL + "Enemy/Dragon/AttackWingClaw.mv1");
+		, ANIM_SPEED, Application::PATH_MODEL + "Enemy/Dragon/AttackWingClaw.mv1");
 
 
 	animationController_->Play(static_cast<int>(ANIM_TYPE::IDLE), true);
@@ -203,7 +190,7 @@ void EnemyDragon::UpdateProcess()
 
 	//ブレス位置取得
 	// フレーム22のワールドマトリクスを取得
-	MATRIX mat = MV1GetFrameLocalWorldMatrix(transform_.modelId, 16);
+	MATRIX mat = MV1GetFrameLocalWorldMatrix(transform_.modelId, BREATH_FRAME_INDEX);
 	// 位置補正（プレイヤーの向きに合わせて微調整）
 	MATRIX offset = MMult(MGetTranslate(VGet(0.0f, 0.0f, -3.0f)), mat);
 	// 位置を適用
@@ -243,7 +230,7 @@ void EnemyDragon::UpdateProcess()
 	// Transform更新
 	clowInfo_.transform.Update();
 
-	//
+	//トルネードクールタイムカウント
 	if (tornadoCoolTime_ > 0)
 	{
 		tornadoCoolTime_--;
@@ -403,10 +390,11 @@ void EnemyDragon::UpdateThink()
 
 void EnemyDragon::UpdateIdle()
 {
-	if (idleTime_ > changetime)
+	//遷移切り替え先決め
+	if (idleTime_ > IDLE_CHANGE_TIME)
 	{
 		idleTime_ = 0;
-		int rand = GetRand(100);
+		int rand = GetRand(RAND_MAX_POW);
 		if (rand > 70)
 		{
 			ChangeState(STATE::FLY_IDLE);
@@ -425,15 +413,14 @@ void EnemyDragon::UpdateIdle()
 
 void EnemyDragon::UpdateFlayIdle()
 {
-	int max = 500;
-
 
 	//上昇量増加
-	if (pow < max)
+	if (pow < FLY_POW_MAX)
 	{
-		pow += 0.5;
+		pow += FLY_POW;
 	}
-	if (transform_.pos.y < max)
+	//ドラゴンに上昇量加算
+	if (transform_.pos.y < FLY_POW_MAX)
 	{
 		transform_.pos.y += pow;
 	}
@@ -450,31 +437,27 @@ void EnemyDragon::UpdateFlayIdle()
 		LandingEffect(transform_.pos, AsoUtility::VECTOR_ZERO, 1.0f);
 	}
 
-
+	//降下状態
 	if(landing_)
 	{
-		transform_.pos.y -= 5;
+		transform_.pos.y -= LANDING_POW;
 
-		if (transform_.pos.y < -40)
+		if (transform_.pos.y < -LANDING_CHANGE_POS_Y)
 		{
 			landing_ = false;
 
 			AudioManager::GetInstance()->SetSeVolume(200);
 			AudioManager::GetInstance()->PlaySE(SoundID::SE_DRAGON_LANDING);
-
 			LandingEffect(transform_.pos, AsoUtility::VECTOR_ZERO, 1.0f);
 		
 			ChangeState(STATE::LANDING);
 		}
 	}
 
-	transform_.Update();
-
-
 	//最高高度に来たらトルネードを放つ
-	if (transform_.pos.y >= max)
+	if (transform_.pos.y >= FLY_POW_MAX)
 	{
-		transform_.pos.y = max;
+		transform_.pos.y = FLY_POW_MAX;
 
 		//クールタイム
 		if (tornadoCoolTime_ <= 0)
@@ -482,15 +465,16 @@ void EnemyDragon::UpdateFlayIdle()
 			//地面に降りる場合
 			if (!landing_)
 			{
-				int rand = GetRand(100);
+				int rand = GetRand(RAND_MAX_POW);
 
-				if (rand > 50)
+				//次回状態切り替え
+				if (rand > CHANGE_FLY_POW)
 				{
 					ChangeState(STATE::FLY_IDLE);
 				}
 				else
 				{
-					rand = GetRand(100);
+					rand = GetRand(RAND_MAX_POW);
 				}
 
 				if (rand > 30)
@@ -505,6 +489,9 @@ void EnemyDragon::UpdateFlayIdle()
 			}
 		}
 	}
+
+	transform_.Update();
+
 }
 
 void EnemyDragon::UpdateBreath()
@@ -550,19 +537,10 @@ void EnemyDragon::UpdateBreath()
 	//ブレス位置更新
 	breathInfo_.transform.pos = breathTopPos_;
 
-	//// ドラゴンの正面方向
-	//VECTOR dir = transform_.quaRot.GetForward();
-
-	//// 回転を作成
-	//Quaternion breathRot = Quaternion::LookRotation(dir);
-
-	//breathInfo_.transform.quaRot = breathRot;
 	breathInfo_.transform.Update();
-
 	if (breathInfo_.effect)
 	{
 		breathInfo_.effect->SetPosition(breathTopPos_);
-		//breathInfo_.effect->SetRotation(breathRot);
 	}
 }
 
@@ -570,10 +548,8 @@ void EnemyDragon::UpdateTornado()
 {
 	if (!isAliveTornado_)
 	{
-
 		isAliveTornado_ = true;
 		CreateTornado();
-	
 	}
 
 	bool allDelete = true;
@@ -624,7 +600,7 @@ void EnemyDragon::UpdateTornado()
 	{
 		isAliveTornado_ = false;
 		player_->SetWasHitTornadoDamage(false);
-		tornadoCoolTime_ = TORNADO_RESET_TIME;
+		tornadoCoolTime_ = TORNADO_COOL_TIME_MAX;
 		ChangeState(STATE::FLY_IDLE);
 	}
 	
