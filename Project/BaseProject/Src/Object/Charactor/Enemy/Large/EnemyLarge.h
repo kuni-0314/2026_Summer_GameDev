@@ -4,6 +4,7 @@
 #include <memory>
 #include <vector>
 #include "../EnemyBase.h"
+#include "../../../../Effect/LoadEffekseer/EffekseerEffect.h"
 
 class Player;
 class ItemManger;
@@ -17,10 +18,10 @@ public:
 	enum class ANIM_TYPE
 	{
 		IDLE,
-		MOVE,
 		ATTACK_PUNCH,
 		ATTACK_DROP,
 		CHARGE,
+		MOVE,
 		END,
 		DIE,
 		HIT
@@ -32,7 +33,6 @@ public:
 		NONE,
 		THINK,
 		IDLE,
-		MOVE,
 		ATTACK_PUNCH,
 		ATTACK_RUN,
 		ATTACK_DROP,
@@ -44,7 +44,6 @@ public:
 	};
 
 	// コンストラクタ
-
 	EnemyLarge(const EnemyBase::EnemyData& data, int attackModel, Player* player);
 	// デストラクタ
 	~EnemyLarge() override;
@@ -69,9 +68,7 @@ protected:
 
 	void ATfield(const VECTOR& pos);
 
-
 private:
-
 	ItemManger* itemManager_;
 
 	//アニメーション登録番号
@@ -107,7 +104,6 @@ private:
 	static constexpr float COL_CAPSULE_RADIUS = 40.0f;
 	// 衝突判定用カプセル球体半径（球体判定用）
 	static constexpr float COL_SPHERE_RADIUS = 80.0f;
-
 
 	//固有で管理するコライダー番号
 	static constexpr int COLLIDER_KEY_BODY_FRONT = 100;
@@ -149,15 +145,15 @@ private:
 	// 状態
 	STATE state_;
 
-
 	bool isAttack_;			//攻撃判定
 	bool isAlive_ = true;	//生存判定
+	bool isDrop_ = false;		//衝撃破生存判定
 	bool look_ = false;		//LookPlayer用フラグ(true:ON)
 	bool attackHit_ = false;//連続攻撃判定
 	bool jumpApplied_ = false;	//ジャンプ処理実行判定
-	bool isDrop_ = false;		//衝撃破生存判定
 	bool attackTriggerRing_ = false;	//衝撃波生成判定
-	bool ATfieldTrigger_ = false;	//ATフィールド生成判定
+	bool isATField_ = false;
+	bool wasHitRing_;
 
 	VECTOR worldPos;
 	//プレイヤー方向
@@ -169,14 +165,13 @@ private:
 	//パンチ用攻撃座標
 	VECTOR attackWorldPos_;
 
-
 	//衝撃波用トランスフォーム
 	std::unique_ptr<Transform> ringTransform_;
+	std::shared_ptr<EffekseerEffect> shockWaveEffect_;
 
 	// 実体の前後コライダへの直接参照（必要なら使う）
 	ColliderCapsule* colFrontCapsule_ = nullptr;
 	ColliderCapsule* colBackCapsule_ = nullptr;
-	
 
 	// 状態遷移
 	void ChangeState(STATE state);
@@ -186,7 +181,6 @@ private:
 	void ChangeStateAttackPunch();
 	void ChangeStateAttackRun();
 	void ChangeStateAttackDrop();
-	void ChangeStateMove();
 	void ChangeStateWait();
 	void ChangeStateHit();
 	void ChangeStateEnd();
@@ -199,7 +193,6 @@ private:
 	void UpdateAttackPunch();
 	void UpdateAttackRun();
 	void UpdateAttackDrop();
-	void UpdateMove();
 	void UpdateWait();
 	void UpdateHit();
 	void UpdateDie();
@@ -207,7 +200,6 @@ private:
 	void UpdateCharge();
 
 	static constexpr VECTOR RING_INIT_POS = { 0.0f, -1000.0f, 0.0f };	//衝撃波初期位置
-	bool wasHitRing_;
 	//正面からの攻撃を取得する
 	bool InFront();
 };

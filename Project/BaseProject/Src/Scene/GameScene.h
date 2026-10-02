@@ -23,7 +23,8 @@ public:
 	{
 		ColliderBase* collider;
 		float damage;
-		int lifeTime;
+		//int lifeTime;
+		bool isActive = true;
 		bool isHit = false;
 	};
 
@@ -38,7 +39,8 @@ public:
 	{
 		THUNDER,
 		FIRE,
-		RECOVERY,
+		HEAL,
+		ALL,
 		MAX
 	};
 
@@ -51,8 +53,8 @@ public:
 	enum PLAYRE_HP_STATE
 	{
 		DEF,
-		DAMEGE,
-		WARNIG,
+		DAMAGE,
+		WARNING,
 		STATE_MAX
 	};
 
@@ -68,10 +70,19 @@ public:
 	void Release() override;
 
 	// 攻撃コライダー生成
-	void CreateAttackCollider(ColliderBase::TAG tag, VECTOR pos, float radius, float damage, int lifeTime);
+	void CreateAttackCollider(ColliderBase::TAG tag, VECTOR pos, float radius, float damage);
+	void DeleteAttackCollider();
+	void SetActiveAttackCollider(bool isActive);
 
+	//エネミーにプレイヤーの衝突情報渡し
 	void AddEnemyHitCollider(const ColliderBase* hitCollider);
+	//プレイヤー衝突情報削除
 	void RemoveEnemyHitCollider(const ColliderBase* hitCollider);
+	
+	//プレイヤーにエネミーの衝突情報渡し
+	void AddPlayerHitCollider(const ColliderBase* hitCollider);
+	//エネミー衝突情報削除
+	void RemovePlayerHitCollider(const ColliderBase* hitCollider);
 
 	ItemManger* GetItemManger() const { return itemManger_; }
 
@@ -83,8 +94,21 @@ public:
 
 	COMMAND GetSelectedCommand() const { return static_cast<COMMAND>(selectCommand_); }
 
-	void  SetDamageFlag(bool flag);
-	bool  GetFlag();
+	/*void  SetDamageFlag(bool flag);
+	bool  GetFlag();*/
+
+	CAM_MODE GetCamMode() const { return camMode_; }
+
+	VECTOR GetTargetPos() const { return targetPos_; }
+
+	void ShakeHpUI();
+
+	void CheckHitEnemy(const VECTOR& pos, float radius, int damage);
+
+	void SetLowHpEffect();
+
+
+
 private:
 
 	// ステージ
@@ -107,16 +131,35 @@ private:
 
 	// 武器
 	//WeaponBase* weapon_;
-	
+
 	static constexpr int IMG_HP_X = 1550;
 	static constexpr int IMG_HP_Y = 700;
 
+	//ボリューム
+	static constexpr int VOLUME_BGM_MAX = 100;
+	static constexpr int VOLUME_ROCKON_MAX = 150;
+	static constexpr int VOLUME_COMMAND_MAX = 200;
+
+	//ダメージタイムカウント
+	static constexpr int DAMAGE_TIME_COUNT = 60;
+
+	//クリアタイマー
+	static constexpr int CLEAR_TIMER = 100;
+
+	//HP瀕死時
+	static constexpr int HP_LOW = 6;
+
+	//セレクトの位置
+	static constexpr int SELECT_POS = 780;
+	static constexpr int SELECT_OFFSET = 75;
+
 	//コマンド
 	COMMAND command_;
+	COMMAND useCommand_;
 
 	COMMAND_STATE thunderState_;
 	COMMAND_STATE fireState_;
-	COMMAND_STATE recoveryState_;
+	COMMAND_STATE healState_;
 
 	int selectCommand_;
 
@@ -141,7 +184,7 @@ private:
 
 	int targetEnemyId_;		// ターゲット敵のID
 	int hpUiCount_;			//HPUi用
-	
+
 	VECTOR targetPos_;		// ターゲット位置
 	CAM_MODE camMode_;		// カメラモード
 
@@ -156,29 +199,39 @@ private:
 
 	//コマンドUI
 	int hpIndex_;
-	
+
 	bool warnigOn_ = false;//警告生成フラグ
 	bool DamegeOn_ = false;//ダメージ
-	int wargnigHandle_;	
+	int wargnigHandle_;
 	int audioHandle_;
 
 	int damegeTimeCount_;
-	bool damegeflag_ = false;
+	bool damageflag_ = false;
 
 	int clearTimer_ = 0;
 	bool isClear_ = false;
 
-
+	//
 	std::vector<int> hpHandles_;			//Hpハンドル
 	std::vector<int> playerUiHandles_;		//プレイヤーUI
-	std::vector<int> commandHandles;		//コマンドハンドル
+	std::vector<int> commandHandles_;		//コマンドハンドル
 
-	int fontCommandHandles_ [static_cast<int>(COMMAND::MAX)][2];//セレクトコマンドファント
+	int lockOnFontHandle_;
+
+	int fontCommandHandles_[static_cast<int>(COMMAND::MAX)][2];//セレクトコマンドファント
 
 	//void SelectCommand(COMMAND command);
 	void CommandUpdate();
 	void CommandDraw();
 
-	void PlayerFaceUIDrow();
+	void UpdateHpUI();
 
+	int lockOnImageHandle_;
+	bool isWarning_ = false;//警告SE
+
+	bool isHpUIShake_ = false;
+	static constexpr float SHAKE_POW_MAX = 8.0f;
+	static constexpr float SHAKE_DECREASE = 0.95f;
+	float shakePow_ = 0.0f;
+	float hpUIOffsetY_;
 };

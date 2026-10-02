@@ -1,26 +1,42 @@
 #include <DxLib.h>
 #include "../../../Manager/InputManager.h"
 #include "../../../Manager/SceneManager.h"
+#include "../../../Object/Common/AnimationController.h"
+#include "../../../Manager/PostEffectManager.h"
 #include "Player.h"
 #include "PlayerJetState.h"
 
-void PlayerJetState::Enter(Player* player)
+void PlayerRollState::Enter(Player* player)
 {
-	player->SetMovePow(VScale(player->GetMoveDir(), Player::POW_JET));
 	player->SetJet(true);
-	player->SetJetTime(0.0f);
 
-	//追加
-	player->PlayBlinkEffect();
+	// ローリング中は無敵状態にする
+	player->SetInvincible(true);
+
+	// アニメーション再生
+	player->GetAnimationController()->SetupRootMotionControl(true, "mixamorig:Hips");
+	player->GetAnimationController()->Play(
+		static_cast<int>(Player::ANIM_TYPE::ROLLING), false, true);
 }
 
-void PlayerJetState::Update(Player* player)
+void PlayerRollState::Update(Player* player)
 {
-	if (player->GetJetTime() < Player::JET_TIME)
+	// ローリング(旧ジェット）
+	// ローリング中はその他の入力を受け付けない
+	int animNum = player->GetAnimationController()->GetAnimFrameNum();
+	if (animNum >= 10 && animNum <= 35)
 	{
-		player->SetJetTime(player->GetJetTime() + SceneManager::GetInstance().GetDeltaTime());
+		player->SetMovePow(VScale(player->GetMoveDir(), Player::POW_ROLL));
+		player->SetRolling(true);
 	}
 	else
+	{
+		// 慣性の法則で減速する
+		player->SetMovePow(VScale(player->GetMovePow(), 0.95f));
+		player->SetRolling(false);
+	}
+
+	if (player->GetAnimationController()->IsEnd())
 	{
 		auto ins = InputManager::GetInstance();
 
@@ -28,32 +44,29 @@ void PlayerJetState::Update(Player* player)
 		{
 			// 空中にいる場合は落下状態に遷移
 			player->ChangeState(Player::STATE::FALL);
-			player->SetAttacking(false);
 		}
-		else if (ins->IsNew(KEY_INPUT_W) || ins->IsNew(KEY_INPUT_A) || ins->IsNew(KEY_INPUT_S) || ins->IsNew(KEY_INPUT_D))
+		else if (ins->IsNew({ KEY_INPUT_W,KEY_INPUT_A,KEY_INPUT_S,KEY_INPUT_D }) ||
+			ins->GetGamepadTriggerValue(true, player->GetPadNum()) > 0)
 		{
-			//if (ins->IsNew(KEY_INPUT_LSHIFT))
-			//{
-			//	// 移動キーとダッシュキーが入力されている場合
-			//	player->ChangeState(Player::STATE::FAST_RUN);
-			//}
-			//else
-			{
-				// 移動キーが入力されている場合
-				player->ChangeState(Player::STATE::RUN);
-				player->SetAttacking(false);
-			}
+			// 移動キーが入力されている場合
+			player->ChangeState(Player::STATE::RUN);
 		}
 		else
 		{
 			// それ以外は待機状態に遷移
 			player->ChangeState(Player::STATE::IDLE);
-			player->SetAttacking(false);
 		}
 	}
 }
 
-void PlayerJetState::Exit(Player* player)
+void PlayerRollState::Exit(Player* player)
 {
+	// ローリング終了時にジェット状態を解除
 	player->SetJet(false);
+
+	// ローリング終了時に無敵状態を解除
+	player->SetInvincible(false);
+
+	// ルートモーション制御を解除
+	player->GetAnimationController()->SetupRootMotionControl(false);
 }

@@ -14,6 +14,7 @@ public:
 		CAPSULE,
 		MODEL,
 	};
+
 	// 衝突種別
 	enum class TAG
 	{
@@ -28,8 +29,12 @@ public:
 		ITEM,
 		ENEMY_RASE_ATTACK,
 		PLAYER_MAGIC,
+		ENEMY_DRAGON_BREATH,
+		ENEMY_DRAGON_TORNADO,
+		ENEMY_DRAGON_CLOW,
 
 	};
+
 	// コンストラクタ
 	ColliderBase(SHAPE shape, TAG tag, const Transform* follow);
 	// デストラクタ

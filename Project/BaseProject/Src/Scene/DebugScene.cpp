@@ -13,9 +13,11 @@ DebugScene::DebugScene()
 	stage_(nullptr)
 {
 }
+
 DebugScene::~DebugScene()
 {
 }
+
 void DebugScene::Init()
 {
 	// ステージ生成
@@ -24,7 +26,6 @@ void DebugScene::Init()
 	// カメラの追従設定
 	Camera* camera = sceMng_.GetCamera();
 	camera->ChangeMode(Camera::MODE::FREE);
-
 }
 void DebugScene::Update()
 {
@@ -33,6 +34,7 @@ void DebugScene::Update()
 	// デパッグポイントの配置
 	PlaceDebugPoint();
 }
+
 void DebugScene::Draw()
 {
 	// ステージ描画
@@ -54,6 +56,7 @@ void DebugScene::Draw()
 		y += 20;
 	}
 }
+
 void DebugScene::Release()
 {
 	// ステージ解放
@@ -62,6 +65,7 @@ void DebugScene::Release()
 	// デバッグポイント群
 	points_.clear();
 }
+
 void DebugScene::PlaceDebugPoint()
 {
 	const auto ins = InputManager::GetInstance();

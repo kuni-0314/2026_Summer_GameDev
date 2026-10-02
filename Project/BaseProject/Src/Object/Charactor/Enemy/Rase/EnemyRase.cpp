@@ -1,4 +1,5 @@
 #include <DxLib.h>
+#include <DxLib.h>
 #include "../../../../Manager/ResourceManager.h"
 #include "../../../../Manager/SceneManager.h"
 #include "../../../Collider/Capsule/ColliderCapsule.h"
@@ -33,8 +34,8 @@ EnemyRase::~EnemyRase()
 
 void EnemyRase::Draw()
 {
-	// 基底クラスの描画処理
-	CharactorBase::Draw();
+	// 親クラスの描画処理
+	EnemyBase::Draw();
 	DrawShot();
 
 #ifdef _DEBUG
@@ -49,7 +50,7 @@ void EnemyRase::Draw()
 	else if (next == STATE::MOVE) name = "MOVE";
 	else if (next == STATE::CHARGE) name = "CHARGE";
 
-	DrawFormatString(0, 400, GetColor(255, 255, 255), "STATE: %s", name);
+	DrawFormatString(200, 400, GetColor(255, 255, 255), "STATE: %s", name);
 
 	DrawFormatString(500, 400, GetColor(255, 255, 255), "RASE_HP: %d", hp_);
 
@@ -58,8 +59,19 @@ void EnemyRase::Draw()
 
 void EnemyRase::Release(void)
 {
-	
+	// 基底クラスの解放処理
+	CharactorBase::Release();
+	// 弾の解放
+	for (auto& shot : shots_)
+	{
+		if (shot.effect)
+		{
+			shot.effect->Stop();
+			shot.effect.reset();
+		}
+	}
 }
+
 
 void EnemyRase::InitLoad()
 {
@@ -70,7 +82,6 @@ void EnemyRase::InitLoad()
 	shotmodel_ = resMng_.LoadModelDuplicate(ResourceManager::SRC::ENEMY_RASE_BALL);
 
 	AudioManager::GetInstance()->LoadSceneSound(LoadScene::GAME);
-
 }
 
 void EnemyRase::InitTransform()
@@ -82,7 +93,6 @@ void EnemyRase::InitTransform()
 	//transform_.pos = { 0.0f, 100.0f, 1500.0f };
 
 	transform_.Update();
-
 }
 
 void EnemyRase::InitCollider()
@@ -99,7 +109,6 @@ void EnemyRase::InitCollider()
 		COL_CAPSULE_TOP_LOCAL_POS, COL_CAPSULE_DOWN_LOCAL_POS,
 		COL_CAPSULE_RADIUS);
 	ownColliders_.emplace(static_cast<int>(COLLIDER_TYPE::CAPSULE), colCapsule);
-
 }
 
 void EnemyRase::InitAnimation()
@@ -127,10 +136,10 @@ void EnemyRase::InitAnimation()
 
 void EnemyRase::InitPost()
 {
+	weight_ = WEIGHT::LIGHT;
 
 	//基準の高さ保存
 	baseHeight_ = transform_.pos.y;
-
 	
 	stateChanges_.emplace(static_cast<int>(STATE::IDLE),
 		std::bind(&EnemyRase::ChangeStateIdle, this));
@@ -157,7 +166,6 @@ void EnemyRase::InitPost()
 
 	// 初期状態設定
 	ChangeState(STATE::THINK);
-	
 }
 
 void EnemyRase::UpdateProcess()
@@ -171,7 +179,11 @@ void EnemyRase::UpdateProcess()
 	//プレイヤーとの距離測定
 	distance_ = VSize(toPlayer_);
 
+	//方向
 	LookPlayer();
+
+	//ステート更新
+	stateUpdate_();
 
 	//上下の揺れ
 	hoverTime_ += scnMng_.GetDeltaTime();
@@ -185,37 +197,35 @@ void EnemyRase::UpdateProcess()
 		shot.shotTransform_.Update();
 	}
 
-
+	//押し出し処理
 	PushOutSphere(transform_.pos, pushOutRadius_,
 		player_->GetPos(), player_->GetCollRadius(), true);
 
 	auto const ins = InputManager::GetInstance();
-
-	//ダメージヒット処理
-	preHp_ = hp_;//被ダメージ前HP保存
-
 	CheckPlayerSwordCollision();
+	CheckPlayerMagicCollision();
 
-	if (hp_ < preHp_)
+	//攻撃クールタイム
+	if (isCoolTime_)
 	{
-		if (hp_ <= 0)
+		coolTime_++;
+		if (coolTime_ > SHOT_COOL_TIME)
 		{
-			ChangeState(STATE::DIE);
-			isAlive_ = false;
+			isCoolTime_ = false;
+			coolTime_ = 0;
 		}
-		else
-		{
-			ChangeState(STATE::HIT);
-		}
+	}
+
+	if (hp_ <= 0)
+	{
+		ChangeState(STATE::DIE);
 	}
 }
 
 void EnemyRase::UpdateProcessPost()
 {
-	stateUpdate_();
 	//弾の更新
 	UpdateShot();
-
 }
 
 void EnemyRase::ChangeState(STATE state)
@@ -235,7 +245,6 @@ void EnemyRase::ChangeStateIdle()
 	// 待機アニメーション再生
 	animationController_->Play(
 		static_cast<int>(ANIM_TYPE::IDLE), true);
-
 }
 
 void EnemyRase::ChangeStateAttack()
@@ -262,7 +271,7 @@ void EnemyRase::ChangeStateMove(void)
 	// ランダムな待機時間
 	step_ = 3.0f + static_cast<float>(GetRand(3));
 	// 移動スピード
-	moveSpeed_ = 3.0f;
+	moveSpeed_ = 5.0f;
 	// 待機アニメーション再生
 	animationController_->Play(static_cast<int>(ANIM_TYPE::IDLE), true);
 }
@@ -277,7 +286,6 @@ void EnemyRase::ChangeStateWait(void)
 	movePow_ = AsoUtility::VECTOR_ZERO;
 	// 待機アニメーション再生
 	animationController_->Play(static_cast<int>(ANIM_TYPE::IDLE), true);
-
 }
 
 void EnemyRase::ChangeStateHit()
@@ -295,7 +303,6 @@ void EnemyRase::ChangeStateHit()
 void EnemyRase::ChangeStateEnd()
 {
 	stateUpdate_ = std::bind(&EnemyRase::UpdateEnd, this);
-
 }
 
 void EnemyRase::ChangeStateDie()
@@ -304,7 +311,6 @@ void EnemyRase::ChangeStateDie()
 	movePow_ = AsoUtility::VECTOR_ZERO;
 	// 待機アニメーション再生
 	animationController_->Play(static_cast<int>(ANIM_TYPE::DIE), false);
-
 }
 
 void EnemyRase::ChangeStateCharge(void)
@@ -352,7 +358,9 @@ void EnemyRase::UpdateAttack()
 	{
 		AttackShot();
 		shotFired_ = true;
+		isCoolTime_ = true;
 	}
+
 	// 移動量ゼロ
 	movePow_ = AsoUtility::VECTOR_ZERO;
 }
@@ -365,6 +373,8 @@ void EnemyRase::UpdateMove(void)
 		ChangeState(STATE::CHARGE);
 	}
 
+	// プレイヤー方向へ移動
+	moveDir_ = VNorm(toPlayer_);
 	// 移動する ← 追加
 	movePow_ = VScale(moveDir_, moveSpeed_);
 }
@@ -375,11 +385,14 @@ void EnemyRase::UpdateWait(void)
 
 void EnemyRase::UpdateThink(void)
 {
-	
 	//攻撃するか否や
 	if (distance_ < SWICH_DISTANCE)
 	{
-		ChangeState(STATE::CHARGE);
+		//クールタイムがない時のみ
+		if (isCoolTime_ == false)
+		{
+			ChangeState(STATE::CHARGE);
+		}
 	}
 	else
 	{
@@ -423,113 +436,155 @@ void EnemyRase::UpdateCharge(void)
 	movePow_ = AsoUtility::VECTOR_ZERO;
 }
 
-void EnemyRase::AttackShot(void)
+void EnemyRase::AttackShot()
 {
 	SHOT shot;
 
-	//弾生存フラグ
 	shot.isShotAlive_ = true;
 
-
-	//弾の大きさ、座標等の初期化
-	shot.shotTransform_.scl = { SHOT_SCALE ,SHOT_SCALE ,SHOT_SCALE };
+	shot.shotTransform_.scl = { SHOT_SCALE, SHOT_SCALE, SHOT_SCALE };
 	shot.shotTransform_.quaRot = Quaternion::Identity();
 	shot.shotTransform_.quaRotLocal = Quaternion::Euler(ROT);
 
+	shot.shotTransform_.modelId = shotmodel_;
+	shot.shotTransform_.SetModel(MV1DuplicateModel(shotmodel_));
+
+	shot.shotTransform_.pos = transform_.pos;
+	shot.dir_ = VNorm(toPlayer_);
+
 	shot.shotTransform_.Update();
 
-	shot.shotTransform_.modelId = shotmodel_;
-
-	//モデルのセット
-	shot.shotTransform_.SetModel(MV1DuplicateModel(shot.shotTransform_.modelId));
-
-	//らせの座標位置を取得
-	shot.shotTransform_.pos = transform_.pos;
-
-	// エフェクト再生
 	shot.effect = std::make_shared<EffekseerEffect>(
-		L"Data/Effect/FireBall/FireBall.efkefc",
+		L"Data/Effect/Fire/Fire.efkefc",
 		shot.shotTransform_.pos
+	);
+
+	shot.effect->Play(
+		shot.shotTransform_.pos,
+		Quaternion::LookRotation(shot.dir_)
 	);
 
 	EffectManager::GetInstance().RegisterEffect(shot.effect);
 
-	//弾向き
-	shot.dir_ = VNorm(toPlayer_);
-
-	shots_.push_back(shot);
+	shots_.emplace_back(std::move(shot));
 }
 
-void EnemyRase::UpdateShot(void)
+void EnemyRase::UpdateShot()
 {
+	bool shotDeleted = false;
+
 	for (auto& shot : shots_)
 	{
 		if (!shot.isShotAlive_) continue;
 
-		if (AsoUtility::IsHitSpheres(shot.shotTransform_.pos, COL_SPHERE_RADIUS, playerPos_, playerRad_))
+		shot.speed += 0.1f;
+
+		// 移動
+		shot.shotTransform_.pos =
+			VAdd(
+				shot.shotTransform_.pos,
+				VScale(shot.dir_, shot.speed)
+			);
+
+		// プレイヤーとの衝突
+		if (AsoUtility::IsHitSpheres(
+			shot.shotTransform_.pos,
+			COL_SPHERE_RADIUS,
+			playerPos_,
+			80))
 		{
-			player_->Damege(1);
+			player_->Damage(1, transform_.GetForward());
 			shot.life = 0;
 		}
 
-		shot.speed += 0.05;
+		DrawSphere3D(shot.shotTransform_.pos, 20, 20, 0xffffff, 0xffffff, false);
 
-		if (shot.life > 60)
-		{
-			VECTOR targetDir =
-				VNorm(VSub(player_->GetPos(),
-					shot.shotTransform_.pos));
-
-			shot.dir_ =
-				VNorm(VAdd(VScale(shot.dir_, 1.0f - shot.homingPower),
-					VScale(targetDir, shot.homingPower)));
-		}
-
-		shot.shotTransform_.pos =
-			VAdd(shot.shotTransform_.pos,
-				VScale(shot.dir_, shot.speed));
-
-		//エフェクトを弾に追従させる
+		// エフェクト追従
 		if (shot.effect)
 		{
 			shot.effect->SetPosition(shot.shotTransform_.pos);
+			shot.effect->SetRotation(
+				Quaternion::LookRotation(shot.dir_));
 		}
 
-		if (shot.shotTransform_.pos.y <= 0)
+		if (shot.shotTransform_.pos.y < 0.0f)
 		{
-			shot.shotTransform_.pos.y = 0;
+			shot.shotTransform_.pos.y = 0.0f;
 		}
 
 		shot.life--;
+		shot.shotTransform_.Update();
 
 		if (shot.life <= 0)
 		{
 			if (shot.effect)
 			{
 				shot.effect->Stop();
+				shot.effect.reset();
 			}
+
+			MV1DeleteModel(shot.shotTransform_.modelId);
+
+			auto burst =
+				std::make_shared<EffekseerEffect>(
+					L"Data/Effect/Fire/Burst.efkefc",
+					shot.shotTransform_.pos);
+
+			burst->Play(
+				shot.shotTransform_.pos,
+				shot.shotTransform_.quaRot);
+
+			burst->SetLifeTime(85);
+
+			EffectManager::GetInstance().RegisterEffect(burst);
+
 			shot.isShotAlive_ = false;
 			shot.speed = 3.0f;
-			ChangeState(STATE::THINK);
+
+			shotDeleted = true;
 		}
+	}
+
+	// ループ終了後に削除
+	shots_.erase(
+		std::remove_if(
+			shots_.begin(),
+			shots_.end(),
+			[](const SHOT& shot)
+			{
+				return !shot.isShotAlive_;
+			}),
+		shots_.end());
+
+	if (shotDeleted)
+	{
+		ChangeState(STATE::THINK);
 	}
 }
 
-void EnemyRase::DrawShot(void)
+void EnemyRase::DrawShot()
 {
 	for (auto& shot : shots_)
 	{
-		if (!shot.isShotAlive_)continue;
+		if (!shot.isShotAlive_) continue;
 
-		shot.shotTransform_.Update();
+		MV1SetPosition(
+			shot.shotTransform_.modelId,
+			shot.shotTransform_.pos);
 
-		//描画
-		MV1SetPosition(shotmodel_, shot.shotTransform_.pos);
-		MV1DrawModel(shot.shotTransform_.modelId);
+		MV1DrawModel(
+			shot.shotTransform_.modelId);
+#ifdef DEBUG
+
+		// デバッグ用
+		DrawSphere3D(
+			shot.shotTransform_.pos,
+			COL_SPHERE_RADIUS,
+			10,
+			GetColor(255, 0, 0),
+			GetColor(255, 0, 0),
+			TRUE); 
+#endif // DEBUG
 	}
 }
-
-
-
-
 

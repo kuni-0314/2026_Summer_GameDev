@@ -4,9 +4,7 @@ class SceneManager;
 
 class SceneBase
 {
-
 public:
-
 	// コンストラクタ
 	SceneBase();
 
@@ -26,11 +24,9 @@ public:
 	virtual void Release() = 0;
 
 protected:
-
 	// リソース管理
 	ResourceManager& resMng_;
 
 	// シーン管理
 	SceneManager& sceMng_;
-
 };

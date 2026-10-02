@@ -82,12 +82,17 @@ void AnimationController::Play(int type, bool isLoop, bool isReset)
 
 void AnimationController::Update()
 {
+	// アニメーション更新前処理
+	UpdateBeforeAnimation();
 
 	// 経過時間の取得
 	float deltaTime = SceneManager::GetInstance().GetDeltaTime();
 
 	// 再生
-	playAnim_.step += (deltaTime * playAnim_.speed);
+	if (!isStopped_)
+	{
+		playAnim_.step += (deltaTime * playAnim_.speed);
+	}
 
 	// アニメーションが終了したら
 	if (playAnim_.step > playAnim_.totalTime)
@@ -106,12 +111,55 @@ void AnimationController::Update()
 
 	// アニメーション設定
 	MV1SetAttachAnimTime(modelId_, playAnim_.attachNo, playAnim_.step);
+}
 
+void AnimationController::UpdateBeforeAnimation()
+{
+	if (isIgnoreRootMove_)
+	{
+		// 対象フレームのローカル行列を初期値にリセットする
+		MV1ResetFrameUserLocalMatrix(modelId_, rootFrameNo_);
+
+		// 対象フレームのローカル行列(大きさ、回転、位置)を取得する
+		auto mat = MV1GetFrameLocalMatrix(modelId_, rootFrameNo_);
+
+		//auto scl = MGetSize(mat); // 行列から大きさを取り出す
+		VECTOR scl = { 1.0f,1.0f,1.0f };//tmp
+
+		auto rot = MGetRotElem(mat); // 行列から回転を取り出す
+		auto pos = MGetTranslateElem(mat); // 行列から移動値を取り出す
+
+		// 大きさ、回転、位置をローカル行列に戻す
+		MATRIX mix = MGetIdent();
+		mix = MMult(mix, MGetScale(scl)); // 大きさ
+		mix = MMult(mix, rot); // 回転
+
+		// ここでローカル座標を行列に、そのまま戻さず、
+		// 調整したローカル座標を設定する
+		if (isDynamicOffsetY_)
+		{
+			// 動的に設定
+			VECTOR offset = { 0.0f, pos.y, 0.0f };
+			mix = MMult(mix, MGetTranslate(offset));
+		}
+		else
+		{
+			// 固定値で設定
+			mix = MMult(mix, MGetTranslate(rootMoveOffset_));
+		}
+		// 合成した行列を対象フレームにセットし直して、
+		// アニメーションの移動値を無効化
+		MV1SetFrameUserLocalMatrix(modelId_, rootFrameNo_, mix);
+	}
+	else
+	{
+		// 対象フレームのローカル行列を初期値にリセットする
+		MV1ResetFrameUserLocalMatrix(modelId_, rootFrameNo_);
+	}
 }
 
 void AnimationController::Release()
 {
-
 	// 外部FBXのモデル(アニメーション)解放
 	for (const std::pair<int, Animation>& pair : animations_)
 	{
@@ -123,7 +171,6 @@ void AnimationController::Release()
 	
 	// 可変長配列をクリアする
 	animations_.clear();
-	
 }
 
 int AnimationController::GetPlayType() const
@@ -133,7 +180,6 @@ int AnimationController::GetPlayType() const
 
 bool AnimationController::IsEnd() const
 {
-
 	bool ret = false;
 
 	if (isLoop_)
@@ -150,12 +196,38 @@ bool AnimationController::IsEnd() const
 	}
 
 	return ret;
-
 }
 
 const AnimationController::Animation& AnimationController::GetPlayAnim() const
 {
 	return playAnim_;
+}
+
+void AnimationController::SetRootFrameNo(int frameNo)
+{
+	rootFrameNo_ = frameNo;
+}
+
+void AnimationController::SetRootFrameNo(const std::string& frameName)
+{
+	// フレーム番号をフレーム名で取得する
+	rootFrameNo_ = MV1SearchFrame(modelId_, frameName.c_str());
+}
+
+void AnimationController::SetupRootMotionControl(bool isEnabled, const std::string& frameName)
+{
+	SetIgnoreRootMove(isEnabled);
+	// ルート無視しないなら動的とか固定値とか設定したところで意味がない。
+	if (isEnabled)
+	{
+		SetDynamicOffset(isEnabled);
+		SetRootFrameNo(frameName);
+	}
+}
+
+int AnimationController::GetAnimFrameNum()
+{
+	return MV1GetAttachAnimTime(modelId_, playAnim_.attachNo);
 }
 
 void AnimationController::Add(int type, float speed, Animation& animation)
@@ -164,7 +236,6 @@ void AnimationController::Add(int type, float speed, Animation& animation)
 
 	if (animations_.count(type) == 0)
 	{
-		// 追加
 		animations_.emplace(type, animation);
 	}
 }

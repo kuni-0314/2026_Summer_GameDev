@@ -9,15 +9,11 @@ class AnimationController;
 class ItemBase : public ActorBase
 {
 public:
-
-
 	//アイテム種別
 	enum class TYPE
 	{
 		HP,
-		SKILL,
 	};
-
 
 	// コンストラクタ
 	ItemBase();
@@ -37,8 +33,6 @@ public:
 	bool InSearchModel();
 
 protected:
-
-
 	// 最大落下速度
 	static constexpr float MAX_FALL_SPEED = -30.0f;
 	// 衝突時の押し戻し試行回数
@@ -55,14 +49,13 @@ protected:
 	// 移動前の座標
 	VECTOR prevPos_;
 
-
 	bool isPlayer_;
 
 	// ジャンプの入力受付時間
 	float stepJump_;
+
 	//移動スピード
 	float moveSpeed_;
-
 
 	//モデルID
 	int modelId_;
@@ -94,12 +87,7 @@ protected:
 	// 丸影描画
 	void DrawShadow();
 
-	// 回復エフェクト再生
-	//void PlayHealEffect();
-
 private:
-
-
 	int stage_; //影の判定用ステージハンドル
 
 	float ITEM_SHADOW_HEIGHT = 800.0f;
@@ -110,5 +98,4 @@ private:
 
 	VECTOR SlideVec;//影のベクトル
 	VERTEX3D Vertex[3];
-
 };

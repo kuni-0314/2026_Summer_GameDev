@@ -12,27 +12,25 @@
 #include "EnemyBase.h"
 #include "../../Collider/Sphere/ColliderSphere.h"
 
-
-EnemyBase::EnemyBase(const EnemyBase::EnemyData& data, int attackModel, Player* player)
+EnemyBase::EnemyBase(
+	const EnemyBase::EnemyData& data,
+	int attackModel, Player* player)
 	:
-CharactorBase(),
-player_(player),
-type_(data.type),
-defaultPos_(data.defaultPos),
-movableRange_(data.movableRange),
-wave_(data.wave),
-attackModle_(attackModel)
+	CharactorBase(),
+	player_(player),
+	type_(data.type),
+	defaultPos_(data.defaultPos),
+	movableRange_(data.movableRange),
+	wave_(data.wave),
+	attackModle_(attackModel)
 {
-
+	hp_ = data.hp;
 	// 初期座標の設定
 	transform_.pos = data.defaultPos;
-
-	hp_ = data.hp;
 }
 
 EnemyBase::~EnemyBase(void)
 {
-
 }
 
 void EnemyBase::Update()
@@ -44,7 +42,14 @@ void EnemyBase::Draw()
 {
 	CharactorBase::Draw();
 
-
+#ifdef _DEBUG
+	for (auto col : hitColliders_)
+	{
+		if (col->GetTag() != ColliderBase::TAG::PLAYER_MAGIC) continue;
+		auto colSphere = dynamic_cast<const ColliderSphere*>(col);
+		DrawSphere3D(colSphere->GetPos(), colSphere->GetRadius(), 16, GetRand(0xffffff), GetColor(0, 255, 0), false);
+	}
+#endif
 }
 
 void EnemyBase::Release(void)
@@ -56,7 +61,7 @@ void EnemyBase::HitEffect(const VECTOR& pos, const VECTOR& normal, float size)
 {
 	//エフェクトの読み込み
 	auto effect = std::make_shared<EffekseerEffect>(
-		L"Data/Effect/Ster/Ster.efkefc",
+		L"Data/Effect/Star/Star.efkefc",
 		transform_.pos
 	);
 
@@ -66,6 +71,24 @@ void EnemyBase::HitEffect(const VECTOR& pos, const VECTOR& normal, float size)
 	);
 
 	//エフェクトの再生
+	EffectManager::GetInstance().RegisterEffect(effect);
+}
+
+void EnemyBase::HitThunderEffect(const VECTOR& pos, const VECTOR& normal, float size)
+{
+	auto effect = std::make_shared<EffekseerEffect>(
+		L"Data/Effect/Thunder/N.efkefc", // hitエフェクト
+		pos
+	);
+
+	effect->Play(
+		pos,
+		Quaternion::LookRotation(normal)
+	);
+
+	effect->SetScale(size * 30.0f);   // 必要なら
+	effect->SetLifeTime(30);
+
 	EffectManager::GetInstance().RegisterEffect(effect);
 }
 
@@ -81,12 +104,10 @@ bool EnemyBase::InMovableRange(void) const
 		return true;
 	}
 	return ret;
-
 }
 
 void EnemyBase::LookPlayer()
 {
-
 	VECTOR playerPos = player_->GetPos();
 
 	//ベクトル計算
@@ -145,12 +166,9 @@ bool EnemyBase::PushOutSphere(
 }
 
 
-
-
 void EnemyBase::ChangeState(int state)
 {
 	stateBase_ = state;
-
 
 	auto it = stateChanges_.find(stateBase_);
 
@@ -176,8 +194,6 @@ VECTOR& EnemyBase::GetPos()
 	return transform_.pos;
 }
 
-
-
 void EnemyBase::CheckPlayerSwordCollision()
 {
 	// 死亡状態なら処理しない
@@ -191,7 +207,6 @@ void EnemyBase::CheckPlayerSwordCollision()
 	}
 
 	if (wasHitSword_) return;
-
 
 	// 自身のカプセルコライダを取得
 	ColliderCapsule* ownColCapsule = nullptr;
@@ -222,7 +237,8 @@ void EnemyBase::CheckPlayerSwordCollision()
 			if (ownColCapsule->IsHit(swordColCapsule))
 			{
 				// ダメージ処理
-				Damege(1);
+				Damage(1, player_->GetTransform().GetForward());
+				AudioManager::GetInstance()->SetSeVolume(200);
 				AudioManager::GetInstance()->PlaySE(SoundID::SE_ENEMY_HIT);
 
 				// エフェクト再生
@@ -282,22 +298,25 @@ void EnemyBase::CheckPlayerMagicCollision()
 
 			if (magicColSphere == nullptr) continue;
 
-			VECTOR aaa = magicColSphere->GetPos();
-			float bbb = magicColSphere->GetRadius();
-			VECTOR ccc = ownColCapsule->GetPosTop();
-			VECTOR ddd = ownColCapsule->GetPosDown();
-			float eee = ownColCapsule->GetRadius();
+			VECTOR magicSpherePos = magicColSphere->GetPos();
+			float magicSphereRadius = magicColSphere->GetRadius();
+			VECTOR capsuleTop = ownColCapsule->GetPosTop();
+			VECTOR capsuleBottom = ownColCapsule->GetPosDown();
+			float capsuleRadius = ownColCapsule->GetRadius();
 
 			// カプセルと球体の衝突判定
 			if (HitCheck_Sphere_Capsule(
-				aaa,
-				bbb,
-				ccc,
-				ddd,
-				eee) == true)
+				magicSpherePos,
+				magicSphereRadius,
+				capsuleTop,
+				capsuleBottom,
+				capsuleRadius) == true)
 			{
 				// ダメージ処理
-				Damege(1);
+				//Damage(1);
+				Damage(1, player_->GetTransform().GetForward());
+
+				AudioManager::GetInstance()->SetSeVolume(200);
 				AudioManager::GetInstance()->PlaySE(SoundID::SE_ENEMY_HIT);
 
 				// エフェクト再生
@@ -306,13 +325,14 @@ void EnemyBase::CheckPlayerMagicCollision()
 
 				HitEffect(hitPos, VNorm(VSub(hitPos, transform_.pos)), 1.5f);
 
+				// Fireを消す
+				player_->DeleteFireEffect();
+
 				// 一度あったらフラグ
 				wasHitMagic_ = true;
+				RemoveHitCollider(hitCol);
 			}
 		}
 	}
-}
-void EnemyBase::CheckEnemy()
-{
 }
 

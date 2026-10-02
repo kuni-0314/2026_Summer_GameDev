@@ -11,30 +11,46 @@ class AudioManager;
 class EnemyBase : public CharactorBase
 {
 public:
-
 	// 種別
 	enum class TYPE
 	{
 		RAT,
 		RASE,
-		LARGE
+		LARGE,
+		DRAGON
 	};
+
 	// エネミーデータ
 	struct EnemyData
 	{
 		int id;
-		EnemyBase::TYPE type;
+		TYPE type;
 		int hp;
 		VECTOR defaultPos;
 		float movableRange;
 		int wave;
 	};
 
+	struct EnemyStatus
+	{
+		TYPE type;
+		int hp;
+	};
+
+	struct EnemyWave
+	{
+		std::vector<int>enemies;
+		int wave;
+	};
+
 	// コンストラクタ
-	EnemyBase(const EnemyBase::EnemyData& data,int attackModel,Player* player);
+	EnemyBase(const EnemyBase::EnemyData& data,
+		int attackModel,
+		Player* player);
 
 	// デストラクタ
 	virtual ~EnemyBase() override;
+
 	//更新
 	virtual void Update() override;
 	//描画
@@ -45,12 +61,11 @@ public:
 
 	void CheckPlayerMagicCollision();
 
-	void CheckEnemy();
-
 	void Release(void) override;
 
 	//エフェクト
 	void HitEffect(const VECTOR& pos, const VECTOR& normal, float size);
+	void HitThunderEffect(const VECTOR& pos, const VECTOR& normal, float size);
 
 	// 球同士の押し出し（Aだけを押し出す）
 	static bool PushOutSphere(
@@ -60,17 +75,14 @@ public:
 		float radiusB,
 		bool debugDraw = false);
 
-
 	float GetCollRadius();
 	VECTOR& GetPos();
 
-
 protected:
-
+	// プレイヤー
 	Player* player_;
 	// 種別
 	TYPE type_;
-
 
 	// 初期位置
 	const VECTOR defaultPos_;
@@ -113,7 +125,6 @@ protected:
 	// 初期化後の個別処理
 	void InitPost() override {}
 
-
 	// 状態遷移
 	void ChangeState(int state);
 
@@ -124,8 +135,5 @@ protected:
 
 	//視線ベクトル
 	void LookPlayer();
-
-
-
 };
 

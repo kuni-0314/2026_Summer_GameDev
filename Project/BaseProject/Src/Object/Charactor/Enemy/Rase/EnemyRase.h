@@ -8,7 +8,6 @@
 class Player;
 class ItemManger;
 
-
 class EnemyRase : public EnemyBase
 {
 public:
@@ -43,6 +42,7 @@ public:
 	struct SHOT
 	{
 		bool isShotAlive_ = false;
+		bool isEffectPlayed = false;
 		float speed = 4.5f;
 		int life = 180;
 		float homingPower = 0.02f;
@@ -51,15 +51,17 @@ public:
 		std::shared_ptr<EffekseerEffect> effect;
 	
 	};
-	// コンストラクタ
 
+	// コンストラクタ
 	EnemyRase(const EnemyBase::EnemyData& data, int attackModel,Player* player);
+
 	// デストラクタ
 	~EnemyRase() override;
 
 	void Draw(void) override;
 
 	void Release(void) override;
+
 protected:
 	// リソースロード
 	void InitLoad() override;
@@ -75,14 +77,10 @@ protected:
 	void UpdateProcess() override;
 	void UpdateProcessPost() override;
 
-
 private:
-
 	ItemManger* itemManager_;
-
+	//攻撃弾
 	std::vector<SHOT> shots_;
-
-
 
 	//アニメーション登録番号
 	//待機
@@ -96,10 +94,11 @@ private:
 	
 	//弾待機カウント
 	static constexpr int  SHOT_CHARGE_COUNT = 30;//120;
+	//クールタイム
+	static constexpr int  SHOT_COOL_TIME = 120;
 
 	// モデルの大きさ
 	static constexpr float SCALE = 0.3f;
-
 	// モデルの大きさ
 	static constexpr float SHOT_SCALE = 0.1f;
 	// モデルのローカル回転
@@ -120,13 +119,11 @@ private:
 
 	// 攻撃判定用球体
 	static constexpr VECTOR ATTACK_SPHERE_LOCAL_POS = { 0.0f, 30.0f, 120.0f };
-
 	// 行動切り替え用カプセル球体半径
 	static constexpr float COL_SWICH_RADIUS = 250.0f;
 
 	// 攻撃切り替え距離
 	static constexpr float SWICH_DISTANCE = 350.0f;
-
 	static constexpr float ATTACK_MOVE_SPEED = 3.0f;
 
 	//揺れ幅
@@ -134,10 +131,15 @@ private:
 	//揺れる速さ
 	const float HOVER_SPEED = 2.0f;
 
+	//攻撃弾モデル
 	int shotmodel_;
-
+	//攻撃チャージ時間(攻撃のため時間クールタイムとは別）
 	int shotCharge_;
+	//クールタイム
+	int coolTime_;
 
+	//クールタイム判定
+	bool isCoolTime_ = false;
 	//攻撃判定
 	bool isAttack_;
 	//生存判定
@@ -146,9 +148,8 @@ private:
 	bool look_ = false;
 	//連続攻撃判定
 	bool attackHit_ = false;;
-
+	//発射判定
 	bool shotFired_;
-
 
 	// 更新ステップ
 	float step_;// 状態管理(更新ステップ)
@@ -169,10 +170,8 @@ private:
 	//プレイヤー座標
 	VECTOR playerPos_;
 
-
 	// 状態遷移
 	void ChangeState(STATE state);
-
 	void ChangeStateThink(void);
 	void ChangeStateIdle(void);
 	void ChangeStateAttack(void);
@@ -200,7 +199,6 @@ private:
 	//弾用更新・描画
 	void UpdateShot(void);
 	void DrawShot(void);
-
 };
 
 

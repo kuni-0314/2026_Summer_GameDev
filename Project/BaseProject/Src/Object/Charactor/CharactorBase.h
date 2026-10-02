@@ -5,17 +5,6 @@ class AnimationController;
 class CharactorBase : public ActorBase
 {
 public:
-
-	//// 衝突判定種別
-	//enum class COLLIDER_TYPE
-	//{
-	//	LINE,
-	//	CAPSULE,
-	//	SPHERE,
-	//	VIEW_RAGE,
-	//	MAX,
-	//};
-
 	// ステータス
 	struct Status
 	{
@@ -32,31 +21,45 @@ public:
 
 	// コンストラクタ
 	CharactorBase();
+
 	// デストラクタ
 	virtual ~CharactorBase() override;
 
 	//更新
 	virtual void Update() override;
 
+	//描画
 	virtual void Draw() override;
 
+	//解放
 	virtual void Release() override;
 
 	// ダメージ処理
-	void Damege(int damege);
+	virtual void Damage(int damage);
+
+	// ダメージ処理（ノックバック付き）
+	virtual void Damage(int damage, const VECTOR& hitDir);
 
 	// HPの取得
 	int GetHp() const { return hp_; }
 
+	// 生存状態の設定
 	void SetAlive(bool alive) { isAlive_ = alive; }
 
+	// アニメーション終了判定
 	bool IsAnimEnd();
 
+	// HP回復処理
 	virtual void HealHp(int heal) { hp_ += heal; };
 
+	// 無敵状態の取得
+	bool IsInvincible() const { return isInvincible_; }
+	void SetInvincible(bool invincible);
+
+	//ヒットエフェクトの生成
+	void HitEffect(const VECTOR& pos, const VECTOR& normal, float size);
+
 protected:
-
-
 	// 最大落下速度
 	static constexpr float MAX_FALL_SPEED = -15.0f;
 	// 衝突時の押し戻し試行回数
@@ -72,6 +75,9 @@ protected:
 	VECTOR jumpPow_;
 	// 移動前の座標
 	VECTOR prevPos_;
+
+	// ノックバック量
+	VECTOR knockbackPow_;
 
 	// ジャンプの入力受付時間
 	float stepJump_;
@@ -90,9 +96,13 @@ protected:
 	//体力
 	int hp_;
 
+	//空中に浮く用
+	bool useGrabity_ = true;
+
 	// リソースロード
 	virtual void InitLoad() override;
 
+	// 大きさ、回転、座標の初期化
 	virtual void InitAnimation() override;
 
 	// 更新系
@@ -108,17 +118,37 @@ protected:
 	virtual void  CollisionReserve() {}
 	void Collision();
 	void CollisionGravity();
+
 	//カプセル型当たり判定（flag:trueなら高精度処理を行う）
 	void CollisionCapsule();
-
 
 	// 丸影描画
 	void DrawShadow();
 
+	// アニメーション制御
 	AnimationController* animationController_;
 
-private:
+	// 無敵フレーム数の取得
+	int GetInvincibleFrameCount() const { return invincibleFrameCount_; }
 
+	// 体重
+	enum class WEIGHT
+	{
+		NONE,		// 体重なし
+		LIGHT,		// 軽い
+		NORMAL,		// 普通
+		HEAVY,		// 重い
+		IMMOBILE	// 不動
+	};
+
+	// 体重の取得
+	WEIGHT weight_;
+
+	// 無敵フレーム数
+	static constexpr int INVINCIBLE_FRAME_COUNT = 30;
+	int invincibleFrameCount_ = 0;
+	bool isInvincible_;
+private:
 	int stage_; //影の判定用ステージハンドル
 
 	float PLAYER_SHADOW_HEIGHT = 800.0f;
@@ -129,6 +159,5 @@ private:
 
 	VECTOR SlideVec;//影のベクトル
 	VERTEX3D Vertex[3];
-	
 };
 

@@ -77,9 +77,7 @@ void HpItem::InitPost()
 
 void HpItem::UpdateProcess()
 {
-   
     PlayerHpGet();
-
     transform_.Update();
 }
 
@@ -150,7 +148,7 @@ void HpItem::PlayerHpGet()
             );
 
             // ƒq[ƒ‹‚Í­‚µ’·‚ß
-            effect->SetLifeTime(60);
+            effect->SetLifeTime(HEAL_EFFECT_TIME);
 
             effect->Play(
                 player_->GetPos(),

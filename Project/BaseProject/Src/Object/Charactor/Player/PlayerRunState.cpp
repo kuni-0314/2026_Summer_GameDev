@@ -54,7 +54,6 @@ void PlayerRunState::Update(Player* player)
 	// スティックの傾きの大きさを計算
 	float pow = VSize({ normLeftStickX, 0.0f, normLeftStickY });
 
-	// --- 【修正：方向入力を先に取得して判定に使う】 ---
 	VECTOR dir = AsoUtility::VECTOR_ZERO;
 	bool enableKAM = ins->IsEnableKeyAndMouse();
 	bool isGamepadConnected = (GetJoypadNum() > 0);
@@ -76,14 +75,13 @@ void PlayerRunState::Update(Player* player)
 		ins->GetInputDirXZ(dir, KEY_INPUT_W, KEY_INPUT_S, KEY_INPUT_A, KEY_INPUT_D);
 	}
 
-	// --- 【修正：キーボード入力がある場合は pow を最大にする】 ---
 	// スティックが動いていなくて、キーボードのWASD入力がある場合
 	if (pow <= 0.0f && !AsoUtility::EqualsVZero(dir))
 	{
-		pow = 1.0f; // キーボードは常に全力ダッシュ扱いにする
+		pow = 1.0f;
 	}
 
-	// アニメーション再生（これでキーボードでも FAST_RUN に入るようになります）
+	// アニメーション再生
 	if (pow > 0.5f)
 	{
 		player->GetAnimationController()->Play(static_cast<int>(Player::ANIM_TYPE::FAST_RUN), true);
@@ -96,7 +94,6 @@ void PlayerRunState::Update(Player* player)
 	// 方向入力がある場合
 	if (!AsoUtility::EqualsVZero(dir))
 	{
-		// (以下、移動処理はそのまま)
 		player->SetMoveSpeed(Player::SPEED_MOVE);
 		Quaternion cameraRot = SceneManager::GetInstance().GetCamera()->GetQuaRotY();
 		VECTOR moveDir = Quaternion::PosAxis(cameraRot, dir);

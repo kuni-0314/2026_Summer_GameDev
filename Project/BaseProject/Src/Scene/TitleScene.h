@@ -8,9 +8,7 @@ class SkyDome;
 
 class TitleScene : public SceneBase
 {
-
 public:
-
 	enum class SELECT
 	{
 		GAME,
@@ -20,25 +18,34 @@ public:
 	};
 	//タイトル画像のY座標
 	static constexpr int IMG_TITLE_POS_Y = 150;
+
 	//push画像Y座標
 	static constexpr int IMG_PUSH_POS_Y = 500;
 
-	//
+	//選択画像の座標
 	static constexpr int IMG_CHOICE_POS_X = 120;
-
 	static constexpr int IMG_NOT_CHOICE_POS_X = 180;
-
 	static constexpr int IMG_CHOICE_POS_Y = 650;
-
 	static constexpr int IMG_CHOICE_POS_Y_OFFSET = 100;
-
-
 
 	static constexpr float SCL_PLAYER = 0.4f;//playerの大きさ
 	static constexpr VECTOR ROT_PLAYER = { 0.0f, -90.0f * DX_PI_F / 180.0f,0.0f };	//playerの回転
 	static constexpr VECTOR ROT_LOCAL_PLAYER = { 0.0f, 180.0f * DX_PI_F / 180.0f,0.0f };	//playerの回転
 	static constexpr VECTOR POS_PLAYER = { -250.0f, -32.0f, -105.0f };//playerの座標
 
+	//カラー（RGB）
+	static constexpr int COLOR_R = 255;
+	static constexpr int COLOR_G = 255;
+	static constexpr int COLOR_B = 255;
+
+	//セレクト位置
+	static constexpr int SELECT_POS_X = 100;
+	static constexpr int SELECT_POS_Y = 100;
+	
+	//パットバイブレーション
+	static constexpr int VIBRATION_INDEX = 1;
+	static constexpr int VIBRATION_POWER = 1000;
+	static constexpr int VIBRATION_TIME = 1;
 
 	// コンストラクタ
 	TitleScene();
@@ -66,9 +73,7 @@ public:
 
 	void SelectUpdate();
 
-
 private:
-
 	SELECT select_; //選択コマンド
 
 	int selectCount_ = 0; //選択中のコマンド
@@ -76,13 +81,16 @@ private:
 
 	//アニメ―ションコントローラのポインタを作成
 	AnimationController* animationController_;
+
 	//スカイドームのポインタ作成
 	SkyDome* skyDome_;
 
+	//空の座標回転管理
 	Transform empty_;
 
 	//メイン惑星の座標回転管理
 	Transform bigPlanet_;
+
 	//サブ惑星の座標回転管理
 	Transform subPlanet_;
 
@@ -110,10 +118,6 @@ private:
 
 	bool pushAlive_ = true;
 
-	//bool IsSelect_ = false;
-
-	//int mainScreen_;
-
 	int postEffectScreen_;
 
 	bool isFadeIn_;
@@ -121,5 +125,4 @@ private:
 	static constexpr float FADE_SPEED = 0.02f;
 
 	SceneManager::SCENE_ID nextScene_;
-
 };

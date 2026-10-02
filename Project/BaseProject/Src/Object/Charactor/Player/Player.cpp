@@ -15,7 +15,7 @@
 #include "../../Weapon/Sword/KeyBlade1.h"
 #include "../../Weapon/Sword/KeyBlade2.h"
 #include "../../Weapon/Sword/KeyBlade3.h"
-#include "../../../Effect/LoadEffekseer/EffekseerEffect.h" // パスは環境に合わせて調整してください
+#include "../../../Effect/LoadEffekseer/EffekseerEffect.h"
 #include "../../../Effect/EffectManager.h"
 #include "../../../Sound/AudioManager.h"
 #include "../../../Sound/SoundTable.h"
@@ -28,13 +28,18 @@
 #include "PlayerFallState.h"
 #include "PlayerAttackState.h"
 #include "PlayerMagicState.h"
+#include "PlayerDamageState.h"
+#include "../../Charactor/Enemy/Dragon/EnemyDragon.h"
 
 
 Player::Player(int padNum)
 	:
 	padNum_(padNum),
+	animDiffPos_({ 0.0f, 0.0f, 0.0f }),
+	animStartModelPos_({ 0.0f, 0.0f, 0.0f }),
 	CharactorBase()
 {
+	weight_ = WEIGHT::NORMAL;
 }
 
 Player::~Player()
@@ -48,6 +53,21 @@ Player::~Player()
 
 void Player::Update()
 {
+	// 無敵フレームのカウントダウン
+	if (invincibleFrameCount_ > 0)
+	{
+		invincibleFrameCount_--;
+	}
+
+	if (invincibleFrameCount_ <= 0)
+	{
+		isInvincible_ = false;
+	}
+	else
+	{
+		isInvincible_ = true;
+	}
+
 	// 移動前座標を更新
 	prevPos_ = transform_.pos;
 
@@ -61,6 +81,17 @@ void Player::Update()
 	if (comboTimer_ > 0)
 	{
 		comboTimer_--;
+	}
+	
+	// ヒールの時間を減算
+	if (recoveryEffect_)
+	{
+		recoveryEffect_->SetPosition(transform_.pos);
+	}
+
+	if (tornadoDamageCoolTime_ > 0)
+	{
+		tornadoDamageCoolTime_--;
 	}
 
 	// 各キャラクターごとの更新処理
@@ -84,6 +115,24 @@ void Player::Update()
 	UpdateProcessPost();
 
 
+	const float LOW_HP_THRESHOLD = 0.2f;
+	static bool isLowHpEffectActive = false;
+	if (hp_ <= MAX_HP * LOW_HP_THRESHOLD)
+	{
+		if (!isLowHpEffectActive)
+		{
+			gameScene_->SetLowHpEffect();
+			isLowHpEffectActive = true;
+		}
+	}
+	if (hp_ > MAX_HP * LOW_HP_THRESHOLD)
+	{
+		if (isLowHpEffectActive)
+		{
+			gameScene_->SetLowHpEffect();
+			isLowHpEffectActive = false;
+		}
+	}
 	// hpのindexは4、luckのindexは9
 	//if (InputManager::GetInstance()->IsTrgDown(KEY_INPUT_UP))
 	//{
@@ -128,16 +177,61 @@ void Player::Update()
 
 }
 
-void Player::Damege(int damege)
+//void Player::Damage(int damage)
+//{
+//	hp_ -= damage;
+//	//int a = StartJoypadVibration(padNum_ + 1, 1000, 500, -1);
+//	//VibrateGamepad(int gamepadIndex, int power, int time)
+//	InputManager::GetInstance()->VibrateGamepad(padNum_ + 1, 1000, 500);
+//	if (hp_ <= 0)
+//	{
+//		hp_ = 0;
+//	}
+//}
+
+void Player::Damage(int damage, const VECTOR& hitDir)
 {
-	hp_ -= damege;
-	//int a = StartJoypadVibration(padNum_ + 1, 1000, 500, -1);
-	//VibrateGamepad(int gamepadIndex, int power, int time)
-	InputManager::GetInstance()->VibrateGamepad(padNum_ + 1, 1000, 500);
+	if (isInvincible_ || state_ == STATE::JET)
+	{
+		return;
+	}
+	auto dir = VNorm(hitDir);
+	knockbackPow_ = VScale(dir, 4.0f);
+
+	hp_ -= damage;
+
+	//被ダメージSE
+	int rand = GetRand(2);
+
+	switch(rand)
+	{
+	case 0:
+		AudioManager::GetInstance()->SetSeVolume(220);
+		AudioManager::GetInstance()->PlaySE(SoundID::VOICE_PLAYER_DAMEGE_1);
+		break;
+	case 1:
+		AudioManager::GetInstance()->SetSeVolume(220);
+		AudioManager::GetInstance()->PlaySE(SoundID::VOICE_PLAYER_DAMEGE_2);
+		break;
+	case 2:
+		AudioManager::GetInstance()->SetSeVolume(220);
+		AudioManager::GetInstance()->PlaySE(SoundID::VOICE_PLAYER_DAMEGE_3);
+		break;
+	}
+
 	if (hp_ <= 0)
 	{
 		hp_ = 0;
+
+		return;
 	}
+
+	ChangeState(Player::STATE::DAMAGE);
+
+	gameScene_->ShakeHpUI();
+
+	// 原則として無敵フレームを設定する
+	invincibleFrameCount_ = INVINCIBLE_FRAME_COUNT;
 }
 
 void Player::HealHp(int heal)
@@ -192,52 +286,61 @@ void Player::InitAnimation()
 	//アニメーションコントローラー
 	animationController_ = new AnimationController(transform_.modelId);
 
+	auto& anim = animationController_;
+
 	// 待機状態アニメーション
-	animationController_->Add(static_cast<int>(ANIM_TYPE::IDLE)
+	anim->Add(static_cast<int>(ANIM_TYPE::IDLE)
 		, 20.0f, Application::PATH_MODEL + "Player/Idle.mv1");
 
 	// 走るアニメーション
-	animationController_->Add(static_cast<int>(ANIM_TYPE::RUN)
+	anim->Add(static_cast<int>(ANIM_TYPE::RUN)
 		, 20.0f, Application::PATH_MODEL + "Player/Walk.mv1");
 
 	// ダッシュアニメーション
-	animationController_->Add(static_cast<int>(ANIM_TYPE::FAST_RUN)
+	anim->Add(static_cast<int>(ANIM_TYPE::FAST_RUN)
 		, 40.0f, Application::PATH_MODEL + "Player/Run.mv1");
 	//ジャンプアニメーション
-	animationController_->Add(static_cast<int>(ANIM_TYPE::JUMP)
+	anim->Add(static_cast<int>(ANIM_TYPE::JUMP)
 		, 60.0f, Application::PATH_MODEL + "Player/Jump.mv1");
 
 	// 攻撃アニメーション
-	animationController_->Add(static_cast<int>(ANIM_TYPE::ATK_N1)
-		, 60.0f, Application::PATH_MODEL + "Player/Attack1.mv1");
-	animationController_->Add(static_cast<int>(ANIM_TYPE::ATK_N2)
-		, 70.0f, Application::PATH_MODEL + "Player/Attack1.mv1");
-	animationController_->Add(static_cast<int>(ANIM_TYPE::ATK_N3)
-		, 60.0f, Application::PATH_MODEL + "Player/Attack1.mv1");
-	animationController_->Add(static_cast<int>(ANIM_TYPE::ATK_N4)
-		, 50.0f, Application::PATH_MODEL + "Player/Attack1.mv1");
-	animationController_->Add(static_cast<int>(ANIM_TYPE::ATK_N5)
+	anim->Add(static_cast<int>(ANIM_TYPE::ATK_N1)
+		, 100.0f, Application::PATH_MODEL + "Player/Attack1.mv1");
+	anim->Add(static_cast<int>(ANIM_TYPE::ATK_N2)
+		, 65.0f, Application::PATH_MODEL + "Player/Attack2.mv1");
+	anim->Add(static_cast<int>(ANIM_TYPE::ATK_N3)
+		, 90.0f, Application::PATH_MODEL + "Player/Attack3.mv1");
+	anim->Add(static_cast<int>(ANIM_TYPE::ATK_N4)
+		, 75.0f, Application::PATH_MODEL + "Player/Attack4.mv1");
+	anim->Add(static_cast<int>(ANIM_TYPE::ATK_N5)
+		, 90.0f, Application::PATH_MODEL + "Player/Attack5.mv1");
+	anim->Add(static_cast<int>(ANIM_TYPE::ATK_H)
+		, 100.0f, Application::PATH_MODEL + "Player/Heavy.mv1");
+	anim->Add(static_cast<int>(ANIM_TYPE::ATK_D)
 		, 40.0f, Application::PATH_MODEL + "Player/Attack1.mv1");
-	animationController_->Add(static_cast<int>(ANIM_TYPE::ATK_H)
-		, 40.0f, Application::PATH_MODEL + "Player/Attack1.mv1");
-	animationController_->Add(static_cast<int>(ANIM_TYPE::ATK_D)
-		, 40.0f, Application::PATH_MODEL + "Player/Attack1.mv1");
-	animationController_->Add(static_cast<int>(ANIM_TYPE::ATK_A1)
+	anim->Add(static_cast<int>(ANIM_TYPE::ATK_A1)
 		, 60.0f, Application::PATH_MODEL + "Player/Attack1.mv1");//tmp
-	animationController_->Add(static_cast<int>(ANIM_TYPE::ATK_A2)
+	anim->Add(static_cast<int>(ANIM_TYPE::ATK_A2)
 		, 70.0f, Application::PATH_MODEL + "Player/Attack1.mv1");//tmp
-	animationController_->Add(static_cast<int>(ANIM_TYPE::ATK_A3)
+	anim->Add(static_cast<int>(ANIM_TYPE::ATK_A3)
 		, 60.0f, Application::PATH_MODEL + "Player/Attack1.mv1");//tmp
-	animationController_->Add(static_cast<int>(ANIM_TYPE::ATK_A4)
+	anim->Add(static_cast<int>(ANIM_TYPE::ATK_A4)
 		, 50.0f, Application::PATH_MODEL + "Player/Attack1.mv1");//tmp
-	animationController_->Add(static_cast<int>(ANIM_TYPE::ATK_A5)
+	anim->Add(static_cast<int>(ANIM_TYPE::ATK_A5)
 		, 60.0f, Application::PATH_MODEL + "Player/Attack1.mv1");//tmp
-	animationController_->Add(static_cast<int>(ANIM_TYPE::ATK_F)
+	anim->Add(static_cast<int>(ANIM_TYPE::ATK_F)
 		, 40.0f, Application::PATH_MODEL + "Player/Attack1.mv1");//tmp
-	animationController_->Add(static_cast<int>(ANIM_TYPE::MAGIC)
+	anim->Add(static_cast<int>(ANIM_TYPE::MAGIC)
 		, 40.0f, Application::PATH_MODEL + "Player/Spell Cast.mv1");
+	anim->Add(static_cast<int>(ANIM_TYPE::ROLLING)
+		, 65.0f, Application::PATH_MODEL + "Player/Rolling.mv1");
+	anim->Add(static_cast<int>(ANIM_TYPE::DAMAGE)
+		, 100.0f, Application::PATH_MODEL + "Player/Damage.mv1");
+	animationController_->Add(static_cast<int>(ANIM_TYPE::FALL_END)
+		, 85.0f, Application::PATH_MODEL + "Player/FallingLanding.mv1");
+
 	//初期アニメーション再生
-	animationController_->Play(static_cast<int>(ANIM_TYPE::IDLE), true);
+	anim->Play(static_cast<int>(ANIM_TYPE::IDLE), true);
 }
 
 void Player::InitPost()
@@ -262,7 +365,6 @@ void Player::InitPost()
 	sword_ = new KeyBlade3(KEY_BLADE_3_LOCAL_POS_START, KEY_BLADE_3_LOCAL_POS_END, KEY_BLADE_3_RADIUS, transform_);
 	sword_->Init();
 
-
 }
 
 void Player::UpdateProcess()
@@ -286,7 +388,7 @@ void Player::UpdateProcess()
 	}
 
 	auto ins = InputManager::GetInstance();
-	if (ins->IsTrgDown(KEY_INPUT_R))
+	if (ins->IsTrgDown(KEY_INPUT_O))
 	{
 		transform_.pos = POS_PLAYER;
 	}
@@ -301,34 +403,99 @@ void Player::UpdateProcess()
 		PlayBlinkEffect();
 	}
 
+	// ショートカットキー判定
+	if (ins->IsGamepadNew(InputManager::PadInput::LB, padNum_))
+	{
+		isShortCut_ = true;
+	}
+	else
+	{
+		isShortCut_ = false;
+	}
+
 	// 魔法開始
-	// 調整中（フラグがサンダーしかない）
-	if (!isAliveThunder_ &&
-		(ins->IsTrgDown(KEY_INPUT_E) || ins->IsGamepadTrgDown(InputManager::PadInput::Y, padNum_)))
+	int activeMagicCount = 0;
+	if (isShortCut_ && ins->IsGamepadTrgDown(InputManager::PadInput::X, padNum_))
+	{
+		activeMagicCount = 1;
+	}
+	if (isShortCut_ && ins->IsGamepadTrgDown(InputManager::PadInput::Y, padNum_))
+	{
+		activeMagicCount = 2;
+	}
+	if (isShortCut_ && ins->IsGamepadTrgDown(InputManager::PadInput::A, padNum_))
+	{
+		activeMagicCount = 3;
+	}
+
+	if ((ins->IsTrgDown(KEY_INPUT_E) || ins->IsGamepadTrgDown(InputManager::PadInput::Y, padNum_)))
 	{
 		GameScene* gameScene = dynamic_cast<GameScene*>(scnMng_.GetScene());
 		switch (gameScene->GetSelectedCommand())
 		{
 		case GameScene::COMMAND::FIRE:
-			CreateFireMagic();
+			activeMagicCount = 1;
 			break;
 		case GameScene::COMMAND::THUNDER:
-			CreateThunderMagic();
+			activeMagicCount = 2;
 			break;
-		case GameScene::COMMAND::RECOVERY:
-			CreateRecoveryMagic();
+		case GameScene::COMMAND::HEAL:
+			activeMagicCount = 3;
 			break;
 		default:
 			break;
 		}
+	}
 
-
+	switch (activeMagicCount)
+	{
+	case 1:
+		if (fireCoolTime_ <= 0)
+		{
+			CreateFireMagic();
+		}
+		else
+		{
+			AudioManager::GetInstance()->SetSeVolume(200);
+			AudioManager::GetInstance()->PlaySE(SoundID::SE_NOT_MAGIC);
+		}
+		break;
+	case 2:
+		if (thunderCoolTime_ <= 0)
+		{
+			CreateThunderMagic();
+		}
+		else
+		{
+			AudioManager::GetInstance()->SetSeVolume(200);
+			AudioManager::GetInstance()->PlaySE(SoundID::SE_NOT_MAGIC);
+		}
+		break;
+	case 3:
+		if (healCoolTime_ <= 0)
+		{
+			CreateHealMagic();
+		}
+		else
+		{
+			AudioManager::GetInstance()->SetSeVolume(200);
+			AudioManager::GetInstance()->PlaySE(SoundID::SE_NOT_MAGIC);
+		}
+		break;
+	default:
+		break;
 	}
 
 	// 魔法処理
 	UpdateMagic();
 
 	CheckPlayerRingCollision();
+	//ドラゴンブレス当たり判定
+	DragonBreathCheckCollision();
+	//ドラゴントルネード当たり判定
+	DragonTornadoCheckCollision();
+	//
+	DragonClowCheckCollision();
 
 }
 void Player::UpdateProcessPost()
@@ -338,7 +505,6 @@ void Player::UpdateProcessPost()
 		sword_->Update();
 	}
 
-	MagicCoolTime();
 }
 
 void Player::Draw()
@@ -358,11 +524,6 @@ void Player::Draw()
 	int x = 20;
 	int y = 20;
 	int lineHeight = 25;
-
-	// 背景描画(半透明の黒)
-	//SetDrawBlendMode(DX_BLENDMODE_ALPHA, 180);
-	//DrawBox(x - 10, y - 10, x + 250, y + lineHeight * 11 + 10, 0x000000, true);
-	//SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
 
 	// タイトル
 	//DrawFormatString(x, y, 0xFFFFFF, "=== Player Status ===");
@@ -405,28 +566,27 @@ void Player::Draw()
 	DrawSphere3D(lineZ, 5.0f, 16, 0x0000FF, 0x0000FF, true);
 	DrawSphere3D(rot, 5.0f, 16, 0xFFFF00, 0xFFFF00, true);
 
-	for (int i = 0; i < THUNDER_COUNT; i++)
-	{
-		if (!thunderInfos_[i].isActive) continue;
-		VECTOR spherePos = thunderInfos_[i].transform.pos;
-		DrawSphere3D(spherePos, 100.0f, 16, 0xff00ff, 0xff00ff, false);
-	}
-	if (isAliveFire_)
-	{
-		DrawSphere3D(fireInfo_.transform.pos, FIRE_RADIUS, 16, 0xff0000, 0xff0000, false);
-	}
-
+	//debugPos_の球体描画(大きさは落下攻撃の判定用の半径と同じ)
+	DrawSphere3D(debugPos_, ATTACK_RANGE, 16, 0x00FFFF, 0x00FFFF, false);
 
 	VECTOR test = transform_.quaRot.PosAxis(VGet(0, 0, -100));
 	//DrawFormatString(0, 500, 0xffffff, "<Player> HP : %d", hp_);
+
+	DrawSphere3D(transform_.pos, 80, 15, 0xffffff, 0x0000FF, false);
 #endif // _DEBUG
 }
 
 void Player::ChangeState(STATE newState)
 {
+	state_ = newState;
 	currentState_->Exit(this);
 	currentState_ = states_[newState];
 	currentState_->Enter(this);
+}
+
+bool Player::IsShortCut()
+{
+	return isShortCut_;
 }
 
 void Player::ActivatePowerUp()
@@ -479,6 +639,44 @@ void Player::PlayBlinkEffect()
 	);
 	// エフェクトをエフェクトマネージャーに登録
 	EffectManager::GetInstance().RegisterEffect(effect);
+}
+
+void Player::DeleteFireEffect()
+{
+	if (!isAliveFire_) return;
+
+	VECTOR pos = fireInfo_.transform.pos;
+
+	//------------------------------------
+	// Fireエフェクト停止
+	//------------------------------------
+	if (fireInfo_.effect)
+	{
+		fireInfo_.effect->Stop();
+		fireInfo_.effect.reset();
+	}
+
+	//------------------------------------
+	// Burst生成
+	//------------------------------------
+	auto burst = std::make_shared<EffekseerEffect>(
+		L"Data/Effect/Fire/Burst.efkefc",
+		pos
+	);
+
+	burst->Play(
+		pos,
+		Quaternion()
+	);
+
+	burst->SetLifeTime(100);
+
+	EffectManager::GetInstance().RegisterEffect(burst);
+
+	//------------------------------------
+	// 弾削除
+	//------------------------------------
+	isAliveFire_ = false;
 }
 
 void Player::CheckPlayerRingCollision()
@@ -621,10 +819,11 @@ void Player::InitState()
 	states_[STATE::RUN] = new PlayerRunState();
 	//states_[STATE::FAST_RUN] = new PlayerFastRunState();
 	states_[STATE::JUMP] = new PlayerJumpState();
-	states_[STATE::JET] = new PlayerJetState();
+	states_[STATE::JET] = new PlayerRollState();
 	states_[STATE::FALL] = new PlayerFallState();
 	states_[STATE::ATTACK] = new PlayerAttackState();
-	states_[STATE::MAGIC] = new PlayerMagicState();  // 追加
+	states_[STATE::MAGIC] = new PlayerMagicState();
+	states_[STATE::DAMAGE] = new PlayerDamageState();
 	currentState_ = states_[STATE::IDLE];
 }
 
@@ -662,18 +861,43 @@ void Player::DestroyFireCollider(const FireInfo& fireInfo)
 
 void Player::CreateFireMagic()
 {
+	AudioManager::GetInstance()->SetSeVolume(220);
+	AudioManager::GetInstance()->PlaySE(SoundID::VOICE_PLAYER_ATTACK_3);
+	if (!isAliveFire_)
+	{
+		// 初期状態にリセット
+		fireInfo_ = FireInfo();
+		fireInfo_.timer = 0;
+		fireInfo_.transform.pos = transform_.pos;
+		fireInfo_.dir = transform_.quaRot.GetForward();
+		CreateFireCollider(fireInfo_);
+		//-----------------------
+		// Fireエフェクト生成
+		//-----------------------
+		fireInfo_.effect =
+			std::make_shared<EffekseerEffect>(
+				L"Data/Effect/Fire/Fire.efkefc",
+				fireInfo_.transform.pos);
 
-	AudioManager::GetInstance()->PlaySE(SoundID::SE_NOT_MAGIC);
-	// サンダーと違って、コライダはすぐに作成する
-	fireInfo_ = FireInfo();
-	fireInfo_.transform.pos = transform_.pos;
-	CreateFireCollider(fireInfo_);
+		fireInfo_.effect->Play(
+			fireInfo_.transform.pos,
+			transform_.quaRot);
 
+		EffectManager::GetInstance().RegisterEffect(
+			fireInfo_.effect);
+
+		//-----------------------
+
+		isAliveFire_ = true;
+		fireCoolTime_ = FIRE_COOL_TIME;
+	}
 }
 
 void Player::CreateThunderMagic()
 {
-	if (!useThunder_)
+	AudioManager::GetInstance()->SetSeVolume(220);
+	AudioManager::GetInstance()->PlaySE(SoundID::VOICE_PLAYER_ATTACK_3);
+	if (!isAliveThunder_)
 	{
 		thunderTimer_ = 0;
 		isAliveThunder_ = true;
@@ -704,68 +928,84 @@ void Player::CreateThunderMagic()
 			thunderInfos_[i].isDestroyed = false;
 		}
 
-		useThunder_ = true;
-	}
-	else
-	{
-		AudioManager::GetInstance()->PlaySE(SoundID::SE_NOT_MAGIC);
+		thunderCoolTime_ = THUNDER_COOL_TIME;
 	}
 }
 
-void Player::CreateRecoveryMagic()
+void Player::CreateHealMagic()
 {
-	if (!useRecovery_)
-	{
-		AudioManager::GetInstance()->PlaySE(SoundID::SE_MAGIC_HEAL);
-		HealHp(5);
-		useRecovery_ = true;
-	}
-	else
-	{
-		AudioManager::GetInstance()->PlaySE(SoundID::SE_NOT_MAGIC);
-	}
+	AudioManager::GetInstance()->SetSeVolume(150);
+	AudioManager::GetInstance()->PlaySE(SoundID::SE_MAGIC_HEAL);
+	HealHp(HEAL_AMOUNT);
+	healCoolTime_ = HEAL_COOL_TIME;
+
+	//ヒールエフェクト
+	auto effect = std::make_shared<EffekseerEffect>(
+		L"Data/Effect/Heal/Heal.efkefc",
+		transform_.pos
+	);
+
+	effect->SetLifeTime(HEAL_EFFECT_TIME);
+
+	effect->Play(
+		transform_.pos,
+		transform_.quaRot
+	);
+
+	EffectManager::GetInstance().RegisterEffect(effect);
 }
 
 void Player::MagicCoolTime()
 {
-	if (useThunder_)
+	if (thunderCoolTime_ > 0)
 	{
-		thunderCoolTime_++;
-		if (thunderCoolTime_ >= FIRE_COOL_TIME)
-		{
-			useThunder_ = false;
-			thunderCoolTime_ = 0;
-		}
+		thunderCoolTime_--;
 	}
 
-	if (useRecovery_)
+	if (fireCoolTime_ > 0)
 	{
-		recoveryCoolTime_++;
-		if (recoveryCoolTime_ >= RECOVERY_COOL_TIME)
-		{
-			useRecovery_ = false;
-			recoveryCoolTime_ = 0;
-		}
+		fireCoolTime_--;
+	}
+
+	if (healCoolTime_ > 0)
+	{
+		healCoolTime_--;
 	}
 }
 
-bool Player::GetUseThunder()
+int Player::GetThunderCoolTime()
 {
-	return useThunder_;
+	return thunderCoolTime_;
 }
 
-bool Player::GetUseFire()
+int Player::GetFireCoolTime()
 {
-	return useFire_;
+	return fireCoolTime_;
 }
 
-bool Player::GetUseRecovery()
+int Player::GetHealCoolTime()
 {
-	return useRecovery_;
+	return healCoolTime_;
+}
+
+void Player::ExecuteRangeAttack()
+{
+	// 少し前方に移動してから攻撃判定を行う
+	auto attackPos = VAdd(transform_.pos, VScale(transform_.quaRot.GetForward(), 50.0f));
+	const int DAMAGE = 3;
+	debugPos_ = attackPos;
+	gameScene_->CheckHitEnemy(attackPos, ATTACK_RANGE, DAMAGE);
+}
+
+Player::STATE Player::GetState() const
+{
+	return state_;
 }
 
 void Player::UpdateMagic()
 {
+	MagicCoolTime();
+
 	if (isAliveThunder_)
 	{
 		thunderTimer_++;
@@ -800,6 +1040,7 @@ void Player::UpdateMagic()
 
 					CreateThunderCollider(thunderInfos_[i]);
 
+					AudioManager::GetInstance()->SetSeVolume(150);
 					AudioManager::GetInstance()
 						->PlaySE(SoundID::SE_THUNDER);
 
@@ -812,7 +1053,7 @@ void Player::UpdateMagic()
 						pos
 					);
 
-					effect->SetLifeTime(30);
+					effect->SetLifeTime(THUNDER_EFFECT_TIME);
 
 					effect->Play(
 						pos,
@@ -843,19 +1084,230 @@ void Player::UpdateMagic()
 
 	if (isAliveFire_)
 	{
-		// 敵に向かって移動する処理
-		// パラメータは任意
-		//----------
-		const float SPEED = 5.0f;// ヘッダーに移動
-
-		// ヒント
-		// ターゲティング中ならその敵の座標を取得する
-		// ターゲティング中の敵がいない場合は、プレイヤーの前方に
-		// ゲームシーンの取得方法
-		// GameScene* gameScene = dynamic_cast<GameScene*>(scnMng_.GetScene());
-
-		//----------
+		//カメラモードを取得
+		GameScene::CAM_MODE mode = gameScene_->GetCamMode();
+		if (fireInfo_.timer < FIRE_LIFETIME)
+		{
+			//ロックオンがONだった場合
+			if (mode == GameScene::CAM_MODE::TARGETING)
+			{
+				VECTOR targetPos = gameScene_->GetTargetPos();
+				VECTOR vec = VSub(targetPos, fireInfo_.transform.pos);
+				VECTOR dir = VNorm(vec);
+				VECTOR move = VScale(dir, FIRE_SPEED);
+				fireInfo_.transform.pos = VAdd(fireInfo_.transform.pos, move);
+				//effectの位置を更新
+				if (fireInfo_.effect)
+				{
+					fireInfo_.effect->SetPosition(fireInfo_.transform.pos);
+					fireInfo_.effect->SetRotation(fireInfo_.transform.quaRot);
+				}
+			}
+			else
+			{
+				//ロックオンがOFFの場合
+				VECTOR move = VScale(fireInfo_.dir, FIRE_SPEED);
+				fireInfo_.transform.pos = VAdd(fireInfo_.transform.pos, move);
+				//effectの位置を更新
+				if (fireInfo_.effect)
+				{
+					fireInfo_.effect->SetPosition(fireInfo_.transform.pos);
+					fireInfo_.effect->SetRotation(fireInfo_.transform.quaRot);
+				}
+			}
+			fireInfo_.timer++;
+		}
+		else
+		{
+			DestroyFireCollider(fireInfo_);
+			isAliveFire_ = false;
+		}
 
 		fireInfo_.transform.Update();
+	}
+
+	if (isAliveThunder_ || isAliveFire_) isAliveMagic_ = true;
+	else isAliveMagic_ = false;
+}
+
+void Player::DragonBreathCheckCollision()
+{
+	// 死亡状態なら処理しない
+	if (!isAlive_) return;
+	//すでにダメージを受けていたら処理しない
+	if (wasHitDamage_) return;
+
+	// 自身のカプセルコライダを取得
+	ColliderCapsule* ownColCapsule = nullptr;
+	for (const auto& ownCol : ownColliders_)
+	{
+		if (ownCol.second->GetTag() == ColliderBase::TAG::PLAYER)
+		{
+			ownColCapsule =
+				dynamic_cast<ColliderCapsule*>(ownCol.second);
+			//if (ownColCapsule == nullptr) return;
+		}
+	}
+
+	// プレイヤーの剣コライダはhitColliders_に登録されているはずなので、全てチェック
+	for (const auto& hitCol : hitColliders_)
+	{
+		if (hitCol->GetTag() == ColliderBase::TAG::ENEMY_DRAGON_BREATH)
+		{
+			// ブレスはカプセルコライダ
+			// 敵もカプセルコライダ
+			// カプセルコライダ同士で衝突判定
+			const ColliderCapsule* breathColCapsule =
+				dynamic_cast<const ColliderCapsule*>(hitCol);
+
+			if (breathColCapsule == nullptr) return;
+
+			// 衝突判定
+			if (ownColCapsule->IsHit(breathColCapsule))
+			{
+				// ダメージ処理
+				Damage(3, transform_.GetForward());
+
+				//ダメージサウンド
+				AudioManager::GetInstance()->SetSeVolume(100);
+				AudioManager::GetInstance()->PlaySE(SoundID::SE_ENEMY_HIT);
+
+				// エフェクト再生
+				/*VECTOR hitPos = VAdd(
+					ownColCapsule->GetCenter(),
+					swordColCapsule->GetCenter());
+				hitPos = VScale(hitPos, 0.5f);*/
+				//HitEffect(hitPos, VNorm(VSub(hitPos, transform_.pos)), 1.0f);
+
+				// 一度あったらフラグ
+				wasHitDamage_ = true;
+
+				InputManager::GetInstance()->VibrateGamepad(1, 500, 100);
+			}
+		}
+	}
+
+}
+
+void Player::DragonTornadoCheckCollision()
+{
+	// 死亡状態なら処理しない
+	if (!isAlive_) return;
+	//すでにダメージを受けていたら処理しない
+	if (tornadoDamageCoolTime_ > 0) return;
+
+	// 自身のカプセルコライダを取得
+	ColliderCapsule* ownColCapsule = nullptr;
+	for (const auto& ownCol : ownColliders_)
+	{
+		if (ownCol.second->GetTag() == ColliderBase::TAG::PLAYER)
+		{
+			ownColCapsule =
+				dynamic_cast<ColliderCapsule*>(ownCol.second);
+			//if (ownColCapsule == nullptr) return;
+		}
+	}
+
+	// プレイヤーの剣コライダはhitColliders_に登録されているはずなので、全てチェック
+	for (const auto& hitCol : hitColliders_)
+	{
+		if (hitCol->GetTag() == ColliderBase::TAG::ENEMY_DRAGON_TORNADO)
+		{
+			// ブレスはカプセルコライダ
+			// 敵もカプセルコライダ
+			// カプセルコライダ同士で衝突判定
+			const ColliderCapsule* tornadoColCapsule =
+				dynamic_cast<const ColliderCapsule*>(hitCol);
+
+			if (tornadoColCapsule == nullptr)
+			{
+				continue;
+			}
+
+			if (tornadoDamageCoolTime_ > 0)
+			{
+				return;
+			}
+
+			if (ownColCapsule->IsHit(tornadoColCapsule))
+			{
+				// ダメージ処理
+				Damage(2, transform_.GetForward());
+
+				// 0.3秒間ダメージ無効
+				tornadoDamageCoolTime_ = 30;
+
+				//ダメージサウンド
+				AudioManager::GetInstance()->SetSeVolume(100);
+				AudioManager::GetInstance()->PlaySE(SoundID::SE_ENEMY_HIT);
+
+				// エフェクト再生
+				/*VECTOR hitPos = VAdd(
+					ownColCapsule->GetCenter(),
+					swordColCapsule->GetCenter());
+				hitPos = VScale(hitPos, 0.5f);*/
+				//HitEffect(hitPos, VNorm(VSub(hitPos, transform_.pos)), 1.0f);
+
+
+				InputManager::GetInstance()->VibrateGamepad(1, 500, 100);
+			}
+		}
+	}
+}
+
+void Player::DragonClowCheckCollision()
+{
+	// 死亡状態なら処理しない
+	if (!isAlive_) return;
+	//すでにダメージを受けていたら処理しない
+	if (wasHitColw_) return;
+
+	// 自身のカプセルコライダを取得
+	ColliderCapsule* ownColCapsule = nullptr;
+	for (const auto& ownCol : ownColliders_)
+	{
+		if (ownCol.second->GetTag() == ColliderBase::TAG::PLAYER)
+		{
+			ownColCapsule =
+				dynamic_cast<ColliderCapsule*>(ownCol.second);
+			//if (ownColCapsule == nullptr) return;
+		}
+	}
+
+	// プレイヤーの剣コライダはhitColliders_に登録されているはずなので、全てチェック
+	for (const auto& hitCol : hitColliders_)
+	{
+		if (hitCol->GetTag() == ColliderBase::TAG::ENEMY_DRAGON_CLOW)
+		{
+			// ブレスはカプセルコライダ
+			// 敵もカプセルコライダ
+			// カプセルコライダ同士で衝突判定
+			const ColliderSphere* breathColSphere =
+				dynamic_cast<const ColliderSphere*>(hitCol);
+
+			if (breathColSphere == nullptr) return;
+
+			// 衝突判定
+			if (ownColCapsule->IsHit(breathColSphere))
+			{
+				// ダメージ処理
+				Damage(1, transform_.GetForward());
+
+				//ダメージサウンド
+				AudioManager::GetInstance()->SetSeVolume(100);
+				AudioManager::GetInstance()->PlaySE(SoundID::SE_ENEMY_HIT);
+
+				// 振動
+				InputManager::GetInstance()->VibrateGamepad(
+					1,
+					500,
+					100
+				);
+	
+				// 一度あったらフラグ
+				wasHitColw_ = true;
+
+			}
+		}
 	}
 }

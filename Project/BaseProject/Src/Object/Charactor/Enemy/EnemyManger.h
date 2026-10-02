@@ -1,5 +1,6 @@
 #pragma once
 #include "../../Collider/ColliderBase.h"
+#include "../../../Lib/nlohmann/json.hpp"
 #include <vector>
 #include "EnemyBase.h"
 
@@ -10,20 +11,17 @@ class Stage;
 
 class EnemyManager
 {
-
 public:
-
 	enum class WAVE
 	{
-		START,//wave開始（演出とか入れる用）
+		//wave開始（演出とか入れる用）
+		START,
 		WAVE1,
 		WAVE2,
 		WAVE3,
-		WAVE4,
 		BOSS,
 		END
 	};
-
 
 	// コンストラクタ
 	EnemyManager(GameScene* gamescene, Player* player);
@@ -44,8 +42,6 @@ public:
 	// 衝突対象となるコライダを指定して削除
 	void RemoveHitCollider(const ColliderBase* hitCollider);
 
-	// CSVから敵情報の読取を行う
-	void LoadCsvData();
 	// エネミー生成
 	EnemyBase* Create(const EnemyBase::EnemyData& data, const Player* player);
 
@@ -58,10 +54,16 @@ public:
 	//enemyの絶滅フラグ渡し
 	bool GetEnemyDead();
 
+	//エフェクト生成
 	void SpawnEffect(const VECTOR& pos);
-
 	void DeadEffect(const VECTOR& pos);
+	void CheckHit(const VECTOR& pos, float radius, int damage);
 
+	//外部wave情報渡し
+	WAVE GetWave() const { return wave_; }
+
+	//wave情報セット
+	void SetWave(const WAVE wave);
 
 private:
 	//プレイヤー
@@ -71,10 +73,36 @@ private:
 	//ウェーブ
 	WAVE wave_;
 
+	// 敵を追加生成する間隔
+	static constexpr float BOSS_SPAWN_INTERVAL = 1200.0f; // 約5秒
+
+	//敵の移動範囲
+	static constexpr float MOVABLE_RANGE_MAX = 1000.0f;
+
+	static constexpr VECTOR BOSS_POS = { 0,40,0 };
+	static constexpr VECTOR LARGE_01_POS = { 300,40,0 };
+	static constexpr VECTOR LARGE_02_POS = { -300,40,0 };
+
+	// 敵生成間隔
+	static constexpr float DEF_SPAWN_INTERVAL = 90.0f;
+
+	//敵の移動範囲
+	static constexpr float RASE_POS_Y = 200;
+
 	// エネミー
 	std::vector<EnemyBase*> enemies_;
+	std::vector<EnemyBase::EnemyData> enemyData_;
 
+	//エネミーステータス情報
+	std::vector<EnemyBase::EnemyStatus> enemyStatusData_;
 
+	//エネミーWAVE情報
+	std::vector<EnemyBase::EnemyWave> enemyWaveData_;
+
+	//使用済み座標番号
+	std::vector<int> usedPos_;
+
+	// 衝突対象コライダ（単一登録用）
 	const ColliderBase* hitCollider_;
 
 	// 衝突対象コライダ（複数登録を保持するため vector に変更）
@@ -86,6 +114,7 @@ private:
 	// 攻撃エフェクト用のモデルハンドルID
 	int attackModel_;
 
+	// 敵全滅フラグ
 	bool isDead_ = false;
 
 	//wave敵全滅フラグ
@@ -94,6 +123,15 @@ private:
 	bool wave3Clear_ = false;
 	bool wave4Clear_ = false;
 	bool waveBossClear_ = false;
+
+	// 敵生成用タイマー
+	float spawnTimer_ = 0.0f;
+
+	// 次に生成する敵の番号
+	int spawnIndex_ = 0;
+
+	// 現在のWAVEの敵数
+	int currentWaveEnemyCount_ = 0;
 
 	// 視野範囲用トランスフォーム
 	Transform attackTransform_;
@@ -109,18 +147,30 @@ private:
 	void ChangeWave(WAVE wave);
 	//WAVEデータ読み込み
 	void LoadWaveData(WAVE wave);
-
-
 	void UpdateWave();
 
-
 	//ウェーブ別更新
-	void UpdateWaveStart();
 	void UpdateWave1();
 	void UpdateWave2();
 	void UpdateWave3();
-	void UpdateWave4();
 	void UpdateWaveBoss();
 
+	//ウェーブ別敵生成
+	std::vector<VECTOR>LargePos_;
+	std::vector<VECTOR>EnemyPos_;
+
+	//敵生成座標初期化
+	void InitEnemyPos();
+
+	// BOSS WAVEの敵生成タイマー
+	float bossSpawnTimer_ = 0.0f;
+	void SpawnBossEnemy();
+	void SpawnNextEnemy();
+
+	//エネミーステータス情報読み込み
+	void LoadJsonStatusData();
+
+	//エネミーWAVE情報読み込み
+	void LoadJsonWaveData();
 };
 

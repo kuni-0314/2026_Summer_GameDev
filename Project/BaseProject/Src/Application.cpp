@@ -25,6 +25,7 @@ const std::string Application::PATH_CSV = "Data/Csv/";
 const std::string Application::PATH_SOUND_SE = "Data/Sound/SE/";
 const std::string Application::PATH_SOUND_BGM = "Data/Sound/BGM/";
 const std::string Application::PATH_FONT = "Data/Font/";
+const std::string Application::PATH_JSON = "Data/Json/";
 
 
 void Application::CreateInstance()
@@ -100,7 +101,6 @@ void Application::Init()
 	InputManager::GetInstance()->Init();
 	InputManager::GetInstance()->SetKeyAndMouseEnabled(true);
 
-
 	// リソース管理初期化
 	ResourceManager::CreateInstance();
 
@@ -173,10 +173,6 @@ void Application::Run()
 			}
 		}
 
-		//InitAudioDevice();
-		//float volume = 0.0f;
-		//pVolume_->GetMasterVolumeLevelScalar(&volume);
-
 		inputManager->Update();
 		sceneManager.Update();
 
@@ -226,10 +222,6 @@ void Application::Destroy()
 	}
 
 	CoUninitialize();
-
-	// インスタンスのメモリ解放
-	delete instance_;
-	instance_ = nullptr;
 
 	#ifdef _DEBUG
 	// プログラム終了直前にメモリリークレポートを出力

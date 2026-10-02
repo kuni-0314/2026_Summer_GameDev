@@ -3,12 +3,10 @@
 
 class OverScene : public SceneBase
 {
-
 public:
 
 	enum class SELECT
 	{
-		CONTINUE, //そのWAVEから
 		RETRY,	  //最初から
 		TITLE	  //タイトルから
 	};
@@ -34,6 +32,12 @@ public:
 
 private:
 
+	//セレクト位置
+	static constexpr int SELECT_RETRY_POS_X = 500;
+	static constexpr int SELECT_TITLE_POS_X = 500;
+	static constexpr int SELECT_RETRY_POS_Y = 550;
+	static constexpr int SELECT_TITLE_POS_Y = 750;
+
 	SELECT select_;
 
 	int playerHandle_;
@@ -55,8 +59,6 @@ private:
 	void SelectChange(SELECT next);
 
 	void SelectUpdate();
-
-
 };
 
 

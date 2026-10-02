@@ -33,8 +33,8 @@ public:
 		float pushDistance) const override {
 		return VECTOR();
 	}
-protected:
 
+protected:
 	// Õ“Ë”»’è‚©‚çœŠO‚·‚éƒtƒŒ[ƒ€”Ô†
 	std::vector<int> excludeFrameIds_;
 

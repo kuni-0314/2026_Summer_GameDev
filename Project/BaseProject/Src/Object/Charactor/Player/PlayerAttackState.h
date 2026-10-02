@@ -18,39 +18,39 @@ public:
 		NORMAL4,
 		NORMAL5,
 		HEAVY,
-		//DASH,
-		AIR1,
-		AIR2,
-		AIR3,
-		AIR4,
-		AIR5,
-		FALL,
 		MAX
 	};
 
 	static constexpr float ATTACK_POW[static_cast<int>(ATTACK_TYPE::MAX)] =
 	{
 		0.0f,	// NONE
-		20.0f,	// NORMAL1
-		15.0f,	// NORMAL2
-		25.0f,	// NORMAL3
-		10.0f,	// NORMAL4
-		30.0f,	// NORMAL5
-		50.0f,	// HEAVY
-		//25.0f,  // DASH
-		8.0f,   // AIR1
-		10.0f,  // AIR2
-		12.0f,  // AIR3
-		15.0f,  // AIR4
-		20.0f,  // AIR5
-		25.0f   // FALL
+		1.0f,	// NORMAL1
+		1.0f,	// NORMAL2
+		2.0f,	// NORMAL3
+		1.0f,	// NORMAL4
+		3.0f,	// NORMAL5
+		5.0f,	// HEAVY
+	};
+
+#define ATK_S_ANIM_INDEX 0
+#define ATK_E_ANIM_INDEX 1
+	static constexpr int ATTACK_FRAME[static_cast<int>(ATTACK_TYPE::MAX)][2] =
+	{
+		// 攻撃判定のフレーム数（開始フレーム, 終了フレーム）
+		{ 0, 0 },	// NONE
+		{ 25, 45 },	// NORMAL1
+		{ 18, 32 },	// NORMAL2
+		{ 45, 72 },	// NORMAL3
+		{ 42, 110 },	// NORMAL4
+		{ 48, 68 },	// NORMAL5
+		{ 88, 89 },	// HEAVY
 	};
 
 	// 攻撃のローカル座標オフセット（x:左右, y:高さ, z:前後）
 	static constexpr VECTOR ATTACK_LOCAL_POS = { 10.0f, 100.0f, 70.0f };
 	
-	// 攻撃の
-	static constexpr float ATTACK_RADIUS = 80.0f;
+	// 攻撃判定の半径
+	static constexpr float ATTACK_RADIUS = 100.0f;
 
 	// アニメーション終了後のコンボ受付時間（フレーム数）
 	static constexpr int COMBO_WINDOW_FRAME = 60;
@@ -64,4 +64,18 @@ private:
 
 	// 攻撃位置を計算（プレイヤーの向きを考慮）
 	VECTOR CalculateAttackPosition(Player* player);
+
+	// 攻撃種ごとの処理
+	void UpdateAttack(Player* player);
+
+	bool isAnimationSkipped_ = false; // アニメーションをスキップするかどうか
+	
+	// スタック防止用
+	// 座標の変化が無い場合アニメーションを再開するためのタイマー
+	int stopTimer_;											// 攻撃停止タイマー
+	static constexpr int STOP_TIMER_MAX = 60;				// 停止タイマーの最大値
+	int noMovementFrameCount_;								// 座標の変化が無かったフレーム数
+	static constexpr int NO_MOVEMENT_FRAME_THRESHOLD = 30;	// 座標の変化が無かったフレーム数の閾値
+	static constexpr float NO_MOVEMENT_THRESHOLD = 0.1f;	// 座標の変化が無かったとみなす閾値
+	bool forceResumed_ = false;  // 強制再開フラグ
 };

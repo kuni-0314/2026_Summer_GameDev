@@ -1,20 +1,16 @@
 #pragma once
 #include <chrono>
 #include <DxLib.h>
+#include "../Object/Charactor/Enemy/EnemyManger.h"
+
 class SceneBase;
 class Fader;
 class Camera;
 
+
 class SceneManager
 {
-
 public:
-
-	// 背景色
-	//static constexpr int BACKGROUND_COLOR_R = 0;
-	//static constexpr int BACKGROUND_COLOR_G = 139;
-	//static constexpr int BACKGROUND_COLOR_B = 139;
-
 	static constexpr int BACKGROUND_COLOR_R = 255;
 	static constexpr int BACKGROUND_COLOR_G = 255;
 	static constexpr int BACKGROUND_COLOR_B = 255;
@@ -32,6 +28,7 @@ public:
 		OVER,
 		DEBUG,
 		OPTION,
+		TUTORIAL,
 	};
 	
 	// インスタンスの生成
@@ -72,8 +69,19 @@ public:
 
 	SceneBase* GetScene() const { return scene_; }
 
-private:
+	void SetContinueWave(EnemyManager::WAVE wave) 
+	{
+		continueWave_ = wave;
+		isContinue_ - true;
+	}
+	//終了wave取得
+	EnemyManager::WAVE GetContinueWave() const { return continueWave_; }
+	//コンテニュー判定取得
+	bool IsContinue() const { return isContinue_; }
+	//wave情報リセット
+	void ResetContinue() { isContinue_ = false; }
 
+private:
 	// 静的インスタンス
 	static SceneManager* instance_;
 
@@ -89,9 +97,15 @@ private:
 	// カメラ
 	Camera* camera_;
 
+	//コンテニュー専用保存用wave
+	EnemyManager::WAVE continueWave_;
+
 
 	// シーン遷移中判定
 	bool isSceneChanging_;
+
+	//コンテニュー判定
+	bool isContinue_;
 
 	// デルタタイム
 	std::chrono::system_clock::time_point preTime_;
@@ -118,5 +132,4 @@ private:
 
 	// フェード
 	void Fade();
-
 };

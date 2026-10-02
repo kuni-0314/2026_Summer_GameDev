@@ -5,9 +5,7 @@
 
 class ResourceManager
 {
-
 public:
-
 	// リソース名
 	enum class SRC
 	{
@@ -32,6 +30,7 @@ public:
 		ENEMY_RASE,				//らせ
 		ENEMY_RASE_BALL,		//攻撃用モデル
 		ENEMY_LARGE,
+		ENEMY_DRAGON,			//ボスドラゴン
 		VIEW_RANGE,				//敵の視野
 		CELL_RED,				// 赤色セル
 		BATTLE_STAGE,			//バトルステージ
@@ -76,14 +75,19 @@ public:
 		IMG_SELECT_SANDER,
 		IMG_SELECT_RECOVERY,
 		IMG_SELECT_FIRE,
-		IMG_NOTUSE_SANDER,
-		IMG_USE_SANDER,
-		IMG_NOTUSE_FIRE,
-		IMG_USE_FIRE,
-		IMG_NOTUSE_RECOVERY,
-		IMG_USE_RECOVERY,
+		IMG_SELECT_ALL,
+		IMG_NOTUSE_SANDER,			//使用可能雷魔法
+		IMG_USE_SANDER,				//クールタイム中雷魔法
+		IMG_NOTUSE_FIRE,			//使用可能炎魔法
+		IMG_USE_FIRE,				//クールタイム中炎魔法
+		IMG_NOTUSE_RECOVERY,		//使用可能回復コマンド
+		IMG_USE_RECOVERY,			//クールタイム中回復魔法コマンド
 		OPTION_FRAME,
 		EFFECT_DEATH,				//死亡エフェクト
+		IMG_LOCKON_FONT_UI,			//ロックオン時用UI（フォント）
+		IMG_TUTORIAL_KEYBOARD,		//チュートリアル画像
+		IMG_TUTORIAL_GAMEPAD,		//チュートリアル画像
+		IMG_GAMECLEAR,				//ゲームクリア画像
 		MAX
 	};
 
@@ -109,7 +113,6 @@ public:
 	int LoadModelDuplicate(SRC src);
 
 private:
-
 	// 静的インスタンス
 	static ResourceManager* instance_;
 
@@ -129,5 +132,4 @@ private:
 
 	// 内部ロード
 	Resource& _Load(SRC src);
-
 };

@@ -19,6 +19,9 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Src\Object\Charactor\Enemy\Enemy.cpp" />
+    <ClCompile Include="Src\Object\Charactor\Player\PlayerDamageState.cpp" />
+    <ClCompile Include="Src\Object\Charactor\Enemy\Dragon\EnemyDragon.cpp" />
     <ClCompile Include="Src\Object\Charactor\Player\PlayerMagicState.cpp" />
     <ClCompile Include="Src\Common\DebugStringDrawer.cpp" />
     <ClCompile Include="Src\Scene\OptionScene.cpp" />
@@ -88,8 +91,59 @@
     <ClCompile Include="Src\Object\Actor\UI\UIBase.cpp" />
     <ClCompile Include="Src\Object\Actor\Stage\StageWall.cpp" />
     <ClCompile Include="Src\Object\Weapon\Sword\SwordBase.cpp" />
+    <ClCompile Include="Src\Scene\TutorialScene.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Src\Object\Charactor\Enemy\Enemy.h" />
+    <ClInclude Include="Src\Lib\nlohmann\adl_serializer.hpp" />
+    <ClInclude Include="Src\Lib\nlohmann\byte_container_with_subtype.hpp" />
+    <ClInclude Include="Src\Lib\nlohmann\detail\abi_macros.hpp" />
+    <ClInclude Include="Src\Lib\nlohmann\detail\conversions\from_json.hpp" />
+    <ClInclude Include="Src\Lib\nlohmann\detail\conversions\to_chars.hpp" />
+    <ClInclude Include="Src\Lib\nlohmann\detail\conversions\to_json.hpp" />
+    <ClInclude Include="Src\Lib\nlohmann\detail\exceptions.hpp" />
+    <ClInclude Include="Src\Lib\nlohmann\detail\hash.hpp" />
+    <ClInclude Include="Src\Lib\nlohmann\detail\input\binary_reader.hpp" />
+    <ClInclude Include="Src\Lib\nlohmann\detail\input\input_adapters.hpp" />
+    <ClInclude Include="Src\Lib\nlohmann\detail\input\json_sax.hpp" />
+    <ClInclude Include="Src\Lib\nlohmann\detail\input\lexer.hpp" />
+    <ClInclude Include="Src\Lib\nlohmann\detail\input\parser.hpp" />
+    <ClInclude Include="Src\Lib\nlohmann\detail\input\position_t.hpp" />
+    <ClInclude Include="Src\Lib\nlohmann\detail\iterators\internal_iterator.hpp" />
+    <ClInclude Include="Src\Lib\nlohmann\detail\iterators\iteration_proxy.hpp" />
+    <ClInclude Include="Src\Lib\nlohmann\detail\iterators\iterator_traits.hpp" />
+    <ClInclude Include="Src\Lib\nlohmann\detail\iterators\iter_impl.hpp" />
+    <ClInclude Include="Src\Lib\nlohmann\detail\iterators\json_reverse_iterator.hpp" />
+    <ClInclude Include="Src\Lib\nlohmann\detail\iterators\primitive_iterator.hpp" />
+    <ClInclude Include="Src\Lib\nlohmann\detail\json_custom_base_class.hpp" />
+    <ClInclude Include="Src\Lib\nlohmann\detail\json_pointer.hpp" />
+    <ClInclude Include="Src\Lib\nlohmann\detail\json_ref.hpp" />
+    <ClInclude Include="Src\Lib\nlohmann\detail\macro_scope.hpp" />
+    <ClInclude Include="Src\Lib\nlohmann\detail\macro_unscope.hpp" />
+    <ClInclude Include="Src\Lib\nlohmann\detail\meta\call_std\begin.hpp" />
+    <ClInclude Include="Src\Lib\nlohmann\detail\meta\call_std\end.hpp" />
+    <ClInclude Include="Src\Lib\nlohmann\detail\meta\cpp_future.hpp" />
+    <ClInclude Include="Src\Lib\nlohmann\detail\meta\detected.hpp" />
+    <ClInclude Include="Src\Lib\nlohmann\detail\meta\identity_tag.hpp" />
+    <ClInclude Include="Src\Lib\nlohmann\detail\meta\is_sax.hpp" />
+    <ClInclude Include="Src\Lib\nlohmann\detail\meta\logic.hpp" />
+    <ClInclude Include="Src\Lib\nlohmann\detail\meta\std_fs.hpp" />
+    <ClInclude Include="Src\Lib\nlohmann\detail\meta\type_traits.hpp" />
+    <ClInclude Include="Src\Lib\nlohmann\detail\meta\void_t.hpp" />
+    <ClInclude Include="Src\Lib\nlohmann\detail\output\binary_writer.hpp" />
+    <ClInclude Include="Src\Lib\nlohmann\detail\output\output_adapters.hpp" />
+    <ClInclude Include="Src\Lib\nlohmann\detail\output\serializer.hpp" />
+    <ClInclude Include="Src\Lib\nlohmann\detail\string_concat.hpp" />
+    <ClInclude Include="Src\Lib\nlohmann\detail\string_escape.hpp" />
+    <ClInclude Include="Src\Lib\nlohmann\detail\string_utils.hpp" />
+    <ClInclude Include="Src\Lib\nlohmann\detail\value_t.hpp" />
+    <ClInclude Include="Src\Lib\nlohmann\json.hpp" />
+    <ClInclude Include="Src\Lib\nlohmann\json_fwd.hpp" />
+    <ClInclude Include="Src\Lib\nlohmann\ordered_map.hpp" />
+    <ClInclude Include="Src\Lib\nlohmann\thirdparty\hedley\hedley.hpp" />
+    <ClInclude Include="Src\Lib\nlohmann\thirdparty\hedley\hedley_undef.hpp" />
+    <ClInclude Include="Src\Object\Charactor\Player\PlayerDamageState.h" />
+    <ClInclude Include="Src\Object\Charactor\Enemy\Dragon\EnemyDragon.h" />
     <ClInclude Include="Src\Object\Charactor\Player\PlayerMagicState.h" />
     <ClInclude Include="Src\Common\DebugStringDrawer.h" />
     <ClInclude Include="Src\Scene\OptionScene.h" />
@@ -159,6 +213,7 @@
     <ClInclude Include="Src\Object\Actor\UI\UIBase.h" />
     <ClInclude Include="Src\Object\Actor\Stage\StageWall.h" />
     <ClInclude Include="Src\Object\Weapon\Sword\SwordBase.h" />
+    <ClInclude Include="Src\Scene\TutorialScene.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Src\Shader\PostEffect\FH_GameStart.hlsl">
@@ -282,6 +337,14 @@
       <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Data/Shader/%(Filename).cso</ObjectFileOutput>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
+    </FxCompile>
+    <FxCompile Include="Src\Shader\PostEffect\LowHP.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">5.0</ShaderModel>
+      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Data/Shader/%(Filename).cso</ObjectFileOutput>
     </FxCompile>
     <FxCompile Include="Src\Shader\PostEffect\Monotone.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
@@ -462,6 +525,10 @@
       <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Data/Shader/%(Filename).cso</ObjectFileOutput>
     </FxCompile>
   </ItemGroup>
+  <ItemGroup>
+    <None Include="Data\Json\Enemy.json" />
+    <None Include="Data\Json\Wave.json" />
+  </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
     <ProjectGuid>{EAE8EE94-FD52-4CCB-AF50-ECC1E6485C92}</ProjectGuid>
@@ -551,7 +618,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(DXLIB_DIR);$(DXLIB_FOR_EFFEKSEER)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(DXLIB_DIR);$(DXLIB_FOR_EFFEKSEER);$(ProjectDir)Src/Lib/</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
       <LanguageStandard>stdcpp20</LanguageStandard>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
@@ -589,7 +656,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(DXLIB_DIR);$(DXLIB_FOR_EFFEKSEER)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(DXLIB_DIR);$(DXLIB_FOR_EFFEKSEER);$(ProjectDir)Src/Lib/</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <LanguageStandard>stdcpp20</LanguageStandard>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>

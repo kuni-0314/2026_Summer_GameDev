@@ -4,10 +4,12 @@
 class Transform;
 class ColliderModel;
 class ColliderSphere;
+
 class ColliderCapsule : public ColliderBase
 {
 public:
 	// コンストラクタ
+	//posTopとposDownでカプセルコライダーのサイズ設定(定数推奨）
 	ColliderCapsule(
 		TAG tag, const Transform* follow,
 		const VECTOR& localPosTop, const VECTOR& localPosDown, float radius);
@@ -54,21 +56,31 @@ public:
 		bool isExclude = false, bool isTarget = false) const;
 
 	// デバッグ用描画のON/OFF
-	void SetDebugDraw(bool isDebugDraw) { isDebugDraw_ = isDebugDraw; }
+	void SetDebugDraw(bool isDebugDraw);
 
+	//複数コライダ区別用
+	bool wasHit_ = false;
+
+	//wasHit_のセッターとゲッター
+	void  SetWasHit(bool washit);
+	
+	//wasHit_のゲッター
+	bool GetwasHit() const;
+	
 protected:
 	// デバッグ用描画
 	void DrawDebug(int color) override;
+
 private:
 	// 親Transformからの相対位置(上側)
 	VECTOR localPosTop_;
+
 	// 親Transformからの相対位置(下側)
 	VECTOR localPosDown_;
+
 	// 半径
 	float radius_;
 
 	// デバッグ用
-	bool isDebugDraw_ = false;
-
-
+	bool isDebugDraw_ = true;
 };

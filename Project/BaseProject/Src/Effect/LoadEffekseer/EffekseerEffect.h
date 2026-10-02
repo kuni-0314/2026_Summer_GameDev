@@ -22,9 +22,13 @@ public:
     virtual void Update() override;
     virtual void Draw() const override;
 
+	void Release();
+
     void Play(VECTOR pos, Quaternion rot);
 
     void SetPosition(const VECTOR& pos);
+
+	void SetRotation(const Quaternion& rot);
 
     //éıñΩä«óù
     void SetLifeTime(int frame);
@@ -32,5 +36,4 @@ public:
 	void Stop();
 
 	void SetScale(float scale);
-
 };

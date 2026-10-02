@@ -14,14 +14,21 @@ bool PlayerState::CheckTransitions(Player* player)
 	bool isAttackInput = false;
 	if (isGamepadConnected)
 	{
+		// ゲームパッドが接続されている場合の入力チェック
 		if (enableKAM)
 		{
-			isAttackInput = ins->IsGamepadTrgUp(InputManager::PadInput::A, player->GetPadNum());
+			if (!player->IsShortCut())
+			{
+				isAttackInput = ins->IsGamepadTrgUp(InputManager::PadInput::A, player->GetPadNum());
+			}
 			isAttackInput = isAttackInput || ins->IsMouseTrgUp(MOUSE_INPUT_LEFT);
 		}
 		else
 		{
-			isAttackInput = ins->IsGamepadTrgUp(InputManager::PadInput::A, player->GetPadNum());
+			if (!player->IsShortCut())
+			{
+				isAttackInput = ins->IsGamepadTrgUp(InputManager::PadInput::A, player->GetPadNum());
+			}
 		}
 	}
 	else
@@ -32,8 +39,6 @@ bool PlayerState::CheckTransitions(Player* player)
 	if (isAttackInput && player->GetAttackCoolTime() <= 0)
 	{
 		player->ChangeState(Player::STATE::ATTACK);
-		//攻撃中判定
-		player->SetAttacking(true);
 		return true;
 	}
 
@@ -41,9 +46,13 @@ bool PlayerState::CheckTransitions(Player* player)
 	bool isJetInput = false;
 	if (isGamepadConnected)
 	{
+		// ゲームパッドが接続されている場合の入力チェック
 		if (enableKAM)
 		{
-			isJetInput = ins->IsGamepadTrgDown(InputManager::PadInput::X, player->GetPadNum());
+			if (!player->IsShortCut())
+			{
+				isJetInput = ins->IsGamepadTrgDown(InputManager::PadInput::X, player->GetPadNum());
+			}
 			isJetInput = isJetInput || ins->IsMouseTrgDown(MOUSE_INPUT_RIGHT);
 		}
 		else
@@ -56,6 +65,7 @@ bool PlayerState::CheckTransitions(Player* player)
 		isJetInput = ins->IsMouseTrgDown(MOUSE_INPUT_RIGHT);
 	}
 
+	// ジェット入力があった場合、ジェット状態に遷移
 	if (isJetInput)
 	{
 		player->ChangeState(Player::STATE::JET);
@@ -67,6 +77,7 @@ bool PlayerState::CheckTransitions(Player* player)
 	bool isJumpInput = false;
 	if (isGamepadConnected)
 	{
+		// ゲームパッドが接続されている場合の入力チェック
 		if (enableKAM)
 		{
 			isJumpInput = ins->IsGamepadTrgDown(InputManager::PadInput::B, player->GetPadNum());
@@ -82,6 +93,7 @@ bool PlayerState::CheckTransitions(Player* player)
 		isJumpInput = ins->IsTrgDown(KEY_INPUT_SPACE);
 	}
 
+	// ジャンプ入力があった場合、ジャンプ状態に遷移
 	if (!player->IsAir() && !player->IsJump() && isJumpInput)
 	{
 		player->ChangeState(Player::STATE::JUMP);

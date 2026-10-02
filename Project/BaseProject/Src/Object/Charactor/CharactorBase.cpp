@@ -8,6 +8,8 @@
 #include "../../Object/Collider/Model/ColliderModel.h"
 #include "../../Object/Collider/Capsule/ColliderCapsule.h"
 #include "../../Manager/ResourceManager.h"
+#include "../../Effect/LoadEffekseer/EffekseerEffect.h"
+#include "../../Effect/EffectManager.h"
 
 CharactorBase::CharactorBase()
 	:
@@ -19,6 +21,7 @@ CharactorBase::CharactorBase()
 	hp_(0)
 {
 }
+
 CharactorBase::~CharactorBase()
 {
 }
@@ -42,6 +45,24 @@ void CharactorBase::Update()
 	// 移動前座標を更新
 	prevPos_ = transform_.pos;
 
+	// 無敵フレームのカウントダウン
+	if (invincibleFrameCount_ > 0)
+	{
+		invincibleFrameCount_--;
+	}
+
+	if (invincibleFrameCount_ <= 0)
+	{
+		isInvincible_ = false;
+	}
+	else
+	{
+		isInvincible_ = true;
+	}
+
+	movePow_ = knockbackPow_;
+	knockbackPow_ = VScale(knockbackPow_, 0.99f);
+
 	// 各キャラクターごとの更新処理
 	UpdateProcess();
 	// 移動方向に応じた遅延回転
@@ -54,11 +75,10 @@ void CharactorBase::Update()
 	Collision();
 	// モデル制御更新
 	transform_.Update();
-	// アニメーション再生
-	animationController_->Update();
 	// 各キャラクターごとの更新後処理
 	UpdateProcessPost();
-
+	// アニメーション再生
+	animationController_->Update();
 }
 
 void CharactorBase::Draw()
@@ -67,7 +87,6 @@ void CharactorBase::Draw()
 	ActorBase::Draw();
 	// 丸影の描画
 	DrawShadow();
-
 }
 
 void CharactorBase::Release()
@@ -82,20 +101,96 @@ void CharactorBase::Release()
 	ActorBase::Release();
 }
 
-void CharactorBase::Damege(int damege)
+void CharactorBase::Damage(int damage)
 {
-	hp_ -= damege;
+	if (isInvincible_) return;
+
+	hp_ -= damage;
 	if (hp_ <= 0)
 	{
 		hp_ = 0;
-		// 死亡処理
-		//isAlive_ = false;
+		
+		return;
 	}
+
+	// 原則として無敵フレームを設定する
+	invincibleFrameCount_ = INVINCIBLE_FRAME_COUNT;
+}
+
+void CharactorBase::Damage(int damage, const VECTOR& hitDir)
+{
+	if (isInvincible_) return;
+
+	float knowbackPow = 0.0f;
+	switch (weight_)
+	{
+	case CharactorBase::WEIGHT::NONE:
+		// めっちゃ吹っ飛ばす
+		knowbackPow = 100.0f;
+		break;
+	case CharactorBase::WEIGHT::LIGHT:
+		// よく吹っ飛ぶ
+		knowbackPow = 10.0f;
+		break;
+	case CharactorBase::WEIGHT::NORMAL:
+		// 飛ぶっちゃ飛ぶ
+		knowbackPow = 4.0f;
+		break;
+	case CharactorBase::WEIGHT::HEAVY:
+		// 若干飛ぶ
+		knowbackPow = 1.0f;
+		break;
+	case CharactorBase::WEIGHT::IMMOBILE:
+		// 飛ばねぇ
+		knowbackPow = 0.0f;
+		break;
+	default:
+		break;
+	}
+	
+	auto dir = VNorm(hitDir);
+	knockbackPow_ = VScale(dir, knowbackPow);
+
+	hp_ -= damage;
+	if (hp_ <= 0)
+	{
+		hp_ = 0;
+
+		return;
+	}
+
+	HitEffect(transform_.pos, hitDir, 1.0f);
+
+	// 原則として無敵フレームを設定する
+	invincibleFrameCount_ = INVINCIBLE_FRAME_COUNT;
 }
 
 bool CharactorBase::IsAnimEnd()
 {
 	return animationController_->IsEnd();
+}
+
+void CharactorBase::SetInvincible(bool invincible)
+{
+	if (!invincible) invincibleFrameCount_ = 0;	// 強制的に無敵解除
+	isInvincible_ = invincible;
+}
+
+void CharactorBase::HitEffect(const VECTOR& pos, const VECTOR& normal, float size)
+{
+	//エフェクトの読み込み
+	auto effect = std::make_shared<EffekseerEffect>(
+		L"Data/Effect/Star/Star.efkefc",
+		transform_.pos
+	);
+
+	effect->Play(
+		pos,
+		Quaternion::LookRotation(normal)
+	);
+
+	//エフェクトの再生
+	EffectManager::GetInstance().RegisterEffect(effect);
 }
 
 void CharactorBase::DelayRotate()
@@ -109,6 +204,12 @@ void CharactorBase::DelayRotate()
 
 void CharactorBase::CalcGravityPow()
 {
+	if (!useGrabity_)
+	{
+		jumpPow_ = AsoUtility::VECTOR_ZERO;
+		return;
+	}
+
 	// 重力方向
 	VECTOR dirGravity = AsoUtility::DIR_D;
 	// 重力の強さ
@@ -122,8 +223,6 @@ void CharactorBase::CalcGravityPow()
 	{
 		jumpPow_.y = MAX_FALL_SPEED;
 	}
-
-
 }
 
 
@@ -133,10 +232,13 @@ void CharactorBase::Collision()
 	// 衝突(カプセル)
 	CollisionCapsule();
 	
-	// ジャンプ量を加算
-	transform_.pos = VAdd(transform_.pos, jumpPow_);
-	// 衝突(重力)
-	CollisionGravity();
+	if (useGrabity_)
+	{
+		// ジャンプ量を加算
+		transform_.pos = VAdd(transform_.pos, jumpPow_);
+		// 衝突(重力)
+		CollisionGravity();
+	}
 }
 
 void CharactorBase::CollisionGravity()
@@ -192,8 +294,10 @@ void CharactorBase::CollisionCapsule()
 {
 	// カプセルコライダ
 	int capsuleType = static_cast<int>(COLLIDER_TYPE::CAPSULE);
+
 	// カプセルコライダが無ければ処理を抜ける
 	if (ownColliders_.count(capsuleType) == 0) return;
+
 	// カプセルコライダ情報
 	ColliderCapsule* colliderCapsule =
 		dynamic_cast<ColliderCapsule*>(ownColliders_.at(capsuleType));
@@ -270,9 +374,7 @@ void CharactorBase::CollisionCapsule()
 
 void CharactorBase::DrawShadow()
 {
-
 	int i, j;
-
 
 	// ライティングを無効にする
 	SetUseLighting(false);

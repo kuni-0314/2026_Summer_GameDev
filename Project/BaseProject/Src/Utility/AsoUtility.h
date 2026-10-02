@@ -123,6 +123,8 @@ public:
 	// 文字列の分割
 	static std::vector <std::string> Split(std::string& line, char delimiter);
 
+	// 2つのベクトルの誤差を計算する
+	static float CalcErrorVECTOR(const VECTOR& v1, const VECTOR& v2);
 
 };
 

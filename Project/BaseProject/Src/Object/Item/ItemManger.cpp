@@ -12,14 +12,13 @@
 ItemManger::ItemManger()
 {
 }
+
 ItemManger::~ItemManger()
 {
 }
+
 void ItemManger::Init()
 {
-
-
-
 }
 void ItemManger::Update()
 {
@@ -47,9 +46,9 @@ void ItemManger::Draw()
 	{
 		item->Draw();
 
-
 	}
 }
+
 void ItemManger::Release()
 {
 	for (auto& item : items_)
@@ -59,6 +58,7 @@ void ItemManger::Release()
 		item = nullptr;
 	}
 }
+
 void ItemManger::AddHitCollider(const ColliderBase* hitCollider)
 {
 	hitCollider_ = hitCollider;
@@ -73,13 +73,6 @@ ItemBase* ItemManger::Create(const ItemBase::TYPE& type, VECTOR pos, const Colli
 	case ItemBase::TYPE::HP:
 
 		item = new HpItem(const_cast<Player*>(player));
-		item->Init();
-		item->SetPos(pos);
-		item->AddHitCollider(hitCollider);
-		playerCollide = player->GetOwnCollider(key);
-		break;
-	case ItemBase::TYPE::SKILL:
-		item = new SkillItem(const_cast<Player*>(player));
 		item->Init();
 		item->SetPos(pos);
 		item->AddHitCollider(hitCollider);

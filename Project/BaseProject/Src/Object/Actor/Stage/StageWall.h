@@ -18,7 +18,6 @@ public:
 
 	static constexpr VECTOR POS_MAIN_STAGE = { 0.0f, -100.0f, 0.0f };
 
-
 	//コンストラクタ
 	StageWall();
 	//デストラクタ
@@ -26,10 +25,7 @@ public:
 
 	void Update() override;
 
-
-
 protected:
-
 	// リソースロード
 	void InitLoad() override;
 
@@ -46,7 +42,6 @@ protected:
 	void InitPost() override;
 
 private:
-
 	Transform mainStage_;
 
 	// 除外フレーム名称
@@ -54,7 +49,5 @@ private:
 
 	// 対象フレーム
 	const std::vector<std::string> TARGET_FRAME_NAMES = { "Ground", };
-
-
 };
 

@@ -1,7 +1,7 @@
 #pragma once
 #include "PlayerState.h"
 
-class PlayerJetState : public PlayerState
+class PlayerRollState : public PlayerState
 {
 	public:
 	void Enter(Player* player) override;

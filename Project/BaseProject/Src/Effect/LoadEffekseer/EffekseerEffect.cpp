@@ -77,11 +77,24 @@ void EffekseerEffect::Draw() const
     // Effekseer自体の描画は GameScene 側で一括して DrawEffekseer3D() を呼ぶため、ここは空でOK
 }
 
+void EffekseerEffect::Release()
+{
+    if (m_playingHandle != -1)
+    {
+        StopEffekseer3DEffect(m_playingHandle);
+    }
+    if (m_effectHandle != -1)
+    {
+        DeleteEffekseerEffect(m_effectHandle);
+        m_effectHandle = -1;
+    }
+    m_isDead = true;
+}
+
 void EffekseerEffect::Play(VECTOR pos, Quaternion rot)
 {
     m_playingHandle =
         PlayEffekseer3DEffect(m_effectHandle);
-
 
     SetPosPlayingEffekseer3DEffect(
         m_playingHandle,
@@ -90,7 +103,6 @@ void EffekseerEffect::Play(VECTOR pos, Quaternion rot)
         pos.z
     );
 
-
     SetScalePlayingEffekseer3DEffect(
         m_playingHandle,
         30.0f,
@@ -98,10 +110,8 @@ void EffekseerEffect::Play(VECTOR pos, Quaternion rot)
         30.0f
     );
 
-
     // プレイヤーの向き
     VECTOR euler = rot.ToEuler();
-
 
     SetRotationPlayingEffekseer3DEffect(
         m_playingHandle,
@@ -113,10 +123,19 @@ void EffekseerEffect::Play(VECTOR pos, Quaternion rot)
 
 void EffekseerEffect::SetPosition(const VECTOR& pos)
 {
+    printf("SetPosition %.1f %.1f %.1f\n", pos.x, pos.y, pos.z);
+    printf("Handle = %d\n", m_playingHandle);
     m_pos3D = pos;
     if (m_playingHandle != -1 && IsEffekseer3DEffectPlaying(m_playingHandle) == 0) {
         SetPosPlayingEffekseer3DEffect(m_playingHandle, m_pos3D.x, m_pos3D.y, m_pos3D.z);
-        SetScalePlayingEffekseer3DEffect(m_playingHandle,50.0f,50.0f,50.0f);
+	}
+}
+
+void EffekseerEffect::SetRotation(const Quaternion& rot)
+{
+    if (m_playingHandle != -1 && IsEffekseer3DEffectPlaying(m_playingHandle) ==0) {
+        VECTOR euler = rot.ToEuler();
+        SetRotationPlayingEffekseer3DEffect(m_playingHandle, 0.0f, euler.y, 0.0f);
 	}
 }
 
@@ -137,7 +156,7 @@ void EffekseerEffect::Stop()
 
 void EffekseerEffect::SetScale(float scale)
 {
-    if (m_playingHandle != -1 && IsEffekseer3DEffectPlaying(m_playingHandle) == 0) {
+    if (m_playingHandle != -1 && IsEffekseer3DEffectPlaying(m_playingHandle)) {
         SetScalePlayingEffekseer3DEffect(m_playingHandle, scale, scale, scale);
 	}
 }

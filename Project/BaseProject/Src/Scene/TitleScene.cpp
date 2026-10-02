@@ -53,19 +53,11 @@ void TitleScene::Init()
 
 	AudioManager::GetInstance()->LoadSceneSound(LoadScene::TITLE);
 	AudioManager::GetInstance()->PlayBGM(SoundID::BGM_TITLE);
-	//AudioManager::GetInstance()->SetBgmVolume(120);
-
 }
 
 void TitleScene::Update()
 {
-
 	auto const ins = InputManager::GetInstance();
-
-	//IsSelect_ = true;
-
-	// エフェクト時間更新
-	
 
 	if (!isFadeIn_) SelectUpdate();
 	
@@ -79,9 +71,9 @@ void TitleScene::Update()
 		case SceneManager::SCENE_ID::GAME:
 			sceMng_.ChangeScene(SceneManager::SCENE_ID::GAME);
 			break;
-		//case SceneManager::SCENE_ID::TUTORIAL:
-		//	sceMng_.ChangeScene(SceneManager::SCENE_ID::TUTORIAL);
-		//	break;
+		case SceneManager::SCENE_ID::TUTORIAL:
+			sceMng_.ChangeScene(SceneManager::SCENE_ID::TUTORIAL);
+			break;
 		case SceneManager::SCENE_ID::OPTION:
 			sceMng_.ChangeScene(SceneManager::SCENE_ID::OPTION);
 			break;
@@ -89,7 +81,6 @@ void TitleScene::Update()
 			break;
 		}
 	}
-
 }
 
 
@@ -98,7 +89,6 @@ void TitleScene::Draw()
 	static int blinkCounter_ = 0;
 	blinkCounter_++;
 	const int BLINK_CYCLE = 20;
-	//DrawPixel(x++, 10, 0xffffff);
 
 	DrawGraph(Application::SCREEN_SIZE_X / 2 + 100, 100, imgPlayer_, true);
 
@@ -144,9 +134,6 @@ void TitleScene::Draw()
 	{
 		DrawGraph(IMG_NOT_CHOICE_POS_X, IMG_CHOICE_POS_Y + IMG_CHOICE_POS_Y_OFFSET * 3, imgNotEnd_, true);
 	}
-
-
-
 
 #ifdef _DEBUG
 	int imgWidth_, imgHeight_, img, posX;
@@ -203,7 +190,6 @@ void TitleScene::Draw()
 #endif // _DEBUG
 
 	SelectDraw((SELECT)selectCount_);
-	
 
 	// 一時スクリーンにメイン画面をコピー
 	int mainScreen = SceneManager::GetInstance().GetMainScreen();
@@ -224,9 +210,7 @@ void TitleScene::Draw()
 	PostEffectManager::EffectParams params = { effectTime_, effectTime_, effectTime_, 0.0f };
 	auto& pstEfcMngIns = PostEffectManager::GetInstance();
 	pstEfcMngIns.SetCustomParams(PostEffectManager::EFFECT_TYPE::FH_GAME_START, params);
-	// エフェクト適用
-	//if (!multiEffectMode_)
-	//{
+
 	// 単一エフェクトモード
 	pstEfcMngIns.ApplyEffect(
 		PostEffectManager::EFFECT_TYPE::FH_GAME_START,
@@ -234,19 +218,7 @@ void TitleScene::Draw()
 		postEffectScreen_,
 		effectTime_
 	);
-	//}
-	//else
-	//{
-	//	// 複数エフェクトモード
-	//	PostEffectManager::GetInstance().ApplyEffects(
-	//		activeEffects_,
-	//		tempScreen,
-	//		postEffectScreen_,
-	//		effectTime_
-	//	);
-	//}
-
-
+	
 	// 最終結果をメイン画面に描画
 	SetDrawScreen(mainScreen);
 	DrawGraph(0, 0, postEffectScreen_, false);
@@ -257,7 +229,6 @@ void TitleScene::Draw()
 
 void TitleScene::Release()
 {
-
 	DeleteGraph(imgTitle_);
 	DeleteGraph(imgGameStart_);
 }
@@ -273,8 +244,8 @@ void TitleScene::SelectChange(SELECT next)
 		nextScene_ = SceneManager::SCENE_ID::GAME;
 		break;
 	case SELECT::TUTORIAL:
-		//AudioManager::GetInstance()->StopBGM();
-		//nextScene_ = SceneManager::SCENE_ID::TUTORIAL;
+		AudioManager::GetInstance()->StopBGM();
+		nextScene_ = SceneManager::SCENE_ID::TUTORIAL;
 		break;
 	case SELECT::OPTION:
 		//AudioManager::GetInstance()->StopBGM();
@@ -298,7 +269,7 @@ void TitleScene::SelectDraw(SELECT next)
 	else if (next == SELECT::OPTION) name = "設定";
 	else if (next == SELECT::EXIT) name = "終了";
 
-	DrawFormatString(100, 100, GetColor(255, 255, 255), "選択中: %s", name);
+	DrawFormatString(SELECT_POS_X, SELECT_POS_Y, GetColor(COLOR_R, COLOR_G, COLOR_B), "選択中: %s", name);
 }
 
 void TitleScene::SelectUpdate()
@@ -306,7 +277,6 @@ void TitleScene::SelectUpdate()
 	auto const ins = InputManager::GetInstance();
 
 	//選択コマンド変更
-
 	pSelectCount_ = selectCount_;
 	if (ins->IsTrgDown(KEY_INPUT_UP) || ins->IsGamepadTrgUp(InputManager::PadInput::Up, 0))
 	{
@@ -380,35 +350,24 @@ void TitleScene::SelectUpdate()
 			//AudioManager::GetInstance()->SetSeVolume(150);
 			isMouseOver = true;
 		}
-
-		// ｔｍｐ
-		//if (!isMouseOver)
-		//{
-		//	selectCount_ = -1;
-		//}
 	}
 
 	// SpaceキーまたはゲームパッドのAボタンで決定
 	if (ins->IsTrgDown(KEY_INPUT_SPACE) || ins->IsGamepadTrgDown(InputManager::PadInput::A, 0))//決定
 	{
-		//AudioManager::GetInstance()->SetSeVolume(80);
 		AudioManager::GetInstance()->PlaySE(SoundID::SE_TITLE_DECISION);
 		SelectChange((SELECT)selectCount_);
 	}
 	// マウスクリックで決定
 	if (ins->IsMouseTrgDown(MOUSE_INPUT_LEFT))
 	{
-		//AudioManager::GetInstance()->SetSeVolume(80);
-		AudioManager::GetInstance()->PlaySE(SoundID::SE_TITLE_DECISION);
+		(SoundID::SE_TITLE_DECISION);
 		SelectChange((SELECT)selectCount_);
 	}
 
 	if (selectCount_ != pSelectCount_)
 	{
-		//StartJoypadVibration(1, 1000, 1, -1);
-		//VibrateGamepad(int gamepadIndex, int power, int time)
-		InputManager::GetInstance()->VibrateGamepad(1, 1000, 1);
+		InputManager::GetInstance()->VibrateGamepad(VIBRATION_INDEX, VIBRATION_POWER, VIBRATION_TIME);
 		AudioManager::GetInstance()->PlaySE(SoundID::SE_TITLE_SELECT);
-
 	}
 }

@@ -1,6 +1,7 @@
 #pragma once
 #include <string>
 #include "SceneBase.h"
+#include <vector>
 
 class OptionScene : public SceneBase
 {

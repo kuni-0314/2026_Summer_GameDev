@@ -25,6 +25,10 @@ private:
 	AudioManager& operator=(AudioManager&&) = delete;
 
 public:
+	//ボリューム最小・最大値
+	static constexpr int VOLUME_MIN = 0;
+	static constexpr int VOLUME_MAX = 255;
+
 	// 初期化
 	void Init();
 
@@ -53,7 +57,6 @@ public:
 	bool IsMute() const { return isMuted_; }
 
 private:
-
 	// オーディオデバイスの初期化
 	void InitAudioDevice();
 

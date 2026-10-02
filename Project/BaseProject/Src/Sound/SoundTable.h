@@ -11,6 +11,7 @@ enum class SoundID
 	BGM_GAME,
 	BGM_WARNIG,		//警告音（ループするからBGM）
 	BGM_OVER,
+	BGM_CLEAR,		//クリア
 	SE_TITLE_SELECT,//タイトル選択
 	SE_TITLE_DECISION,//タイトル決定
 	SE_ATTACK_1,//攻撃１
@@ -26,10 +27,19 @@ enum class SoundID
 	VOICE_PLAYER_DAMEGE_0,
 	VOICE_PLAYER_DAMEGE_1,
 	VOICE_PLAYER_DAMEGE_2,
+	VOICE_PLAYER_DAMEGE_3,
+	VOICE_PLAYER_ATTACK_1,
+	VOICE_PLAYER_ATTACK_2,
+	VOICE_PLAYER_ATTACK_3,
 	SE_MAGIC_HEAL,
 	SE_NOT_MAGIC,
+	SE_LOCKON,
+	SE_LOCKON_CHANGE,
+	SE_DRAGON_BREATH,
+	SE_DRAGON_TORNADO,
+	SE_DRAGON_LANDING,
+	SE_DRAGON_SHOUT,
 	MAX
-
 };
 
 // 読み込むシーン
@@ -55,7 +65,6 @@ public:
 	// サウンドテーブルのマップ
 	// サウンドID から サウンドパスを取得
 	static const std::unordered_map<SoundID, SoundData> Table;
-
 };
 
 

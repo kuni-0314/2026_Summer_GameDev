@@ -13,45 +13,56 @@ ColliderCapsule::ColliderCapsule(
 	radius_(radius)
 {
 }
+
 ColliderCapsule::~ColliderCapsule()
 {
 }
+
 const VECTOR& ColliderCapsule::GetLocalPosTop() const
 {
 	return localPosTop_;
 }
+
 const VECTOR& ColliderCapsule::GetLocalPosDown() const
 {
 	return localPosDown_;
 }
+
 void ColliderCapsule::SetLocalPosTop(const VECTOR& pos)
 {
 	localPosTop_ = pos;
 }
+
 void ColliderCapsule::SetLocalPosDown(const VECTOR& pos)
 {
 	localPosDown_ = pos;
 }
+
 VECTOR ColliderCapsule::GetPosTop() const
 {
 	return GetRotPos(localPosTop_);
 }
+
 VECTOR ColliderCapsule::GetPosDown() const
 {
 	return GetRotPos(localPosDown_);
 }
+
 float ColliderCapsule::GetRadius() const
 {
 	return radius_;
 }
+
 void ColliderCapsule::SetRadius(float radius)
 {
 	radius_ = radius;
 }
+
 float ColliderCapsule::GetHeight() const
 {
 	return localPosTop_.y;
 }
+
 VECTOR ColliderCapsule::GetCenter() const
 {
 	VECTOR top = GetPosTop();
@@ -60,14 +71,22 @@ VECTOR ColliderCapsule::GetCenter() const
 	return VAdd(down, VScale(diff, 0.5f));
 }
 
+void ColliderCapsule::SetWasHit(bool washit)
+{
+	wasHit_ = washit;
+}
 
+bool ColliderCapsule::GetwasHit() const
+{
+	return wasHit_;
+}
 
 void ColliderCapsule::DrawDebug(int color)
 {
 #ifdef _DEBUG
 
 
-	// 非常に意味が無い
+	//// 非常に意味が無い
 	auto a = follow_->pos;
 	auto b = follow_->quaRot;
 
@@ -103,7 +122,7 @@ void ColliderCapsule::DrawDebug(int color)
 	e = VAdd(pos2, VScale(dir, radius_));
 	DrawLine3D(s, e, color);
 	// カプセルの中心
-	//DrawSphere3D(GetCenter(), 5.0f, 10, color, color, true);
+	DrawSphere3D(GetCenter(), 5.0f, 10, color, color, true);
 
 	// 座標を表示（１要素ずつ改行）
 	if (!isDebugDraw_)
@@ -116,6 +135,8 @@ void ColliderCapsule::DrawDebug(int color)
 	DrawFormatString(0, 260, color, "Capsule Pos Down X : %.2f", pos2.x);
 	DrawFormatString(0, 280, color, "Capsule Pos Down Y : %.2f", pos2.y);
 	DrawFormatString(0, 300, color, "Capsule Pos Down Z : %.2f", pos2.z);
+
+
 #endif // DEBUG
 }
 
@@ -181,8 +202,6 @@ void ColliderCapsule::PushBackAlongNormal(
 
 bool ColliderCapsule::IsHit(const ColliderModel* colliderModel, bool isExclude, bool isTarget) const
 {
-
-
 	bool ret = false;
 
 	// モデルとカプセルの衝突判定
@@ -227,4 +246,9 @@ bool ColliderCapsule::IsHit(const ColliderSphere* colliderSphere, bool isExclude
 	return HitCheck_Sphere_Capsule(
 		colliderSphere->GetPos(), colliderSphere->GetRadius(),
 		GetPosTop(), GetPosDown(), GetRadius());
+}
+
+void ColliderCapsule::SetDebugDraw(bool isDebugDraw)
+{
+	isDebugDraw_ = isDebugDraw; 
 }

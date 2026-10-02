@@ -14,7 +14,6 @@ Transform::Transform()
 	matPos(MGetIdent()),
 	quaRot(Quaternion()),
 	quaRotLocal(Quaternion())
-
 {
 }
 
@@ -24,7 +23,6 @@ Transform::~Transform()
 
 void Transform::Update()
 {
-
 	// ‘å‚«‚³
 	matScl = MGetScale(scl);
 
@@ -47,7 +45,6 @@ void Transform::Update()
 	{
 		MV1SetMatrix(modelId, mat);
 	}
-
 }
 
 void Transform::Release()

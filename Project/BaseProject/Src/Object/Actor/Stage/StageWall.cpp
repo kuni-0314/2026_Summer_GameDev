@@ -21,8 +21,6 @@ void StageWall::Update()
 {
 }
 
-
-
 void StageWall::InitLoad()
 {
  	transform_.SetModel(resMng_.Load(ResourceManager::SRC::BATTLE_WALL).handleId_);
@@ -30,14 +28,12 @@ void StageWall::InitLoad()
 
 void StageWall::InitTransform()
 {
-
 	transform_.scl = { SCL_MAIN_STAGE_X, SCL_MAIN_STAGE_Y, SCL_MAIN_STAGE_Z };
 	transform_.quaRot = Quaternion::Identity();
 	transform_.quaRotLocal = Quaternion::Identity();
 	transform_.pos = POS_MAIN_STAGE;
 
 	transform_.Update();
-
 }
 
 void StageWall::InitCollider()
@@ -58,9 +54,7 @@ void StageWall::InitCollider()
 		colModel->AddTargetFrameIds(name);
 	}
 
-
 	ownColliders_.emplace(static_cast<int>(COLLIDER_TYPE::MODEL), colModel);
-
 }
 
 void StageWall::InitAnimation()

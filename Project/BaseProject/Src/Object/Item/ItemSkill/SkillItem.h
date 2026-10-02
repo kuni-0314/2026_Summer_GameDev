@@ -8,8 +8,6 @@ class Player;
 class SkillItem : public ItemBase
 {
 public:
-
-
 	// コンストラクタ
 	SkillItem(Player* player);
 	// デストラクタ
@@ -34,9 +32,7 @@ protected:
 	void UpdateProcess() override;
 	void UpdateProcessPost() override;
 
-
 private:
-
 	//enemy
 	EnemyBase* enemys_;
 
@@ -79,10 +75,6 @@ private:
 	VECTOR worldPos;
 
 	VECTOR spawnPos_;
-
-	
-
-
 };
 
 

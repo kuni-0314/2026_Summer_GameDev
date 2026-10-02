@@ -4,10 +4,7 @@
 
 class ClearScene : public SceneBase
 {
-
 public:
-
-
 	// コンストラクタ
 	ClearScene();
 
@@ -26,13 +23,14 @@ public:
 	// 解放
 	void Release() override;
 
-
 private:
-
 	int playerHandle_;
 
+	//タイトルコマンド画像ハンドル
 	int imgOnTitleHandle_;
 	int imgOffTitleHandle_;
+	//ゲームクリア画像ハンドル
+	int imgGameClear_;
 
 	bool isMouseOver_ = false;
 };
