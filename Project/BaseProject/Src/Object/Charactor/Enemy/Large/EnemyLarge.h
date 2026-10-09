@@ -8,8 +8,7 @@
 
 class Player;
 class ItemManger;
-class ColliderCapsule; // 前方/後方用カプセルのポインタを保持するための前方宣言
-
+class ColliderCapsule; 
 
 class EnemyLarge : public EnemyBase
 {
@@ -69,7 +68,11 @@ protected:
 	void ATfield(const VECTOR& pos);
 
 private:
+
+	//アイテムマネージャー
 	ItemManger* itemManager_;
+
+#pragma region 定数
 
 	//アニメーション登録番号
 	static constexpr int  ANIM_INDX_FRY = 2;//待機
@@ -77,10 +80,39 @@ private:
 	static constexpr int  ANIM_INDX_DEAD = 0;//END
 	static constexpr int  ANIM_INDX_CHARGE = 5;	//チャージ
 
-	static constexpr float SCALE = 2.5f;				// モデルの大きさ
 
-	static constexpr float RING_SCALE = 0.3f;			//衝撃波初期サイズ
-	static constexpr float RING_MAX_SCALE = 15.0f;		//衝撃波最大サイズ
+
+	// モデルの大きさ
+	static constexpr float LARGE_SCALE = 2.5f;
+	// 行動切り替え用カプセル球体半径
+	static constexpr float COL_SWICH_RADIUS = 250.0f;
+
+	// ATTACK_DROP内でジャンプを行うタイミング(フレーム)
+	static constexpr float ATTACK_DROP_JUMP_TIME_RATIO = 0.42f;	//ジャンプ開始
+	static constexpr float ATTACK_DROP_JUMP_TIME_WAVE = 0.56f;	//衝撃波開始
+
+	//待機時間の最小値
+	static constexpr float WAIT_TIME_MIN = 3.0f;
+	//最小値に上乗せするランダム値の最大値
+	static constexpr int WAIT_TIME_RAND_MAX = 3;
+
+	// 攻撃切り替え距離
+	static constexpr float SWICH_DISTANCE = 450.0f;
+	// 攻撃継続距離
+	static constexpr float CONTIUATION_DISTANCE = 450.0f;
+	//突進１の移動終了距離
+	static constexpr float ATTACK_RUN_END_POINT = 600.0f;
+
+	//パンチの振りかぶり切り時間
+	static constexpr float ATTACK_PUNCH_TINE = 0.45f;
+
+	// 突進の最大走行距離
+	static constexpr int RUN_MAX_DISTANCE = 2500.0f;
+	// 突進中にプレイヤーへ近づいたら止まる距離
+	static constexpr int RUN_STOP_DISTANCE = 250.0f;
+
+
+#pragma region コライダー関連
 
 	// モデルのローカル回転
 	static constexpr VECTOR ROT = { 0.0f, 180.0f * DX_PI_F / 180.0f, 0.0f };
@@ -109,27 +141,54 @@ private:
 	static constexpr int COLLIDER_KEY_BODY_FRONT = 100;
 	static constexpr int COLLIDER_KEY_BODY_BACK = 101;
 
+#pragma endregion
+
+
+#pragma region 衝撃波関連
+
+	//衝撃波初期サイズ
+	static constexpr float RING_SCALE = 0.3f;
+	//衝撃波最大サイズ
+	static constexpr float RING_MAX_SCALE = 15.0f;
+	//衝撃波最大サイズ
+	static constexpr float RING_DOWN_POS_Y = 30.0f;
+
+#pragma endregion
+
+
+#pragma region エフェクト関連
+
+	//正面判定距離
+	static constexpr float FLONT_DICTANCE = 300.0f;
+
+	//ATエフェクトベクトルスケール
+	static constexpr float AT_EFFECT_VEC_SCAL = 120.0f;
+	//ATエフェクトスケール
+	static constexpr float AT_EFFECT_SCAL = 80.0f;
+
+	//エフェクト加算加算値
+	static constexpr float AT_EFFECT_ADD_POS_Y = 100.0f;
+
+	//衝撃波エフェクトスケール
+	static constexpr float WAVE_EFFECT_SCAL = 30.0f;
+
+
+#pragma endregion
+
+
+
+#pragma endregion
+
+		
+
+#pragma region 変数
+
 	//チャージ用カウント
-	int countMax = 180;		//チャージ・待機用MAXカウント		
-	int countUp = 0;		//チャージ・待機用初期カウント
+	int countMax = 180;				
+	int countUp = 0;		
 
 	//衝撃波モデルハンドルID
-	int ringModelHandle_;							
-	
-	// 行動切り替え用カプセル球体半径
-	static constexpr float COL_SWICH_RADIUS = 250.0f;
-
-	const float SWICH_DISTANCE = 450.0f;			// 攻撃切り替え距離
-	const float CONTIUATION_DISTANCE = 450.0f;		// 攻撃継続距離
-	const float ATTACK_RUN_END_POINT = 600.0f;		//突進１の移動終了距離
-
-	// ATTACK_DROP内でジャンプを行うタイミング(フレーム)
-	static constexpr float ATTACK_DROP_JUMP_TIME_RATIO = 0.42f;	//ジャンプ開始
-	static constexpr float ATTACK_DROP_JUMP_TIME_WAVE = 0.56f;	//衝撃波開始
-
-	//パンチの振りかぶり切り時間
-	static constexpr float ATTACK_PUNCH_TINE = 0.45f;	
-
+	int ringModelHandle_;
 	// 対象フレーム
 	const std::vector<std::string> TARGET_FRAME_NAMES = { "トーラス", };
 	// 除外フレーム名称
@@ -165,6 +224,9 @@ private:
 	//パンチ用攻撃座標
 	VECTOR attackWorldPos_;
 
+#pragma endregion
+
+
 	//衝撃波用トランスフォーム
 	std::unique_ptr<Transform> ringTransform_;
 	std::shared_ptr<EffekseerEffect> shockWaveEffect_;
@@ -199,7 +261,6 @@ private:
 	void UpdateEnd();
 	void UpdateCharge();
 
-	static constexpr VECTOR RING_INIT_POS = { 0.0f, -1000.0f, 0.0f };	//衝撃波初期位置
 	//正面からの攻撃を取得する
 	bool InFront();
 };

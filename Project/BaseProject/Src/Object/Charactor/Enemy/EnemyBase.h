@@ -79,10 +79,16 @@ public:
 	VECTOR& GetPos();
 
 protected:
+
 	// プレイヤー
 	Player* player_;
 	// 種別
 	TYPE type_;
+
+	//最大ランダム値
+	static constexpr int CHANGESTATE_RAND_MAX = 100;
+	//デフォルトアニメ-ションスピード
+	static constexpr float DEFAULT_ANIM_SPEED = 20.0f
 
 	// 初期位置
 	const VECTOR defaultPos_;

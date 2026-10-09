@@ -171,13 +171,10 @@ void GameScene::Update()
 	enemyManager_->Update();
 	itemManger_->Update();
 
+	//魔法のショートカット
 	if (player_->IsShortCut())
 	{
 		selectCommand_ = static_cast<int>(COMMAND::ALL);
-	}
-	else if (selectCommand_ == static_cast<int>(COMMAND::ALL))
-	{
-		//selectCommand_ = static_cast<int>(usecommand_);
 	}
 
 	//HP警告
@@ -186,8 +183,6 @@ void GameScene::Update()
 		if (!isWarning_)
 		{
 			isWarning_ = true;
-
-	
 			PlaySoundMem(wargnigHandle_, DX_PLAYTYPE_LOOP);
 		}
 	}
@@ -196,7 +191,6 @@ void GameScene::Update()
 		if (isWarning_)
 		{
 			isWarning_ = false;
-
 			StopSoundMem(wargnigHandle_);
 		}
 	}

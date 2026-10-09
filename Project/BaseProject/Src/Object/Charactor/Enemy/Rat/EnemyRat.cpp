@@ -91,22 +91,22 @@ void EnemyRat::InitAnimation()
 
 	//待機
 	type = static_cast<int>(ANIM_TYPE::IDLE);
-	animationController_->AddInFbx(type, 20.0f, ANIM_INDX_IDLE);
+	animationController_->AddInFbx(type, DEFAULT_ANIM_SPEED, ANIM_INDX_IDLE);
 	//歩く
 	type = static_cast<int>(ANIM_TYPE::WALK);
-	animationController_->AddInFbx(type, 20.0f, ANIM_INDX_WALK);
+	animationController_->AddInFbx(type, DEFAULT_ANIM_SPEED, ANIM_INDX_WALK);
 	//攻撃
 	type = static_cast<int>(ANIM_TYPE::ATTACK);
-	animationController_->AddInFbx(type, 20.0f, ANIM_INDX_ATTACK);
+	animationController_->AddInFbx(type, DEFAULT_ANIM_SPEED, ANIM_INDX_ATTACK);
 
 	type = static_cast<int>(ANIM_TYPE::END);
-	animationController_->AddInFbx(type, 20.0f, ANIM_INDX_END);
+	animationController_->AddInFbx(type, DEFAULT_ANIM_SPEED, ANIM_INDX_END);
 	//攻撃受け
 	type = static_cast<int>(ANIM_TYPE::HIT);
-	animationController_->AddInFbx(type, 20.0f, ANIM_INDX_HIT);
+	animationController_->AddInFbx(type, DEFAULT_ANIM_SPEED, ANIM_INDX_HIT);
 	//走る
 	type = static_cast<int>(ANIM_TYPE::RUN);
-	animationController_->AddInFbx(type, 20.0f, ANIM_INDX_RUN);
+	animationController_->AddInFbx(type, DEFAULT_ANIM_SPEED, ANIM_INDX_RUN);
 
 	animationController_->Play(static_cast<int>(ANIM_TYPE::IDLE), true);
 }

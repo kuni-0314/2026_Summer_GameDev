@@ -98,7 +98,7 @@ void EnemyLarge::InitLoad()
 void EnemyLarge::InitTransform()
 {
 	//大きさ、座標等の初期化
-	transform_.scl = { SCALE ,SCALE ,SCALE };
+	transform_.scl = { LARGE_SCALE ,LARGE_SCALE ,LARGE_SCALE };
 	transform_.quaRot = Quaternion::Identity();
 	transform_.quaRotLocal = Quaternion::Euler(ROT);
 	transform_.Update();
@@ -148,15 +148,15 @@ void EnemyLarge::InitAnimation()
 	animationController_ = new AnimationController(transform_.modelId);
 
 	animationController_->Add(static_cast<int>(ANIM_TYPE::IDLE)
-		, 20.0f, Application::PATH_MODEL + "Enemy/Large/Idle.mv1");
+		, DEFAULT_ANIM_SPEED, Application::PATH_MODEL + "Enemy/Large/Idle.mv1");
 	animationController_->Add(static_cast<int>(ANIM_TYPE::MOVE)
-		, 20.0f, Application::PATH_MODEL + "Enemy/Large/Walk.mv1");
+		, DEFAULT_ANIM_SPEED, Application::PATH_MODEL + "Enemy/Large/Walk.mv1");
 	animationController_->Add(static_cast<int>(ANIM_TYPE::ATTACK_PUNCH)
-		, 20.0f, Application::PATH_MODEL + "Enemy/Large/Punch.mv1");
+		, DEFAULT_ANIM_SPEED, Application::PATH_MODEL + "Enemy/Large/Punch.mv1");
 	animationController_->Add(static_cast<int>(ANIM_TYPE::ATTACK_DROP)
-		, 20.0f, Application::PATH_MODEL + "Enemy/Large/Drop.mv1");
+		, DEFAULT_ANIM_SPEED, Application::PATH_MODEL + "Enemy/Large/Drop.mv1");
 	animationController_->Add(static_cast<int>(ANIM_TYPE::HIT)
-		, 20.0f, Application::PATH_MODEL + "Enemy/Large/Hit.mv1");
+		, DEFAULT_ANIM_SPEED, Application::PATH_MODEL + "Enemy/Large/Hit.mv1");
 
 
 	animationController_->Play(static_cast<int>(ANIM_TYPE::IDLE), true);
@@ -164,8 +164,10 @@ void EnemyLarge::InitAnimation()
 
 void EnemyLarge::InitPost()
 {
+	//体重の設定
 	weight_ = WEIGHT::HEAVY;
 
+	//状態遷移登録
 	stateChanges_.emplace(static_cast<int>(STATE::IDLE),
 		std::bind(&EnemyLarge::ChangeStateIdle, this));
 
@@ -193,7 +195,9 @@ void EnemyLarge::InitPost()
 	// 初期状態設定
 	ChangeState(STATE::IDLE);
 
+	//攻撃力
 	power_ = 2;
+	//押し出し用半径
 	pushOutRadius_ = 150.0f;
 }
 
@@ -222,9 +226,6 @@ void EnemyLarge::UpdateProcess()
 	CheckPlayerSwordCollision();
 	CheckPlayerMagicCollision();
 
-	//正面にPlayerがいるのか
-	/*bool isATField_;
-	isATField_ = false;*/
 
 	if (!isATField_ && InFront() && player_->IsAttacking())
 	{
@@ -279,18 +280,20 @@ void EnemyLarge::UpdateProcessPost()
 
 void EnemyLarge::ATfield(const VECTOR& pos)
 {
+	//方向取得	
 	VECTOR front = VNorm(moveDir_);
 
-	VECTOR effectPos = VAdd(pos, VScale(front, 120.0f));
-	effectPos.y += 100.0f;
+	//エフェクト初期化
+	VECTOR effectPos = VAdd(pos, VScale(front, AT_EFFECT_VEC_SCAL));
+	effectPos.y += AT_EFFECT_ADD_POS_Y;
 
 	auto effect = std::make_shared<EffekseerEffect>(
 		L"Data/Effect/Hit/Hit.efkefc",
 		effectPos);
+	effect->SetScale(AT_EFFECT_SCAL);
 
-	effect->SetScale(80.0f);
+	//エフェクト再生
 	effect->Play(effectPos, Quaternion());
-
 	EffectManager::GetInstance().RegisterEffect(effect);
 }
 
@@ -308,7 +311,7 @@ void EnemyLarge::ChangeStateIdle()
 	look_ = false;
 
 	// ランダムな待機時間
-	step_ = 3.0f + static_cast<float>(GetRand(3));
+	step_ = WAIT_TIME_MIN + static_cast<float>(GetRand(WAIT_TIME_RAND_MAX));
 	// 移動量ゼロ
 	movePow_ = AsoUtility::VECTOR_ZERO;
 	// 待機アニメーション再生
@@ -329,11 +332,9 @@ void EnemyLarge::ChangeStateThink()
 	stateUpdate_ = std::bind(&EnemyLarge::UpdateThink, this);
 
 	//IDLEと同じ
-
 	look_ = false;
-
 	// ランダムな待機時間
-	step_ = 3.0f + static_cast<float>(GetRand(3));
+	step_ = WAIT_TIME_MIN + static_cast<float>(GetRand(WAIT_TIME_RAND_MAX));
 	// 移動量ゼロ
 	movePow_ = AsoUtility::VECTOR_ZERO;
 	// 待機アニメーション再生
@@ -346,9 +347,8 @@ void EnemyLarge::ChangeStateCharge()
 	stateUpdate_ = std::bind(&EnemyLarge::UpdateCharge, this);
 
 	look_ = false;
-
 	// ランダムな待機時間
-	step_ = 3.0f + static_cast<float>(GetRand(3));
+	step_ = WAIT_TIME_MIN + static_cast<float>(GetRand(WAIT_TIME_RAND_MAX));
 	// 移動量ゼロ
 	movePow_ = AsoUtility::VECTOR_ZERO;
 	// 待機アニメーション再生
@@ -361,7 +361,8 @@ void EnemyLarge::ChangeStateAttackPunch()
 	stateUpdate_ = std::bind(&EnemyLarge::UpdateAttackPunch, this);
 
 	look_ = true;
-
+	// ランダムな待機時間
+	step_ = WAIT_TIME_MIN + static_cast<float>(GetRand(WAIT_TIME_RAND_MAX));
 	// 移動量ゼロ
 	movePow_ = AsoUtility::VECTOR_ZERO;
 	// 待機アニメーション再生
@@ -375,6 +376,7 @@ void EnemyLarge::ChangeStateAttackRun()
 
 	look_ = true;
 	
+
 	if (hp_ > hp_ / 2)
 	{
 		moveSpeed_ = 8.0f;
@@ -440,7 +442,7 @@ void EnemyLarge::UpdateDie()
 
 void EnemyLarge::UpdateThink()
 {
-	int rand = GetRand(100);
+	int rand = GetRand(rand);
 
 	//距離が近かったらパンチ
 	if (distance_ < SWICH_DISTANCE)
@@ -464,7 +466,7 @@ void EnemyLarge::UpdateThink()
 
 void EnemyLarge::UpdateCharge()
 {
-	int rand = GetRand(100);
+	int rand = GetRand(CHANGESTATE_RAND_MAX);
 
 	countUp++;
 
@@ -489,7 +491,7 @@ bool EnemyLarge::InFront()
 	VECTOR toPlayer = VSub(player_->GetPos(), transform_.pos);
 	float distance = VSize(toPlayer);
 
-	if (distance > 300.0f)
+	if (distance > FLONT_DICTANCE)
 		return false;
 
 	toPlayer.y = 0.0f;
@@ -541,39 +543,31 @@ void EnemyLarge::UpdateAttackPunch()
 
 void EnemyLarge::UpdateAttackRun()
 {
-
-	//進行方向を決める
-	if(look_)
+	// 突進開始時に一度だけ開始位置を記録
+	if (look_)
 	{
-		//突進開始位置
 		startPos = transform_.pos;
 		look_ = false;
 	}
 
-	//進行方向を決めた後移動
-	//float dist =VSize(VSub(transform_.pos, startPos)); //移動距離
-
-	//if (distance_ <= SWICH_DISTANCE)
-	//{
-	//	ChangeState(STATE::CHARGE);
-	//}
-
-	//if (dist > ATTACK_RUN_END_POINT)
-	//{
-	//	ChangeState(STATE::CHARGE);
-	//}
-
-	int rand = GetRand(100);
-	if (rand >30)
-	{
-		ChangeState(STATE::ATTACK_DROP);
-	}
-	else
-	{
-		ChangeState(STATE::CHARGE);
-	}
-
+	// 走っている間は常に前進
 	movePow_ = VScale(moveDir_, moveSpeed_);
+
+	// 終了条件: 一定距離走った or プレイヤーに十分近づいた
+	float runDist = VSize(VSub(transform_.pos, startPos));
+	if (runDist >= RUN_MAX_DISTANCE || distance_ < RUN_STOP_DISTANCE)
+	{
+		movePow_ = AsoUtility::VECTOR_ZERO;
+
+		if (GetRand(CHANGESTATE_RAND_MAX) > 30)
+		{
+			ChangeState(STATE::ATTACK_DROP);
+		}
+		else
+		{
+			ChangeState(STATE::CHARGE);
+		}
+	}
 }
 
 void EnemyLarge::UpdateAttackDrop()
@@ -601,12 +595,11 @@ void EnemyLarge::UpdateAttackDrop()
 	{
 		AudioManager::GetInstance()->SetSeVolume(300);
 		AudioManager::GetInstance()->PlaySE(SoundID::SE_ENEMY_LARGE_ATTACK_DROP);
+
 		// 発生の瞬間に一度だけ座標をセット
 		ringTransform_->pos = transform_.pos;
 		ringTransform_->pos.y += 20;
 		ringTransform_->scl = { RING_SCALE,RING_SCALE ,RING_SCALE };
-		isDrop_ = true;
-		attackTriggerRing_ = true;
 
 		isDrop_ = true;
 		attackTriggerRing_ = true;
@@ -617,9 +610,9 @@ void EnemyLarge::UpdateAttackDrop()
 		);
 
 		//Y軸を３０上げる
-		ringTransform_->pos.y += 30.0f;
+		ringTransform_->pos.y += RING_DOWN_POS_Y;
 
-		effect->SetScale(30.0f);
+		effect->SetScale(WAVE_EFFECT_SCAL);
 		effect->Play(ringTransform_->pos, Quaternion());
 
 		EffectManager::GetInstance().RegisterEffect(effect);
@@ -627,26 +620,36 @@ void EnemyLarge::UpdateAttackDrop()
 
 	if (animationController_->IsEnd())
 	{
+		//リセット
 		isAir_ = false;
 		isJump_ = false;
 		attackTriggerRing_ = false;
 		jumpApplied_ = false;
+		//状態遷移
 		ChangeState(STATE::IDLE);
 	}
-
+	
 	if (!isDrop_)
 	{
+		//被弾フラグだけ戻す
 		wasHitRing_ = false;
 		return;
 	}
+
+	//リングの外半径・内半径当たり判定
 	VECTOR playerPos = player_->GetPos();
 	float nowR1 = ringTransform_.get()->scl.x * 97.5f;
 	float nowR2 = ringTransform_.get()->scl.x * 92.5f;
+
+	// リング中心からプレイヤーまでの距離
 	VECTOR vec = VSub(playerPos, ringTransform_.get()->pos);
 	float dist = VSize(vec);
+
+	// 1回の衝撃波につき1回だけ、リングの帯に触れたらダメージ
 	if (wasHitRing_ == false &&
 		dist <= nowR1 && dist >= nowR2)
 	{
+		// プレイヤーがジャンプ中ならダメージなし
 		if (player_->IsJump()) return;
 		player_->Damage(power_, transform_.GetForward());
 		wasHitRing_ = true;
@@ -658,7 +661,6 @@ void EnemyLarge::UpdateHit()
 {
 	if (animationController_->IsEnd())
 	{
-
 		ChangeState(STATE::IDLE);
 	}
 }
