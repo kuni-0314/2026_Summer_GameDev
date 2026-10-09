@@ -13,8 +13,6 @@
 #include "../../../../Object/Item/ItemManger.h"
 #include "../../../../Sound/AudioManager.h"
 #include "../../Player/Player.h"
-#include "../Shot/ShotBase.h"
-#include "../Shot/ShotStraight.h"
 #include "EnemyRase.h"
 #include <EffekseerForDXLib.h>
 

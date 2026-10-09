@@ -168,9 +168,6 @@ private:
 	//頭のローカル回転
 	Quaternion headRot_;
 
-	//空中上昇量
-	float pow = 10;
-
 	//ブレス情報関連
 	struct BreathInfo
 	{

@@ -29,21 +29,7 @@ void EnemyRat::Draw()
 {
 	// 親クラスの描画処理
 	EnemyBase::Draw();
-
-
-	STATE next = state_;
-
-	const char* name = "";
-
-	if (next == STATE::THINK) name = "THINK";
-	else if (next == STATE::ATTACK) name = "ATTACK";
-	else if (next == STATE::IDLE) name = "IDLE";
-	else if (next == STATE::RUN) name = "RUN";
-	else if (next == STATE::HIT) name = "HIT";
-	else if (next == STATE::CHARGE) name = "CHARGE";
 }
-
-
 
 void EnemyRat::InitLoad()
 {
@@ -132,7 +118,8 @@ void EnemyRat::InitPost()
 	ChangeState(STATE::THINK);
 
 	look_ = false;
-	pushOutRadius_ = 100.0f;
+	//押し出し半径
+	pushOutRadius_ = PUSHOUT_RASIUS;
 }
 
 void EnemyRat::UpdateProcess()
@@ -150,7 +137,7 @@ void EnemyRat::UpdateProcess()
 	if (distance_ < SEARCH_DISTANCE){look_ = true;}
 	if (look_){LookPlayer();}
 	
-	int rand = GetRand(100);
+	int rand = GetRand(CHANGESTATE_RAND_MAX);
 	if (5 < rand)
 	{
 		LookPlayer();
@@ -169,7 +156,6 @@ void EnemyRat::UpdateProcess()
 
 	//攻撃判定
 	preHp_ = hp_;
-
 	CheckPlayerSwordCollision();
 	CheckPlayerMagicCollision();
 

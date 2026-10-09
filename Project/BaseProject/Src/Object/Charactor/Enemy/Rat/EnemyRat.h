@@ -59,8 +59,10 @@ protected:
 private:
 	ItemManger* itemManager_ ;
 
+#pragma region 定数
+
 	//アニメーション登録番号
-	static constexpr int  ANIM_INDX_IDLE = 8; 
+	static constexpr int  ANIM_INDX_IDLE = 8;
 	static constexpr int  ANIM_INDX_WALK = 13;
 	static constexpr int  ANIM_INDX_ATTACK = 1;
 	static constexpr int  ANIM_INDX_END = 6;
@@ -71,6 +73,11 @@ private:
 	static constexpr float SCALE = 0.5f;
 	// モデルのローカル回転
 	static constexpr VECTOR ROT = { 0.0f, 180.0f * DX_PI_F / 180.0f, 0.0f };
+	//押し出し判定半径
+	static constexpr float PUSHOUT_RASIUS = 100.0f;
+
+#pragma region コライダー関連
+
 
 	// 衝突判定用線分開始
 	static constexpr VECTOR COL_LINE_START_LOCAL_POS = { 0.0f, 80.0f, 0.0f };
@@ -91,15 +98,24 @@ private:
 	// 行動切り替え用カプセル球体半径
 	static constexpr float COL_SWICH_RADIUS = 250.0f;
 
+#pragma endregion
+
 	//距離関連
 	static constexpr float SEARCH_DISTANCE = 500.0f;
+	//状態遷移切り替え距離
 	static constexpr float SWICH_DISTANCE = 200.0f;
+	//切り替え最小距離
 	static constexpr float MIN_DISTANCE = 150.0f;
-	static constexpr float ATTACK_MOVE_SPEED = 3.0f;
 
+	//攻撃時の移動スピード
+	static constexpr float ATTACK_MOVE_SPEED = 3.0f;
+	//攻撃時の貯めカウント
 	static constexpr int ATTACK_CHARGE = 20;
 
-	int attackCharge_ = 20;
+#pragma endregion
+
+	//攻撃カウント
+	int attackCharge_ ;
 
 	//攻撃判定
 	bool isAttack_; 
@@ -110,18 +126,17 @@ private:
 
 	// 状態
 	STATE state_;
-
+	//攻撃判定座標
 	VECTOR attackWorldPos_;
 
 	//プレイヤー方向
 	VECTOR toPlayer_;
-
 	//プレイヤー座標
 	VECTOR playerPos_;
 
 	// 更新ステップ
 	float step_;// 状態管理(更新ステップ)
-
+	//距離
 	float distance_;
 
 	// 状態遷移

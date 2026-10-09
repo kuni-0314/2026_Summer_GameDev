@@ -1,16 +1,21 @@
 #include "../../../Utility/AsoUtility.h"
+
 #include "../../../Manager/InputManager.h"
+
 #include "../../Charactor/Player/Player.h"
-#include "../Enemy/Shot/ShotBase.h"
-#include "../Enemy/Shot/ShotStraight.h"
+
 #include "../../Collider/ColliderBase.h"
 #include "../../Collider/Capsule/ColliderCapsule.h"
+#include "../../Collider/Sphere/ColliderSphere.h"
+
 #include "../../../Sound/AudioManager.h"
+
 #include "../../../Effect/LoadEffekseer/EffekseerEffect.h"
 #include "../../../Effect/EffectManager.h"
+
 #include "../../../Common/Quaternion.h"
 #include "EnemyBase.h"
-#include "../../Collider/Sphere/ColliderSphere.h"
+
 
 EnemyBase::EnemyBase(
 	const EnemyBase::EnemyData& data,

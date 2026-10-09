@@ -442,7 +442,7 @@ void EnemyLarge::UpdateDie()
 
 void EnemyLarge::UpdateThink()
 {
-	int rand = GetRand(rand);
+	int rand = GetRand(CHANGESTATE_RAND_MAX);
 
 	//‹——£‚ª‹ß‚©‚Á‚½‚çƒpƒ“ƒ`
 	if (distance_ < SWICH_DISTANCE)
@@ -456,7 +456,7 @@ void EnemyLarge::UpdateThink()
 	}
 	else if (rand >= 30)
 	{
-		ChangeState(STATE::CHARGE);
+		ChangeState(STATE::ATTACK_PUNCH);
 	}
 	else
 	{

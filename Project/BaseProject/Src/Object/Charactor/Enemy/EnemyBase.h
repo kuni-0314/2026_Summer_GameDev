@@ -1,8 +1,9 @@
 #pragma once
 #include <map>
 #include <functional>
-#include "../CharactorBase.h"
 #include <DxLib.h>
+#include "../CharactorBase.h"
+
 class Player;
 class ShotBase;
 class ShotStraight;
@@ -88,7 +89,7 @@ protected:
 	//最大ランダム値
 	static constexpr int CHANGESTATE_RAND_MAX = 100;
 	//デフォルトアニメ-ションスピード
-	static constexpr float DEFAULT_ANIM_SPEED = 20.0f
+	static constexpr float DEFAULT_ANIM_SPEED = 20.0f;
 
 	// 初期位置
 	const VECTOR defaultPos_;

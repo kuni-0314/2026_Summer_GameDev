@@ -6,7 +6,6 @@
 #include "../../../Utility/AsoUtility.h"
 #include "../../../Scene/GameScene.h"
 #include "Rat/EnemyRat.h"
-#include "Robot/EnemyRobot.h"
 #include "Rase/EnemyRase.h"
 #include "Large/EnemyLarge.h"
 #include "Dragon/EnemyDragon.h"
