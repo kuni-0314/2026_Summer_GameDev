@@ -2,7 +2,6 @@
 #include "../Application.h"
 
 // サウンドID から サウンドパスを取得
-
 // <SoundID, std::pair<std::string, int>>
 // soundID: サウンドID
 // std::string: サウンドパス

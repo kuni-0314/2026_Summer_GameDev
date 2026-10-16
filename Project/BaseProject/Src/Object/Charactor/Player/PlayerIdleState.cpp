@@ -73,13 +73,11 @@ void PlayerIdleState::Update(Player* player)
 		hasMoveInput = (ins->IsNew({ KEY_INPUT_W, KEY_INPUT_A,KEY_INPUT_S, KEY_INPUT_D }));
 	}
 
-
 	// ˆÚ“®ƒL[‚ª“ü—Í‚³‚ê‚Ä‚¢‚é‚©
 	if (hasMoveInput)
 	{
 		player->ChangeState(Player::STATE::RUN);
 		player->SetAttacking(false);
 		return;
-
 	}
 }

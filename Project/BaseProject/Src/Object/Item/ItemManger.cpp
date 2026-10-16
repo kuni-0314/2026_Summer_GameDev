@@ -8,7 +8,6 @@
 #include "../Charactor/Player/Player.h"
 #include "ItemManger.h"
 
-
 ItemManger::ItemManger()
 {
 }
@@ -45,7 +44,6 @@ void ItemManger::Draw()
 	for (auto& item : items_)
 	{
 		item->Draw();
-
 	}
 }
 

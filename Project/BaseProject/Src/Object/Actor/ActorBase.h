@@ -9,7 +9,6 @@ class ColliderBase;
 
 class ActorBase
 {
-
 public:
 	enum class COLLIDER_TYPE : std::uint8_t
 	{

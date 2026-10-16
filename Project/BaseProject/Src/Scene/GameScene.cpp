@@ -59,10 +59,6 @@ void GameScene::Init()
 		stage_->GetOwnCollider(static_cast<int>(ActorBase::COLLIDER_TYPE::MODEL));
 	player_->AddHitCollider(stageCollider);
 
-	// 武器初期化
-	//weapon_ = new KeyBlade1(player_->GetTransform());
-	//weapon_->Init();
-
 	// 敵マネージャー初期化
 	enemyManager_ = new EnemyManager(this, player_);
 	enemyManager_->Init();
@@ -75,8 +71,6 @@ void GameScene::Init()
 
 	enemyManager_->AddHitCollider(stageCollider);
 	enemyManager_->AddHitCollider(player_->GetSword()->GetOwnCollider(static_cast<int>(ActorBase::COLLIDER_TYPE::CAPSULE)));
-
-
 
 	// スカイドーム初期化
 	skyDome_ = new SkyDome(player_->GetTransform());
@@ -92,7 +86,6 @@ void GameScene::Init()
 	camera->SetFollow(&player_->GetTransform());
 	camera->AddHitCollider(stageCollider);
 	camera->SetTargetPos(enemyManager_->GetEnemyPos(1));
-
 	
 	// ポストエフェクトマネージャーの初期化
 	PostEffectManager::GetInstance().Init();
@@ -106,7 +99,6 @@ void GameScene::Init()
 	sceMng_.GetCamera()->ChangeMode(Camera::MODE::MANUAL);
 
 	AudioManager::GetInstance()->LoadSceneSound(LoadScene::GAME);
-	//AudioManager::GetInstance()->PlayBGM(SoundID::BGM_GAME);
 
 	audioHandle_ = LoadSoundMem("Data/Sound/BGM/GameBGM.wav");
 	wargnigHandle_ = LoadSoundMem("Data/Sound/BGM/WarnigBgm.wav");
@@ -114,8 +106,8 @@ void GameScene::Init()
 
 	AudioManager::GetInstance()->PlayBGM(SoundID::BGM_GAME);
 	AudioManager::GetInstance()->SetBgmVolume(VOLUME_BGM_MAX);
-	// 音量
 
+	// 音量
 	hpHandles_.resize(11);
 
 	const int MAX_HP = 10;
@@ -150,7 +142,6 @@ void GameScene::Init()
 	playerUiHandles_[static_cast<int>(PLAYRE_HP_STATE::DAMAGE)] = resMng_.Load(ResourceManager::SRC::IMG_PLAYER_UI_DAMEGE).handleId_;
 	playerUiHandles_[static_cast<int>(PLAYRE_HP_STATE::WARNING)] = resMng_.Load(ResourceManager::SRC::IMG_PLAYER_UI_WARNIG).handleId_;
 
-
 	lockOnImageHandle_ = resMng_.Load(ResourceManager::SRC::TARGET_CURSOR_ORANGE).handleId_;
 
 	lockOnFontHandle_ = resMng_.Load(ResourceManager::SRC::IMG_LOCKON_FONT_UI).handleId_;
@@ -167,7 +158,6 @@ void GameScene::Update()
 	stage_->Update();
 	skyDome_->Update();
 	player_->Update();
-	//weapon_->Update();
 	enemyManager_->Update();
 	itemManger_->Update();
 
@@ -177,7 +167,6 @@ void GameScene::Update()
 	}
 	else if (selectCommand_ == static_cast<int>(COMMAND::ALL))
 	{
-		//selectCommand_ = static_cast<int>(usecommand_);
 	}
 
 	//HP警告
@@ -187,7 +176,6 @@ void GameScene::Update()
 		{
 			isWarning_ = true;
 
-	
 			PlaySoundMem(wargnigHandle_, DX_PLAYTYPE_LOOP);
 		}
 	}
@@ -239,17 +227,12 @@ void GameScene::Update()
 		}
 	}
 
-	// ターゲット切り替え
-	//if (ins->IsTrgDown(KEY_INPUT_LEFT) && targetEnemyId_ > 0) targetEnemyId_--;
-	//if (ins->IsTrgDown(KEY_INPUT_RIGHT)) targetEnemyId_++;
-
 	targetPos_ = enemyManager_->GetEnemyPos(targetEnemyId_);
 	SceneManager::GetInstance().GetCamera()->SetTargetPos(targetPos_);
 
 	//プレイヤーダメージUI処理
 	if (damageflag_)
 	{
-		
 		damegeTimeCount_++;
 
 		//表示時間
@@ -306,6 +289,7 @@ void GameScene::Update()
 	// x: 強度（減光の急峻さ）, y: 範囲（減光が始まる距離）
 	const float STANDARD_VIGNETTE_INTENSITY = 0.5f;
 	const float STANDARD_VIGNETTE_RANGE = 0.85f;
+
 	// 0から1までの値をsinで変化させる
 	static float time = 0.0f;
 	time += SceneManager::GetInstance().GetDeltaTime();
@@ -321,10 +305,7 @@ void GameScene::Update()
 		multiEffectMode_ = !multiEffectMode_;
 	}
 
-	// 単一エフェクトモード
-	//if (!multiEffectMode_)
-	//{
-		// エフェクト切り替え (テンキー4/6)
+	// エフェクト切り替え (テンキー4/6)
 	if (ins->IsTrgDown(KEY_INPUT_NUMPAD4))
 	{
 		int current = static_cast<int>(currentEffect_);
@@ -339,7 +320,6 @@ void GameScene::Update()
 		currentEffect_ = static_cast<PostEffectManager::EFFECT_TYPE>(current);
 	}
 
-
 	// ゲームオーバー判定
 	if (player_->GetHp() <= 0)
 	{
@@ -351,7 +331,6 @@ void GameScene::Update()
 		sceMng_.ChangeScene(SceneManager::SCENE_ID::OVER);
 		return;
 	}
-
 
 	// ゲームクリア判定
 	if (enemyManager_->GetEnemyDead())
@@ -365,13 +344,10 @@ void GameScene::Update()
 			AudioManager::GetInstance()->StopBGM();
 			sceMng_.ChangeScene(SceneManager::SCENE_ID::CLEAR);
 		}
-
 		return;
 	}
 
-	//#ifdef _DEBUG
-
-	if (ins->IsTrgDown(KEY_INPUT_UP) /*|| ins->IsTrgDown(KEY_INPUT_E)*/ || ins->IsGamepadTrgDown(InputManager::PadInput::Up, 0))
+	if (ins->IsTrgDown(KEY_INPUT_UP)|| ins->IsGamepadTrgDown(InputManager::PadInput::Up, 0))
 	{
 		AudioManager::GetInstance()->SetSeVolume(VOLUME_COMMAND_MAX);
 		AudioManager::GetInstance()->PlaySE(SoundID::SE_COMMAND_SELECT);
@@ -396,7 +372,6 @@ void GameScene::Update()
 	}
 
 	//#endif
-
 	if (player_->IsShortCut())
 	{
 		selectCommand_ = static_cast<int>(COMMAND::ALL);
@@ -405,7 +380,6 @@ void GameScene::Update()
 	{
 		selectCommand_ = static_cast<int>(useCommand_);
 	}
-
 }
 
 void GameScene::Draw()
@@ -424,8 +398,6 @@ void GameScene::Draw()
 	//weapon_->Draw();
 	itemManger_->Draw();
 	enemyManager_->Draw();
-
-
 
 	if (camMode_ == TARGETING)
 	{
@@ -453,7 +425,6 @@ void GameScene::Draw()
 
 	PlayerHpDraw();
 	CommandDraw();
-
 
 	// 最終結果をメイン画面に描画
 	SetDrawScreen(mainScreen);
@@ -535,7 +506,6 @@ void GameScene::Release()
 		delete player_;
 		player_ = nullptr;
 	}
-
 }
 
 void GameScene::CreateAttackCollider(ColliderBase::TAG tag, VECTOR pos, float radius, float damage)
@@ -576,7 +546,6 @@ void GameScene::AddEnemyHitCollider(const ColliderBase* hitCollider)
 void GameScene::RemoveEnemyHitCollider(const ColliderBase* hitCollider)
 {
 	enemyManager_->RemoveHitCollider(hitCollider);
-
 }
 
 void GameScene::AddPlayerHitCollider(const ColliderBase* hitCollider)
@@ -736,7 +705,6 @@ void GameScene::CommandUpdate()
 		thunderState_ = COMMAND_STATE::NOT_USE;
 	}
 
-
 	// ファイア
 	if (player_->GetFireCoolTime() > 0)
 	{
@@ -773,7 +741,7 @@ void GameScene::CommandDraw()
 	const int baseX = 45;
 	const int selectOffset = 90;
 
-	//
+	// 選択中のコマンドを少し右にずらして描画
 	for (int i = 0; i < static_cast<int>(COMMAND::MAX); i++)
 	{
 		bool isSelect =

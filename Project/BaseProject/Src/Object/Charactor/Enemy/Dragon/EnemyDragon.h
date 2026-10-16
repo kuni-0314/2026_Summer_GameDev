@@ -6,19 +6,15 @@
 #include "../EnemyBase.h"
 #include "../../../../Effect/LoadEffekseer/EffekseerEffect.h"
 
-
 class GameScene;
 class Player;
 class ItemManger;
 class ColliderCapsule;
 class ColliderSphere;
 
-
 class EnemyDragon : public EnemyBase
 {
-
 public:
-
 	// アニメーション種別
 	enum class ANIM_TYPE
 	{
@@ -52,11 +48,7 @@ public:
 	void Draw(void) override;
 	void Release(void) override;
 
-
-
-
 protected:
-
 	// リソースロード
 	void InitLoad() override;
 	// 大きさ、回転、座標の初期化
@@ -74,8 +66,6 @@ protected:
 	void LandingEffect(const VECTOR& pos, const VECTOR& normal, float size);
 
 private:
-
-
 	//ステージ判定用
 	// 衝突判定用線分開始
 	static constexpr VECTOR COL_LINE_START_LOCAL_POS = { 0.0f, 80.0f, 0.0f };
@@ -99,6 +89,7 @@ private:
 	//トルネード最大移動距離（生存切り替え距離)
 	static constexpr float MAX_DIST = 2000.0f;
 
+	//クロー用球コライダーサイズ
 	static constexpr float PUSH_MIN_SEPARATION = 300.0f; // 最小許容距離（水平）
 	static constexpr float PUSH_PLAYER_RATIO = 0.60f;    // 重なりを何割プレイヤーへ押すか
 	static constexpr float PUSH_ENEMY_RATIO = 0.40f;     // 何割ドラゴンへ押すか（合計1.0になるように）

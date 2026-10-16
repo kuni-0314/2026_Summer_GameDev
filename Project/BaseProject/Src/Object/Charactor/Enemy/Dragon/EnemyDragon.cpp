@@ -62,7 +62,6 @@ void EnemyDragon::Draw(void)
 
 void EnemyDragon::Release(void)
 { 
-
 	EffectManager::GetInstance().Release();
 }
 
@@ -71,7 +70,6 @@ void EnemyDragon::InitLoad()
 	//規定クラスのロード
 	CharactorBase::InitLoad();
 	transform_.SetModel(resMng_.LoadModelDuplicate(ResourceManager::SRC::ENEMY_DRAGON));
-
 } 
 
 
@@ -84,9 +82,6 @@ void EnemyDragon::InitTransform()
 	transform_.quaRotLocal = Quaternion::Euler(ROT);
 
 	transform_.Update();
-
-	//スケール設定
-	//MV1SetScale(transform_.modelId,transform_.scl);
 
 	//ブレス位置取得
 	// フレーム22のワールドマトリクスを取得
@@ -221,7 +216,6 @@ void EnemyDragon::UpdateProcess()
 	//ブレス発射位置
 	breathTopPos_ = VAdd(breathTopPos_, CAPSULE_ADD_BREATH_POS);
 
-
 	//プレイヤー視認状態
 	if (look_)
 	{
@@ -251,7 +245,6 @@ void EnemyDragon::UpdateProcess()
 	// Transform更新
 	clowInfo_.transform.Update();
 
-	//
 	if (tornadoCoolTime_ > 0)
 	{
 		tornadoCoolTime_--;
@@ -273,7 +266,6 @@ void EnemyDragon::UpdateProcessPost()
 {
 	//状態更新
 	stateUpdate_();
-
 }
 
 void EnemyDragon::LandingEffect(const VECTOR& pos, const VECTOR& normal, float size)
@@ -355,7 +347,6 @@ void EnemyDragon::ChangeStateBreath()
 	// 待機アニメーション再生
 	animationController_->Play(
 		static_cast<int>(ANIM_TYPE::BREARH), false);
-
 }
 
 void EnemyDragon::ChangeStateTornado()
@@ -375,7 +366,6 @@ void EnemyDragon::ChangeStateTornado()
 
 void EnemyDragon::ChangeStateLanding()
 {
-
 	stateUpdate_ = std::bind(&EnemyDragon::UpdateLanding, this);
 
 	look_ = false;
@@ -387,12 +377,10 @@ void EnemyDragon::ChangeStateLanding()
 	// 待機アニメーション再生
 	animationController_->Play(
 		static_cast<int>(ANIM_TYPE::LANDING), false);
-
 }
 
 void EnemyDragon::ChangeStateClow()
 {
-
 	stateUpdate_ = std::bind(&EnemyDragon::UpdateClow, this);
 	look_ = false;
 
@@ -427,14 +415,12 @@ void EnemyDragon::UpdateIdle()
 
 	idleTime_++;
 
-
 	movePow_ = AsoUtility::VECTOR_ZERO;
 }
 
 void EnemyDragon::UpdateFlayIdle()
 {
 	int max = 500;
-
 
 	//上昇量増加
 	if (pow < max)
@@ -458,7 +444,6 @@ void EnemyDragon::UpdateFlayIdle()
 		LandingEffect(transform_.pos, AsoUtility::VECTOR_ZERO, 1.0f);
 	}
 
-
 	if(landing_)
 	{
 		transform_.pos.y -= 5;
@@ -477,7 +462,6 @@ void EnemyDragon::UpdateFlayIdle()
 	}
 
 	transform_.Update();
-
 
 	//最高高度に来たらトルネードを放つ
 	if (transform_.pos.y >= max)
@@ -558,19 +542,11 @@ void EnemyDragon::UpdateBreath()
 	//ブレス位置更新
 	breathInfo_.transform.pos = breathTopPos_;
 
-	//// ドラゴンの正面方向
-	//VECTOR dir = transform_.quaRot.GetForward();
-
-	//// 回転を作成
-	//Quaternion breathRot = Quaternion::LookRotation(dir);
-
-	//breathInfo_.transform.quaRot = breathRot;
 	breathInfo_.transform.Update();
 
 	if (breathInfo_.effect)
 	{
 		breathInfo_.effect->SetPosition(breathTopPos_);
-		//breathInfo_.effect->SetRotation(breathRot);
 	}
 }
 
@@ -578,10 +554,8 @@ void EnemyDragon::UpdateTornado()
 {
 	if (!isAliveTornado_)
 	{
-
 		isAliveTornado_ = true;
 		CreateTornado();
-	
 	}
 
 	bool allDelete = true;
@@ -595,7 +569,7 @@ void EnemyDragon::UpdateTornado()
 
 		//トルネード更新処理
 		tornadoInfo_[i].transform.pos =
-			VAdd(tornadoInfo_[i].transform.pos,VScale(tornadoInfo_[i].moveDir, speed));
+			VAdd(tornadoInfo_[i].transform.pos, VScale(tornadoInfo_[i].moveDir, speed));
 
 		tornadoInfo_[i].transform.Update();
 		if (tornadoInfo_[i].effect)
@@ -611,7 +585,6 @@ void EnemyDragon::UpdateTornado()
 		//移動距離
 		float dist = VSize(VSub(tornadoInfo_[i].transform.pos, tornadoInfo_[i].startPos)); //移動距離
 
-	
 		if (dist >= MAX_DIST)
 		{
 			if (tornadoInfo_[i].effect)
@@ -635,7 +608,6 @@ void EnemyDragon::UpdateTornado()
 		tornadoCoolTime_ = TORNADO_RESET_TIME;
 		ChangeState(STATE::FLY_IDLE);
 	}
-	
 }
 
 void EnemyDragon::UpdateLanding()
@@ -668,7 +640,6 @@ void EnemyDragon::UpdateClow()
 				isAliveClow_ = true;
 			}
 		}
-	
 	}
 
 	//アニメーションが終了した場合
@@ -681,11 +652,9 @@ void EnemyDragon::UpdateClow()
 		player_->SetWasHitClow(false);
 		//ブレス終了後、次の状態へ
 		ChangeState(STATE::IDLE);
-	
 	}
-	
-	clowInfo_.transform.Update();
 
+	clowInfo_.transform.Update();
 }
 
 void EnemyDragon::ResolvePushWithPlayer()
@@ -806,7 +775,6 @@ void EnemyDragon::CreateTornadoCollider(TornadoInfo& tornadoInfo)
 	//衝突情報追加
 	GameScene* gameScene = dynamic_cast<GameScene*>(SceneManager::GetInstance().GetScene());
 	gameScene->AddPlayerHitCollider(colCapsule);
-
 }
 
 void EnemyDragon::CreateClowCollider(ClowInfo& clowInfo)
@@ -921,7 +889,6 @@ void EnemyDragon::CreateTornado()
 			}
 		}
 	}
-
 }
 
 

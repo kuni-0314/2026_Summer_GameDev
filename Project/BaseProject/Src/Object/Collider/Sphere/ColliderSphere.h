@@ -36,6 +36,4 @@ private:
 	VECTOR localPos_;
 	// ”¼Œa
 	float radius_;
-
-
 };

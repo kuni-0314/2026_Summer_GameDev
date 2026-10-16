@@ -13,7 +13,6 @@ class Player;
 class EnemyManager;
 class ItemManger;
 class SwordBase;
-//class ColliderBase;
 
 class GameScene : public SceneBase
 {
@@ -28,7 +27,7 @@ public:
 		bool isHit = false;
 	};
 
-	// 
+	// カメラモード
 	enum CAM_MODE
 	{
 		MANUAL,
@@ -94,9 +93,6 @@ public:
 
 	COMMAND GetSelectedCommand() const { return static_cast<COMMAND>(selectCommand_); }
 
-	/*void  SetDamageFlag(bool flag);
-	bool  GetFlag();*/
-
 	CAM_MODE GetCamMode() const { return camMode_; }
 
 	VECTOR GetTargetPos() const { return targetPos_; }
@@ -107,10 +103,7 @@ public:
 
 	void SetLowHpEffect();
 
-
-
 private:
-
 	// ステージ
 	Stage* stage_;
 
@@ -128,9 +121,6 @@ private:
 
 	// アイテムマネージャー
 	ItemManger* itemManger_;
-
-	// 武器
-	//WeaponBase* weapon_;
 
 	static constexpr int IMG_HP_X = 1550;
 	static constexpr int IMG_HP_Y = 700;
@@ -162,7 +152,6 @@ private:
 	COMMAND_STATE healState_;
 
 	int selectCommand_;
-
 
 	// 攻撃コライダーリスト
 	std::vector<AttackColliderData*> attackColliders_;
@@ -211,7 +200,7 @@ private:
 	int clearTimer_ = 0;
 	bool isClear_ = false;
 
-	//
+	//プレイヤーHPUI
 	std::vector<int> hpHandles_;			//Hpハンドル
 	std::vector<int> playerUiHandles_;		//プレイヤーUI
 	std::vector<int> commandHandles_;		//コマンドハンドル

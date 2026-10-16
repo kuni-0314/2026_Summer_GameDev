@@ -161,8 +161,6 @@ EnemyBase* EnemyManager::Create(const EnemyBase::EnemyData& data, const Player* 
 		enemies_.emplace_back(enemy);
 
 		SpawnEffect(enemy->GetTransform().pos);
-
-
 	}
 	return enemy;
 }
@@ -340,7 +338,6 @@ void EnemyManager::EnemysCollision()
 				enemy2->GetOwnCollider(static_cast<int>(ActorBase::COLLIDER_TYPE::CAPSULE));
 
 			enemy1->AddHitCollider(enemyCollider);
-
 		}
 	}
 }
@@ -658,7 +655,6 @@ void EnemyManager::InitEnemyPos()
 
 	// LARGEê—pÀ•W
 	LargePos_.resize(2);
-
 	LargePos_[0] = { 0, 40, 600 };
 	LargePos_[1] = { 600, 40, 0 };
 }
@@ -667,7 +663,6 @@ void EnemyManager::SpawnBossEnemy()
 {
 	// BOSS©g‚Í’Ç‰Á¶¬‚µ‚È‚¢
 	// ’Êí“G‚¾‚¯‚ğ’Ç‰Á¶¬‚·‚é
-
 	EnemyBase::EnemyData data{};
 
 	// ¶¬‚·‚é“G‚Ìí—Ş
@@ -747,6 +742,3 @@ void EnemyManager::SpawnNextEnemy()
 	// Ÿ‚Ì“G‚Ö
 	spawnIndex_++;
 }
-
-
-

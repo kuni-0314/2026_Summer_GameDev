@@ -65,7 +65,7 @@ public:
 	// 解放
 	void Release() override;
 
-	//　選択コマンドの変更
+	//選択コマンドの変更
 	void SelectChange(SELECT next);
 
 	// 選択コマンドの描画(仮（後で画像に変更））

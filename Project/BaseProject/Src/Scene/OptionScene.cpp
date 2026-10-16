@@ -763,8 +763,6 @@ void OptionScene::SaveOptionValues()
 	// —á: SaveToFile("Config/Options.ini");
 }
 
-	
-	
 //void OptionScene::ApplyOptionValues()
 //{
 //	// İ’è‚ğ‘¦À‚É”½‰f‚·‚éê‡‚Ég—p

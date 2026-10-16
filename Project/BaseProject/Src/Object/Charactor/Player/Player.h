@@ -12,7 +12,6 @@ class EnemyDragon;
 
 class Player : public CharactorBase
 {
-
 public:
 	// 状態
 	enum class STATE
@@ -92,8 +91,6 @@ public:
 	void SetComboTimer(const int time) { comboTimer_ = time; }
 	GameScene* GetGameScene() const { return gameScene_; }
 	void SetGameScene(GameScene* gameScene) { gameScene_ = gameScene; }
-	//bool GetApplyRootMotion() const { return applyRootMotion_; }
-	//void SetApplyRootMotion(const bool apply) { applyRootMotion_ = apply; }
 	VECTOR GetAnimStartModelPos() const { return animStartModelPos_; }
 	void SetAnimStartModelPos(const VECTOR& pos) { animStartModelPos_ = pos; }
 	bool IsAttacking() const { return isAttacking_; }
@@ -130,8 +127,6 @@ public:
 
 	// 移動速度(通常)
 	static constexpr float SPEED_MOVE = 8.0f;
-	// 移動速度(ダッシュ)
-	//static constexpr float SPEED_DASH = 10.0f;
 
 	// 衝突判定用線分開始(ジャンプ時)
 	static constexpr VECTOR COL_LINE_JUMP_START_LOCAL_POS = { 0.0f, 130.0f, 0.0f };
@@ -212,7 +207,6 @@ public:
 	void SetRolling(bool rolling) { isRolling_ = rolling; }
 
 protected:
-
 	// リソースロード
 	void InitLoad() override;
 
@@ -232,9 +226,7 @@ protected:
 	virtual void UpdateProcess() override;
 	virtual void UpdateProcessPost() override;
 
-
 private:
-
 	void CheckPlayerRingCollision();
 
 	void GrantStatus(int index);
@@ -318,11 +310,6 @@ private:
 	// アニメーション再生前のモデル座標
 	VECTOR animStartModelPos_;
 
-	// ルートモーションを適用するかどうか
-	//bool applyRootMotion_;
-	////VECTOR debugPos_;
-	//VECTOR debugPosPrev_;
-
 	// 差分
 	VECTOR animDiffPos_;
 
@@ -342,7 +329,6 @@ private:
 	static constexpr VECTOR KEY_BLADE_3_LOCAL_POS_START = { 0.0f, 30.0f, 0.0f };
 	static constexpr VECTOR KEY_BLADE_3_LOCAL_POS_END = { 0.0f, 120.0f, 0.0f };
 	static constexpr float KEY_BLADE_3_RADIUS = 40.0f;
-
 
 	//bool isAliveThunder_;
 	int thunderTimer_;
@@ -372,7 +358,6 @@ private:
 	bool isAliveMagic_ = false;	// 魔法の生存状態
 	int fireCoolTime_ = 0;	// クールタイムカウンタ
 	bool isAliveFire_ = false;	// 火の生存状態
-	//VECTOR fireDir_ = { 0.0f, 0.0f, 1.0f };	// 火の移動方向
 	static constexpr int THUNDER_COOL_TIME = 300;	// クールタイム
 	int thunderCoolTime_ = 0;	// クールタイムカウンタ
 	bool isAliveThunder_ = false;	// 雷の生存状態

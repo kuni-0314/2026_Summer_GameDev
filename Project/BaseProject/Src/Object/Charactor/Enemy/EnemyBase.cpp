@@ -257,8 +257,6 @@ void EnemyBase::CheckPlayerSwordCollision()
 			}
 		}
 	}
-
-
 }
 
 void EnemyBase::CheckPlayerMagicCollision()

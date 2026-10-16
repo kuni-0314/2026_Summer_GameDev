@@ -77,7 +77,6 @@ void AnimationController::Play(int type, bool isLoop, bool isReset)
 
 	// アニメーションループ
 	isLoop_ = isLoop;
-
 }
 
 void AnimationController::Update()

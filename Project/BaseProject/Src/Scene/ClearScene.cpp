@@ -9,7 +9,6 @@
 #include "../Common/Quaternion.h"
 #include "../Application.h"
 
-
 ClearScene::ClearScene()
 {
 }
@@ -27,7 +26,6 @@ void ClearScene::Init()
 	imgOnTitleHandle_ = resMng_.Load(ResourceManager::SRC::IMG_ON_TITLE).handleId_;
 	imgOffTitleHandle_ = resMng_.Load(ResourceManager::SRC::IMG_OFF_TITLE).handleId_;
 	imgGameClear_ = resMng_.Load(ResourceManager::SRC::IMG_GAMECLEAR).handleId_;
-
 
 	AudioManager::GetInstance()->LoadSceneSound(LoadScene::TITLE);
 	AudioManager::GetInstance()->PlayBGM(SoundID::BGM_CLEAR);
@@ -48,7 +46,6 @@ void ClearScene::Update()
 	{
 		AudioManager::GetInstance()->StopBGM();
 		AudioManager::GetInstance()->SetSeVolume(150);
-		
 		
 		(SoundID::SE_TITLE_DECISION);
 		sceMng_.ChangeScene(SceneManager::SCENE_ID::TITLE);

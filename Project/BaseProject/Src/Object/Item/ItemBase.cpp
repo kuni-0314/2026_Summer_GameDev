@@ -9,7 +9,6 @@
 #include "../../Object/Collider/Capsule/ColliderCapsule.h"
 #include "../../Manager/ResourceManager.h"
 
-
 ItemBase::ItemBase()
 	:
 	ActorBase(),

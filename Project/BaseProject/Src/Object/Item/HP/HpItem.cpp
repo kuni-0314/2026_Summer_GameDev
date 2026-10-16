@@ -11,7 +11,6 @@
 #include "../../../Common/Quaternion.h"
 #include "HpItem.h"
 
-
 HpItem::HpItem(Player* player)
     :player_(player)
 {
@@ -29,7 +28,6 @@ void HpItem::Update()
 void HpItem::Draw()
 {
     ItemBase::Draw();
-    //DrawSphere3D(transform_.pos,COL_SPHERE_RADIUS, 10, 0x0000ff, 0x0000ff, false);
 }
 
 void HpItem::InitLoad()
@@ -64,7 +62,6 @@ void HpItem::InitCollider()
         COL_CAPSULE_TOP_LOCAL_POS, COL_CAPSULE_DOWN_LOCAL_POS,
         COL_CAPSULE_RADIUS);
     ownColliders_.emplace(static_cast<int>(COLLIDER_TYPE::CAPSULE), colCapsule);
-
 }
 
 void HpItem::InitAnimation()
@@ -112,7 +109,6 @@ void HpItem::PlayerHpGet()
                 transform_.pos,
                 VScale(dir, MOVE_SPEED));
         }
-
 
         float playerRad = player_->GetCollRadius();
 

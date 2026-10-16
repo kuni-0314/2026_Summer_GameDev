@@ -18,7 +18,6 @@
 #include "EnemyRase.h"
 #include <EffekseerForDXLib.h>
 
-
 EnemyRase::EnemyRase(const EnemyBase::EnemyData& data, int attackModel, Player* player)
 	:EnemyBase(data, attackModel, player),
 	state_(STATE::NONE),
@@ -71,7 +70,6 @@ void EnemyRase::Release(void)
 		}
 	}
 }
-
 
 void EnemyRase::InitLoad()
 {
@@ -337,7 +335,6 @@ void EnemyRase::ChangeStateThink()
 	movePow_ = AsoUtility::VECTOR_ZERO;
 	// 待機アニメーション再生
 	animationController_->Play(static_cast<int>(ANIM_TYPE::IDLE), true);
-
 }
 
 void EnemyRase::UpdateIdle()

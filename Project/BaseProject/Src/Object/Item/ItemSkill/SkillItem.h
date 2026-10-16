@@ -71,7 +71,6 @@ private:
 
 	bool isGet_ = false;
 
-
 	VECTOR worldPos;
 
 	VECTOR spawnPos_;

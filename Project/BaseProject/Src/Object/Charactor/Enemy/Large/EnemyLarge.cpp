@@ -76,8 +76,6 @@ void EnemyLarge::Draw(void)
 			DrawString(500, 140, "正面の攻撃はねぇよ", 0xffffff);
 		}
 	}
-
-
 #endif
 }
 
@@ -127,7 +125,6 @@ void EnemyLarge::InitCollider()
 		COL_CAPSULE_RADIUS);
 	ownColliders_.emplace(static_cast<int>(COLLIDER_TYPE::CAPSULE), colCapsule);
 
-
 	// DxLib側の衝突情報セットアップ
 	MV1SetupCollInfo(transform_.modelId);
 	// モデルのコライダ
@@ -157,7 +154,6 @@ void EnemyLarge::InitAnimation()
 		, 20.0f, Application::PATH_MODEL + "Enemy/Large/Drop.mv1");
 	animationController_->Add(static_cast<int>(ANIM_TYPE::HIT)
 		, 20.0f, Application::PATH_MODEL + "Enemy/Large/Hit.mv1");
-
 
 	animationController_->Play(static_cast<int>(ANIM_TYPE::IDLE), true);
 }
@@ -255,7 +251,6 @@ void EnemyLarge::UpdateProcess()
 		{
 			isDrop_ = false;
 			ringTransform_->scl = { RING_SCALE, RING_SCALE, RING_SCALE };
-		
 		}
 
 		ringTransform_->Update();
@@ -329,7 +324,6 @@ void EnemyLarge::ChangeStateThink()
 	stateUpdate_ = std::bind(&EnemyLarge::UpdateThink, this);
 
 	//IDLEと同じ
-
 	look_ = false;
 
 	// ランダムな待機時間
@@ -397,7 +391,6 @@ void EnemyLarge::ChangeStateAttackDrop()
 	look_ = false;
 
 	movePow_ = AsoUtility::VECTOR_ZERO;
-
 
 	// 待機アニメーション再生
 	animationController_->Play(
@@ -541,7 +534,6 @@ void EnemyLarge::UpdateAttackPunch()
 
 void EnemyLarge::UpdateAttackRun()
 {
-
 	//進行方向を決める
 	if(look_)
 	{
@@ -549,19 +541,6 @@ void EnemyLarge::UpdateAttackRun()
 		startPos = transform_.pos;
 		look_ = false;
 	}
-
-	//進行方向を決めた後移動
-	//float dist =VSize(VSub(transform_.pos, startPos)); //移動距離
-
-	//if (distance_ <= SWICH_DISTANCE)
-	//{
-	//	ChangeState(STATE::CHARGE);
-	//}
-
-	//if (dist > ATTACK_RUN_END_POINT)
-	//{
-	//	ChangeState(STATE::CHARGE);
-	//}
 
 	int rand = GetRand(100);
 	if (rand >30)
@@ -595,7 +574,6 @@ void EnemyLarge::UpdateAttackDrop()
 
 	//衝撃波発生
 	float attackTriggerTime = anim.totalTime * ATTACK_DROP_JUMP_TIME_WAVE;
-
 
 	if (!attackTriggerRing_ && anim.step >= attackTriggerTime)
 	{
@@ -658,7 +636,6 @@ void EnemyLarge::UpdateHit()
 {
 	if (animationController_->IsEnd())
 	{
-
 		ChangeState(STATE::IDLE);
 	}
 }

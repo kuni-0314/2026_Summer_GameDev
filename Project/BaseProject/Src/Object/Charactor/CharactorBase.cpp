@@ -32,7 +32,6 @@ void CharactorBase::InitLoad()
 	imgShadow_ = resMng_.Load(ResourceManager::SRC::PLAYER_SHADOW).handleId_;
 
 	stage_ = resMng_.Load(ResourceManager::SRC::MAIN_STAGE).handleId_;
-
 }
 
 void CharactorBase::InitAnimation()
@@ -251,7 +250,6 @@ void CharactorBase::CollisionGravity()
 	ColliderLine* colliderLine_ = dynamic_cast<ColliderLine*>(ownColliders_.at(lineType));
 
 	if (colliderLine_ == nullptr) return;
-	
 
 	// 登録されている衝突物を全てチェック
 	for (const auto& hitCol : hitColliders_)
@@ -278,7 +276,6 @@ void CharactorBase::CollisionGravity()
 
 			isAir_ = true;
 		}
-		
 	}
 	if (!isJump_ && !isAir_)
 	{
@@ -287,7 +284,6 @@ void CharactorBase::CollisionGravity()
 		// ジャンプの入力受付時間をリセット
 		stepJump_ = 0.0f;
 	}
-
 }
 
 void CharactorBase::CollisionCapsule()

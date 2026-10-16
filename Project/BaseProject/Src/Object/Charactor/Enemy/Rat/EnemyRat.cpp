@@ -30,7 +30,6 @@ void EnemyRat::Draw()
 	// 親クラスの描画処理
 	EnemyBase::Draw();
 
-
 	STATE next = state_;
 
 	const char* name = "";
@@ -42,8 +41,6 @@ void EnemyRat::Draw()
 	else if (next == STATE::HIT) name = "HIT";
 	else if (next == STATE::CHARGE) name = "CHARGE";
 }
-
-
 
 void EnemyRat::InitLoad()
 {
@@ -79,8 +76,6 @@ void EnemyRat::InitCollider()
 		COL_CAPSULE_RADIUS);
 	ownColliders_.emplace(static_cast<int>(COLLIDER_TYPE::CAPSULE), colCapsule);
 }
-
-
 
 void EnemyRat::InitAnimation()
 {

@@ -45,7 +45,6 @@ void EffekseerEffect::Update()
 {
     if (m_isDead) return;
 
-
     // ”CˆÓŽõ–½Ý’è
     if (m_lifeTime > 0)
     {
@@ -126,14 +125,16 @@ void EffekseerEffect::SetPosition(const VECTOR& pos)
     printf("SetPosition %.1f %.1f %.1f\n", pos.x, pos.y, pos.z);
     printf("Handle = %d\n", m_playingHandle);
     m_pos3D = pos;
-    if (m_playingHandle != -1 && IsEffekseer3DEffectPlaying(m_playingHandle) == 0) {
+    if (m_playingHandle != -1 && IsEffekseer3DEffectPlaying(m_playingHandle) == 0) 
+    {
         SetPosPlayingEffekseer3DEffect(m_playingHandle, m_pos3D.x, m_pos3D.y, m_pos3D.z);
 	}
 }
 
 void EffekseerEffect::SetRotation(const Quaternion& rot)
 {
-    if (m_playingHandle != -1 && IsEffekseer3DEffectPlaying(m_playingHandle) ==0) {
+    if (m_playingHandle != -1 && IsEffekseer3DEffectPlaying(m_playingHandle) ==0) 
+    {
         VECTOR euler = rot.ToEuler();
         SetRotationPlayingEffekseer3DEffect(m_playingHandle, 0.0f, euler.y, 0.0f);
 	}
@@ -156,7 +157,8 @@ void EffekseerEffect::Stop()
 
 void EffekseerEffect::SetScale(float scale)
 {
-    if (m_playingHandle != -1 && IsEffekseer3DEffectPlaying(m_playingHandle)) {
+    if (m_playingHandle != -1 && IsEffekseer3DEffectPlaying(m_playingHandle)) 
+    {
         SetScalePlayingEffekseer3DEffect(m_playingHandle, scale, scale, scale);
 	}
 }

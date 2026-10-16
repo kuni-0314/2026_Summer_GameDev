@@ -27,9 +27,6 @@ void EnemyRobot::InitLoad()
 {
 	// 基底クラスのリソースロード
 	CharactorBase::InitLoad();
-	// モデルのロード
-	/*transform_.SetModel(
-		resMng_.LoadModelDuplicate(ResourceManager::SRC::ENEMY_ROBOT));*/
 
 	// 視野(円錐)モデルのロード
 	viewRangeTransform_.SetModel(
@@ -177,16 +174,6 @@ void EnemyRobot::Draw()
 	MV1DrawModel(viewRangeTransform_.modelId);
 	SetUseLighting(true);
 #pragma endregion
-
-#ifdef _DEBUG
-	//// 巡回ルート描画
-	//for (const auto& point : wayPoints_)
-	//{
-	//	DrawSphere3D(
-	//		point, 50.0f, 10,
-	//		0x0000ff, 0x0000ff, false);
-	//}
-#endif // _DEBUG
 }
 
 void EnemyRobot::ChangeState(STATE state)
@@ -210,15 +197,12 @@ void EnemyRobot::ChangeStateThink()
 	int rand = GetRand(100);
 	if (rand < 30)
 	{
-		//ChangeState(STATE::IDLE);
 		ChangeState(STATE::IDLE);
 	}
 	else
 	{
 		ChangeState(STATE::PATROL);
 	}
-	//// 思考：最初はIDLEのみ
-	//ChangeState(STATE::IDLE);
 }
 
 void EnemyRobot::ChangeStateIdle()

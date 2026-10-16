@@ -284,9 +284,7 @@ void Camera::ProcessMove()
 	// 移動処理
 	if (!AsoUtility::EqualsVZero(moveDir))
 	{
-
 		// 移動させたい方向(ベクトル)に変換
-
 		// 現在の向きからの進行方向を取得
 		VECTOR direction = VNorm(transform_.quaRot.PosAxis(moveDir));
 

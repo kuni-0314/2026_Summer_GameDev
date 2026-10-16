@@ -47,7 +47,6 @@ Resource::~Resource()
 
 void Resource::Load()
 {
-
 	switch (type_)
 	{
 	case Resource::TYPE::IMG:

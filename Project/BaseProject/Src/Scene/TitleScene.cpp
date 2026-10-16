@@ -35,7 +35,6 @@ void TitleScene::Init()
 	//タイトル画像読み込み
 	imgTitle_ = resMng_.Load(ResourceManager::SRC::TITLE).handleId_;
 	imgPushSpace_ = resMng_.Load(ResourceManager::SRC::TITLE_PUSH).handleId_;
-
 	imgPlayer_ = resMng_.Load(ResourceManager::SRC::TITLE_PLAYER).handleId_;
 
 	//選択画像読み込み
@@ -82,7 +81,6 @@ void TitleScene::Update()
 		}
 	}
 }
-
 
 void TitleScene::Draw()
 {
@@ -158,35 +156,14 @@ void TitleScene::Draw()
 		}
 		posX = i == selectCount_ ? IMG_CHOICE_POS_X : IMG_NOT_CHOICE_POS_X;
 		GetGraphSize(img, &imgWidth_, &imgHeight_);
-		//DrawBox(posX, IMG_CHOICE_POS_Y + IMG_CHOICE_POS_Y_OFFSET * i, posX + imgWidth_, IMG_CHOICE_POS_Y + IMG_CHOICE_POS_Y_OFFSET * i + imgHeight_, GetRand(0xffffff), false);
 		static float alpha = 0.0f, speed = 1.0f;
 
-		// sin(speed++ / 100.0f) → -1.0f - 1.0f
-		// sin(speed++ / 100.0f) * 255.0f → -255.0f - 255.0f
-		// sin(speed++ / 100.0f) * 255.0f + 255.0f → 0.0f - 510.0f
-		// (sin(speed++ / 100.0f) * 255.0f + 255.0f) / 4.0f → 0.0f - 127.5f
 		if (i != selectCount_) continue;
 		alpha = (sin(speed++ / 10.0f) * 255.0f + 255.0f) / 4.0f;
 		SetDrawBlendMode(DX_BLENDMODE_ALPHA, static_cast<int>(alpha));
 		DrawBox(posX, IMG_CHOICE_POS_Y + IMG_CHOICE_POS_Y_OFFSET * i, posX + imgWidth_, IMG_CHOICE_POS_Y + IMG_CHOICE_POS_Y_OFFSET * i + imgHeight_, 0xffffff, true);
 		SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
 	}
-	//img = selectCount_ == static_cast<int>(SELECT::GAME) ? imgGameStart_ : imgNotGameStart_;
-	//posX = selectCount_ == static_cast<int>(SELECT::GAME) ? IMG_CHOICE_POS_X : IMG_NOT_CHOICE_POS_X;
-	//GetGraphSize(img, &imgWidth_, &imgHeight_);
-	//DrawBox(posX, IMG_CHOICE_POS_Y, posX + imgWidth_, IMG_CHOICE_POS_Y + imgHeight_, GetRand(0xffffff), false);
-	//img = selectCount_ == static_cast<int>(SELECT::TUTORIAL) ? imgTutorial_ : imgNotTutorial_;
-	//posX = selectCount_ == static_cast<int>(SELECT::TUTORIAL) ? IMG_CHOICE_POS_X : IMG_NOT_CHOICE_POS_X;
-	//GetGraphSize(img, &imgWidth_, &imgHeight_);
-	//DrawBox(posX, IMG_CHOICE_POS_Y + IMG_CHOICE_POS_Y_OFFSET, posX + imgWidth_, IMG_CHOICE_POS_Y + IMG_CHOICE_POS_Y_OFFSET + imgHeight_, GetRand(0xffffff), false);
-	//img = selectCount_ == static_cast<int>(SELECT::OPTION) ? imgOption_ : imgNotOption_;
-	//posX = selectCount_ == static_cast<int>(SELECT::OPTION) ? IMG_CHOICE_POS_X : IMG_NOT_CHOICE_POS_X;
-	//GetGraphSize(img, &imgWidth_, &imgHeight_);
-	//DrawBox(posX, IMG_CHOICE_POS_Y + IMG_CHOICE_POS_Y_OFFSET * 2, posX + imgWidth_, IMG_CHOICE_POS_Y + IMG_CHOICE_POS_Y_OFFSET * 2 + imgHeight_, GetRand(0xffffff), false);
-	//img = selectCount_ == static_cast<int>(SELECT::EXIT) ? imgEnd_ : imgNotEnd_;
-	//posX = selectCount_ == static_cast<int>(SELECT::EXIT) ? IMG_CHOICE_POS_X : IMG_NOT_CHOICE_POS_X;
-	//GetGraphSize(img, &imgWidth_, &imgHeight_);
-	//DrawBox(posX, IMG_CHOICE_POS_Y + IMG_CHOICE_POS_Y_OFFSET * 3, posX + imgWidth_, IMG_CHOICE_POS_Y + IMG_CHOICE_POS_Y_OFFSET * 3 + imgHeight_, GetRand(0xffffff), false);
 #endif // _DEBUG
 
 	SelectDraw((SELECT)selectCount_);
@@ -293,7 +270,6 @@ void TitleScene::SelectUpdate()
 	if (ins->IsTrgDown(KEY_INPUT_DOWN) || ins->IsGamepadTrgDown(InputManager::PadInput::Down, 0))
 	{
 		//選択SE
-		//AudioManager::GetInstance()->SetSeVolume(150);
 		AudioManager::GetInstance()->PlaySE(SoundID::SE_TITLE_SELECT);
 		selectCount_++;
 		if (selectCount_ > maxIndex)
@@ -317,7 +293,6 @@ void TitleScene::SelectUpdate()
 			mouseY_ >= IMG_CHOICE_POS_Y && mouseY_ <= IMG_CHOICE_POS_Y + imgHeight_)
 		{
 			selectCount_ = static_cast<int>(SELECT::GAME);
-			//AudioManager::GetInstance()->SetSeVolume(150);
 			isMouseOver = true;
 		}
 
@@ -327,7 +302,6 @@ void TitleScene::SelectUpdate()
 			mouseY_ >= IMG_CHOICE_POS_Y + IMG_CHOICE_POS_Y_OFFSET && mouseY_ <= IMG_CHOICE_POS_Y + IMG_CHOICE_POS_Y_OFFSET + imgHeight_)
 		{
 			selectCount_ = static_cast<int>(SELECT::TUTORIAL);
-			//AudioManager::GetInstance()->SetSeVolume(150);
 			isMouseOver = true;
 		}
 
@@ -337,7 +311,6 @@ void TitleScene::SelectUpdate()
 			mouseY_ >= IMG_CHOICE_POS_Y + IMG_CHOICE_POS_Y_OFFSET * 2 && mouseY_ <= IMG_CHOICE_POS_Y + IMG_CHOICE_POS_Y_OFFSET * 2 + imgHeight_)
 		{
 			selectCount_ = static_cast<int>(SELECT::OPTION);
-			//AudioManager::GetInstance()->SetSeVolume(150);
 			isMouseOver = true;
 		}
 
@@ -347,7 +320,6 @@ void TitleScene::SelectUpdate()
 			mouseY_ >= IMG_CHOICE_POS_Y + IMG_CHOICE_POS_Y_OFFSET * 3 && mouseY_ <= IMG_CHOICE_POS_Y + IMG_CHOICE_POS_Y_OFFSET * 3 + imgHeight_)
 		{
 			selectCount_ = static_cast<int>(SELECT::EXIT);
-			//AudioManager::GetInstance()->SetSeVolume(150);
 			isMouseOver = true;
 		}
 	}

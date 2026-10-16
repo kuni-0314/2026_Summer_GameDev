@@ -100,7 +100,6 @@ private:
 	//コンテニュー専用保存用wave
 	EnemyManager::WAVE continueWave_;
 
-
 	// シーン遷移中判定
 	bool isSceneChanging_;
 

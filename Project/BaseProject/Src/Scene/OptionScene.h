@@ -6,7 +6,6 @@
 class OptionScene : public SceneBase
 {
 public:
-
 	// コンストラクタ
 	OptionScene();
 

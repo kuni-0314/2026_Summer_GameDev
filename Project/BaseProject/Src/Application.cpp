@@ -51,10 +51,6 @@ void Application::Init()
 	// 出力ウィンドウにメモリリーク情報を詳細表示
 	_CrtSetReportMode(_CRT_WARN, _CRTDBG_MODE_DEBUG);
 
-	// 特定のメモリ割り当て番号でブレークする場合（出力ウィンドウに表示される番号を使用）
-	// 例: {123} のようなメモリ割り当て番号が表示されたら、その番号を設定
-	// _CrtSetBreakAlloc(123);
-	//_CrtSetBreakAlloc(17282);
 #endif
 	
 	// アプリケーションの初期設定

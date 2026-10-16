@@ -31,7 +31,6 @@
 #include "PlayerDamageState.h"
 #include "../../Charactor/Enemy/Dragon/EnemyDragon.h"
 
-
 Player::Player(int padNum)
 	:
 	padNum_(padNum),
@@ -114,7 +113,6 @@ void Player::Update()
 	// 各キャラクターごとの更新後処理
 	UpdateProcessPost();
 
-
 	const float LOW_HP_THRESHOLD = 0.2f;
 	static bool isLowHpEffectActive = false;
 	if (hp_ <= MAX_HP * LOW_HP_THRESHOLD)
@@ -133,61 +131,7 @@ void Player::Update()
 			isLowHpEffectActive = false;
 		}
 	}
-	// hpのindexは4、luckのindexは9
-	//if (InputManager::GetInstance()->IsTrgDown(KEY_INPUT_UP))
-	//{
-	//	if (currentGrantStatusIndex_ <= 4)
-	//	{
-	//		currentGrantStatusIndex_ = MAX_STATUS_INDEX;
-	//	}
-	//	else
-	//	{
-	//		currentGrantStatusIndex_--;
-	//	}
-	//}
-	//if (InputManager::GetInstance()->IsTrgDown(KEY_INPUT_DOWN))
-	//{
-	//	if (currentGrantStatusIndex_ >= MAX_STATUS_INDEX)
-	//	{
-	//		currentGrantStatusIndex_ = 4;
-	//	}
-	//	else
-	//	{
-	//		currentGrantStatusIndex_++;
-	//	}
-	//}
-
-	//// 矢印キー右でステータスにポイント割り振り
-	//if (InputManager::GetInstance()->IsTrgDown(KEY_INPUT_RIGHT))
-	//{
-	//	if (pendingPoints_ > 0)
-	//	{
-	//		GrantStatus(currentGrantStatusIndex_);
-	//		pendingPoints_--;
-	//	}
-	//}
-
-	//// 矢印キー左でステータスからポイントを戻す
-	//if (InputManager::GetInstance()->IsTrgDown(KEY_INPUT_LEFT))
-	//{
-	//	RevokeStatus(currentGrantStatusIndex_);
-	//}
-
-
-
 }
-
-//void Player::Damage(int damage)
-//{
-//	hp_ -= damage;
-//	//int a = StartJoypadVibration(padNum_ + 1, 1000, 500, -1);
-//	//VibrateGamepad(int gamepadIndex, int power, int time)
-//	InputManager::GetInstance()->VibrateGamepad(padNum_ + 1, 1000, 500);
-//	if (hp_ <= 0)
-//	{
-//		hp_ = 0;
-//	}
-//}
 
 void Player::Damage(int damage, const VECTOR& hitDir)
 {
@@ -253,16 +197,13 @@ void Player::InitLoad()
 
 void Player::InitTransform()
 {
-
 	//大きさ、座標等の初期化
 	transform_.scl = { SCL_PlAYER ,SCL_PlAYER ,SCL_PlAYER };
 	transform_.quaRot = Quaternion::Identity();
 	transform_.quaRotLocal = Quaternion::Euler(ROT_LOCAL_PLAYER);
 	transform_.pos = POS_PLAYER;
 
-
 	transform_.Update();
-
 }
 
 void Player::InitCollider()
@@ -364,7 +305,6 @@ void Player::InitPost()
 	// 武器初期化
 	sword_ = new KeyBlade3(KEY_BLADE_3_LOCAL_POS_START, KEY_BLADE_3_LOCAL_POS_END, KEY_BLADE_3_RADIUS, transform_);
 	sword_->Init();
-
 }
 
 void Player::UpdateProcess()
@@ -496,7 +436,6 @@ void Player::UpdateProcess()
 	DragonTornadoCheckCollision();
 	//
 	DragonClowCheckCollision();
-
 }
 void Player::UpdateProcessPost()
 {
@@ -504,7 +443,6 @@ void Player::UpdateProcessPost()
 	{
 		sword_->Update();
 	}
-
 }
 
 void Player::Draw()
@@ -681,43 +619,6 @@ void Player::DeleteFireEffect()
 
 void Player::CheckPlayerRingCollision()
 {
-	//// プレイヤーのカプセルコライダを取得
-	//ColliderCapsule* playerCollider =
-	//	dynamic_cast<ColliderCapsule*>(ownColliders_[static_cast<int>(COLLIDER_TYPE::CAPSULE)]);
-
-	//if (playerCollider == nullptr) return;
-
-	////衝突情報更新
-	//MV1RefreshCollInfo(playerCollider->GetFollow()->modelId);
-
-	//// 登録されている衝突物を全てチェック
-	//bool isHit = false;
-	//for (const auto& hitCol : hitColliders_)
-	//{
-	//	if (hitCol->GetTag() != ColliderBase::TAG::ENEMY_RING) continue;
-
-	//	// 派生クラスへキャスト
-	//	const ColliderModel* ringCollider =
-	//		dynamic_cast<const ColliderModel*>(hitCol);
-
-	//	if (ringCollider == nullptr) continue;
-	//	//モデルとカプセルの諸突判定
-	//	auto hits = MV1CollCheck_Capsule(
-	//		ringCollider->GetFollow()->modelId, -1,
-	//		playerCollider->GetPosTop(), playerCollider->GetPosDown(), playerCollider->GetRadius());
-
-	//	// 衝突した複数のポリゴンと衝突回避するまで、位置を移動させる
-	//	for (int i = 0; i < hits.HitNum; i++)
-	//	{
-	//		auto hitPoly = hits.Dim[i];
-	//		isHit = true;
-	//		break;
-	//	}
-	//	// 検出した地面ポリゴン情報の後始末
-	//	MV1CollResultPolyDimTerminate(hits);
-	//}
-
-	//if (isHit) Damege(1);
 }
 
 void Player::GrantStatus(int index)
@@ -817,7 +718,6 @@ void Player::InitState()
 {
 	states_[STATE::IDLE] = new PlayerIdleState();
 	states_[STATE::RUN] = new PlayerRunState();
-	//states_[STATE::FAST_RUN] = new PlayerFastRunState();
 	states_[STATE::JUMP] = new PlayerJumpState();
 	states_[STATE::JET] = new PlayerRollState();
 	states_[STATE::FALL] = new PlayerFallState();
@@ -887,7 +787,6 @@ void Player::CreateFireMagic()
 			fireInfo_.effect);
 
 		//-----------------------
-
 		isAliveFire_ = true;
 		fireCoolTime_ = FIRE_COOL_TIME;
 	}
@@ -927,7 +826,6 @@ void Player::CreateThunderMagic()
 			thunderInfos_[i].isActive = false;
 			thunderInfos_[i].isDestroyed = false;
 		}
-
 		thunderCoolTime_ = THUNDER_COOL_TIME;
 	}
 }
@@ -1172,13 +1070,6 @@ void Player::DragonBreathCheckCollision()
 				AudioManager::GetInstance()->SetSeVolume(100);
 				AudioManager::GetInstance()->PlaySE(SoundID::SE_ENEMY_HIT);
 
-				// エフェクト再生
-				/*VECTOR hitPos = VAdd(
-					ownColCapsule->GetCenter(),
-					swordColCapsule->GetCenter());
-				hitPos = VScale(hitPos, 0.5f);*/
-				//HitEffect(hitPos, VNorm(VSub(hitPos, transform_.pos)), 1.0f);
-
 				// 一度あったらフラグ
 				wasHitDamage_ = true;
 
@@ -1186,7 +1077,6 @@ void Player::DragonBreathCheckCollision()
 			}
 		}
 	}
-
 }
 
 void Player::DragonTornadoCheckCollision()
@@ -1240,14 +1130,6 @@ void Player::DragonTornadoCheckCollision()
 				//ダメージサウンド
 				AudioManager::GetInstance()->SetSeVolume(100);
 				AudioManager::GetInstance()->PlaySE(SoundID::SE_ENEMY_HIT);
-
-				// エフェクト再生
-				/*VECTOR hitPos = VAdd(
-					ownColCapsule->GetCenter(),
-					swordColCapsule->GetCenter());
-				hitPos = VScale(hitPos, 0.5f);*/
-				//HitEffect(hitPos, VNorm(VSub(hitPos, transform_.pos)), 1.0f);
-
 
 				InputManager::GetInstance()->VibrateGamepad(1, 500, 100);
 			}
@@ -1306,7 +1188,6 @@ void Player::DragonClowCheckCollision()
 	
 				// 一度あったらフラグ
 				wasHitColw_ = true;
-
 			}
 		}
 	}

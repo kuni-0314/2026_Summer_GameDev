@@ -4,9 +4,7 @@
 
 class AnimationController
 {
-
 public:
-
 	// アニメーションデータ
 	struct Animation
 	{
@@ -86,7 +84,6 @@ public:
 	void SetStopped(bool isStopped) { isStopped_ = isStopped; }
 
 private:
-
 	// アニメーションするモデルのハンドルID
 	int modelId_;
 
