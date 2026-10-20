@@ -73,6 +73,8 @@ private:
 	//ウェーブ
 	WAVE wave_;
 
+#pragma region 定数
+
 	// 敵を追加生成する間隔
 	static constexpr float BOSS_SPAWN_INTERVAL = 1200.0f; // 約5秒
 
@@ -87,7 +89,25 @@ private:
 	static constexpr float DEF_SPAWN_INTERVAL = 90.0f;
 
 	//敵の移動範囲
-	static constexpr float RASE_POS_Y = 200;
+	static constexpr float RASE_POS_Y = 200.0f;
+
+	//死亡時エフェクトY座標追加分
+	static constexpr float DEAD_EFFECT_ADD_POS_Y = 80.0f;
+
+	//エフェクト生存時間
+	static constexpr int  EFFECT_LIFE_LIMIT = 45;
+
+	//BOSS用RATのHP
+	static constexpr int  BOSSWAVE_RAT_HP = 3;
+	static constexpr float  ENEMY_MOVERLEGANGE = 1000.0f;
+
+
+#pragma endregion
+
+#pragma region 変数
+
+	// 視野範囲用トランスフォーム
+	Transform attackTransform_;
 
 	// エネミー
 	std::vector<EnemyBase*> enemies_;
@@ -133,8 +153,9 @@ private:
 	// 現在のWAVEの敵数
 	int currentWaveEnemyCount_ = 0;
 
-	// 視野範囲用トランスフォーム
-	Transform attackTransform_;
+#pragma endregion
+
+
 
 	//HPアイテム生成
 	void CreateHpItem();

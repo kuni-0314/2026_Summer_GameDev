@@ -56,6 +56,13 @@ void EnemyManager::Update()
 
 void EnemyManager::Draw()
 {
+	for (auto& enemy : enemies_)
+	{
+		enemy->Draw();
+	}
+
+#ifdef DEBUG
+
 	WAVE next = wave_;
 	const char* name = "";
 	if (next == WAVE::WAVE1) name = "WAVE1";
@@ -63,10 +70,7 @@ void EnemyManager::Draw()
 	else if (next == WAVE::WAVE3) name = "WAVE3";
 	else if (next == WAVE::BOSS) name = "BOSS";
 
-	for (auto& enemy : enemies_)
-	{
-		enemy->Draw();
-	}
+#endif // DEBUG
 }
 void EnemyManager::Release()
 {
@@ -208,35 +212,31 @@ bool EnemyManager::GetEnemyDead()
 
 void EnemyManager::SpawnEffect(const VECTOR& pos)
 {
+	//エフェクト読み込み
 	auto effect = std::make_shared<EffekseerEffect>(
 		L"Data/Effect/Ribbon/Ribbon.efkefc",
 		pos
 	);
 
-	effect->SetLifeTime(45);   // 約0.75秒
-
-	effect->Play(
-		pos,
-		Quaternion()
-	);
+	//エフェクト生存時間設定・再生
+	effect->SetLifeTime(EFFECT_LIFE_LIMIT);   
+	effect->Play(pos,Quaternion());
 
 	EffectManager::GetInstance().RegisterEffect(effect);
 }
 
 void EnemyManager::DeadEffect(const VECTOR& pos)
 {
+	//エフェクト座標決定
 	VECTOR effectPos = pos;
-	effectPos.y += 80.0f;
+	effectPos.y += DEAD_EFFECT_ADD_POS_Y;
 
+	//エフェクト読み込み・再生
 	auto effect = std::make_shared<EffekseerEffect>(
 		L"Data/Effect/Death/Death.efkefc",
 		effectPos
 	);
-
-	effect->Play(
-		effectPos,
-		Quaternion()
-	);
+	effect->Play(effectPos,Quaternion());
 	EffectManager::GetInstance().RegisterEffect(effect);
 }
 
@@ -383,9 +383,10 @@ void EnemyManager::LoadWaveData(WAVE wave)
 		}
 	}
 
+	// WAVEを取得
 	ChangeWave(wave_);
 
-	// 1体目を生成
+	// 敵の生成
 	SpawnNextEnemy();
 }
 

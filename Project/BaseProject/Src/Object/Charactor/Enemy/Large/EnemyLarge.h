@@ -80,8 +80,6 @@ private:
 	static constexpr int  ANIM_INDX_DEAD = 0;//END
 	static constexpr int  ANIM_INDX_CHARGE = 5;	//チャージ
 
-
-
 	// モデルの大きさ
 	static constexpr float LARGE_SCALE = 2.5f;
 	// 行動切り替え用カプセル球体半径
@@ -111,6 +109,8 @@ private:
 	// 突進中にプレイヤーへ近づいたら止まる距離
 	static constexpr int RUN_STOP_DISTANCE = 250.0f;
 
+	//押し出し
+	static constexpr float PUSH_OUT_POW = 150.0f;
 
 #pragma region コライダー関連
 
@@ -142,7 +142,6 @@ private:
 	static constexpr int COLLIDER_KEY_BODY_BACK = 101;
 
 #pragma endregion
-
 
 #pragma region 衝撃波関連
 

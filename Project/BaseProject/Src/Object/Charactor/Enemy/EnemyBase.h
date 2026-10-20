@@ -91,6 +91,8 @@ protected:
 	//デフォルトアニメ-ションスピード
 	static constexpr float DEFAULT_ANIM_SPEED = 20.0f;
 
+	
+
 	// 初期位置
 	const VECTOR defaultPos_;
 	float movableRange_;
@@ -142,5 +144,20 @@ protected:
 
 	//視線ベクトル
 	void LookPlayer();
+
+private:
+
+#pragma region 定数
+
+	//追加分の最小距離
+	static constexpr float ADD_MIN_DISTANCE = 20.0f;
+	//ヒットエフェクトサイズ
+	static constexpr float HIT_EFFECT_SIZE = 2.0f;
+
+
+#pragma endregion
+
+	
+
 };
 

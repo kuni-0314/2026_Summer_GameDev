@@ -88,7 +88,6 @@ void EnemyRase::InitTransform()
 	transform_.scl = { SCALE ,SCALE ,SCALE };
 	transform_.quaRot = Quaternion::Identity();
 	transform_.quaRotLocal = Quaternion::Euler(ROT);
-	//transform_.pos = { 0.0f, 100.0f, 1500.0f };
 
 	transform_.Update();
 }
@@ -160,7 +159,7 @@ void EnemyRase::InitPost()
 
 	shotCharge_ =  SHOT_CHARGE_COUNT;
 	
-	pushOutRadius_ = 40.0f;
+	pushOutRadius_ = PUSH_OUT_POW;
 
 	// èâä˙èÛë‘ê›íË
 	ChangeState(STATE::THINK);

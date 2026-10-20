@@ -43,9 +43,9 @@ public:
 	{
 		bool isShotAlive_ = false;
 		bool isEffectPlayed = false;
-		float speed = 4.5f;
-		int life = 180;
-		float homingPower = 0.02f;
+		float speed = SHOT_SPEED;
+		int life = SHOT_LIFE;
+		float homingPower = SHOT_HOMING_POW;
 		VECTOR dir_;
 		Transform shotTransform_;
 		std::shared_ptr<EffekseerEffect> effect;
@@ -82,6 +82,8 @@ private:
 	//攻撃弾
 	std::vector<SHOT> shots_;
 
+#pragma region 定数
+
 	//アニメーション登録番号
 	//待機
 	static constexpr int  ANIM_INDX_FRY = 2;
@@ -91,16 +93,26 @@ private:
 	static constexpr int  ANIM_INDX_DEAD = 0;
 	//チャージ
 	static constexpr int  ANIM_INDX_CHARGE = 5;
+
+	//押し出し量
+	static constexpr float PUSH_OUT_POW = 40.0f;
+
 	
 	//弾待機カウント
 	static constexpr int  SHOT_CHARGE_COUNT = 30;//120;
 	//クールタイム
 	static constexpr int  SHOT_COOL_TIME = 120;
 
-	// モデルの大きさ
+	//モデルの大きさ
 	static constexpr float SCALE = 0.3f;
-	// モデルの大きさ
+	//モデルの大きさ
 	static constexpr float SHOT_SCALE = 0.1f;
+	//弾のステータス
+	static constexpr int SHOT_LIFE = 150;
+	static constexpr float SHOT_SPEED = 4.5f; 
+	static constexpr float SHOT_HOMING_POW = 0.02f;
+
+
 	// モデルのローカル回転
 	static constexpr VECTOR ROT = { 0.0f, 180.0f * DX_PI_F / 180.0f, 0.0f };
 
@@ -130,6 +142,10 @@ private:
 	const float HOVER_HEIGHT = 20.0f; 
 	//揺れる速さ
 	const float HOVER_SPEED = 2.0f;
+
+#pragma endregion
+
+#pragma region 変数
 
 	//攻撃弾モデル
 	int shotmodel_;
@@ -169,6 +185,7 @@ private:
 	VECTOR toPlayer_;
 	//プレイヤー座標
 	VECTOR playerPos_;
+#pragma endregion
 
 	// 状態遷移
 	void ChangeState(STATE state);

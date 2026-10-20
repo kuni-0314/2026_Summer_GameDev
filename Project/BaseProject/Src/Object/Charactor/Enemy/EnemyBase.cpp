@@ -138,33 +138,27 @@ bool EnemyBase::PushOutSphere(
 	float radiusB,
 	bool debugDraw)
 {
-#ifdef _DEBUG
-	if (debugDraw)
-	{
-		// Aの球（赤）
-		DrawSphere3D(posA,radiusA,16,GetColor(255, 0, 0),GetColor(255, 0, 0),FALSE);
-		// Bの球（青）
-		DrawSphere3D(posB,radiusB,16,GetColor(0, 0, 255),GetColor(0, 0, 255),FALSE);
-		// 中心を結ぶ線（緑）
-		DrawLine3D(posA,posB,GetColor(0, 255, 0));
-	}
-#endif
-
+	
 	VECTOR diff = VSub(posA, posB);
 
+	//中心間の距離の計算
 	float distance = VSize(diff);
-	float minDistance = radiusA + radiusB + 20.0f;
+	//最小距離の計算
+	float minDistance = radiusA + radiusB + ADD_MIN_DISTANCE;
 
+	//正規化できない場合
 	if (distance <= 0.001f)
 		return false;
 
 	if (distance >= minDistance)
 		return false;
 
+	//方向取得
 	VECTOR dir = VNorm(diff);
 
+	//食い込み量の取得
 	float overlap = minDistance - distance;
-
+	//その分を遠ざける
 	posA = VAdd(posA, VScale(dir, overlap));
 
 	return true;
@@ -174,7 +168,6 @@ bool EnemyBase::PushOutSphere(
 void EnemyBase::ChangeState(int state)
 {
 	stateBase_ = state;
-
 	auto it = stateChanges_.find(stateBase_);
 
 	if (it != stateChanges_.end())
@@ -328,7 +321,7 @@ void EnemyBase::CheckPlayerMagicCollision()
 				VECTOR hitPos = VAdd(ownColCapsule->GetCenter(), magicColSphere->GetPos());
 				hitPos = VScale(hitPos, 0.5f);
 
-				HitEffect(hitPos, VNorm(VSub(hitPos, transform_.pos)), 1.5f);
+				HitEffect(hitPos, VNorm(VSub(hitPos, transform_.pos)), HIT_EFFECT_SIZE);
 
 				// Fireを消す
 				player_->DeleteFireEffect();

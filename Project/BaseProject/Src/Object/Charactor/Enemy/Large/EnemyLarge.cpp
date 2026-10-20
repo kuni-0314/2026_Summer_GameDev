@@ -20,7 +20,15 @@ EnemyLarge::EnemyLarge(const EnemyBase::EnemyData& data, int attackModel, Player
 	state_(STATE::NONE),
 	step_(0.0f),
 	hoverTime_(0.0f),
-	ringTransform_(nullptr)
+	ringTransform_(nullptr),
+	ringModelHandle_(0),
+	isAttack_(false),
+	wasHitRing_(false),
+	worldPos{ 0,0,0 },
+	toPlayer_{ 0,0,0 },
+	playerPos_{ 0,0,0 },
+	startPos{ 0,0,0 },
+	attackWorldPos_{ 0,0,0 }
 {
 }
 
@@ -198,7 +206,7 @@ void EnemyLarge::InitPost()
 	//çUåÇóÕ
 	power_ = 2;
 	//âüÇµèoÇµópîºåa
-	pushOutRadius_ = 150.0f;
+	pushOutRadius_ = PUSH_OUT_POW;
 }
 
 void EnemyLarge::UpdateProcess()

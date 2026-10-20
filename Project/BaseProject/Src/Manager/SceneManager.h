@@ -72,8 +72,9 @@ public:
 	void SetContinueWave(EnemyManager::WAVE wave) 
 	{
 		continueWave_ = wave;
-		isContinue_ - true;
+		isContinue_ = true;
 	}
+
 	//終了wave取得
 	EnemyManager::WAVE GetContinueWave() const { return continueWave_; }
 	//コンテニュー判定取得

@@ -72,6 +72,9 @@ protected:
 	void LandingEffect(const VECTOR& pos, const VECTOR& normal, float size);
 
 private:
+#pragma region 定数
+
+
 
 #pragma region 判定系定数
 
@@ -148,7 +151,7 @@ private:
 	static constexpr float LANDING_POW = 5.0f;
 	//降下状態切替座標
 	static constexpr float LANDING_CHANGE_POS_Y = -40.0f;
-
+#pragma endregion
 
 	//ゲームシーン
 	GameScene* gamescene_;
@@ -203,11 +206,11 @@ private:
 	{
 		Transform transform = {};				//座標等の情報
 		ColliderCapsule* collider = nullptr;	//コライダー
-		float dist;
+		float dist = 0.0f;
 		std::shared_ptr<EffekseerEffect> effect;
-		VECTOR startPos;
-		VECTOR moveDir;
-		float speed;
+		VECTOR startPos = { 0,0,0 };
+		VECTOR moveDir={ 0,0,0 };
+		float speed = 0.0f;
 		bool isDestory = false;
 		bool wasHitPlayer = false;
 	};

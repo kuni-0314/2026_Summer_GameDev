@@ -24,7 +24,12 @@ EnemyDragon::EnemyDragon(const EnemyBase::EnemyData& data, int attackModel, Play
 	isAliveTornado_(false),
 	isAliveClow_(false),
 	landing_(false),
-	tornadoCoolTime_(0)
+	tornadoCoolTime_(0),
+	bodyPos_{0,0,0},
+	breathDownPos_{ 0,0,0 },
+	breathTopPos_{ 0,0,0 },
+	gamescene_(nullptr),
+	idleTime_(0)
 {
 }
 
