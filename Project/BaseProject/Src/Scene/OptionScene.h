@@ -183,7 +183,7 @@ private:
 	};
 
 	// InputManager
-	int mouseSensitivity_ = 0;	// マウス感度
+	float mouseSensitivity_ = 0;	// マウス感度
 	float wheelSensitivity_ = 0.0f;	// ホイール回転感度
 
 	// パッド操作関連

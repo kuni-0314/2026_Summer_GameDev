@@ -17,7 +17,14 @@
 EnemyRat::EnemyRat(const EnemyBase::EnemyData& data, int attackModel, Player* player)
 	:EnemyBase(data, attackModel, player),
 	state_(STATE::NONE),
-	step_(0.0f)
+	step_(0.0f),
+	attackCharge_(0),
+	attackWorldPos_{0,0,0},
+	distance_(0.0f),
+	isAttack_(false),
+	itemManager_(nullptr),
+	playerPos_{ 0,0,0 },
+	toPlayer_{ 0,0,0 }
 {
 }
 

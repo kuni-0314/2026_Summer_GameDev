@@ -34,10 +34,45 @@
 
 Player::Player(int padNum)
 	:
+	CharactorBase(),
 	padNum_(padNum),
-	animDiffPos_({ 0.0f, 0.0f, 0.0f }),
-	animStartModelPos_({ 0.0f, 0.0f, 0.0f }),
-	CharactorBase()
+	state_(STATE::IDLE),
+	status_{},
+	pendingPoints_(0),
+	currentGrantStatusIndex_(0),
+	maxHp_(0),
+	isJet_(false),
+	jetTime_(0.0f),
+	m_isPowerUp(false),
+	m_powerUpTimer(0),
+	currentState_(nullptr),
+	states_{},
+	m_powerUpEffect{},
+	blinkEffect_{},
+	recoveryEffect_{},
+	attackCoolTime_(0),
+	comboTimer_(0),
+	gameScene_(nullptr),
+	animStartModelPos_(AsoUtility::VECTOR_ZERO),
+	animDiffPos_(AsoUtility::VECTOR_ZERO),
+	sword_(nullptr),
+	isAttacking_(false),
+	thunderTimer_(0),
+	thunderInfos_{},
+	fireInfo_{},
+	isAliveMagic_(false),
+	fireCoolTime_(0),
+	isAliveFire_(false),
+	thunderCoolTime_(0),
+	isAliveThunder_(false),
+	healCoolTime_(0),
+	isShortCut_(false),
+	debugPos_(AsoUtility::VECTOR_ZERO),
+	wasHitDamage_(false),
+	wasHitTornadoDamage_(false),
+	wasHitColw_(false),
+	tornadoDamageCoolTime_(0),
+	isRolling_(false)
 {
 	weight_ = WEIGHT::NORMAL;
 }
@@ -442,14 +477,13 @@ void Player::UpdateProcess()
 		case GameScene::COMMAND::HEAL:
 			activeMagicCount = 3;
 			break;
-		default:
-			break;
 		}
 	}
 
 	switch (activeMagicCount)
 	{
 	case 1:
+	{
 		if (fireCoolTime_ <= 0)
 		{
 			CreateFireMagic();
@@ -460,7 +494,9 @@ void Player::UpdateProcess()
 			AudioManager::GetInstance()->PlaySE(SoundID::SE_NOT_MAGIC);
 		}
 		break;
+	}
 	case 2:
+	{
 		if (thunderCoolTime_ <= 0)
 		{
 			CreateThunderMagic();
@@ -471,7 +507,9 @@ void Player::UpdateProcess()
 			AudioManager::GetInstance()->PlaySE(SoundID::SE_NOT_MAGIC);
 		}
 		break;
+	}
 	case 3:
+	{
 		if (healCoolTime_ <= 0)
 		{
 			CreateHealMagic();
@@ -482,13 +520,11 @@ void Player::UpdateProcess()
 			AudioManager::GetInstance()->PlaySE(SoundID::SE_NOT_MAGIC);
 		}
 		break;
-	default:
-		break;
+	}
 	}
 
 	// 魔法処理
 	UpdateMagic();
-
 	CheckPlayerRingCollision();
 	//ドラゴンブレス当たり判定
 	DragonBreathCheckCollision();
@@ -570,7 +606,6 @@ void Player::Draw()
 	DrawSphere3D(debugPos_, ATTACK_RANGE, 16, 0x00FFFF, 0x00FFFF, false);
 
 	VECTOR test = transform_.quaRot.PosAxis(VGet(0, 0, -100));
-	//DrawFormatString(0, 500, 0xffffff, "<Player> HP : %d", hp_);
 
 	DrawSphere3D(transform_.pos, 80, 15, 0xffffff, 0x0000FF, false);
 #endif // _DEBUG
@@ -808,8 +843,6 @@ void Player::RevokeStatus(int index)
 			pendingPoints_++;
 		}
 		break;
-	default:
-		break;
 	}
 }
 
@@ -817,7 +850,6 @@ void Player::InitState()
 {
 	states_[STATE::IDLE] = new PlayerIdleState();
 	states_[STATE::RUN] = new PlayerRunState();
-	//states_[STATE::FAST_RUN] = new PlayerFastRunState();
 	states_[STATE::JUMP] = new PlayerJumpState();
 	states_[STATE::JET] = new PlayerRollState();
 	states_[STATE::FALL] = new PlayerFallState();
@@ -1145,8 +1177,12 @@ void Player::DragonBreathCheckCollision()
 		{
 			ownColCapsule =
 				dynamic_cast<ColliderCapsule*>(ownCol.second);
-			//if (ownColCapsule == nullptr) return;
 		}
+	}
+
+	if (ownColCapsule == nullptr)
+	{
+		return;
 	}
 
 	// プレイヤーの剣コライダはhitColliders_に登録されているはずなので、全てチェック
@@ -1172,13 +1208,6 @@ void Player::DragonBreathCheckCollision()
 				AudioManager::GetInstance()->SetSeVolume(100);
 				AudioManager::GetInstance()->PlaySE(SoundID::SE_ENEMY_HIT);
 
-				// エフェクト再生
-				/*VECTOR hitPos = VAdd(
-					ownColCapsule->GetCenter(),
-					swordColCapsule->GetCenter());
-				hitPos = VScale(hitPos, 0.5f);*/
-				//HitEffect(hitPos, VNorm(VSub(hitPos, transform_.pos)), 1.0f);
-
 				// 一度あったらフラグ
 				wasHitDamage_ = true;
 
@@ -1195,17 +1224,24 @@ void Player::DragonTornadoCheckCollision()
 	if (!isAlive_) return;
 	//すでにダメージを受けていたら処理しない
 	if (tornadoDamageCoolTime_ > 0) return;
-
-	// 自身のカプセルコライダを取得
 	ColliderCapsule* ownColCapsule = nullptr;
+
+	// カプセルコライダを取得
 	for (const auto& ownCol : ownColliders_)
 	{
-		if (ownCol.second->GetTag() == ColliderBase::TAG::PLAYER)
+		ownColCapsule =
+			dynamic_cast<ColliderCapsule*>(ownCol.second);
+
+		if (ownColCapsule != nullptr)
 		{
-			ownColCapsule =
-				dynamic_cast<ColliderCapsule*>(ownCol.second);
-			//if (ownColCapsule == nullptr) return;
+			break;
 		}
+	}
+
+	// 取得できなければ衝突判定を行わない
+	if (ownColCapsule == nullptr)
+	{
+		return;
 	}
 
 	// プレイヤーの剣コライダはhitColliders_に登録されているはずなので、全てチェック
@@ -1266,12 +1302,20 @@ void Player::DragonClowCheckCollision()
 	ColliderCapsule* ownColCapsule = nullptr;
 	for (const auto& ownCol : ownColliders_)
 	{
-		if (ownCol.second->GetTag() == ColliderBase::TAG::PLAYER)
+		// カプセルコライダに変換できるか確認
+		auto* capsule = dynamic_cast<ColliderCapsule*>(ownCol.second);
+
+		if (capsule != nullptr)
 		{
-			ownColCapsule =
-				dynamic_cast<ColliderCapsule*>(ownCol.second);
-			//if (ownColCapsule == nullptr) return;
+			ownColCapsule = capsule;
+			break;
 		}
+	}
+
+	// カプセルコライダを取得できなければ処理しない
+	if (ownColCapsule == nullptr)
+	{
+		return;
 	}
 
 	// プレイヤーの剣コライダはhitColliders_に登録されているはずなので、全てチェック
@@ -1285,7 +1329,7 @@ void Player::DragonClowCheckCollision()
 			const ColliderSphere* breathColSphere =
 				dynamic_cast<const ColliderSphere*>(hitCol);
 
-			if (breathColSphere == nullptr) return;
+			if (breathColSphere == nullptr) continue;
 
 			// 衝突判定
 			if (ownColCapsule->IsHit(breathColSphere))

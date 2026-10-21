@@ -46,7 +46,7 @@ public:
 		float speed = SHOT_SPEED;
 		int life = SHOT_LIFE;
 		float homingPower = SHOT_HOMING_POW;
-		VECTOR dir_;
+		VECTOR dir_= { 0.0,0 };
 		Transform shotTransform_;
 		std::shared_ptr<EffekseerEffect> effect;
 	
@@ -135,7 +135,7 @@ private:
 	static constexpr float COL_SWICH_RADIUS = 250.0f;
 
 	// çUåÇêÿÇËë÷Ç¶ãóó£
-	static constexpr float SWICH_DISTANCE = 350.0f;
+	static constexpr float SWITCH_DISTANCE = 350.0f;
 	static constexpr float ATTACK_MOVE_SPEED = 3.0f;
 
 	//óhÇÍïù

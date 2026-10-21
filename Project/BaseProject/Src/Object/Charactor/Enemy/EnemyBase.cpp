@@ -27,7 +27,13 @@ EnemyBase::EnemyBase(
 	defaultPos_(data.defaultPos),
 	movableRange_(data.movableRange),
 	wave_(data.wave),
-	attackModle_(attackModel)
+	attackModle_(attackModel),
+	look_(false),
+	playerRad_(0.0f),
+	power_(0),
+	preHp_(0),
+	pushOutRadius_(0.0f),
+	stateBase_(0)
 {
 	hp_ = data.hp;
 	// 初期座標の設定
@@ -214,9 +220,10 @@ void EnemyBase::CheckPlayerSwordCollision()
 		{
 			ownColCapsule =
 				dynamic_cast<ColliderCapsule*>(ownCol.second);
-			//if (ownColCapsule == nullptr) return;
 		}
 	}
+
+	if (ownColCapsule == nullptr) return;
 
 	// プレイヤーの剣コライダはhitColliders_に登録されているはずなので、全てチェック
 	for (const auto& hitCol : hitColliders_)
@@ -308,7 +315,7 @@ void EnemyBase::CheckPlayerMagicCollision()
 				magicSphereRadius,
 				capsuleTop,
 				capsuleBottom,
-				capsuleRadius) == true)
+				capsuleRadius) == 1)
 			{
 				// ダメージ処理
 				//Damage(1);

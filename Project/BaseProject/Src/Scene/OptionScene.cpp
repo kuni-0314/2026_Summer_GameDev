@@ -8,6 +8,8 @@
 #include "OptionScene.h"
 
 OptionScene::OptionScene()
+	:
+	itemDisplayInfos_{}
 {
 }
 
@@ -138,6 +140,7 @@ OptionScene::SliderConfig OptionScene::GetSliderConfig(int itemIndex) const
     switch (itemIndex)
     {
     case IDX_MASTER_VOLUME:
+
     case IDX_BGM_VOLUME:
     case IDX_SE_VOLUME:
         return { SliderConfig::ValueType::INT, 0.0f, 255.0f, 1.0f };

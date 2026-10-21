@@ -145,7 +145,7 @@ private:
 	// FPS制御
 	FpsController* fpsController_;
 
-	float brightness_ = 100.0f;	// 明るさ（0～100）
+	int brightness_ = 100;	// 明るさ（0～100）
 
 	int fpsLimit_ = 60;	// FPS制限（0で制限なし）
 

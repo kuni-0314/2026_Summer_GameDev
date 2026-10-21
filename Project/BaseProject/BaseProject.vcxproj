@@ -19,7 +19,6 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Src\Object\Charactor\Enemy\Enemy.cpp" />
     <ClCompile Include="Src\Object\Charactor\Player\PlayerDamageState.cpp" />
     <ClCompile Include="Src\Object\Charactor\Enemy\Dragon\EnemyDragon.cpp" />
     <ClCompile Include="Src\Object\Charactor\Player\PlayerMagicState.cpp" />
@@ -93,7 +92,6 @@
     <ClCompile Include="Src\Scene\TutorialScene.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Src\Object\Charactor\Enemy\Enemy.h" />
     <ClInclude Include="Src\Lib\nlohmann\adl_serializer.hpp" />
     <ClInclude Include="Src\Lib\nlohmann\byte_container_with_subtype.hpp" />
     <ClInclude Include="Src\Lib\nlohmann\detail\abi_macros.hpp" />

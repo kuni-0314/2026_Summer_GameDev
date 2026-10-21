@@ -19,6 +19,7 @@ public:
 		HIT
 	};
 
+
 	// ó‘Ô
 	enum class STATE
 	{

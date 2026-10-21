@@ -208,7 +208,7 @@ private:
 		ColliderCapsule* collider = nullptr;	//コライダー
 		float dist = 0.0f;
 		std::shared_ptr<EffekseerEffect> effect;
-		VECTOR startPos = { 0,0,0 };
+		VECTOR startPos ={ 0,0,0 };
 		VECTOR moveDir={ 0,0,0 };
 		float speed = 0.0f;
 		bool isDestory = false;

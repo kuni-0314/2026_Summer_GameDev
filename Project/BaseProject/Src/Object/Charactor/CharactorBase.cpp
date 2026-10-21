@@ -14,11 +14,29 @@
 CharactorBase::CharactorBase()
 	:
 	ActorBase(),
-	animationController_(nullptr),
-	moveDir_(AsoUtility::VECTOR_ZERO),
-	moveSpeed_(0.0f),
 	movePow_(AsoUtility::VECTOR_ZERO),
-	hp_(0)
+	moveDir_(AsoUtility::VECTOR_ZERO),
+	jumpPow_(AsoUtility::VECTOR_ZERO),
+	prevPos_(AsoUtility::VECTOR_ZERO),
+	knockbackPow_(AsoUtility::VECTOR_ZERO),
+	stepJump_(0.0f),
+	moveSpeed_(0.0f),
+	isJump_(false),
+	isAir_(false),
+	imgShadow_(-1),
+	hp_(0),
+	useGrabity_(true),
+	animationController_(nullptr),
+	weight_(WEIGHT::NORMAL),
+	invincibleFrameCount_(0),
+	isInvincible_(false),
+	stage_(-1),
+	PLAYER_SHADOW_HEIGHT(800.0f),
+	PLAYER_SHADOW_SIZE(30.0f),
+	HitResDim{},
+	HitRes(nullptr),
+	SlideVec{ 0.0f, 0.0f, 0.0f },
+	Vertex{}
 {
 }
 

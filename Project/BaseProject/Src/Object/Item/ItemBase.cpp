@@ -13,9 +13,22 @@
 ItemBase::ItemBase()
 	:
 	ActorBase(),
+	movePow_(AsoUtility::VECTOR_ZERO),
 	moveDir_(AsoUtility::VECTOR_ZERO),
+	jumpPow_(AsoUtility::VECTOR_ZERO),
+	prevPos_(AsoUtility::VECTOR_ZERO),
+	isPlayer_(false),
+	stepJump_(0.0f),
 	moveSpeed_(0.0f),
-	movePow_(AsoUtility::VECTOR_ZERO)
+	modelId_(-1),
+	imgShadow_(-1),
+	stage_(-1),
+	ITEM_SHADOW_HEIGHT(800.0f),
+	ITEM_SHADOW_SIZE(30.0f),
+	HitResDim{},
+	HitRes(nullptr),
+	SlideVec(AsoUtility::VECTOR_ZERO),
+	Vertex{}
 {
 }
 
@@ -249,7 +262,7 @@ void ItemBase::CollisionCapsule()
 
 void ItemBase::DrawShadow()
 {
-	int i, j;
+	int i;
 
 	// ライティングを無効にする
 	SetUseLighting(false);

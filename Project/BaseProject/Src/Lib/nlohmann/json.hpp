@@ -5059,6 +5059,8 @@ class basic_json // NOLINT(cppcoreguidelines-special-member-functions,hicpp-spec
                     // op must be "add", "remove", "replace", "move", "copy", or
                     // "test"
                     JSON_THROW(parse_error::create(105, 0, detail::concat("operation value '", op, "' is invalid"), &val));
+
+                    break;
                 }
             }
         }

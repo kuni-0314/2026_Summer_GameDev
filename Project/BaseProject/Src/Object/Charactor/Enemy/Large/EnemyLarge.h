@@ -105,9 +105,9 @@ private:
 	static constexpr float ATTACK_PUNCH_TINE = 0.45f;
 
 	// 突進の最大走行距離
-	static constexpr int RUN_MAX_DISTANCE = 2500.0f;
+	static constexpr float RUN_MAX_DISTANCE = 2500.0f;
 	// 突進中にプレイヤーへ近づいたら止まる距離
-	static constexpr int RUN_STOP_DISTANCE = 250.0f;
+	static constexpr float RUN_STOP_DISTANCE = 250.0f;
 
 	//押し出し
 	static constexpr float PUSH_OUT_POW = 150.0f;

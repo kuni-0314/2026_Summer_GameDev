@@ -28,7 +28,10 @@ EnemyLarge::EnemyLarge(const EnemyBase::EnemyData& data, int attackModel, Player
 	toPlayer_{ 0,0,0 },
 	playerPos_{ 0,0,0 },
 	startPos{ 0,0,0 },
-	attackWorldPos_{ 0,0,0 }
+	attackWorldPos_{ 0,0,0 },
+	itemManager_(nullptr),
+	playerRad_(0.0f),
+	distance_(0.0f)
 {
 }
 
@@ -156,15 +159,15 @@ void EnemyLarge::InitAnimation()
 	animationController_ = new AnimationController(transform_.modelId);
 
 	animationController_->Add(static_cast<int>(ANIM_TYPE::IDLE)
-		, DEFAULT_ANIM_SPEED, Application::PATH_MODEL + "Enemy/Large/Idle.mv1");
+		, DEFAULT_ANIM_SPEED, Application::PATH_MODEL + "Enemy/EnemyLarge/Idle.mv1");
 	animationController_->Add(static_cast<int>(ANIM_TYPE::MOVE)
-		, DEFAULT_ANIM_SPEED, Application::PATH_MODEL + "Enemy/Large/Walk.mv1");
+		, DEFAULT_ANIM_SPEED, Application::PATH_MODEL + "Enemy/EnemyLarge/Walk.mv1");
 	animationController_->Add(static_cast<int>(ANIM_TYPE::ATTACK_PUNCH)
-		, DEFAULT_ANIM_SPEED, Application::PATH_MODEL + "Enemy/Large/Punch.mv1");
+		, DEFAULT_ANIM_SPEED, Application::PATH_MODEL + "Enemy/EnemyLarge/Punch.mv1");
 	animationController_->Add(static_cast<int>(ANIM_TYPE::ATTACK_DROP)
-		, DEFAULT_ANIM_SPEED, Application::PATH_MODEL + "Enemy/Large/Drop.mv1");
+		, DEFAULT_ANIM_SPEED, Application::PATH_MODEL + "EnemyEnemy/Large/Drop.mv1");
 	animationController_->Add(static_cast<int>(ANIM_TYPE::HIT)
-		, DEFAULT_ANIM_SPEED, Application::PATH_MODEL + "Enemy/Large/Hit.mv1");
+		, DEFAULT_ANIM_SPEED, Application::PATH_MODEL + "Enemy/EnemyLarge/Hit.mv1");
 
 
 	animationController_->Play(static_cast<int>(ANIM_TYPE::IDLE), true);

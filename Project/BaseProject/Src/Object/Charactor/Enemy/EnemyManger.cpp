@@ -27,7 +27,10 @@ using json = nlohmann::json;
 EnemyManager::EnemyManager(GameScene* gamescene, Player* player)
 	:
 	gameScene_(gamescene),
-	player_(player)
+	player_(player),
+	attackModel_(0),
+	hitCollider_(nullptr),
+	wave_(WAVE::START)
 {
 }
 
@@ -200,7 +203,7 @@ VECTOR EnemyManager::GetEnemyPos(int id) const
 		return { 0.0f, 0.0f, 0.0f };
 	}
 	if (id < 0) id = 0;
-	else if (id >= enemies_.size()) id = enemies_.size() - 1;
+	else if (id >= (int)enemies_.size()) id = (int)enemies_.size() - 1;
 
 	return enemies_[id]->GetTransform().pos;
 }

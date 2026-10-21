@@ -21,22 +21,23 @@ public:
 	// 攻撃コライダーデータ
 	struct AttackColliderData
 	{
-		ColliderBase* collider;
-		float damage;
-		//int lifeTime;
+		ColliderBase* collider = nullptr;
+		float damage = 0;
 		bool isActive = true;
 		bool isHit = false;
 	};
 
-	// 
+	//カメラモード
 	enum CAM_MODE
 	{
 		MANUAL,
 		TARGETING,
 	};;
 
+	//魔法コマンド
 	enum COMMAND
 	{
+		NONE = -1,
 		THUNDER,
 		FIRE,
 		HEAL,
@@ -44,17 +45,19 @@ public:
 		MAX
 	};
 
+	//魔法状態
 	enum COMMAND_STATE
 	{
 		NOT_USE,
 		USE
 	};
 
+	//プレイヤーHP状態
 	enum PLAYRE_HP_STATE
 	{
-		DEF,
-		DAMAGE,
-		WARNING,
+		DEF,		//デフォルト
+		DAMAGE,		//ダメージ
+		WARNING,	//危険
 		STATE_MAX
 	};
 
@@ -93,9 +96,6 @@ public:
 	void SelectCommand(COMMAND command);
 
 	COMMAND GetSelectedCommand() const { return static_cast<COMMAND>(selectCommand_); }
-
-	/*void  SetDamageFlag(bool flag);
-	bool  GetFlag();*/
 
 	CAM_MODE GetCamMode() const { return camMode_; }
 
@@ -211,7 +211,7 @@ private:
 	int clearTimer_ = 0;
 	bool isClear_ = false;
 
-	//
+	
 	std::vector<int> hpHandles_;			//Hpハンドル
 	std::vector<int> playerUiHandles_;		//プレイヤーUI
 	std::vector<int> commandHandles_;		//コマンドハンドル

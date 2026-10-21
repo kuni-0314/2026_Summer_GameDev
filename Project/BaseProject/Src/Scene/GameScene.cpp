@@ -25,16 +25,39 @@
 GameScene::GameScene()
 	: SceneBase(),
 	stage_(nullptr),
+	stageWall_(nullptr),
 	skyDome_(nullptr),
 	player_(nullptr),
 	enemyManager_(nullptr),
-	stageWall_(nullptr),
 	itemManger_(nullptr),
+	command_(COMMAND::THUNDER),
+	useCommand_(COMMAND::THUNDER),
+	thunderState_(COMMAND_STATE::NOT_USE),
+	fireState_(COMMAND_STATE::NOT_USE),
+	healState_(COMMAND_STATE::NOT_USE),
+	selectCommand_(static_cast<int>(NONE)),
 	postEffectScreen_(-1),
 	currentEffect_(PostEffectManager::EFFECT_TYPE::NORMAL),
 	multiEffectMode_(false),
 	effectTime_(0.0f),
-	targetEnemyId_(0)
+	targetEnemyId_(0),
+	targetPos_(VGet(0.0f, 0.0f, 0.0f)),
+	camMode_(CAM_MODE::MANUAL),
+	hpIndex_(0),
+	hpUiCount_(0),
+	wargnigHandle_(-1),
+	audioHandle_(-1),
+	damegeTimeCount_(0),
+	lockOnFontHandle_(-1),
+	lockOnImageHandle_(-1),
+	clearTimer_(0),
+	isClear_(false),
+	isHpUIShake_(false),
+	shakePow_(0.0f),
+	hpUIOffsetY_(0.0f),
+	commandHandles_{},
+	playerUiHandles_{},
+	hpHandles_{}
 {
 }
 
@@ -233,10 +256,6 @@ void GameScene::Update()
 		}
 	}
 
-	// ターゲット切り替え
-	//if (ins->IsTrgDown(KEY_INPUT_LEFT) && targetEnemyId_ > 0) targetEnemyId_--;
-	//if (ins->IsTrgDown(KEY_INPUT_RIGHT)) targetEnemyId_++;
-
 	targetPos_ = enemyManager_->GetEnemyPos(targetEnemyId_);
 	SceneManager::GetInstance().GetCamera()->SetTargetPos(targetPos_);
 
@@ -315,10 +334,7 @@ void GameScene::Update()
 		multiEffectMode_ = !multiEffectMode_;
 	}
 
-	// 単一エフェクトモード
-	//if (!multiEffectMode_)
-	//{
-		// エフェクト切り替え (テンキー4/6)
+	// エフェクト切り替え (テンキー4/6)
 	if (ins->IsTrgDown(KEY_INPUT_NUMPAD4))
 	{
 		int current = static_cast<int>(currentEffect_);
@@ -689,7 +705,7 @@ void GameScene::PlayerHpDraw()
 	hpIndex_ = (player_->GetHp() + 2 - 1) / 2;
 
 	if (hpIndex_ < 0) hpIndex_ = 0;
-	if (hpIndex_ >= hpHandles_.size()) hpIndex_ = hpHandles_.size() - 1;
+	if (hpIndex_ >=(int) hpHandles_.size()) hpIndex_ = (int)hpHandles_.size() - 1;
 
 	const int UI_OFFSET_Y = IMG_HP_Y + hpUIOffsetY_;
 

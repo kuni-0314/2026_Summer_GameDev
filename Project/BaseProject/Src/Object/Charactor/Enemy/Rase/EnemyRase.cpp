@@ -22,7 +22,18 @@ EnemyRase::EnemyRase(const EnemyBase::EnemyData& data, int attackModel, Player* 
 	state_(STATE::NONE),
 	step_(0.0f),
 	hoverTime_(0.0f),
-	baseHeight_(0.0f)
+	baseHeight_(0.0f),
+	coolTime_(0),
+	distance_(0.0f),
+	isAttack_(false),
+	itemManager_(nullptr),
+	playerPos_{0.0,0},
+	playerRad_(0.0f),
+	shotCharge_(0),
+	shotFired_(false),
+	shotmodel_(0),
+	toPlayer_{ 0.0,0 },
+	worldPos{ 0.0,0 }
 {
 }
 
@@ -36,23 +47,6 @@ void EnemyRase::Draw()
 	EnemyBase::Draw();
 	DrawShot();
 
-#ifdef _DEBUG
-
-	STATE next = state_;
-
-	const char* name = "";
-
-	if (next == STATE::THINK) name = "THINK";
-	else if (next == STATE::ATTACK) name = "ATTACK";
-	else if (next == STATE::IDLE) name = "IDLE";
-	else if (next == STATE::MOVE) name = "MOVE";
-	else if (next == STATE::CHARGE) name = "CHARGE";
-
-	DrawFormatString(200, 400, GetColor(255, 255, 255), "STATE: %s", name);
-
-	DrawFormatString(500, 400, GetColor(255, 255, 255), "RASE_HP: %d", hp_);
-
-#endif // _DEBUG
 }
 
 void EnemyRase::Release(void)
@@ -365,7 +359,7 @@ void EnemyRase::UpdateAttack()
 void EnemyRase::UpdateMove(void)
 {
 	//攻撃範囲に入るまで移動
-	if (distance_ < SWICH_DISTANCE)
+	if (distance_ < SWITCH_DISTANCE)
 	{
 		ChangeState(STATE::CHARGE);
 	}
@@ -383,7 +377,7 @@ void EnemyRase::UpdateWait(void)
 void EnemyRase::UpdateThink(void)
 {
 	//攻撃するか否や
-	if (distance_ < SWICH_DISTANCE)
+	if (distance_ < SWITCH_DISTANCE)
 	{
 		//クールタイムがない時のみ
 		if (isCoolTime_ == false)

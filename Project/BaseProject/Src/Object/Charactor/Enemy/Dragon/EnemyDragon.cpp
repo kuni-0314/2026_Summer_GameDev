@@ -132,22 +132,22 @@ void EnemyDragon::InitAnimation()
 
 	//‘Ò‹@
 	animationController_->Add(static_cast<int>(ANIM_TYPE::IDLE)
-		, ANIM_SPEED, Application::PATH_MODEL + "Enemy/Dragon/Idle_1.mv1");
+		, ANIM_SPEED, Application::PATH_MODEL + "Enemy/EnemyDragon/Idle_1.mv1");
 	//‹ó’†‘Ò‹@
 	animationController_->Add(static_cast<int>(ANIM_TYPE::FRY_IDLE)
-		, ANIM_SPEED, Application::PATH_MODEL + "Enemy/Dragon/FlyIdle.mv1");
+		, ANIM_SPEED, Application::PATH_MODEL + "Enemy/EnemyDragon/FlyIdle.mv1");
 
 	animationController_->Add(static_cast<int>(ANIM_TYPE::BREARH)
-		, ANIM_SPEED, Application::PATH_MODEL + "Enemy/Dragon/Flame_Attack.mv1");
+		, ANIM_SPEED, Application::PATH_MODEL + "Enemy/EnemyDragon/Flame_Attack.mv1");
 
 	animationController_->Add(static_cast<int>(ANIM_TYPE::TORNADO)
-		, ANIM_SPEED, Application::PATH_MODEL + "Enemy/Dragon/FlyAttack.mv1");
+		, ANIM_SPEED, Application::PATH_MODEL + "Enemy/EnemyDragon/FlyAttack.mv1");
 
 	animationController_->Add(static_cast<int>(ANIM_TYPE::LANDING)
-		, ANIM_SPEED, Application::PATH_MODEL + "Enemy/Dragon/Landing.mv1");
+		, ANIM_SPEED, Application::PATH_MODEL + "Enemy/EnemyDragon/Landing.mv1");
 
 	animationController_->Add(static_cast<int>(ANIM_TYPE::CLOW)
-		, ANIM_SPEED, Application::PATH_MODEL + "Enemy/Dragon/AttackWingClaw.mv1");
+		, ANIM_SPEED, Application::PATH_MODEL + "Enemy/EnemyDragon/AttackWingClaw.mv1");
 
 
 	animationController_->Play(static_cast<int>(ANIM_TYPE::IDLE), true);

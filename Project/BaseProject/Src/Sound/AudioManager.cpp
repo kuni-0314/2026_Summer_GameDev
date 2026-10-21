@@ -6,6 +6,14 @@
 AudioManager* AudioManager::instance_ = nullptr;
 
 AudioManager::AudioManager()
+	:
+	bgmVolume_(0),
+	isMuted_(false),
+	masterVolume_(0),
+	pDevice_(nullptr),
+	pEnumerator_(nullptr),
+	pVolume_(nullptr),
+	seVolume_(0)
 {
 	currentBgm_ = static_cast<SoundID>(-1);
 }

@@ -119,6 +119,10 @@ private:
 	//エネミーWAVE情報
 	std::vector<EnemyBase::EnemyWave> enemyWaveData_;
 
+	//ウェーブ別敵生成
+	std::vector<VECTOR>LargePos_;
+	std::vector<VECTOR>EnemyPos_;
+
 	//使用済み座標番号
 	std::vector<int> usedPos_;
 
@@ -153,6 +157,9 @@ private:
 	// 現在のWAVEの敵数
 	int currentWaveEnemyCount_ = 0;
 
+	// BOSS WAVEの敵生成タイマー
+	float bossSpawnTimer_ = 0.0f;
+
 #pragma endregion
 
 
@@ -176,15 +183,8 @@ private:
 	void UpdateWave3();
 	void UpdateWaveBoss();
 
-	//ウェーブ別敵生成
-	std::vector<VECTOR>LargePos_;
-	std::vector<VECTOR>EnemyPos_;
-
 	//敵生成座標初期化
 	void InitEnemyPos();
-
-	// BOSS WAVEの敵生成タイマー
-	float bossSpawnTimer_ = 0.0f;
 	void SpawnBossEnemy();
 	void SpawnNextEnemy();
 
