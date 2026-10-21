@@ -418,14 +418,14 @@ void OptionScene::Draw()
 		{
 			int frameWidth, frameHeight;
 			GetGraphSize(optionFrameHandle_, &frameWidth, &frameHeight);
-			int leftTopX = info.left - FRAME_OFFSET - frameWidth * FRAME_SCALE / 2;
-			int leftTopY = info.top - FRAME_OFFSET - frameHeight * FRAME_SCALE / 2;
-			int rightTopX = info.right + FRAME_OFFSET + frameWidth * FRAME_SCALE / 2;
-			int rightTopY = info.top - FRAME_OFFSET - frameHeight * FRAME_SCALE / 2;
-			int leftBottomX = info.left - FRAME_OFFSET - frameWidth * FRAME_SCALE / 2;
-			int leftBottomY = info.bottom + FRAME_OFFSET + frameHeight * FRAME_SCALE / 2;
-			int rightBottomX = info.right + FRAME_OFFSET + frameWidth * FRAME_SCALE / 2;
-			int rightBottomY = info.bottom + FRAME_OFFSET + frameHeight * FRAME_SCALE / 2;
+			int leftTopX = info.left - FRAME_OFFSET - (int)(frameWidth * FRAME_SCALE / 2);
+			int leftTopY = info.top - FRAME_OFFSET - (int)(frameHeight * FRAME_SCALE / 2);
+			int rightTopX = info.right + FRAME_OFFSET + (int)(frameWidth * FRAME_SCALE / 2);
+			int rightTopY = info.top - FRAME_OFFSET - (int)(frameHeight * FRAME_SCALE / 2);
+			int leftBottomX = info.left - FRAME_OFFSET - (int)(frameWidth * FRAME_SCALE / 2);
+			int leftBottomY = info.bottom + FRAME_OFFSET + (int)(frameHeight * FRAME_SCALE / 2);
+			int rightBottomX = info.right + FRAME_OFFSET + (int)(frameWidth * FRAME_SCALE / 2);
+			int rightBottomY = info.bottom + FRAME_OFFSET + (int)(frameHeight * FRAME_SCALE / 2);
 
 			DrawRotaGraph(leftTopX, leftTopY, FRAME_SCALE, 0.0f, optionFrameHandle_, true);
 			DrawRotaGraph(rightTopX, rightTopY, FRAME_SCALE, DX_PI_F / 2.0f, optionFrameHandle_, true);
