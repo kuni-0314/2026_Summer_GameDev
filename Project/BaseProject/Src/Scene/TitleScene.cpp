@@ -15,7 +15,18 @@ TitleScene::TitleScene()
 	:
 	imgTitle_(-1),
 	imgPushSpace_(-1),
-	SceneBase()
+	SceneBase(),
+	animationController_(nullptr),
+	effectTime_(0.0f),
+	imgEnd_(0),imgNotEnd_(0),
+	imgGameStart_(0),imgNotGameStart_(0),
+	imgOption_(0),imgNotOption_(0),
+	imgNotTutorial_(0),imgTutorial_(0),
+	isFadeIn_(false),
+	nextScene_(SceneManager::SCENE_ID::NONE),
+	postEffectScreen_(0),
+	select_(SELECT::NONE),
+	skyDome_(nullptr),imgPlayer_(0)
 {
 }
 
@@ -76,8 +87,6 @@ void TitleScene::Update()
 			break;
 		case SceneManager::SCENE_ID::OPTION:
 			sceMng_.ChangeScene(SceneManager::SCENE_ID::OPTION);
-			break;
-		default:
 			break;
 		}
 	}

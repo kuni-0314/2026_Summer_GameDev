@@ -165,7 +165,7 @@ void EnemyLarge::InitAnimation()
 	animationController_->Add(static_cast<int>(ANIM_TYPE::ATTACK_PUNCH)
 		, DEFAULT_ANIM_SPEED, Application::PATH_MODEL + "Enemy/EnemyLarge/Punch.mv1");
 	animationController_->Add(static_cast<int>(ANIM_TYPE::ATTACK_DROP)
-		, DEFAULT_ANIM_SPEED, Application::PATH_MODEL + "EnemyEnemy/Large/Drop.mv1");
+		, DEFAULT_ANIM_SPEED, Application::PATH_MODEL + "Enemy/EnemyLarge/Drop.mv1");
 	animationController_->Add(static_cast<int>(ANIM_TYPE::HIT)
 		, DEFAULT_ANIM_SPEED, Application::PATH_MODEL + "Enemy/EnemyLarge/Hit.mv1");
 
@@ -317,24 +317,21 @@ void EnemyLarge::ChangeState(STATE state)
 
 void EnemyLarge::ChangeStateIdle()
 {
-	stateUpdate_ =  std::bind(&EnemyLarge::UpdateIdle, this);
+	stateUpdate_ = std::bind(&EnemyLarge::UpdateIdle, this);
 
 	look_ = false;
-
-	// ランダムな待機時間
-	step_ = WAIT_TIME_MIN + static_cast<float>(GetRand(WAIT_TIME_RAND_MAX));
-	// 移動量ゼロ
+	countUp = 0; 
 	movePow_ = AsoUtility::VECTOR_ZERO;
-	// 待機アニメーション再生
-	animationController_->Play(
-		static_cast<int>(ANIM_TYPE::IDLE), true);
+
+	// アニメーション再生
+	animationController_->Play(static_cast<int>(ANIM_TYPE::IDLE), true);
 }
 
 void EnemyLarge::ChangeStateDie()
 {
 	stateUpdate_ = std::bind(&EnemyLarge::UpdateDie, this);
 	movePow_ = AsoUtility::VECTOR_ZERO;
-	// 待機アニメーション再生
+	// アニメーション再生
 	animationController_->Play(static_cast<int>(ANIM_TYPE::HIT), false);
 }
 

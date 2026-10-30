@@ -11,6 +11,8 @@ class TitleScene : public SceneBase
 public:
 	enum class SELECT
 	{
+		NONE = -1,
+
 		GAME,
 		TUTORIAL,
 		OPTION,

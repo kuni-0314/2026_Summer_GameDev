@@ -139,9 +139,6 @@ OptionScene::SliderConfig OptionScene::GetSliderConfig(int itemIndex) const
 {
     switch (itemIndex)
     {
-    case IDX_MASTER_VOLUME:
-
-    case IDX_BGM_VOLUME:
     case IDX_SE_VOLUME:
         return { SliderConfig::ValueType::INT, 0.0f, 255.0f, 1.0f };
         
@@ -153,12 +150,10 @@ OptionScene::SliderConfig OptionScene::GetSliderConfig(int itemIndex) const
         
     case IDX_WHEEL_SENSITIVITY:
         return { SliderConfig::ValueType::FLOAT, 1.0f, 100.0f, 1.0f };
-        
-    case IDX_LEFT_STICK_SENSITIVITY:
+
     case IDX_RIGHT_STICK_SENSITIVITY:
         return { SliderConfig::ValueType::FLOAT, 0.1f, 5.0f, 0.1f };
         
-    case IDX_LEFT_STICK_DEAD_ZONE:
     case IDX_RIGHT_STICK_DEAD_ZONE:
         return { SliderConfig::ValueType::FLOAT, 0.0f, 1.0f, 0.05f };
         

@@ -20,18 +20,18 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Src\Object\Charactor\Player\PlayerDamageState.cpp" />
-    <ClCompile Include="Src\Object\Charactor\Enemy\Dragon\EnemyDragon.cpp" />
+    <ClCompile Include="Src\Object\Charactor\Enemy\EnemyDragon\EnemyDragon.cpp" />
     <ClCompile Include="Src\Object\Charactor\Player\PlayerMagicState.cpp" />
     <ClCompile Include="Src\Common\DebugStringDrawer.cpp" />
     <ClCompile Include="Src\Scene\OptionScene.cpp" />
-    <ClCompile Include="Src\Object\Charactor\Enemy\Large\EnemyLarge.cpp" />
+    <ClCompile Include="Src\Object\Charactor\Enemy\EnemyLarge\EnemyLarge.cpp" />
     <ClCompile Include="Src\Effect\EffectBase.cpp" />
     <ClCompile Include="Src\Effect\EffectManager.cpp" />
     <ClCompile Include="Src\Effect\LoadEffekseer\EffekseerEffect.cpp" />
     <ClCompile Include="Src\Object\Weapon\Sword\KeyBlade3.cpp" />
     <ClCompile Include="Src\Object\Weapon\Sword\KeyBlade2.cpp" />
     <ClCompile Include="Src\Manager\PostEffectManager.cpp" />
-    <ClCompile Include="Src\Object\Charactor\Enemy\Rase\EnemyRase.cpp" />
+    <ClCompile Include="Src\Object\Charactor\Enemy\EnemyRase\EnemyRase.cpp" />
     <ClCompile Include="Src\Object\Item\ItemSkill\SkillItem.cpp" />
     <ClCompile Include="Src\Object\Skill\SkillBase.cpp" />
     <ClCompile Include="Src\Object\Weapon\Sword\KeyBlade1.cpp" />
@@ -56,7 +56,7 @@
     <ClCompile Include="Src\Object\Skill\SkillManager.cpp" />
     <ClCompile Include="Src\Scene\DebugScene.cpp" />
     <ClCompile Include="Src\Object\Charactor\Enemy\EnemyManger.cpp" />
-    <ClCompile Include="Src\Object\Charactor\Enemy\Rat\EnemyRat.cpp" />
+    <ClCompile Include="Src\Object\Charactor\Enemy\EnemyRat\EnemyRat.cpp" />
     <ClCompile Include="Src\Object\Charactor\Enemy\EnemyBase.cpp" />
     <ClCompile Include="Src\Object\Collider\Sphere\ColliderSphere.cpp" />
     <ClCompile Include="Src\Object\Collider\Capsule\ColliderCapsule.cpp" />
@@ -140,18 +140,18 @@
     <ClInclude Include="Src\Lib\nlohmann\thirdparty\hedley\hedley.hpp" />
     <ClInclude Include="Src\Lib\nlohmann\thirdparty\hedley\hedley_undef.hpp" />
     <ClInclude Include="Src\Object\Charactor\Player\PlayerDamageState.h" />
-    <ClInclude Include="Src\Object\Charactor\Enemy\Dragon\EnemyDragon.h" />
+    <ClInclude Include="Src\Object\Charactor\Enemy\EnemyDragon\EnemyDragon.h" />
     <ClInclude Include="Src\Object\Charactor\Player\PlayerMagicState.h" />
     <ClInclude Include="Src\Common\DebugStringDrawer.h" />
     <ClInclude Include="Src\Scene\OptionScene.h" />
-    <ClInclude Include="Src\Object\Charactor\Enemy\Large\EnemyLarge.h" />
+    <ClInclude Include="Src\Object\Charactor\Enemy\EnemyLarge\EnemyLarge.h" />
     <ClInclude Include="Src\Effect\EffectBase.h" />
     <ClInclude Include="Src\Effect\EffectManager.h" />
     <ClInclude Include="Src\Effect\LoadEffekseer\EffekseerEffect.h" />
     <ClInclude Include="Src\Object\Weapon\Sword\KeyBlade3.h" />
     <ClInclude Include="Src\Object\Weapon\Sword\KeyBlade2.h" />
     <ClInclude Include="Src\Manager\PostEffectManager.h" />
-    <ClInclude Include="Src\Object\Charactor\Enemy\Rase\EnemyRase.h" />
+    <ClInclude Include="Src\Object\Charactor\Enemy\EnemyRase\EnemyRase.h" />
     <ClInclude Include="Src\Object\Item\ItemSkill\SkillItem.h" />
     <ClInclude Include="Src\Object\Skill\SkillBase.h" />
     <ClInclude Include="Src\Object\Weapon\Sword\KeyBlade1.h" />
@@ -176,7 +176,7 @@
     <ClInclude Include="Src\Object\Skill\SkillManager.h" />
     <ClInclude Include="Src\Scene\DebugScene.h" />
     <ClInclude Include="Src\Object\Charactor\Enemy\EnemyManger.h" />
-    <ClInclude Include="Src\Object\Charactor\Enemy\Rat\EnemyRat.h" />
+    <ClInclude Include="Src\Object\Charactor\Enemy\EnemyRat\EnemyRat.h" />
     <ClInclude Include="Src\Object\Charactor\Enemy\EnemyBase.h" />
     <ClInclude Include="Src\Object\Collider\Sphere\ColliderSphere.h" />
     <ClInclude Include="Src\Object\Collider\Capsule\ColliderCapsule.h" />

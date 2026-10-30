@@ -56,6 +56,7 @@ GameScene::GameScene()
 	shakePow_(0.0f),
 	hpUIOffsetY_(0.0f),
 	commandHandles_{},
+	fontCommandHandles_{},
 	playerUiHandles_{},
 	hpHandles_{}
 {
@@ -707,7 +708,7 @@ void GameScene::PlayerHpDraw()
 	if (hpIndex_ < 0) hpIndex_ = 0;
 	if (hpIndex_ >=(int) hpHandles_.size()) hpIndex_ = (int)hpHandles_.size() - 1;
 
-	const int UI_OFFSET_Y = IMG_HP_Y + hpUIOffsetY_;
+	const int UI_OFFSET_Y = IMG_HP_Y + (int)hpUIOffsetY_;
 
 	DrawGraph(IMG_HP_X, UI_OFFSET_Y, hpHandles_[hpIndex_], true);
 
