@@ -1,7 +1,7 @@
 #pragma once
 #include <chrono>
 #include <DxLib.h>
-#include "../Object/Charactor/Enemy/EnemyManger.h"
+#include "../Object/Charactor/Enemy/EnemyManager.h"
 
 class SceneBase;
 class Fader;

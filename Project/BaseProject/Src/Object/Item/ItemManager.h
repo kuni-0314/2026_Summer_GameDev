@@ -7,13 +7,13 @@ class ColliderBase;
 class EnemyBase;
 class Player;
 
-class ItemManger
+class ItemManager
 {
 public:
 	// コンストラクタ
 	// デストラクタ
-	ItemManger();
-	~ItemManger();
+	ItemManager();
+	~ItemManager();
 	// 初期化
 	void Init();
 	// 更新

@@ -9,7 +9,7 @@
 #include "../../../../Utility/AsoUtility.h"
 #include "../../../../Manager/InputManager.h"
 #include "../../../../Object/Item/HP/HpItem.h"
-#include "../../../../Object/Item/ItemManger.h"
+#include "../../../../Object/Item/ItemManager.h"
 #include "../../../../Sound/AudioManager.h"
 #include "./../../../../Application.h"
 #include "../../Player/Player.h"

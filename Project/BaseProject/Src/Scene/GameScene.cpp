@@ -1,25 +1,37 @@
 #include <DxLib.h>
 #include "../Application.h"
+
 #include "../Manager/SceneManager.h"
 #include "../Manager/InputManager.h"
 #include "../Manager/Camera.h"
 #include "../Manager/PostEffectManager.h"
 #include "../Manager/ResourceManager.h"
+
 #include "../Sound/AudioManager.h"
+
 #include "../Object/Actor/Stage/Stage.h"
 #include "../Object/Actor/Stage/StageWall.h"
+
 #include "../Object/Actor/SkyDome/SkyDome.h"
+
 #include "../Object/Charactor/Player/Player.h"
-#include "../Object/Charactor/Enemy/EnemyManger.h"
-#include "../Object/Item/ItemManger.h"
+#include "../Object/Charactor/Enemy/EnemyManager.h"
+
+#include "../Object/Item/ItemManager.h"
+
 #include "../Object/Weapon/Sword/KeyBlade1.h"
+
 #include "../Object/Collider/ColliderBase.h"
 #include "../Object/Collider/Sphere/ColliderSphere.h"
+
 #include "../Effect/EffectManager.h"
 #include "../Effect/LoadEffekseer/EffekseerEffect.h"
+
 #include "../Object/Common/AnimationController.h"
+
 #include "GameScene.h"
 #include "OverScene.h"
+
 #include <EffekseerForDXLib.h>
 
 GameScene::GameScene()
@@ -29,7 +41,7 @@ GameScene::GameScene()
 	skyDome_(nullptr),
 	player_(nullptr),
 	enemyManager_(nullptr),
-	itemManger_(nullptr),
+	itemManager_(nullptr),
 	command_(COMMAND::THUNDER),
 	useCommand_(COMMAND::THUNDER),
 	thunderState_(COMMAND_STATE::NOT_USE),
@@ -107,9 +119,9 @@ void GameScene::Init()
 	skyDome_->Init();
 
 	// アイテムマネージャー初期化
-	itemManger_ = new ItemManger();
-	itemManger_->Init();
-	itemManger_->AddHitCollider(stageCollider);
+	itemManager_ = new ItemManager();
+	itemManager_->Init();
+	itemManager_->AddHitCollider(stageCollider);
 
 	// カメラ設定
 	Camera* camera = sceMng_.GetCamera();
@@ -193,7 +205,7 @@ void GameScene::Update()
 	player_->Update();
 	//weapon_->Update();
 	enemyManager_->Update();
-	itemManger_->Update();
+	itemManager_->Update();
 
 	//魔法のショートカット
 	if (player_->IsShortCut())
@@ -433,7 +445,7 @@ void GameScene::Draw()
 	stage_->Draw();
 	player_->Draw();
 	//weapon_->Draw();
-	itemManger_->Draw();
+	itemManager_->Draw();
 	enemyManager_->Draw();
 
 
@@ -501,11 +513,11 @@ void GameScene::Release()
 	attackColliders_.clear();
 
 	// アイテムマネージャー解放
-	if (itemManger_ != nullptr)
+	if (itemManager_ != nullptr)
 	{
-		itemManger_->Release();
-		delete itemManger_;
-		itemManger_ = nullptr;
+		itemManager_->Release();
+		delete itemManager_;
+		itemManager_ = nullptr;
 	}
 
 	// 敵マネージャー解放

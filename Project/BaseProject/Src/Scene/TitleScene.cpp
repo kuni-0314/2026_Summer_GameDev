@@ -13,10 +13,9 @@
 
 TitleScene::TitleScene()
 	:
+	SceneBase(),
 	imgTitle_(-1),
 	imgPushSpace_(-1),
-	SceneBase(),
-	animationController_(nullptr),
 	effectTime_(0.0f),
 	imgEnd_(0),imgNotEnd_(0),
 	imgGameStart_(0),imgNotGameStart_(0),
@@ -26,7 +25,7 @@ TitleScene::TitleScene()
 	nextScene_(SceneManager::SCENE_ID::NONE),
 	postEffectScreen_(0),
 	select_(SELECT::NONE),
-	skyDome_(nullptr),imgPlayer_(0)
+	imgPlayer_(0)
 {
 }
 
@@ -43,25 +42,35 @@ void TitleScene::Init()
 	// 定点カメラ
 	sceMng_.GetCamera()->ChangeMode(Camera::MODE::FIXED_POINT);
 
+#pragma region 画像読み込み
+
 	//タイトル画像読み込み
 	imgTitle_ = resMng_.Load(ResourceManager::SRC::TITLE).handleId_;
+	//PUSH画像読み込み
 	imgPushSpace_ = resMng_.Load(ResourceManager::SRC::TITLE_PUSH).handleId_;
 
+	//タイトル用プレイヤー画像読み込み
 	imgPlayer_ = resMng_.Load(ResourceManager::SRC::TITLE_PLAYER).handleId_;
 
 	//選択画像読み込み
-	imgGameStart_ = resMng_.Load(ResourceManager::SRC::TITLE_GAMESTART).handleId_;
-	imgNotGameStart_ = resMng_.Load(ResourceManager::SRC::TITLE_NOT_GAMESTART).handleId_;
-	imgTutorial_ = resMng_.Load(ResourceManager::SRC::TITLE_TUTORIAL).handleId_;
-	imgNotTutorial_ = resMng_.Load(ResourceManager::SRC::TITLE_NOT_TUTORIAL).handleId_;
-	imgOption_ = resMng_.Load(ResourceManager::SRC::TITLE_OPTION).handleId_;
-	imgNotOption_ = resMng_.Load(ResourceManager::SRC::TITLE_NOT_OPTION).handleId_;
-	imgEnd_ = resMng_.Load(ResourceManager::SRC::TITLE_END).handleId_;
-	imgNotEnd_ = resMng_.Load(ResourceManager::SRC::TITLE_NOT_END).handleId_;
+	imgGameStart_ = resMng_.Load(ResourceManager::SRC::TITLE_GAMESTART).handleId_;			//選択ゲームスタート
+	imgNotGameStart_ = resMng_.Load(ResourceManager::SRC::TITLE_NOT_GAMESTART).handleId_;	//非選択ゲームスタート
+
+	imgTutorial_ = resMng_.Load(ResourceManager::SRC::TITLE_TUTORIAL).handleId_;			//選択チュートリアル
+	imgNotTutorial_ = resMng_.Load(ResourceManager::SRC::TITLE_NOT_TUTORIAL).handleId_;		//非選択チュートリアル
+
+	imgOption_ = resMng_.Load(ResourceManager::SRC::TITLE_OPTION).handleId_;				//選択オプション
+	imgNotOption_ = resMng_.Load(ResourceManager::SRC::TITLE_NOT_OPTION).handleId_;			//非選択オプション
+
+	imgEnd_ = resMng_.Load(ResourceManager::SRC::TITLE_END).handleId_;						//選択エンド
+	imgNotEnd_ = resMng_.Load(ResourceManager::SRC::TITLE_NOT_END).handleId_;				//非選択エンド
+
+#pragma endregion
 
 	//初期選択コマンド
 	select_ = SELECT::GAME;
 
+	//読み込みサウンド
 	AudioManager::GetInstance()->LoadSceneSound(LoadScene::TITLE);
 	AudioManager::GetInstance()->PlayBGM(SoundID::BGM_TITLE);
 }
@@ -72,6 +81,7 @@ void TitleScene::Update()
 
 	if (!isFadeIn_) SelectUpdate();
 	
+	//フェード時間加算
 	else effectTime_ += FADE_SPEED;
 
 	if (effectTime_ >= 1.0f)
@@ -95,15 +105,16 @@ void TitleScene::Update()
 
 void TitleScene::Draw()
 {
+	//選択コマンド点滅用カウンター
 	static int blinkCounter_ = 0;
 	blinkCounter_++;
-	const int BLINK_CYCLE = 20;
 
-	DrawGraph(Application::SCREEN_SIZE_X / 2 + 100, 100, imgPlayer_, true);
+	//プレイヤー画像描画
+	DrawGraph(Application::SCREEN_SIZE_X / 2 + IMG_PLAYER_REG_POS_X, IMG_PLAYER_REG_POS_Y, imgPlayer_, true);
+	//タイトル描画
+	DrawGraph(IMG_TITLE_REG_POS_X, IMG_TITLE_REG_POS_Y, imgTitle_, true);
 
-	DrawGraph(50, 20, imgTitle_, true);
-
-	//ゲームスタート
+	//ゲームスタートコマンド
 	if (selectCount_ == static_cast <int>(SELECT::GAME))
 	{
 		if (!isFadeIn_ || blinkCounter_ % BLINK_CYCLE < BLINK_CYCLE / 2)
@@ -113,7 +124,7 @@ void TitleScene::Draw()
 	{
 		DrawGraph(IMG_NOT_CHOICE_POS_X, IMG_CHOICE_POS_Y, imgNotGameStart_, true);
 	}
-	//チュートリアル
+	//チュートリアルコマンド
 	if (selectCount_ == static_cast <int>(SELECT::TUTORIAL))
 	{
 		if (!isFadeIn_ || blinkCounter_ % BLINK_CYCLE < BLINK_CYCLE / 2)
@@ -123,7 +134,7 @@ void TitleScene::Draw()
 	{
 		DrawGraph(IMG_NOT_CHOICE_POS_X, IMG_CHOICE_POS_Y + IMG_CHOICE_POS_Y_OFFSET, imgNotTutorial_, true);
 	}
-	//オプション
+	//オプションコマンド
 	if (selectCount_ == static_cast <int>(SELECT::OPTION))
 	{
 		if (!isFadeIn_ || blinkCounter_ % BLINK_CYCLE < BLINK_CYCLE / 2)
@@ -133,7 +144,7 @@ void TitleScene::Draw()
 	{
 		DrawGraph(IMG_NOT_CHOICE_POS_X, IMG_CHOICE_POS_Y + IMG_CHOICE_POS_Y_OFFSET * 2, imgNotOption_, true);
 	}
-	//終了
+	//終了コマンド
 	if (selectCount_ == static_cast <int>(SELECT::EXIT))
 	{
 		if (!isFadeIn_ || blinkCounter_ % BLINK_CYCLE < BLINK_CYCLE / 2)
@@ -145,6 +156,7 @@ void TitleScene::Draw()
 	}
 
 #ifdef _DEBUG
+
 	int imgWidth_, imgHeight_, img, posX;
 	for (int i = 0; i < 4; i++)
 	{
@@ -167,36 +179,18 @@ void TitleScene::Draw()
 		}
 		posX = i == selectCount_ ? IMG_CHOICE_POS_X : IMG_NOT_CHOICE_POS_X;
 		GetGraphSize(img, &imgWidth_, &imgHeight_);
-		//DrawBox(posX, IMG_CHOICE_POS_Y + IMG_CHOICE_POS_Y_OFFSET * i, posX + imgWidth_, IMG_CHOICE_POS_Y + IMG_CHOICE_POS_Y_OFFSET * i + imgHeight_, GetRand(0xffffff), false);
+	;
 		static float alpha = 0.0f, speed = 1.0f;
 
-		// sin(speed++ / 100.0f) → -1.0f - 1.0f
-		// sin(speed++ / 100.0f) * 255.0f → -255.0f - 255.0f
-		// sin(speed++ / 100.0f) * 255.0f + 255.0f → 0.0f - 510.0f
-		// (sin(speed++ / 100.0f) * 255.0f + 255.0f) / 4.0f → 0.0f - 127.5f
+
 		if (i != selectCount_) continue;
 		alpha = (sin(speed++ / 10.0f) * 255.0f + 255.0f) / 4.0f;
 		SetDrawBlendMode(DX_BLENDMODE_ALPHA, static_cast<int>(alpha));
 		DrawBox(posX, IMG_CHOICE_POS_Y + IMG_CHOICE_POS_Y_OFFSET * i, posX + imgWidth_, IMG_CHOICE_POS_Y + IMG_CHOICE_POS_Y_OFFSET * i + imgHeight_, 0xffffff, true);
 		SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
 	}
-	//img = selectCount_ == static_cast<int>(SELECT::GAME) ? imgGameStart_ : imgNotGameStart_;
-	//posX = selectCount_ == static_cast<int>(SELECT::GAME) ? IMG_CHOICE_POS_X : IMG_NOT_CHOICE_POS_X;
-	//GetGraphSize(img, &imgWidth_, &imgHeight_);
-	//DrawBox(posX, IMG_CHOICE_POS_Y, posX + imgWidth_, IMG_CHOICE_POS_Y + imgHeight_, GetRand(0xffffff), false);
-	//img = selectCount_ == static_cast<int>(SELECT::TUTORIAL) ? imgTutorial_ : imgNotTutorial_;
-	//posX = selectCount_ == static_cast<int>(SELECT::TUTORIAL) ? IMG_CHOICE_POS_X : IMG_NOT_CHOICE_POS_X;
-	//GetGraphSize(img, &imgWidth_, &imgHeight_);
-	//DrawBox(posX, IMG_CHOICE_POS_Y + IMG_CHOICE_POS_Y_OFFSET, posX + imgWidth_, IMG_CHOICE_POS_Y + IMG_CHOICE_POS_Y_OFFSET + imgHeight_, GetRand(0xffffff), false);
-	//img = selectCount_ == static_cast<int>(SELECT::OPTION) ? imgOption_ : imgNotOption_;
-	//posX = selectCount_ == static_cast<int>(SELECT::OPTION) ? IMG_CHOICE_POS_X : IMG_NOT_CHOICE_POS_X;
-	//GetGraphSize(img, &imgWidth_, &imgHeight_);
-	//DrawBox(posX, IMG_CHOICE_POS_Y + IMG_CHOICE_POS_Y_OFFSET * 2, posX + imgWidth_, IMG_CHOICE_POS_Y + IMG_CHOICE_POS_Y_OFFSET * 2 + imgHeight_, GetRand(0xffffff), false);
-	//img = selectCount_ == static_cast<int>(SELECT::EXIT) ? imgEnd_ : imgNotEnd_;
-	//posX = selectCount_ == static_cast<int>(SELECT::EXIT) ? IMG_CHOICE_POS_X : IMG_NOT_CHOICE_POS_X;
-	//GetGraphSize(img, &imgWidth_, &imgHeight_);
-	//DrawBox(posX, IMG_CHOICE_POS_Y + IMG_CHOICE_POS_Y_OFFSET * 3, posX + imgWidth_, IMG_CHOICE_POS_Y + IMG_CHOICE_POS_Y_OFFSET * 3 + imgHeight_, GetRand(0xffffff), false);
-#endif // _DEBUG
+
+#endif 
 
 	SelectDraw((SELECT)selectCount_);
 
@@ -206,18 +200,22 @@ void TitleScene::Draw()
 	SetDrawScreen(tempScreen);
 	ClearDrawScreen();
 	DrawGraph(0, 0, mainScreen, false);
+
+	//エフェクト加算・減算
 	static float effectTime = 0.0f;
+
 	if (InputManager::GetInstance()->IsNew(KEY_INPUT_W))
 	{
-		effectTime += 0.01f;
+		effectTime += ADD_EFFECT_POW;
 	}
 	else if (InputManager::GetInstance()->IsNew(KEY_INPUT_S))
 	{
-		effectTime -= 0.01f;
+		effectTime -= ADD_EFFECT_POW;
 	}
 	
 	PostEffectManager::EffectParams params = { effectTime_, effectTime_, effectTime_, 0.0f };
 	auto& pstEfcMngIns = PostEffectManager::GetInstance();
+	//設定エフェクト
 	pstEfcMngIns.SetCustomParams(PostEffectManager::EFFECT_TYPE::FH_GAME_START, params);
 
 	// 単一エフェクトモード
@@ -238,8 +236,6 @@ void TitleScene::Draw()
 
 void TitleScene::Release()
 {
-	DeleteGraph(imgTitle_);
-	DeleteGraph(imgGameStart_);
 }
 
 void TitleScene::SelectChange(SELECT next)
@@ -257,7 +253,6 @@ void TitleScene::SelectChange(SELECT next)
 		nextScene_ = SceneManager::SCENE_ID::TUTORIAL;
 		break;
 	case SELECT::OPTION:
-		//AudioManager::GetInstance()->StopBGM();
 		nextScene_ = SceneManager::SCENE_ID::OPTION;
 		break;
 	case SELECT::EXIT:
@@ -290,7 +285,6 @@ void TitleScene::SelectUpdate()
 	if (ins->IsTrgDown(KEY_INPUT_UP) || ins->IsGamepadTrgUp(InputManager::PadInput::Up, 0))
 	{
 		//選択SE
-		//AudioManager::GetInstance()->SetSeVolume(150);
 		AudioManager::GetInstance()->PlaySE(SoundID::SE_TITLE_SELECT);
 		selectCount_--;
 		if (selectCount_ < minIndex)
@@ -302,7 +296,6 @@ void TitleScene::SelectUpdate()
 	if (ins->IsTrgDown(KEY_INPUT_DOWN) || ins->IsGamepadTrgDown(InputManager::PadInput::Down, 0))
 	{
 		//選択SE
-		//AudioManager::GetInstance()->SetSeVolume(150);
 		AudioManager::GetInstance()->PlaySE(SoundID::SE_TITLE_SELECT);
 		selectCount_++;
 		if (selectCount_ > maxIndex)
@@ -317,7 +310,11 @@ void TitleScene::SelectUpdate()
 		// マウスカーソルが選択肢の上にある場合、選択肢を変更する
 		int mouseX_, mouseY_;
 		ins->GetMousePos(mouseX_, mouseY_);
+
+		//画像の横幅、立幅
 		int imgWidth_, imgHeight_;
+
+		//マウスが画像上にあるかのフラグ
 		bool isMouseOver = false;
 
 		// ゲームスタート
@@ -326,7 +323,7 @@ void TitleScene::SelectUpdate()
 			mouseY_ >= IMG_CHOICE_POS_Y && mouseY_ <= IMG_CHOICE_POS_Y + imgHeight_)
 		{
 			selectCount_ = static_cast<int>(SELECT::GAME);
-			//AudioManager::GetInstance()->SetSeVolume(150);
+			AudioManager::GetInstance()->SetSeVolume(SE_SET_VOLUME);
 			isMouseOver = true;
 		}
 
@@ -336,7 +333,7 @@ void TitleScene::SelectUpdate()
 			mouseY_ >= IMG_CHOICE_POS_Y + IMG_CHOICE_POS_Y_OFFSET && mouseY_ <= IMG_CHOICE_POS_Y + IMG_CHOICE_POS_Y_OFFSET + imgHeight_)
 		{
 			selectCount_ = static_cast<int>(SELECT::TUTORIAL);
-			//AudioManager::GetInstance()->SetSeVolume(150);
+			AudioManager::GetInstance()->SetSeVolume(SE_SET_VOLUME);
 			isMouseOver = true;
 		}
 
@@ -346,7 +343,7 @@ void TitleScene::SelectUpdate()
 			mouseY_ >= IMG_CHOICE_POS_Y + IMG_CHOICE_POS_Y_OFFSET * 2 && mouseY_ <= IMG_CHOICE_POS_Y + IMG_CHOICE_POS_Y_OFFSET * 2 + imgHeight_)
 		{
 			selectCount_ = static_cast<int>(SELECT::OPTION);
-			//AudioManager::GetInstance()->SetSeVolume(150);
+			AudioManager::GetInstance()->SetSeVolume(SE_SET_VOLUME);
 			isMouseOver = true;
 		}
 
@@ -356,7 +353,7 @@ void TitleScene::SelectUpdate()
 			mouseY_ >= IMG_CHOICE_POS_Y + IMG_CHOICE_POS_Y_OFFSET * 3 && mouseY_ <= IMG_CHOICE_POS_Y + IMG_CHOICE_POS_Y_OFFSET * 3 + imgHeight_)
 		{
 			selectCount_ = static_cast<int>(SELECT::EXIT);
-			//AudioManager::GetInstance()->SetSeVolume(150);
+		
 			isMouseOver = true;
 		}
 	}
@@ -374,6 +371,7 @@ void TitleScene::SelectUpdate()
 		SelectChange((SELECT)selectCount_);
 	}
 
+	//選択中のコマンド
 	if (selectCount_ != pSelectCount_)
 	{
 		InputManager::GetInstance()->VibrateGamepad(VIBRATION_INDEX, VIBRATION_POWER, VIBRATION_TIME);

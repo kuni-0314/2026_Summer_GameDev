@@ -9,7 +9,7 @@
 #include "../../../../Utility/AsoUtility.h"
 #include "../../../../Manager/InputManager.h"
 #include "../../../../Object/Item/HP/HpItem.h"
-#include "../../../../Object/Item/ItemManger.h"
+#include "../../../../Object/Item/ItemManager.h"
 #include "../../../../Sound/AudioManager.h"
 #include "../../Player/Player.h"
 
@@ -91,7 +91,7 @@ void EnemyRat::InitAnimation()
 	//攻撃
 	type = static_cast<int>(ANIM_TYPE::ATTACK);
 	animationController_->AddInFbx(type, DEFAULT_ANIM_SPEED, ANIM_INDX_ATTACK);
-
+	//END
 	type = static_cast<int>(ANIM_TYPE::END);
 	animationController_->AddInFbx(type, DEFAULT_ANIM_SPEED, ANIM_INDX_END);
 	//攻撃受け
@@ -101,6 +101,7 @@ void EnemyRat::InitAnimation()
 	type = static_cast<int>(ANIM_TYPE::RUN);
 	animationController_->AddInFbx(type, DEFAULT_ANIM_SPEED, ANIM_INDX_RUN);
 
+	//初期再生アニメーション
 	animationController_->Play(static_cast<int>(ANIM_TYPE::IDLE), true);
 }
 
@@ -108,11 +109,11 @@ void EnemyRat::InitPost()
 {
 	weight_ = WEIGHT::NORMAL;
 
-	/// 必要な状態遷移のみにスッキリ整理
+	///状態遷移追加
 	stateChanges_.emplace(static_cast<int>(STATE::THINK), std::bind(&EnemyRat::ChangeStateThink, this));
 	stateChanges_.emplace(static_cast<int>(STATE::IDLE), std::bind(&EnemyRat::ChangeStateIdle, this));
-	stateChanges_.emplace(static_cast<int>(STATE::RUN), std::bind(&EnemyRat::ChangeStateRun, this)); // WANDERをMOVE扱いに変更、または新設
-	stateChanges_.emplace(static_cast<int>(STATE::CHARGE), std::bind(&EnemyRat::ChangeStateCharge, this)); // ★追加
+	stateChanges_.emplace(static_cast<int>(STATE::RUN), std::bind(&EnemyRat::ChangeStateRun, this)); 
+	stateChanges_.emplace(static_cast<int>(STATE::CHARGE), std::bind(&EnemyRat::ChangeStateCharge, this)); 
 	stateChanges_.emplace(static_cast<int>(STATE::ATTACK), std::bind(&EnemyRat::ChangeStateAttack, this));
 	stateChanges_.emplace(static_cast<int>(STATE::HIT), std::bind(&EnemyRat::ChangeStateHit, this));
 	stateChanges_.emplace(static_cast<int>(STATE::DIE), std::bind(&EnemyRat::ChangeStateDie, this));

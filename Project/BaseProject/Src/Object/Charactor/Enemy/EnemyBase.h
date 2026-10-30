@@ -12,7 +12,8 @@ class AudioManager;
 class EnemyBase : public CharactorBase
 {
 public:
-	// 種別
+
+	// エネミー種別
 	enum class TYPE
 	{
 		RAT,
@@ -21,7 +22,7 @@ public:
 		DRAGON
 	};
 
-	// エネミーデータ
+	// 生成用エネミーデータ
 	struct EnemyData
 	{
 		int id;
@@ -32,12 +33,13 @@ public:
 		int wave;
 	};
 
+	//JSON用エネミー読み込みデータ
 	struct EnemyStatus
 	{
 		TYPE type;
 		int hp;
 	};
-
+	//JSON用WAVE読み込みデータ
 	struct EnemyWave
 	{
 		std::vector<int>enemies;
@@ -51,21 +53,21 @@ public:
 
 	// デストラクタ
 	virtual ~EnemyBase() override;
-
 	//更新
 	virtual void Update() override;
 	//描画
 	virtual void Draw() override;
 
-	// プレイヤーの剣との衝突判定を行う
+	// プレイヤーの剣との衝突判定
 	void CheckPlayerSwordCollision();
-
+	//　プレイヤーの魔法攻撃の衝突判定
 	void CheckPlayerMagicCollision();
 
 	void Release(void) override;
 
-	//エフェクト
+	//HITエフェクト
 	void HitEffect(const VECTOR& pos, const VECTOR& normal, float size);
+	//サンダーエフェクト
 	void HitThunderEffect(const VECTOR& pos, const VECTOR& normal, float size);
 
 	// 球同士の押し出し（Aだけを押し出す）
@@ -76,7 +78,9 @@ public:
 		float radiusB,
 		bool debugDraw = false);
 
+	//半径呼び出し
 	float GetCollRadius();
+	//座標呼び出し
 	VECTOR& GetPos();
 
 protected:
@@ -86,18 +90,25 @@ protected:
 	// 種別
 	TYPE type_;
 
+#pragma region 定数
+
 	//最大ランダム値
 	static constexpr int CHANGESTATE_RAND_MAX = 100;
 	//デフォルトアニメ-ションスピード
 	static constexpr float DEFAULT_ANIM_SPEED = 20.0f;
 
-	
+#pragma endregion
+
+#pragma region 変数
 
 	// 初期位置
 	const VECTOR defaultPos_;
+	// 移動範囲
 	float movableRange_;
+	//プレイヤーコライダー半径
 	float playerRad_;
-	float pushOutRadius_; //各敵ごとに設定
+	//押し出し距離
+	float pushOutRadius_;
 
 	//攻撃用モデル(魔法の弾とか）
 	int attackModle_;
@@ -114,14 +125,18 @@ protected:
 
 	//wave
 	int wave_;
+
+	// 剣の攻撃判定
+	bool wasHitSword_ = false;
+	//　魔法の攻撃判定
+	bool wasHitMagic_ = false;
+
+#pragma endregion
+	
 	// 状態管理(状態遷移時初期処理)
 	std::map<int, std::function<void()>> stateChanges_;
 	// 状態管理(更新ステップ)
 	std::function<void()> stateUpdate_;
-
-	// ダメージを受けたかどうか
-	bool wasHitSword_ = false;
-	bool wasHitMagic_ = false;
 
 	// リソースロード
 	void InitLoad() override {}
@@ -149,15 +164,24 @@ private:
 
 #pragma region 定数
 
+
+	//サンダー生存時間
+	static constexpr int EFFECT_THUNDER_LIFE_TIME = 30;
+	//サンダーエフェクトサイズ
+	static constexpr float EFFECT_THUNDER_SCALE = 30.0f;
+
+
 	//追加分の最小距離
 	static constexpr float ADD_MIN_DISTANCE = 20.0f;
 	//ヒットエフェクトサイズ
-	static constexpr float HIT_EFFECT_SIZE = 2.0f;
+	static constexpr float HIT_EFFECT_SCALE = 2.0f;
+	// ヒット位置(敵と剣の中点)の割合
+	static constexpr float HIT_POS_MID_RATE = 0.5f; 
 
 
 #pragma endregion
 
-	
+
 
 };
 

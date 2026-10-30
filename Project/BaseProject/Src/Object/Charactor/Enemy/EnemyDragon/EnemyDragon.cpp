@@ -9,7 +9,7 @@
 #include "../../../Common/AnimationController.h"
 #include "../../../../Utility/AsoUtility.h"
 #include "../../../../Object/Item/HP/HpItem.h"
-#include "../../../../Object/Item/ItemManger.h"
+#include "../../../../Object/Item/ItemManager.h"
 #include "../../../../Sound/AudioManager.h"
 #include "../../../../Scene/GameScene.h"
 #include "./../../../../Application.h"

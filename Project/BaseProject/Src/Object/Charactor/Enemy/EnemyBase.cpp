@@ -76,6 +76,7 @@ void EnemyBase::HitEffect(const VECTOR& pos, const VECTOR& normal, float size)
 		transform_.pos
 	);
 
+
 	effect->Play(
 		pos,
 		Quaternion::LookRotation(normal)
@@ -87,20 +88,22 @@ void EnemyBase::HitEffect(const VECTOR& pos, const VECTOR& normal, float size)
 
 void EnemyBase::HitThunderEffect(const VECTOR& pos, const VECTOR& normal, float size)
 {
-	auto effect = std::make_shared<EffekseerEffect>(
-		L"Data/Effect/Thunder/N.efkefc", // hitエフェクト
-		pos
-	);
+	std::shared_ptr<EffekseerEffect> thunderEffect;
 
-	effect->Play(
+	// サンダーヒットエフェクト
+	thunderEffect = std::make_shared<EffekseerEffect>(
+		L"Data/Effect/Thunder/N.efkefc", pos);
+
+	thunderEffect->Play(
 		pos,
 		Quaternion::LookRotation(normal)
 	);
+	//エフェクトサイズ設定
+	thunderEffect->SetScale(size * EFFECT_THUNDER_SCALE);
+	//生存時間設定
+	thunderEffect->SetLifeTime(EFFECT_THUNDER_LIFE_TIME);
 
-	effect->SetScale(size * 30.0f);   // 必要なら
-	effect->SetLifeTime(30);
-
-	EffectManager::GetInstance().RegisterEffect(effect);
+	EffectManager::GetInstance().RegisterEffect(thunderEffect);
 }
 
 bool EnemyBase::InMovableRange(void) const
@@ -214,6 +217,7 @@ void EnemyBase::CheckPlayerSwordCollision()
 
 	// 自身のカプセルコライダを取得
 	ColliderCapsule* ownColCapsule = nullptr;
+
 	for (const auto& ownCol : ownColliders_)
 	{
 		if (ownCol.second->GetTag() == ColliderBase::TAG::ENEMY)
@@ -225,13 +229,11 @@ void EnemyBase::CheckPlayerSwordCollision()
 
 	if (ownColCapsule == nullptr) return;
 
-	// プレイヤーの剣コライダはhitColliders_に登録されているはずなので、全てチェック
+	
 	for (const auto& hitCol : hitColliders_)
 	{
 		if (hitCol->GetTag() == ColliderBase::TAG::PLAYER_SWORD)
 		{
-			// 剣はカプセルコライダ
-			// 敵もカプセルコライダ
 			// カプセルコライダ同士で衝突判定
 			const ColliderCapsule* swordColCapsule =
 				dynamic_cast<const ColliderCapsule*>(hitCol);
@@ -251,9 +253,9 @@ void EnemyBase::CheckPlayerSwordCollision()
 					ownColCapsule->GetCenter(),
 					swordColCapsule->GetCenter());
 
-				hitPos = VScale(hitPos, 0.5f);
+				hitPos = VScale(hitPos, HIT_POS_MID_RATE);
 
-				HitEffect(hitPos, VNorm(VSub(hitPos, transform_.pos)), 1.0f);
+				HitEffect(hitPos, VNorm(VSub(hitPos, transform_.pos)), HIT_EFFECT_SCALE);
 
 				// 一度あったらフラグ
 				wasHitSword_ = true;
@@ -274,7 +276,8 @@ void EnemyBase::CheckPlayerMagicCollision()
 	// プレイヤーの魔法が残存していないなら処理しない
 	if (!player_->IsAliveMagic())
 	{
-		wasHitMagic_ = false; // 残存していないなら被ダメージフラグをリセット
+		// 残存していないなら被ダメージフラグをリセット
+		wasHitMagic_ = false; 
 		return;
 	}
 
@@ -318,7 +321,6 @@ void EnemyBase::CheckPlayerMagicCollision()
 				capsuleRadius) == 1)
 			{
 				// ダメージ処理
-				//Damage(1);
 				Damage(1, player_->GetTransform().GetForward());
 
 				AudioManager::GetInstance()->SetSeVolume(200);
@@ -326,9 +328,9 @@ void EnemyBase::CheckPlayerMagicCollision()
 
 				// エフェクト再生
 				VECTOR hitPos = VAdd(ownColCapsule->GetCenter(), magicColSphere->GetPos());
-				hitPos = VScale(hitPos, 0.5f);
+				hitPos = VScale(hitPos, HIT_POS_MID_RATE);
 
-				HitEffect(hitPos, VNorm(VSub(hitPos, transform_.pos)), HIT_EFFECT_SIZE);
+				HitEffect(hitPos, VNorm(VSub(hitPos, transform_.pos)), HIT_EFFECT_SCALE);
 
 				// Fireを消す
 				player_->DeleteFireEffect();

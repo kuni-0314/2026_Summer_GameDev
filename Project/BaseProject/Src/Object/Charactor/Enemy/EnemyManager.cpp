@@ -10,7 +10,7 @@
 #include "EnemyLarge/EnemyLarge.h"
 #include "EnemyDragon/EnemyDragon.h"
 #include "../../Item/ItemBase.h"
-#include "../../Item/ItemManger.h"
+#include "../../Item/ItemManager.h"
 #include "../../Charactor/Player/Player.h"
 #include "../../Actor/ActorBase.h"
 #include "../../Collider/Sphere/ColliderSphere.h"
@@ -19,7 +19,7 @@
 #include "../../../Effect/EffectManager.h"
 #include "../../../Common/Quaternion.h"
 #include "../../../Manager/ResourceManager.h"
-#include "EnemyManger.h"
+#include "EnemyManager.h"
 
 // 長いのでnamespaceの省略
 using json = nlohmann::json;
@@ -292,7 +292,7 @@ void EnemyManager::CreateHpItem()
 			hpPos.y += 80.0f;
 
 			// 安全チェック：ItemManager とステージコライダが有効か確認してから生成
-			auto itemMgr = gameScene_ ? gameScene_->GetItemManger() : nullptr;
+			auto itemMgr = gameScene_ ? gameScene_->GetItemManager() : nullptr;
 
 			//HPアイテムの生成
 			if (itemMgr != nullptr && hitCollider_ != nullptr)

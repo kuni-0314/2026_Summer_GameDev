@@ -6,21 +6,21 @@
 #include "../Item/ItemSkill/SkillItem.h"
 #include "../Charactor/Enemy/EnemyBase.h"
 #include "../Charactor/Player/Player.h"
-#include "ItemManger.h"
+#include "ItemManager.h"
 
 
-ItemManger::ItemManger()
+ItemManager::ItemManager()
 {
 }
 
-ItemManger::~ItemManger()
+ItemManager::~ItemManager()
 {
 }
 
-void ItemManger::Init()
+void ItemManager::Init()
 {
 }
-void ItemManger::Update()
+void ItemManager::Update()
 {
 	for (auto& item : items_)
 	{
@@ -40,16 +40,15 @@ void ItemManger::Update()
 		}
 	}
 }
-void ItemManger::Draw()
+void ItemManager::Draw()
 {
 	for (auto& item : items_)
 	{
 		item->Draw();
-
 	}
 }
 
-void ItemManger::Release()
+void ItemManager::Release()
 {
 	for (auto& item : items_)
 	{
@@ -57,14 +56,16 @@ void ItemManger::Release()
 		delete item;
 		item = nullptr;
 	}
+
+	items_.clear();
 }
 
-void ItemManger::AddHitCollider(const ColliderBase* hitCollider)
+void ItemManager::AddHitCollider(const ColliderBase* hitCollider)
 {
 	hitCollider_ = hitCollider;
 }
 
-ItemBase* ItemManger::Create(const ItemBase::TYPE& type, VECTOR pos, const ColliderBase* hitCollider, const int key, const Player* player)
+ItemBase* ItemManager::Create(const ItemBase::TYPE& type, VECTOR pos, const ColliderBase* hitCollider, const int key, const Player* player)
 {
 	ItemBase* item = nullptr;
 	const ColliderBase* playerCollide = nullptr;

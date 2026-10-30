@@ -11,7 +11,7 @@ class StageWall;
 class SkyDome;
 class Player;
 class EnemyManager;
-class ItemManger;
+class ItemManager;
 class SwordBase;
 //class ColliderBase;
 
@@ -87,7 +87,7 @@ public:
 	//エネミー衝突情報削除
 	void RemovePlayerHitCollider(const ColliderBase* hitCollider);
 
-	ItemManger* GetItemManger() const { return itemManger_; }
+	ItemManager* GetItemManager() const { return itemManager_; }
 
 	// ゲームシーンを取得
 	const GameScene& GetGameScene() const { return *this; }
@@ -127,10 +127,8 @@ private:
 	EnemyManager* enemyManager_;
 
 	// アイテムマネージャー
-	ItemManger* itemManger_;
+	ItemManager* itemManager_;
 
-	// 武器
-	//WeaponBase* weapon_;
 
 	static constexpr int IMG_HP_X = 1550;
 	static constexpr int IMG_HP_Y = 700;

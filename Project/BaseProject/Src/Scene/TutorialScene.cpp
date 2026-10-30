@@ -50,6 +50,4 @@ void TutorialScene::Draw()
 
 void TutorialScene::Release()
 {
-	DeleteGraph(imgTutorialMouse_);
-	DeleteGraph(imgTutorialPad_);
 }

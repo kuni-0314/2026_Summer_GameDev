@@ -90,11 +90,6 @@ void OverScene::Draw()
 
 void OverScene::Release()
 {
-	DeleteGraph(imgOnTitleHandle_);
-	DeleteGraph(imgOffTitleHandle_);
-
-	DeleteGraph(imgOnRetryHandle_);
-	DeleteGraph(imgOffRetryHandle_);
 }
 
 void OverScene::SelectChange(SELECT next)
