@@ -367,7 +367,7 @@ void TitleScene::SelectUpdate()
 	// マウスクリックで決定
 	if (ins->IsMouseTrgDown(MOUSE_INPUT_LEFT))
 	{
-		(SoundID::SE_TITLE_DECISION);
+		AudioManager::GetInstance()->PlaySE(SoundID::SE_TITLE_DECISION);
 		SelectChange((SELECT)selectCount_);
 	}
 

@@ -41,14 +41,6 @@ void ActorBase::Draw()
 	{
 		MV1DrawModel(transform_.modelId);
 	}
-
-#ifdef _DEBUG
-	// 所有しているコライダの描画
-	for (const auto& own : ownColliders_)
-	{
-		own.second->Draw();
-	}
-#endif // _DEBUG
 }
 
 void ActorBase::Release()

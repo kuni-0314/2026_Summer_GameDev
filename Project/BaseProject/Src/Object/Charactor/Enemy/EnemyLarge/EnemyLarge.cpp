@@ -66,7 +66,6 @@ void EnemyLarge::Draw(void)
 	DrawFormatString(0, 200, GetColor(255, 255, 255), "STATE: %s", name);
 	DrawFormatString(0, 250, GetColor(255, 255, 255), "ãóó£: %.2f", distance_);
 
-	//DrawFormatString(0, 50, GetColor(255, 255, 255), "Pos: %d,%d,%d", transform_.pos.x,transform_.pos.y,transform_.pos.z);
 	DrawFormatString(20, 100, 0x000000, "ç¿ïW(%.2f, %.2f, %.2f)", transform_.pos.x, transform_.pos.y, transform_.pos.z);
 
 	DrawFormatString(500, 250, GetColor(255, 255, 255), "isAttack_", isAttack_);

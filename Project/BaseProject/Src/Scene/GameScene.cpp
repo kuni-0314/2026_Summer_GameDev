@@ -255,16 +255,23 @@ void GameScene::Update()
 			}
 		}
 
-		if (camMode_ == CAM_MODE::TARGETING && ins->IsGamepadTriggerTrgDown(true, 0) || InputManager::GetInstance()->IsTrgDown(KEY_INPUT_F))
+		if (camMode_ == CAM_MODE::TARGETING && ins->IsGamepadTriggerTrgDown(true, 0) || 
+			camMode_ == CAM_MODE::TARGETING && InputManager::GetInstance()->IsTrgDown(KEY_INPUT_F))
 		{
+			AudioManager::GetInstance()->PlaySE(SoundID::SE_LOCKON_CHANGE);
+
+
 			//Å‘å‚Ü‚ÅŒ¾‚Á‚½‚ç0‚É
 			if (targetEnemyId_ > enemyManager_->GetEnemies().size() - 1)
 			{
 				targetEnemyId_ = 0;
+				
+
 			}
 			else
 			{
 				targetEnemyId_++;
+
 			}
 		}
 	}

@@ -648,16 +648,16 @@ void EnemyManager::InitEnemyPos()
 {
 	EnemyPos_.resize(11);
 
-	EnemyPos_[0] = { 600,  40,  2500 };
+	EnemyPos_[0] = { 600,  40,  900 };
 	EnemyPos_[1] = { 1200, 40, 800 };
-	EnemyPos_[2] = { 2500, 40, 300 };
+	EnemyPos_[2] = { 1500, 40, 300 };
 	EnemyPos_[3] = { 800,  40, 1800 };
 	EnemyPos_[4] = { 2000, 40, 1500 };
-	EnemyPos_[5] = { 300,  40, 2500 };
-	EnemyPos_[6] = { 1500, 40, 2800 };
-	EnemyPos_[7] = { 2800, 40, 2200 };
-	EnemyPos_[8] = { 2400, 40, 2700 };
-	EnemyPos_[9] = { 1000, 40, 1200 };
+	EnemyPos_[5] = { 300,  40, 1000 };
+	EnemyPos_[6] = { 1500, 40, 900 };
+	EnemyPos_[7] = { 300, 40, 100 };
+	EnemyPos_[8] = { 200, 40, 500 };
+	EnemyPos_[9] = { 200, 40, 1200 };
 
 	// LARGE専用座標
 	LargePos_.resize(2);
@@ -742,7 +742,19 @@ void EnemyManager::SpawnNextEnemy()
 		static_cast<int>(EnemyPos_.size()) - 1
 	);
 
-	data.defaultPos = EnemyPos_[randIndex];
+	if (data.type == EnemyBase::TYPE::LARGE && !LargePos_.empty())
+	{
+		// LARGEは専用座標から選ぶ
+		int randIndex = GetRand(static_cast<int>(LargePos_.size()) - 1);
+		data.defaultPos = LargePos_[randIndex];
+	}
+	else
+	{
+		// 通常敵
+		int randIndex = GetRand(static_cast<int>(EnemyPos_.size()) - 1);
+		data.defaultPos = EnemyPos_[randIndex];
+	}
+
 
 	// 生成
 	Create(data, player_);
